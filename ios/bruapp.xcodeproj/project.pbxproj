@@ -493,7 +493,7 @@
 				DEVELOPMENT_TEAM = XXXX;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = bruapp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Bru;
+				INFOPLIST_KEY_CFBundleDisplayName = BRU;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -523,7 +523,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = XXXX;
 				INFOPLIST_FILE = bruapp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Bru;
+				INFOPLIST_KEY_CFBundleDisplayName = BRU;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
