@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
+    "android": "cd android && ./gradlew clean; cd ../; react-native run-android --active-arch-only",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "react": "watchman watch-del $(pwd);  watchman watch-project $(pwd); react-native start;",
@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.71.7"
+    "react-native": "0.71.7",
+    "react-native-splash-screen": "^3.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
