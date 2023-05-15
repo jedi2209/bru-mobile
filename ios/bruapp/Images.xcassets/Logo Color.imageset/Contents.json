@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Bru Black.png",
+      "filename" : "Logo color quad.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Bru Black@2x.png",
+      "filename" : "Logo color quad@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Bru Black@3x.png",
+      "filename" : "Logo color quad@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
