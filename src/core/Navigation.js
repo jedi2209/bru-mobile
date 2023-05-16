@@ -2,7 +2,7 @@ import {View, Text} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const HomeScreen = () => {
+const HomeScreenTop = () => {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Home Screen</Text>
@@ -11,7 +11,7 @@ const HomeScreen = () => {
   );
 };
 
-const DetailsScreen = () => {
+const DetailsScreenTop = () => {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
       <Text>Details Screen</Text>
@@ -24,8 +24,8 @@ const Stack = createNativeStackNavigator();
 const NavMain = props => {
   return (
     <Stack.Navigator {...props}>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="Details" component={DetailsScreen} />
+      <Stack.Screen name="HomeTop" component={HomeScreenTop} />
+      <Stack.Screen name="DetailsTop" component={DetailsScreenTop} />
     </Stack.Navigator>
   );
 };

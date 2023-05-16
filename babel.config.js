@@ -7,5 +7,11 @@ module.exports = {
         addLoc: true,
       },
     ],
+    [
+      'react-native-reanimated/plugin',
+      {
+        relativeSourceLocation: true,
+      },
+    ],
   ],
 };

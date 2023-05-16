@@ -11,7 +11,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {createStore, createEvent, createEffect, forward} from 'effector';
 import {useStore} from 'effector-react';
 import {NavigationContainer} from '@react-navigation/native';
-import NavMain from './Navigation';
+import NavBottom from './NavigationBottom';
 import {
   SafeAreaView,
   ScrollView,
@@ -66,7 +66,7 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <NavMain initialRouteName="Home" />
+      <NavBottom initialRouteName="Profile" />
     </NavigationContainer>
   );
 };

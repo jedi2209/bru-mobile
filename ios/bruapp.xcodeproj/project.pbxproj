@@ -13,6 +13,10 @@
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		3A3461402A054EB700BB3182 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A34613F2A054EB700BB3182 /* GoogleService-Info.plist */; };
 		3ACA3A1A402075D44A96A690 /* libPods-bruapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A66E354D764323210594921 /* libPods-bruapp.a */; };
+		3ACED74C2A130889004B0809 /* Porter Medium Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3ACED74A2A130889004B0809 /* Porter Medium Italic.otf */; };
+		3ACED74D2A130889004B0809 /* Porter Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3ACED74B2A130889004B0809 /* Porter Medium.otf */; };
+		3ACED7502A130E72004B0809 /* Sarabun-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3ACED74F2A130E72004B0809 /* Sarabun-Light.ttf */; };
+		3ACED7522A130F82004B0809 /* Porter Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3ACED7512A130F81004B0809 /* Porter Light.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		AF34F000D47D7F0E2D33C499 /* libPods-bruapp-bruappTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42475E09F3ECDF9E1A76F271 /* libPods-bruapp-bruappTests.a */; };
 /* End PBXBuildFile section */
@@ -38,6 +42,10 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = bruapp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = bruapp/main.m; sourceTree = "<group>"; };
 		3A34613F2A054EB700BB3182 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3ACED74A2A130889004B0809 /* Porter Medium Italic.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Porter Medium Italic.otf"; path = "../assets/Fonts/Porter Medium Italic.otf"; sourceTree = "<group>"; };
+		3ACED74B2A130889004B0809 /* Porter Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Porter Medium.otf"; path = "../assets/Fonts/Porter Medium.otf"; sourceTree = "<group>"; };
+		3ACED74F2A130E72004B0809 /* Sarabun-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Sarabun-Light.ttf"; path = "../assets/Fonts/Sarabun-Light.ttf"; sourceTree = "<group>"; };
+		3ACED7512A130F81004B0809 /* Porter Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Porter Light.otf"; path = "../assets/Fonts/Porter Light.otf"; sourceTree = "<group>"; };
 		3EFFCA6F6DB2D8DDCD0B6BA2 /* Pods-bruapp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bruapp.release.xcconfig"; path = "Target Support Files/Pods-bruapp/Pods-bruapp.release.xcconfig"; sourceTree = "<group>"; };
 		42475E09F3ECDF9E1A76F271 /* libPods-bruapp-bruappTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-bruapp-bruappTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		67BA9E516C20E5DC2B4EDA29 /* Pods-bruapp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-bruapp.debug.xcconfig"; path = "Target Support Files/Pods-bruapp/Pods-bruapp.debug.xcconfig"; sourceTree = "<group>"; };
@@ -88,6 +96,7 @@
 		13B07FAE1A68108700A75B9A /* bruapp */ = {
 			isa = PBXGroup;
 			children = (
+				3ACED74E2A130893004B0809 /* fonts */,
 				3A34613F2A054EB700BB3182 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -107,6 +116,17 @@
 				42475E09F3ECDF9E1A76F271 /* libPods-bruapp-bruappTests.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3ACED74E2A130893004B0809 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				3ACED7512A130F81004B0809 /* Porter Light.otf */,
+				3ACED74F2A130E72004B0809 /* Sarabun-Light.ttf */,
+				3ACED74A2A130889004B0809 /* Porter Medium Italic.otf */,
+				3ACED74B2A130889004B0809 /* Porter Medium.otf */,
+			);
+			name = fonts;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -245,8 +265,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3ACED7522A130F82004B0809 /* Porter Light.otf in Resources */,
+				3ACED7502A130E72004B0809 /* Sarabun-Light.ttf in Resources */,
+				3ACED74D2A130889004B0809 /* Porter Medium.otf in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				3ACED74C2A130889004B0809 /* Porter Medium Italic.otf in Resources */,
 				3A3461402A054EB700BB3182 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
