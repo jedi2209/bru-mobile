@@ -11,20 +11,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {createStore, createEvent, createEffect, forward} from 'effector';
 import {useStore} from 'effector-react';
 import {NavigationContainer} from '@react-navigation/native';
-import NavBottom from './NavigationBottom';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import NavBottom from './navigation/NavigationBottom';
+import {StyleSheet, Text, useColorScheme, View} from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import SplashScreen from 'react-native-splash-screen';
+
+import lang from './lang/const';
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -62,6 +56,7 @@ const App = () => {
   useEffect(() => {
     SplashScreen.hide();
     attachLogger();
+    lang.setLanguage('en');
   }, []);
 
   return (

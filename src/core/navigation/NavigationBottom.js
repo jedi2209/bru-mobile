@@ -3,7 +3,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SVG, {Path, Circle} from 'react-native-svg';
 
-import {colors, fonts} from './const';
+import {colors, fonts} from '../const';
+import lang from '../lang/const';
 
 const styles = StyleSheet.create({
   tabBarItem: {
@@ -12,7 +13,7 @@ const styles = StyleSheet.create({
   },
   tabBarItemIcon: {
     marginTop: 8,
-    marginBottom: 10,
+    marginBottom: 5,
     height: 32,
   },
   labelText: {
@@ -22,6 +23,8 @@ const styles = StyleSheet.create({
     fontFamily: fonts.defaultFamily,
   },
 });
+
+const iconSize = 28;
 
 const Tab = createBottomTabNavigator();
 
@@ -61,7 +64,11 @@ const BottomTabs = props => {
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
-                <SVG width={32} height={32} fill="none" viewBox="0 0 24 24">
+                <SVG
+                  width={iconSize}
+                  height={iconSize}
+                  fill="none"
+                  viewBox="0 0 24 24">
                   <Path
                     d="M4 22V14.1935L12 7L20 14.1935V22M10.2857 22V17.8571H13.7143V22"
                     stroke={focused ? colors.white : colors.gray.inactive}
@@ -83,7 +90,7 @@ const BottomTabs = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                Instant{'\r\n'}Brew
+                {lang.MenuBottom.InstantBrew}
               </Text>
             </View>
           ),
@@ -96,7 +103,11 @@ const BottomTabs = props => {
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
-                <SVG width={32} height={32} fill="none" viewBox="0 0 24 24">
+                <SVG
+                  width={iconSize}
+                  height={iconSize}
+                  fill="none"
+                  viewBox="0 0 24 24">
                   <Circle
                     cx="12.5"
                     cy="13.5"
@@ -117,7 +128,7 @@ const BottomTabs = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                Tea Alarm{'\r\n'}
+                {lang.MenuBottom.TeaAlarm}
               </Text>
             </View>
           ),
@@ -131,7 +142,11 @@ const BottomTabs = props => {
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
-                <SVG width={32} height={32} fill="none" viewBox="0 0 24 24">
+                <SVG
+                  width={iconSize}
+                  height={iconSize}
+                  fill="none"
+                  viewBox="0 0 24 24">
                   <Path
                     d="M20 11.5C20 11.5 20.656 10.5782 22.5 11.5C23.5 12 20.5 15.5 20 15.5C19.5 15.5 18.5 16 18.5 16"
                     stroke={focused ? colors.white : colors.gray.inactive}
@@ -158,7 +173,7 @@ const BottomTabs = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                Presets{'\r\n'}
+                {lang.MenuBottom.Presets}
               </Text>
             </View>
           ),
@@ -172,7 +187,11 @@ const BottomTabs = props => {
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
-                <SVG width={32} height={32} fill="none" viewBox="0 0 24 24">
+                <SVG
+                  width={iconSize}
+                  height={iconSize}
+                  fill="none"
+                  viewBox="0 0 24 24">
                   <Circle
                     cx="12.5"
                     cy="13.5"
@@ -199,7 +218,7 @@ const BottomTabs = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                Help{'\r\n'}
+                {lang.MenuBottom.Help}
               </Text>
             </View>
           ),
@@ -213,7 +232,11 @@ const BottomTabs = props => {
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
-                <SVG width={32} height={32} fill="none" viewBox="0 0 24 24">
+                <SVG
+                  width={iconSize}
+                  height={iconSize}
+                  fill="none"
+                  viewBox="0 0 24 24">
                   <Path
                     fill-rule="evenodd"
                     clip-rule="evenodd"
@@ -233,7 +256,7 @@ const BottomTabs = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                Settings{'\r\n'}
+                {lang.MenuBottom.Settings}
               </Text>
             </View>
           ),
