@@ -13,6 +13,10 @@ const colors = {
     inactive: '#B0B0B0',
     dark: '#E5E5E5',
   },
+  gradient: {
+    background: ['#8f8f8f', '#7e7e7e', '#6f6f6f', '#6e6e6e', '#2f2f2f'],
+    backgroundTabbar: ['#242424', '#222222'],
+  },
 };
 
 const fonts = {
@@ -20,4 +24,25 @@ const fonts = {
   defaultMenuFamily: 'Sarabun-Light',
 };
 
-export {colors, fonts};
+const tabBarStyle = {
+  backgroundColor: colors.black,
+  paddingBottom: 0,
+  paddingHorizontal: 0,
+  // borderTopRightRadius: 10,
+  // borderTopLeftRadius: 10,
+  height: 80,
+  borderTopWidth: 0,
+  marginHorizontal: 10,
+  bottom: 20,
+  borderRadius: 10,
+  position: 'absolute',
+  shadowColor: colors.brown,
+  shadowOffset: {
+    width: 0,
+    height: -10,
+  },
+  shadowOpacity: 0.5,
+  shadowRadius: 10,
+};
+
+export {colors, fonts, tabBarStyle};

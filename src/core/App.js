@@ -6,19 +6,30 @@
  */
 
 import React, {useEffect} from 'react';
+import {StyleSheet, Text, useColorScheme, View} from 'react-native';
 import {attachLogger} from 'effector-logger';
 import AsyncStorage from '@react-native-community/async-storage';
 import {createStore, createEvent, createEffect, forward} from 'effector';
 import {useStore} from 'effector-react';
-import {NavigationContainer} from '@react-navigation/native';
-import NavBottom from './navigation/NavigationBottom';
-import {StyleSheet, Text, useColorScheme, View} from 'react-native';
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native';
+import NavBottom from '@nav/NavigationBottom';
+import {GluestackUIProvider} from '@gluestack';
+import {config} from '../../gluestack-ui.config';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 import SplashScreen from 'react-native-splash-screen';
 
-import lang from './lang/const';
+import lang from '@lang';
+
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: 'rgb(255, 45, 85)',
+    background: 'red',
+  },
+};
 
 const Section = ({children, title}) => {
   const isDarkMode = useColorScheme() === 'dark';
@@ -46,7 +57,7 @@ const Section = ({children, title}) => {
   );
 };
 
-const App = () => {
+const App = props => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -60,29 +71,12 @@ const App = () => {
   }, []);
 
   return (
-    <NavigationContainer>
-      <NavBottom initialRouteName="Profile" />
-    </NavigationContainer>
+    <GluestackUIProvider config={config.theme}>
+      <NavigationContainer theme={MyTheme}>
+        <NavBottom initialRouteName="Profile" {...props} />
+      </NavigationContainer>
+    </GluestackUIProvider>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

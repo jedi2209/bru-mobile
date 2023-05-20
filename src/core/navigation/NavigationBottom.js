@@ -1,19 +1,22 @@
-import {View, Text, StyleSheet} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React from 'react';
+import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SVG, {Path, Circle} from 'react-native-svg';
 
-import {colors, fonts} from '../const';
-import lang from '../lang/const';
+import {colors, fonts, tabBarStyle} from '@const';
+import lang from '@lang';
+
+import Settings from '@screens/settings';
 
 const styles = StyleSheet.create({
   tabBarItem: {
     alignItems: 'center',
     verticalAlign: 'top',
+    borderRadius: 10,
   },
   tabBarItemIcon: {
-    marginTop: 8,
-    marginBottom: 5,
+    marginTop: 5,
+    marginBottom: 7,
     height: 32,
   },
   labelText: {
@@ -28,38 +31,36 @@ const iconSize = 28;
 
 const Tab = createBottomTabNavigator();
 
-const HomeScreen = () => {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-    </View>
-  );
-};
-
-const BottomTabs = props => {
+const NavigationBottom = props => {
   return (
     <Tab.Navigator
       {...props}
       screenOptions={{
-        tabBarStyle: {
-          backgroundColor: colors.black,
-          paddingBottom: 0,
-          paddingHorizontal: 10,
-          borderTopRightRadius: 10,
-          borderTopLeftRadius: 10,
-          height: 80,
-        },
+        tabBarStyle,
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.white,
         tabBarActiveBackgroundColor: '#60703999',
         tabBarItemStyle: {
-          paddingBottom: 10,
+          borderRadius: 10,
         },
+        tabBarBackground: () => (
+          <View
+            colors={colors.gradient.backgroundTabbar}
+            style={{flex: 1, borderRadius: 10}}>
+            <ImageBackground
+              source={require('../../../assets/backgroundTile.png')}
+              resizeMode="repeat"
+              style={{flex: 1}}
+            />
+          </View>
+        ),
       }}>
       <Tab.Screen
         name="Home"
-        component={HomeScreen}
+        component={Settings}
+        initialParams={{
+          scroll: true,
+        }}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
@@ -98,7 +99,10 @@ const BottomTabs = props => {
       />
       <Tab.Screen
         name="Tea Alarm"
-        component={HomeScreen}
+        component={Settings}
+        initialParams={{
+          scroll: true,
+        }}
         options={{
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
@@ -136,7 +140,10 @@ const BottomTabs = props => {
       />
       <Tab.Screen
         name="Presets"
-        component={HomeScreen}
+        component={Settings}
+        initialParams={{
+          scroll: true,
+        }}
         options={{
           tabBarLabel: 'PRESETS',
           tabBarIcon: ({focused}) => (
@@ -181,7 +188,10 @@ const BottomTabs = props => {
       />
       <Tab.Screen
         name="Help"
-        component={HomeScreen}
+        component={Settings}
+        initialParams={{
+          scroll: true,
+        }}
         options={{
           tabBarLabel: 'HELP',
           tabBarIcon: ({focused}) => (
@@ -226,7 +236,10 @@ const BottomTabs = props => {
       />
       <Tab.Screen
         name="Settings"
-        component={HomeScreen}
+        component={Settings}
+        initialParams={{
+          scroll: true,
+        }}
         options={{
           tabBarLabel: 'SETTINGS',
           tabBarIcon: ({focused}) => (
@@ -266,4 +279,4 @@ const BottomTabs = props => {
   );
 };
 
-export default BottomTabs;
+export default NavigationBottom;
