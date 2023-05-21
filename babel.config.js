@@ -26,6 +26,7 @@ module.exports = {
           '@gluestack': './src/gluestack',
           '@const': './src/core/const',
           '@screens': './src/screens',
+          '@utils': './src/utils',
         },
       },
     ],

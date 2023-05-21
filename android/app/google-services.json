@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "XXXX",
+    "project_id": "brutea-app",
+    "storage_bucket": "brutea-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:XXXX:android:f6feccfb94fa000fa73c9e",
+        "android_client_info": {
+          "package_name": "com.bruapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "XXXX-5kl380n7m9sfd30c5281ot3oklpacflo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bruapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "XXXX-of1nihkrm14b31erarng9ohbb8djkltp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "XXXX"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "XXXX-of1nihkrm14b31erarng9ohbb8djkltp.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "XXXX-pss3ase6nkpjhu52m8rb5c2kdq4crp5g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "shop.bru.bruapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

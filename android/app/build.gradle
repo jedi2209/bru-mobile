@@ -1,4 +1,6 @@
 apply plugin: "com.android.application"
+apply plugin: "com.google.firebase.appdistribution"
+apply plugin: "com.google.gms.google-services"
 apply plugin: "com.facebook.react"
 
 import com.android.build.OutputFile
@@ -151,6 +153,11 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
+
+    implementation platform('com.google.firebase:firebase-bom:32.0.0')
+    implementation 'com.google.firebase:firebase-appcheck-playintegrity'
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.1.2'
+    implementation 'com.google.firebase:firebase-analytics'
 
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
 

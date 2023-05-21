@@ -8,7 +8,7 @@
     "lint": "eslint .",
     "react": "watchman watch-del $(pwd);  watchman watch-project $(pwd); react-native start;",
     "postinstall": "npx patch-package; cd ios; pod update; cd ../; npx pod-install;",
-    "test": "jest"
+    "clean": "react-native-clean-project"
   },
   "dependencies": {
     "@dank-style/animation-plugin": "latest",
@@ -16,13 +16,18 @@
     "@gluestack-ui/hstack": "latest",
     "@gluestack-ui/provider": "latest",
     "@react-native-community/async-storage": "^1.12.1",
+    "@react-native-firebase/analytics": "^17.5.0",
+    "@react-native-firebase/app": "^17.5.0",
+    "@react-native-firebase/app-check": "^17.5.0",
+    "@react-native-firebase/app-distribution": "^17.5.0",
+    "@react-native-firebase/perf": "^17.5.0",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "effector": "^22.8.5",
     "effector-react": "^22.5.1",
     "react": "18.2.0",
-    "react-native": "0.71.7",
+    "react-native": "0.71.8",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-localization": "^2.3.1",
     "react-native-paper": "^5.8.0",
@@ -33,7 +38,7 @@
     "react-native-svg": "^13.9.0",
     "react-native-vector-icons": "^9.2.0"
   },
-  "devDependencies": {
+  "devDependencies": {    
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
@@ -41,7 +46,7 @@
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^29.2.1",
     "@types/react": "^18.0.24",
-    "@types/react-native": "^0.71.6",
+    "@types/react-native": "^0.71.7",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.2.1",
     "babel-plugin-module-resolver": "^5.0.0",
@@ -51,6 +56,7 @@
     "metro-react-native-babel-preset": "0.73.9",
     "patch-package": "^7.0.0",
     "prettier": "^2.4.1",
+    "react-native-clean-project": "^4.0.1",
     "react-native-svg-transformer": "^1.0.0",
     "react-native-web": "^0.18.12",
     "react-test-renderer": "18.2.0",
