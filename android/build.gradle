@@ -1,4 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+import groovy.json.JsonSlurper
 
 buildscript {
     ext {
@@ -19,6 +20,10 @@ buildscript {
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("com.google.gms:google-services:4.3.15")
         classpath("com.google.firebase:firebase-appdistribution-gradle:3.2.0")
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+        classpath 'com.google.firebase:perf-plugin:1.4.2'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
     }
 }
 
@@ -28,4 +33,68 @@ allprojects {
     google()  // Google's Maven repository
     mavenCentral()  // Maven Central repository
   }
+}
+
+def getVersionFile() {
+    return file('app/app_version.properties')
+}
+
+def getVersionProps() {
+    def versionPropsFile = getVersionFile()
+    def versionProps = new Properties()
+    versionProps.load(new FileInputStream(versionPropsFile))
+    return versionProps
+}
+
+def getNpmVersion() {
+    def inputFile = new File("$rootDir/../package.json")
+    def packageJson = new JsonSlurper().parseText(inputFile.text)
+    return packageJson["version"]
+}
+
+def getIncrementBuild() {
+    def versionCode = getVersionProps()['versionCode'].toInteger()
+    return versionCode
+}
+
+private void saveChanges(Integer versionCode) {
+    def versionProps = getVersionProps()
+    versionProps['versionCode'] = versionCode.toString()
+    versionProps.store(getVersionFile().newWriter(), null)
+}
+
+def getNpmVersionArray() { // major [0], minor [1], patch [2]
+    def (major, minor, patch) = getNpmVersion().tokenize('.')
+    return [Integer.parseInt(major), Integer.parseInt(minor), Integer.parseInt(patch)] as int[]
+}
+
+private String runCommands(String... commands) {
+    def process = new ProcessBuilder(commands).redirectErrorStream(true).sta
+    rt()
+    process.waitFor()
+    def result = ''
+    process.inputStream.eachLine { result += it + '\n' }
+    def errorResult = process.exitValue() == 0
+    if (!errorResult) {
+        throw new IllegalStateException(result)
+    }
+    return result
+}
+
+subprojects {
+    ext {
+        def npmVersion = getNpmVersionArray()
+        versionMajor = npmVersion[0]
+        versionMinor = npmVersion[1]
+        versionPatch = npmVersion[2]
+        versionBuild = getIncrementBuild()
+    }
+    afterEvaluate {project ->
+        if (project.hasProperty("android") || project.plugins.hasPlugin('android-library')) {
+            android {
+                compileSdkVersion rootProject.ext.compileSdkVersion
+                buildToolsVersion rootProject.ext.buildToolsVersion
+            }
+        }
+    }
 }

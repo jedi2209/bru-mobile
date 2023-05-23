@@ -1,0 +1,228 @@
+fastlane_version '2.212.0'
+
+fastlane_require 'dotenv'
+
+before_all do
+  Dotenv.overload '.env'
+  get_version_number(
+    xcodeproj: ENV['XCODE_PROJ'],
+    target: ENV['XCODE_TARGET']
+  )
+  get_build_number(
+    xcodeproj: ENV['XCODE_PROJ']
+  )
+end
+
+platform :ios do
+  desc "Commit iOS"
+  lane :localNoCompile do
+    increment_build_number(
+        xcodeproj: "ios/bruapp.xcodeproj"
+    )
+    commit_version_bump(
+      message: "Version Bump iOS",    # create a commit with a custom message
+      xcodeproj: "ios/bruapp.xcodeproj"
+      )
+    changelog_from_git_commits(
+      pretty: "- %s",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
+      date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
+      match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
+      merge_commit_filtering: "exclude_merges", # Optional, lets you filter out merge commits
+      tag_match_pattern: "builds/iosbeta"
+    )
+    add_git_tag(
+      grouping: "builds",
+      prefix: "v"
+    )
+  end
+
+  desc "Push a new beta build to TestFlight"
+  lane :beta do
+    ensure_git_status_clean
+    # ENV["NO_FLIPPER"] = "1"
+    api_key = app_store_connect_api_key(
+      key_id: "XXXX",
+      issuer_id: "XXXX",
+      key_filepath: "./ios/AuthKey_XXXX.p8",
+      duration: 1200, # optional (maximum 1200)
+      in_house: false # optional but may be required if using match/sigh
+    )
+    get_certificates(api_key: api_key)           # invokes cert
+    get_provisioning_profile(api_key: api_key)   # invokes sigh
+    increment_build_number(
+        xcodeproj: "./ios/bruapp.xcodeproj"
+    )
+    build_app(
+      workspace: "./ios/bruapp.xcworkspace",
+      scheme: "bruapp",
+      export_method: "app-store",
+      include_bitcode: true,
+      export_xcargs: "-allowProvisioningUpdates"
+    )
+    # Generate the changelog based on commit messages since your last tag
+    changelog_from_git_commits(
+        pretty: "- %s",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
+        date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
+        match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
+        merge_commit_filtering: "exclude_merges", # Optional, lets you filter out merge commits
+        tag_match_pattern: "builds/iosbeta/*"
+    )
+    upload_to_testflight(
+        skip_waiting_for_build_processing: false,
+        skip_submission: false,
+        uses_non_exempt_encryption: true,
+        distribute_external: true,
+        notify_external_testers: true,
+        changelog: lane_context[SharedValues::FL_CHANGELOG],
+        groups: [
+          "Zavarka Team"
+        ],
+        api_key: api_key
+    )
+    # ENV["NO_FLIPPER"] = "0"
+    notification(
+      subtitle: "Build is finish!",
+      message: "iOS beta AppStore version #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]})",
+      app_icon: "https://www.zavarka-team.ru/logo.png",
+      content_image: "./ios/atlantm/Images.xcassets/AppIcon.appiconset/AppStore Icon.png"
+    )
+    commit_version_bump(
+        message: "[fastlane][ios] Updated build number",    # create a commit with a custom message
+        xcodeproj: "ios/atlantm.xcodeproj",
+        force: true
+    )
+    add_git_tag(
+        grouping: "builds",
+        prefix: "v"
+    )
+    push_to_git_remote(
+      remote: "origin",         # optional, default: "origin"
+      local_branch: "HEAD",  # optional, aliased by "branch", default: "master"
+      # remote_branch: "dev", # optional, default is set to local_branch
+      force: true,    # optional, default: false
+      tags: true     # optional, default: true
+    )
+    slack(
+      message: "Встречаем новый билд #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]}) на iOS для Атлант-М!\r\n\r\nИзменения в #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]}):\r\n\r\n#{lane_context[SharedValues::FL_CHANGELOG]}",
+      channel: "#_notify-bot",  # Optional, by default will post to the default channel configured for the POST URL.
+      success: true,        # Optional, defaults to true.
+      slack_url: ENV['SLACK_URL'],
+      payload: {  # Optional, lets you specify any number of your own Slack attachments.
+        "Build Date" => Time.new.to_s,
+      },
+      link_names: true
+    )
+  end
+end
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    changelog_from_git_commits(
+        pretty: "- (%ae) %s",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
+        date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
+        match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
+        merge_commit_filtering: "exclude_merges", # Optional, lets you filter out merge commits
+        tag_match_pattern: "builds/android"
+    )
+    gradle(
+        project_dir: "./android/",
+        task: "clean assemble",
+        build_type: "Release",
+        flags: "-PbuildType=debug",
+        print_command_output: true
+    )
+  end
+
+  desc "Submit a new Internal Build to Google Play"
+  lane :internal do
+    versionFile = File.read("../android/app/app_version.properties")
+    re = /versionCode=(\d+)/
+    versionCode = versionFile[re, 1].to_i+1
+
+    changelog_from_git_commits(
+        pretty: "- %s",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
+        date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
+        match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
+        merge_commit_filtering: "exclude_merges", # Optional, lets you filter out merge commits
+        tag_match_pattern: "builds/androidinternal/*"
+    )
+    gradle(
+        project_dir: "./android/",
+        task: "clean assemble",
+        build_type: "Release",
+        flags: "-PbuildType=release",
+        print_command_output: true
+    )
+    properties = property_file_read(file: ENV['ANDROID_PROPERTY'])
+    puts "AABs: #{Actions.lane_context[SharedValues::GRADLE_ALL_AAB_OUTPUT_PATHS]}"
+    puts "AAB: #{Actions.lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}"
+    upload_to_play_store(
+        track: 'internal',
+        skip_upload_metadata: true,
+        skip_upload_changelogs: true,
+        skip_upload_images: true,
+        skip_upload_screenshots: true
+    )
+    notification(
+      subtitle: "Upload is finish!",
+      message: "Google Play beta version #{lane_context[SharedValues::VERSION_NUMBER]}.#{versionCode} is ready!",
+      app_icon: "https://www.zavarka-team.ru/logo.png",
+      content_image: "./ios/atlantm/Images.xcassets/AppIcon.appiconset/AppStore Icon.png"
+    )
+    git_commit(
+      path: ['./android/app/versioning/app_version.properties'],
+      message: "[fastlane][android] Updated build number to #{lane_context[SharedValues::VERSION_NUMBER]}.#{versionCode}"
+    )
+    add_git_tag(
+      build_number: "#{lane_context[SharedValues::VERSION_NUMBER]}." + properties["versionCode"],
+      grouping: "builds",
+      prefix: "v"
+    )
+    push_to_git_remote
+    slack(
+      message: "Встречаем новый билд #{lane_context[SharedValues::VERSION_NUMBER]}.#{versionCode} на Android для Bru!\r\n\r\nИзменения в #{lane_context[SharedValues::VERSION_NUMBER]}.#{versionCode}:\n#{lane_context[SharedValues::FL_CHANGELOG]}",
+      channel: "#_notify-bot",  # Optional, by default will post to the default channel configured for the POST URL.
+      success: true,        # Optional, defaults to true.
+      slack_url: ENV['SLACK_URL'],
+      payload: {  # Optional, lets you specify any number of your own Slack attachments.
+        "Build Date" => Time.new.to_s,
+      },
+      link_names: true
+    )
+  end
+
+  desc "Make a new release build"
+  lane :release do
+    gradle(
+        project_dir: "./android/",
+        task: "clean assemble",
+        build_type: "Release",
+        flags: "-PbuildType=release",
+        print_command_output: true
+    )
+    puts "AABs: #{Actions.lane_context[SharedValues::GRADLE_ALL_AAB_OUTPUT_PATHS]}"
+    puts "AAB: #{Actions.lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]}"
+  end
+end
+
+error do |lane, exception|
+  notification(
+    title: "Houston, у нас проблемы...",
+    subtitle: "Version #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]}) was NOT successfully upload. =(",
+    message: exception.to_s,
+    sound: "Glass",
+    app_icon: "https://www.zavarka-team.ru/logo.png",
+    content_image: "./ios/atlantm/Images.xcassets/AppIcon.appiconset/AppStore Icon.png"
+  )
+  slack(
+    message: "Houston, у нас проблемы при сборке билда...",
+    channel: "#_notify-bot",  # Optional, by default will post to the default channel configured for the POST URL.
+    success: false,        # Optional, defaults to true.
+    slack_url: ENV['SLACK_URL'],
+    payload: {  # Optional, lets you specify any number of your own Slack attachments.
+      "Build Date" => Time.new.to_s,
+      "Output" => exception.error_info.to_s,
+    },
+  )
+end
