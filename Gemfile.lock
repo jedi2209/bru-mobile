@@ -154,6 +154,8 @@ GEM
       xcodeproj (>= 1.13.0, < 2.0.0)
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3)
+    fastlane-plugin-increment_version_code (0.4.3)
+    fastlane-plugin-property_file_read (1.0.1)
     ffi (1.15.5)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -277,6 +279,8 @@ PLATFORMS
 DEPENDENCIES
   cocoapods (>= 1.11.3)
   fastlane
+  fastlane-plugin-increment_version_code
+  fastlane-plugin-property_file_read
 
 RUBY VERSION
    ruby 3.2.2p53

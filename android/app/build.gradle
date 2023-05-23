@@ -20,8 +20,6 @@ project.ext.version = [
 ]
 
 project.ext.version.build = project.ext.version.code + project.ext.version.incr
-
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 /**
  * This is the configuration block to customize your React Native Android app.
  * By default you don't need to apply any configuration, just uncomment the lines you need.
@@ -121,7 +119,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode project.ext.version.build
         versionName project.ext.version.name
-        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
 
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
