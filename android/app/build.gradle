@@ -112,9 +112,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.bruapp"
+    namespace "shop.bru.bruapp"
     defaultConfig {
-        applicationId "com.bruapp"
+        applicationId "shop.bru.bruapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode project.ext.version.build

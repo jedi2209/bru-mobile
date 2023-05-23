@@ -5,7 +5,7 @@
   "scripts": {
     "build": "yarn android-build; yarn ios-build;",
     "android": "cd android && ./gradlew clean; cd ../; react-native run-android --active-arch-only",
-    "android-build": "bundle exec fastlane android internal",
+    "android-build": "cd android && ./gradlew clean; cd ../; bundle exec fastlane android internal",
     "ios": "react-native run-ios",
     "ios-build": "bundle exec fastlane ios beta; rm bruapp.app.dSYM.zip bruapp.ipa;",
     "iphone": "react-native run-ios --simulator=\"iPhone 14\"",

@@ -1,4 +1,4 @@
-package com.bruapp;
+package shop.bru.bruapp;
 
 import android.content.Intent;
 import android.os.Bundle;

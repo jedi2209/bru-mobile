@@ -1,4 +1,4 @@
-package com.bruapp;
+package shop.bru.bruapp;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

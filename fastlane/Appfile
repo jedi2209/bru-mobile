@@ -1,5 +1,5 @@
-json_key_file("android/keystores/Google\ Play\ Android\ Developer.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
-package_name("com.bruapp") # e.g. com.krausefx.app
+json_key_file("android/keystore/pc-api-7086381661148496955-83-f946f6a434a9.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("shop.bru.bruapp") # e.g. com.krausefx.app
 
 app_identifier("shop.bru.bruapp") # The bundle identifier of your app
 apple_id("support@zavarka.team") # Your Apple Developer Portal username
