@@ -1,14 +1,21 @@
 {
   "name": "bruapp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
+    "build": "yarn android-build; yarn ios-build;",
     "android": "cd android && ./gradlew clean; cd ../; react-native run-android --active-arch-only",
+    "android-build": "bundle exec fastlane android internal",
     "ios": "react-native run-ios",
+    "ios-build": "bundle exec fastlane ios beta; rm bruapp.app.dSYM.zip bruapp.ipa;",
+    "iphone": "react-native run-ios --simulator=\"iPhone 14\"",
+    "iphonePro": "react-native run-ios --simulator=\"iPhone 14 Pro\"",
+    "iphoneProMax": "react-native run-ios --simulator=\"iPhone 14 Pro Max\"",
     "lint": "eslint .",
     "react": "watchman watch-del $(pwd);  watchman watch-project $(pwd); react-native start;",
     "postinstall": "npx patch-package; cd ios; pod update; cd ../; npx pod-install;",
-    "clean": "react-native-clean-project"
+    "clean": "react-native-clean-project",
+    "version": "./version.sh"
   },
   "dependencies": {
     "@dank-style/animation-plugin": "latest",
@@ -38,7 +45,7 @@
     "react-native-svg": "^13.9.0",
     "react-native-vector-icons": "^9.2.0"
   },
-  "devDependencies": {    
+  "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
