@@ -1,3 +1,5 @@
+import {DefaultTheme, DarkTheme} from '@react-navigation/native';
+
 const colors = {
   green: {
     light: '#8CA474',
@@ -45,4 +47,13 @@ const tabBarStyle = {
   shadowRadius: 10,
 };
 
-export {colors, fonts, tabBarStyle};
+const navigationTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    card: colors.green.mid,
+    border: colors.green.light,
+  },
+};
+
+export {colors, fonts, tabBarStyle, navigationTheme};

@@ -8,7 +8,7 @@ import {
   Easing,
 } from 'react-native-reanimated';
 
-import {colors, tabBarStyle} from '@const';
+import {colors, tabBarStyle} from '@styleConst';
 
 const styles = StyleSheet.create({
   linearGradient: {
@@ -37,7 +37,7 @@ const MainWrapper = props => {
     return {
       paddingBottom: withTiming(translateY.value, {
         duration,
-        easing: Easing.inOut(Easing.quad),
+        easing: Easing.inOut(Easing.ease),
       }),
     };
   });

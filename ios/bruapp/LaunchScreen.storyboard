@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_72" orientation="portrait" appearance="light"/>
+    <device id="retina6_72" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
@@ -16,18 +16,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="430" height="932"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="Logo Color" translatesAutoresizingMaskIntoConstraints="NO" id="eNd-TQ-0Ch">
-                                <rect key="frame" x="66.666666666666686" y="317.66666666666669" width="297" height="297.00000000000006"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="center" image="Logo Color" translatesAutoresizingMaskIntoConstraints="NO" id="Ogd-a0-Njz">
+                                <rect key="frame" x="0.0" y="318" width="430" height="297"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="eNd-TQ-0Ch" secondAttribute="height" multiplier="1:1" id="vlu-uZ-GVj"/>
+                                    <constraint firstAttribute="height" constant="297" id="9ed-80-Nc8"/>
+                                    <constraint firstAttribute="width" constant="430" id="HZ8-LS-da9"/>
                                 </constraints>
+                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="0.96078431372549022" green="0.96078431372549022" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
-                            <constraint firstItem="eNd-TQ-0Ch" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="9SC-FH-9E4"/>
-                            <constraint firstItem="eNd-TQ-0Ch" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="RnW-mE-DRh"/>
+                            <constraint firstItem="Ogd-a0-Njz" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="085-AZ-7Qe"/>
+                            <constraint firstItem="Ogd-a0-Njz" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="GL7-4u-ewb"/>
                         </constraints>
                     </view>
                 </viewController>

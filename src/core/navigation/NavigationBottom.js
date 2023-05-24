@@ -3,10 +3,11 @@ import {View, Text, StyleSheet, ImageBackground} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SVG, {Path, Circle} from 'react-native-svg';
 
-import {colors, fonts, tabBarStyle} from '@const';
+import {colors, fonts, tabBarStyle} from '@styleConst';
 import lang from '@lang';
 
 import Settings from '@screens/settings';
+import Logo from '@comp/Logo';
 
 const styles = StyleSheet.create({
   tabBarItem: {
@@ -62,6 +63,9 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
+          headerTitle: () => (
+            <Logo width={50} height={50} style={{marginTop: -10}} />
+          ),
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -104,6 +108,9 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
+          headerTitle: () => (
+            <Logo width={50} height={50} style={{marginTop: -10}} />
+          ),
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -145,7 +152,9 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          tabBarLabel: 'PRESETS',
+          headerTitle: () => (
+            <Logo width={50} height={50} style={{marginTop: -10}} />
+          ),
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -193,7 +202,9 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          tabBarLabel: 'HELP',
+          headerTitle: () => (
+            <Logo width={50} height={50} style={{marginTop: -10}} />
+          ),
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -241,7 +252,9 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          tabBarLabel: 'SETTINGS',
+          headerTitle: () => (
+            <Logo width={50} height={50} style={{marginTop: -10}} />
+          ),
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>

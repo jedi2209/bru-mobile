@@ -2,7 +2,7 @@ import {Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Wrapper from '@comp/Wrapper';
 
-import {colors} from '@const';
+import {colors} from '@styleConst';
 
 const Settings = props => {
   return (
