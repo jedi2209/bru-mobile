@@ -1,16 +1,17 @@
 /**
- * Metro configuration for React Native
- * https://github.com/facebook/react-native
+ * Metro configuration
+ * https://facebook.github.io/metro/docs/configuration
  *
- * @format
+ * @type {import('metro-config').MetroConfig}
  */
-const {getDefaultConfig} = require('metro-config');
+const {assetExts, sourceExts} = require('metro-config/src/defaults/defaults');
+const blacklist = require('metro-config/src/defaults/exclusionList');
+const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
-module.exports = (async () => {
-  const {
-    resolver: {sourceExts, assetExts},
-  } = await getDefaultConfig();
-  return {
+const cfg = async () => await getDefaultConfig(__dirname);
+
+module.exports = cfg().then(res => {
+  return mergeConfig(res, {
     transformer: {
       getTransformOptions: async () => ({
         transform: {
@@ -23,6 +24,7 @@ module.exports = (async () => {
     resolver: {
       assetExts: assetExts.filter(ext => ext !== 'svg'),
       sourceExts: [...sourceExts, 'svg'],
+      blacklistRE: blacklist([/ios\/build\/.*/]),
     },
-  };
-})();
+  });
+});
