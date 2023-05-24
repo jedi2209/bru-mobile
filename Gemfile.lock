@@ -156,6 +156,7 @@ GEM
       xcpretty-travis-formatter (>= 0.0.3)
     fastlane-plugin-increment_version_code (0.4.3)
     fastlane-plugin-property_file_read (1.0.1)
+    fastlane-plugin-versioning (0.5.1)
     ffi (1.15.5)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
@@ -281,6 +282,7 @@ DEPENDENCIES
   fastlane
   fastlane-plugin-increment_version_code
   fastlane-plugin-property_file_read
+  fastlane-plugin-versioning
 
 RUBY VERSION
    ruby 3.2.2p53

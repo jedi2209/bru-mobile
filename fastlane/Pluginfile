@@ -4,3 +4,4 @@
 
 gem 'fastlane-plugin-property_file_read'
 gem 'fastlane-plugin-increment_version_code'
+gem 'fastlane-plugin-versioning'
