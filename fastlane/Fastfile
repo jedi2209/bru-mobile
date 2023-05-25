@@ -17,11 +17,11 @@ platform :ios do
   desc "Commit iOS"
   lane :localNoCompile do
     increment_build_number(
-        xcodeproj: "ios/bruapp.xcodeproj"
+        xcodeproj: ENV['XCODE_PROJ']
     )
     commit_version_bump(
       message: "Version Bump iOS",    # create a commit with a custom message
-      xcodeproj: "ios/bruapp.xcodeproj"
+      xcodeproj: ENV['XCODE_PROJ']
       )
     changelog_from_git_commits(
       pretty: "- %s",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
@@ -39,71 +39,71 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     ensure_git_status_clean
-    # ENV["NO_FLIPPER"] = "1"
     api_key = app_store_connect_api_key(
-      key_id: "XXXX",
-      issuer_id: "XXXX",
-      key_filepath: "./ios/AuthKey_XXXX.p8",
+      key_id: ENV['KEY_ID'],
+      issuer_id: ENV['ISSUER_ID'],
+      key_filepath: ENV['KEY_PATH'],
       duration: 1200, # optional (maximum 1200)
       in_house: false # optional but may be required if using match/sigh
     )
     get_certificates(api_key: api_key)           # invokes cert
     get_provisioning_profile(api_key: api_key)   # invokes sigh
     increment_build_number(
-        xcodeproj: "./ios/bruapp.xcodeproj"
+      skip_info_plist: true,
+      xcodeproj: ENV['XCODE_PROJ']
     )
     build_app(
-      workspace: "./ios/bruapp.xcworkspace",
-      scheme: "bruapp",
+      workspace: ENV['XCODE_WORKSPACE'],
+      scheme: ENV['XCODE_TARGET'],
       export_method: "app-store",
       include_bitcode: true,
       export_xcargs: "-allowProvisioningUpdates"
     )
     # Generate the changelog based on commit messages since your last tag
     changelog_from_git_commits(
-        pretty: "- %s",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
-        date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
-        match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
-        merge_commit_filtering: "exclude_merges", # Optional, lets you filter out merge commits
-        tag_match_pattern: "builds/iosbeta/*"
+      pretty: "- %s",# Optional, lets you provide a custom format to apply to each commit when generating the changelog text
+      date_format: "short",# Optional, lets you provide an additional date format to dates within the pretty-formatted string
+      match_lightweight_tag: false,  # Optional, lets you ignore lightweight (non-annotated) tags when searching for the last tag
+      merge_commit_filtering: "exclude_merges", # Optional, lets you filter out merge commits
+      tag_match_pattern: "builds/iosbeta/*"
     )
     upload_to_testflight(
-        skip_waiting_for_build_processing: false,
-        skip_submission: false,
-        uses_non_exempt_encryption: true,
-        distribute_external: true,
-        notify_external_testers: true,
-        changelog: lane_context[SharedValues::FL_CHANGELOG],
-        groups: [
-          "Zavarka Team"
-        ],
-        api_key: api_key
+      skip_waiting_for_build_processing: false,
+      skip_submission: false,
+      uses_non_exempt_encryption: true,
+      distribute_external: true,
+      notify_external_testers: true,
+      changelog: lane_context[SharedValues::FL_CHANGELOG],
+      groups: [
+        "Zavarka Team"
+      ],
+      api_key: api_key
     )
     # ENV["NO_FLIPPER"] = "0"
     notification(
       subtitle: "Build is finish!",
       message: "iOS beta AppStore version #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]})",
       app_icon: "https://www.zavarka-team.ru/logo.png",
-      content_image: "./ios/atlantm/Images.xcassets/AppIcon.appiconset/AppStore Icon.png"
+      content_image: ENV['IMAGE_NOTIFICATION'],
     )
     commit_version_bump(
-        message: "[fastlane][ios] Updated build number",    # create a commit with a custom message
-        xcodeproj: "ios/atlantm.xcodeproj",
-        force: true
+      message: "[fastlane][ios] Updated build number",    # create a commit with a custom message
+      xcodeproj: ENV['XCODE_PROJ'],
+      force: true
     )
     add_git_tag(
-        grouping: "builds",
-        prefix: "v"
+      grouping: "builds",
+      prefix: "v"
     )
     push_to_git_remote(
       remote: "origin",         # optional, default: "origin"
       local_branch: "HEAD",  # optional, aliased by "branch", default: "master"
       # remote_branch: "dev", # optional, default is set to local_branch
-      force: true,    # optional, default: false
+      force: false,    # optional, default: false
       tags: true     # optional, default: true
     )
     slack(
-      message: "Встречаем новый билд #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]}) на iOS для Атлант-М!\r\n\r\nИзменения в #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]}):\r\n\r\n#{lane_context[SharedValues::FL_CHANGELOG]}",
+      message: "Встречаем новый билд #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]}) на iOS для BRU!\r\n\r\nИзменения в #{lane_context[SharedValues::VERSION_NUMBER]} (#{lane_context[SharedValues::BUILD_NUMBER]}):\r\n\r\n#{lane_context[SharedValues::FL_CHANGELOG]}",
       channel: "#_notify-bot",  # Optional, by default will post to the default channel configured for the POST URL.
       success: true,        # Optional, defaults to true.
       slack_url: ENV['SLACK_URL'],
@@ -214,7 +214,7 @@ error do |lane, exception|
     message: exception.to_s,
     sound: "Glass",
     app_icon: "https://www.zavarka-team.ru/logo.png",
-    content_image: "./ios/atlantm/Images.xcassets/AppIcon.appiconset/AppStore Icon.png"
+    content_image: ENV['IMAGE_NOTIFICATION']
   )
   slack(
     message: "Houston, у нас проблемы при сборке билда...",
