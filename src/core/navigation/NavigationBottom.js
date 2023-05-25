@@ -1,9 +1,16 @@
 import React from 'react';
-import {View, Text, StyleSheet, ImageBackground} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SVG, {Path, Circle} from 'react-native-svg';
 
-import {colors, fonts, tabBarStyle} from '@styleConst';
+import {colors, fonts, tabBarStyle, headerNavigationStyle} from '@styleConst';
 import lang from '@lang';
 
 import Settings from '@screens/settings';
@@ -29,6 +36,7 @@ const styles = StyleSheet.create({
 });
 
 const iconSize = 28;
+const headerLogoSize = 50;
 
 const Tab = createBottomTabNavigator();
 
@@ -63,9 +71,21 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          headerTitle: () => (
-            <Logo width={50} height={50} style={{marginTop: -10}} />
-          ),
+          header: () => {
+            return (
+              <SafeAreaView
+                style={[
+                  headerNavigationStyle.viewWrapper.default,
+                  headerNavigationStyle.viewWrapper[Platform.OS],
+                ]}>
+                <Logo
+                  width={headerLogoSize}
+                  height={headerLogoSize}
+                  style={headerNavigationStyle.logo[Platform.OS]}
+                />
+              </SafeAreaView>
+            );
+          },
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -108,9 +128,21 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          headerTitle: () => (
-            <Logo width={50} height={50} style={{marginTop: -10}} />
-          ),
+          header: () => {
+            return (
+              <SafeAreaView
+                style={[
+                  headerNavigationStyle.viewWrapper.default,
+                  headerNavigationStyle.viewWrapper[Platform.OS],
+                ]}>
+                <Logo
+                  width={headerLogoSize}
+                  height={headerLogoSize}
+                  style={headerNavigationStyle.logo[Platform.OS]}
+                />
+              </SafeAreaView>
+            );
+          },
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -152,9 +184,21 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          headerTitle: () => (
-            <Logo width={50} height={50} style={{marginTop: -10}} />
-          ),
+          header: () => {
+            return (
+              <SafeAreaView
+                style={[
+                  headerNavigationStyle.viewWrapper.default,
+                  headerNavigationStyle.viewWrapper[Platform.OS],
+                ]}>
+                <Logo
+                  width={headerLogoSize}
+                  height={headerLogoSize}
+                  style={headerNavigationStyle.logo[Platform.OS]}
+                />
+              </SafeAreaView>
+            );
+          },
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -202,9 +246,21 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          headerTitle: () => (
-            <Logo width={50} height={50} style={{marginTop: -10}} />
-          ),
+          header: () => {
+            return (
+              <SafeAreaView
+                style={[
+                  headerNavigationStyle.viewWrapper.default,
+                  headerNavigationStyle.viewWrapper[Platform.OS],
+                ]}>
+                <Logo
+                  width={headerLogoSize}
+                  height={headerLogoSize}
+                  style={headerNavigationStyle.logo[Platform.OS]}
+                />
+              </SafeAreaView>
+            );
+          },
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>
@@ -252,9 +308,21 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          headerTitle: () => (
-            <Logo width={50} height={50} style={{marginTop: -10}} />
-          ),
+          header: () => {
+            return (
+              <SafeAreaView
+                style={[
+                  headerNavigationStyle.viewWrapper.default,
+                  headerNavigationStyle.viewWrapper[Platform.OS],
+                ]}>
+                <Logo
+                  width={headerLogoSize}
+                  height={headerLogoSize}
+                  style={headerNavigationStyle.logo[Platform.OS]}
+                />
+              </SafeAreaView>
+            );
+          },
           tabBarIcon: ({focused}) => (
             <View style={styles.tabBarItem}>
               <View style={styles.tabBarItemIcon}>

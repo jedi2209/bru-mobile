@@ -47,6 +47,30 @@ const tabBarStyle = {
   shadowRadius: 10,
 };
 
+const headerNavigationStyle = {
+  viewWrapper: {
+    default: {
+      backgroundColor: colors.green.mid,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    ios: {
+      height: 100,
+    },
+    android: {
+      height: 60,
+    },
+  },
+  logo: {
+    ios: {
+      marginTop: -10,
+    },
+    android: {
+      marginTop: 0,
+    },
+  },
+};
+
 const navigationTheme = {
   ...DefaultTheme,
   colors: {
@@ -56,4 +80,4 @@ const navigationTheme = {
   },
 };
 
-export {colors, fonts, tabBarStyle, navigationTheme};
+export {colors, fonts, tabBarStyle, headerNavigationStyle, navigationTheme};
