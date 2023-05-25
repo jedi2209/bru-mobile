@@ -1,27 +1,21 @@
-import {useState} from 'react';
 import {Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Wrapper from '@comp/Wrapper';
+import {Button} from 'react-native-paper';
+import {useStore} from 'effector-react';
 
-import {updateLang, fetchLang} from '@store/lang';
+import {$langSettingsStore, setLanguage} from '@store/lang';
+
+import Wrapper from '@comp/Wrapper';
 
 import {colors} from '@styleConst';
 
 const SettingsScreen = props => {
-  updateLang('de');
-  const [loading, setLoading] = useState(true);
-  const [lang, setLang] = useState(null);
-
-  fetchLang().then(res => {
-    setLang(res);
-    setLoading(false);
-  });
-  if (loading) {
-    return;
-  }
+  const lang = useStore($langSettingsStore);
   return (
     <Wrapper {...props}>
       <Text>{lang}</Text>
+      <Button onPress={() => setLanguage('en')}>EN</Button>
+      <Button onPress={() => setLanguage('de')}>DE</Button>
       <Icon name="rocket" size={30} color={colors.black} />
       <Text>Home Screen</Text>
       <Icon name="rocket" size={30} color={colors.black} />

@@ -5,20 +5,26 @@ import {LANGUAGE} from '@const';
 
 const storeName = 'AppLang';
 
-const initAppLang = createEvent();
-const setLanguage = createEvent();
+export const setLanguage = createEvent();
+export const initLanguage = createEvent();
 const reset = createEvent();
 
-const $langSettingsStore = createStore(LANGUAGE.default.code, {name: storeName})
-  .on(setLanguage, lang => lang)
-  .on(initAppLang, (state, value) => value)
+export const $langSettingsStore = createStore(LANGUAGE.default.code, {
+  name: storeName,
+})
+  .on(setLanguage, (_, lang) => lang)
+  .on(initLanguage, (_, lang) => lang)
   .reset(reset);
 
-export const fetchLang = createEffect({
+const fetchLang = createEffect({
   async handler() {
     const value = await AsyncStorage.getItem(storeName);
     return value ? value : LANGUAGE.default.code;
   },
+});
+
+fetchLang.doneData.watch(result => {
+  initLanguage(result);
 });
 
 export const updateLang = createEffect({
@@ -39,3 +45,5 @@ forward({
   from: $langSettingsStore,
   to: updateLang,
 });
+
+fetchLang();

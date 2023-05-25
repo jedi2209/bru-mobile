@@ -1212,6 +1212,8 @@ PODS:
     - Firebase/Performance (= 10.7.0)
     - React-Core
     - RNFBApp
+  - RNLocalize (3.0.0):
+    - React-Core
   - RNReanimated (3.1.0):
     - DoubleConversion
     - FBLazyVector
@@ -1296,6 +1298,7 @@ DEPENDENCIES:
   - "RNFBAppCheck (from `../node_modules/@react-native-firebase/app-check`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
   - "RNFBPerf (from `../node_modules/@react-native-firebase/perf`)"
+  - RNLocalize (from `../node_modules/react-native-localize`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -1424,6 +1427,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/firestore"
   RNFBPerf:
     :path: "../node_modules/@react-native-firebase/perf"
+  RNLocalize:
+    :path: "../node_modules/react-native-localize"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -1507,6 +1512,7 @@ SPEC CHECKSUMS:
   RNFBAppCheck: fdf3a0d1b342c210ff4e6aad6c4ab7b292802e88
   RNFBFirestore: 4edfb28f95cb461ef8423c6ae4354dfe98186586
   RNFBPerf: 5492a39509dbed2db61890613aa163435a1590e7
+  RNLocalize: 5944c97d2fe8150913a51ddd5eab4e23a82bd80d
   RNReanimated: 3ad8ad71ec4ee4395867bb1a6d8d10695cfb7809
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNSVG: 53c661b76829783cdaf9b7a57258f3d3b4c28315

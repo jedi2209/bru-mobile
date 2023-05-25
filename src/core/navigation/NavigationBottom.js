@@ -9,9 +9,10 @@ import {
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SVG, {Path, Circle} from 'react-native-svg';
+import {useStore} from 'effector-react';
 
-import {colors, fonts, tabBarStyle, headerNavigationStyle} from '@styleConst';
-import lang from '@lang';
+import {$langSettingsStore} from '@store/lang';
+import {translate} from '@core/lang';
 
 import InstantBrewScreen from '@screens/instant-brew';
 import TeaAlarmScreen from '@screens/tea-alarm';
@@ -19,6 +20,7 @@ import PresetsScreen from '@screens/presets';
 import HelpScreen from '@screens/help';
 import SettingsScreen from '@screens/settings';
 
+import {colors, fonts, tabBarStyle, headerNavigationStyle} from '@styleConst';
 import Logo from '@comp/Logo';
 
 const styles = StyleSheet.create({
@@ -46,6 +48,7 @@ const headerLogoSize = 50;
 const Tab = createBottomTabNavigator();
 
 const NavigationBottom = props => {
+  const currLang = useStore($langSettingsStore);
   return (
     <Tab.Navigator
       {...props}
@@ -120,7 +123,7 @@ const NavigationBottom = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                {lang.MenuBottom.InstantBrew}
+                {translate('MenuBottom.InstantBrew')}
               </Text>
             </View>
           ),
@@ -176,7 +179,7 @@ const NavigationBottom = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                {lang.MenuBottom.TeaAlarm}
+                {translate('MenuBottom.TeaAlarm')}
               </Text>
             </View>
           ),
@@ -238,7 +241,7 @@ const NavigationBottom = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                {lang.MenuBottom.Presets}
+                {translate('MenuBottom.Presets')}
               </Text>
             </View>
           ),
@@ -300,7 +303,7 @@ const NavigationBottom = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                {lang.MenuBottom.Help}
+                {translate('MenuBottom.Help')}
               </Text>
             </View>
           ),
@@ -355,7 +358,7 @@ const NavigationBottom = props => {
                   styles.labelText,
                   {color: focused ? colors.white : colors.gray.inactive},
                 ]}>
-                {lang.MenuBottom.Settings}
+                {translate('MenuBottom.Settings')}
               </Text>
             </View>
           ),

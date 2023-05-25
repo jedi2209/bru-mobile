@@ -1,21 +1,12 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React, {useEffect, useRef} from 'react';
 import {useColorScheme, Platform} from 'react-native';
-
-import {attachLogger} from 'effector-logger';
 
 import {NavigationContainer} from '@react-navigation/native';
 import NavBottom from '@nav/NavigationBottom';
 
 import SplashScreen from 'react-native-splash-screen';
 
-import {FIREBASE_SETTINGS, LANGUAGE, INITIAL_SCREEN} from '@const';
+import {FIREBASE_SETTINGS, INITIAL_SCREEN} from '@const';
 
 import {firebase} from '@react-native-firebase/app-check';
 import {analyticsLog, logScreenView} from '../utils/analytics';
@@ -23,9 +14,6 @@ import {analyticsLog, logScreenView} from '../utils/analytics';
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
 import {config} from '../../gluestack-ui.config';
-
-import lang from '@lang';
-import {fetchLang} from '@store/lang';
 
 const App = props => {
   const routeNameRef = useRef();
@@ -48,11 +36,11 @@ const App = props => {
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 550);
     appCheck();
     analyticsLog('app_init', {os: Platform.OS, version: Platform.Version});
-    SplashScreen.hide();
-    attachLogger();
-    fetchLang().then(res => lang.setLanguage(res));
   }, []);
 
   return (
