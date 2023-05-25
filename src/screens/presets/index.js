@@ -7,8 +7,8 @@ import {updateLang, fetchLang} from '@store/lang';
 
 import {colors} from '@styleConst';
 
-const SettingsScreen = props => {
-  updateLang('de');
+const PresetsScreen = props => {
+  updateLang('en');
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState(null);
 
@@ -71,4 +71,4 @@ const SettingsScreen = props => {
   );
 };
 
-export default SettingsScreen;
+export default PresetsScreen;

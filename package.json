@@ -30,6 +30,7 @@
     "@react-native-firebase/analytics": "^17.5.0",
     "@react-native-firebase/app": "^17.5.0",
     "@react-native-firebase/app-check": "^17.5.0",
+    "@react-native-firebase/firestore": "^17.5.0",
     "@react-native-firebase/perf": "^17.5.0",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/native": "^6.1.6",

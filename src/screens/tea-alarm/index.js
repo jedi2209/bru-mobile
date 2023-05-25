@@ -3,12 +3,11 @@ import {Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Wrapper from '@comp/Wrapper';
 
-import {updateLang, fetchLang} from '@store/lang';
+import {fetchLang} from '@store/lang';
 
 import {colors} from '@styleConst';
 
-const SettingsScreen = props => {
-  updateLang('de');
+const TeaAlarmScreen = props => {
   const [loading, setLoading] = useState(true);
   const [lang, setLang] = useState(null);
 
@@ -71,4 +70,4 @@ const SettingsScreen = props => {
   );
 };
 
-export default SettingsScreen;
+export default TeaAlarmScreen;

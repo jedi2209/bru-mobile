@@ -13,7 +13,12 @@ import SVG, {Path, Circle} from 'react-native-svg';
 import {colors, fonts, tabBarStyle, headerNavigationStyle} from '@styleConst';
 import lang from '@lang';
 
-import Settings from '@screens/settings';
+import InstantBrewScreen from '@screens/instant-brew';
+import TeaAlarmScreen from '@screens/tea-alarm';
+import PresetsScreen from '@screens/presets';
+import HelpScreen from '@screens/help';
+import SettingsScreen from '@screens/settings';
+
 import Logo from '@comp/Logo';
 
 const styles = StyleSheet.create({
@@ -66,7 +71,7 @@ const NavigationBottom = props => {
       }}>
       <Tab.Screen
         name="Home"
-        component={Settings}
+        component={InstantBrewScreen}
         initialParams={{
           scroll: true,
         }}
@@ -123,7 +128,7 @@ const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Tea Alarm"
-        component={Settings}
+        component={TeaAlarmScreen}
         initialParams={{
           scroll: true,
         }}
@@ -179,7 +184,7 @@ const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Presets"
-        component={Settings}
+        component={PresetsScreen}
         initialParams={{
           scroll: true,
         }}
@@ -241,7 +246,7 @@ const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Help"
-        component={Settings}
+        component={HelpScreen}
         initialParams={{
           scroll: true,
         }}
@@ -303,7 +308,7 @@ const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Settings"
-        component={Settings}
+        component={SettingsScreen}
         initialParams={{
           scroll: true,
         }}
