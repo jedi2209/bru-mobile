@@ -1,5 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {useColorScheme, Platform} from 'react-native';
+import {getUniqueId} from 'react-native-device-info';
 
 import {NavigationContainer} from '@react-navigation/native';
 import NavBottom from '@nav/NavigationBottom';
@@ -36,6 +37,9 @@ const App = props => {
   };
 
   useEffect(() => {
+    getUniqueId().then(id => {
+      firebase.analytics().setUserId(id);
+    });
     setTimeout(() => {
       SplashScreen.hide();
     }, 550);
