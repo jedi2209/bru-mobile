@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ImageBackground, Animated} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ImageBackground,
+  Animated,
+  Dimensions,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   useSharedValue,
@@ -30,6 +36,7 @@ const MainWrapper = props => {
   const [offset, setOffset] = useState(0);
   const [animValue] = useState(new Animated.Value(60));
   const translateY = useSharedValue(100);
+  const [hide, setHide] = useState(false);
 
   const duration = 150;
 
@@ -44,38 +51,47 @@ const MainWrapper = props => {
 
   if (props.scroll) {
     const animateTabBar = toValue => {
+      if (hide && toValue >= 0) {
+        return;
+      }
       Animated.timing(animValue, {
         toValue,
         duration,
-        easing: Easing.bounce,
+        easing: Easing.inOut(Easing.ease),
         useNativeDriver: true,
       }).start();
     };
 
-    const hideTabBar = () => {
-      animateTabBar(100);
+    const hideTabBar = value => {
+      setHide(true);
+      animateTabBar(value);
       props.navigation.setOptions({
         tabBarStyle: [tabBarStyle, {transform: [{translateY: animValue}]}],
       });
     };
-    const showTabBar = () => {
-      animateTabBar(0);
+    const showTabBar = value => {
+      setHide(false);
+      animateTabBar(value);
       props.navigation.setOptions({
         tabBarStyle: [tabBarStyle, {transform: [{translateY: animValue}]}],
       });
     };
 
-    const scrollHandler = e => {
-      const scrollLag = 10;
-      const minScrollToHide = 100;
-      const currentOffset = Math.floor(e.nativeEvent.contentOffset.y);
-      let direction = currentOffset + scrollLag > offset ? 'down' : 'up';
+    const scrollHandler = event => {
+      const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+      const minScrollToHide = Dimensions.get('screen').height * 0.15;
+
+      const currentOffset = Math.floor(contentOffset.y);
+
+      let direction = currentOffset > offset ? 'down' : 'up';
+      const isAtBottom =
+        layoutMeasurement.height + currentOffset >= contentSize.height - 20;
       if (direction === 'down' && currentOffset > minScrollToHide) {
-        hideTabBar();
-        translateY.value = 30;
-      } else {
-        translateY.value = 100;
-        showTabBar();
+        translateY.value = 0;
+        hideTabBar(200);
+      } else if (!isAtBottom && direction === 'up') {
+        translateY.value = 200;
+        showTabBar(0);
       }
       setOffset(currentOffset);
     };
@@ -88,7 +104,7 @@ const MainWrapper = props => {
             props.additionalContentContainerStyle,
           ]}
           style={[styles.linearGradient, props.additionalStyle]}
-          scrollEventThrottle={12}
+          scrollEventThrottle={300}
           {...props}>
           {props.children}
         </Animated.ScrollView>
