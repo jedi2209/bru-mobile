@@ -41,9 +41,7 @@ const TeaAlarmScreen = props => {
             return 90;
           }
         }}
-        onAnimationComplete={() => {
-          console.log('onAnimationComplete callback');
-        }}
+        onAnimationComplete={() => {}}
       />
       <Button
         size={30}
