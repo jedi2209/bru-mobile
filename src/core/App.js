@@ -1,6 +1,5 @@
 import React, {useEffect, useRef} from 'react';
 import {useColorScheme, Platform} from 'react-native';
-import {getUniqueId} from 'react-native-device-info';
 
 import {NavigationContainer} from '@react-navigation/native';
 import NavBottom from '@nav/NavigationBottom';
@@ -10,7 +9,8 @@ import SplashScreen from 'react-native-splash-screen';
 import {FIREBASE_SETTINGS, INITIAL_SCREEN} from '@const';
 
 import {firebase} from '@react-native-firebase/app-check';
-import {analyticsLog, logScreenView} from '../utils/analytics';
+import {analyticsLog, logScreenView} from '@utils/analytics';
+import {pushUserData} from '@utils/userData';
 
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
@@ -37,9 +37,7 @@ const App = props => {
   };
 
   useEffect(() => {
-    getUniqueId().then(id => {
-      firebase.analytics().setUserId(id);
-    });
+    pushUserData();
     setTimeout(() => {
       SplashScreen.hide();
     }, 550);

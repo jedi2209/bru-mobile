@@ -3,7 +3,7 @@ import {createStore, createEvent, createEffect, forward} from 'effector';
 
 import {LANGUAGE} from '@const';
 
-const storeName = 'AppLang';
+const storeName = 'appLang';
 
 export const setLanguage = createEvent();
 export const initLanguage = createEvent();

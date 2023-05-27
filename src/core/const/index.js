@@ -9,6 +9,18 @@ export const FIREBASE_SETTINGS = {
       debugToken: 'XXXX',
     },
   },
+  storage: {
+    bucket: 'gs://brutea-app.appspot.com',
+  },
+  db: {
+    realTime: {
+      url: 'https://XXXX.europe-west1.firebasedatabase.app/',
+    },
+  },
+};
+
+export const ONESIGNAL_SETTINGS = {
+  appID: 'XXXX',
 };
 
 let LANGUAGES = {
