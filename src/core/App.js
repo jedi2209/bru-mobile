@@ -5,8 +5,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import NavBottom from '@nav/NavigationBottom';
 
 import SplashScreen from 'react-native-splash-screen';
+import * as Sentry from '@sentry/react-native';
 
-import {FIREBASE_SETTINGS, INITIAL_SCREEN} from '@const';
+import {FIREBASE_SETTINGS, SENTRY_SETTINGS, INITIAL_SCREEN} from '@const';
 
 import {firebase} from '@react-native-firebase/app-check';
 import {analyticsLog, logScreenView} from '@utils/analytics';
@@ -15,6 +16,23 @@ import {pushUserData} from '@utils/userData';
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
 import {config} from '../../gluestack-ui.config';
+
+// Construct a new instrumentation instance. This is needed to communicate between the integration and React
+const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
+
+Sentry.init({
+  dsn: SENTRY_SETTINGS.dsn,
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+  integrations: [
+    new Sentry.ReactNativeTracing({
+      // Pass instrumentation to be used as `routingInstrumentation`
+      routingInstrumentation,
+      enableUserInteractionTracing: true,
+    }),
+  ],
+});
 
 const App = props => {
   const routeNameRef = useRef();
@@ -52,6 +70,7 @@ const App = props => {
         ref={navigationRef}
         onReady={() => {
           routeNameRef.current = navigationRef.current.getCurrentRoute().name;
+          routingInstrumentation.registerNavigationContainer(navigationRef);
         }}
         onStateChange={async () => {
           const previousRouteName = routeNameRef.current;
@@ -68,4 +87,4 @@ const App = props => {
   );
 };
 
-export default App;
+export default Sentry.wrap(App);

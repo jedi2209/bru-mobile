@@ -1,4 +1,5 @@
 import {Platform} from 'react-native';
+import * as Sentry from '@sentry/react-native';
 import {
   getUniqueId,
   getIpAddress,
@@ -61,6 +62,7 @@ export const pushUserData = async () => {
     if (!userData?.userID) {
       return false;
     }
+    Sentry.setUser({id: userData?.userID});
     firebase.analytics().setUserId(userData?.userID);
     db.app()
       .database(FIREBASE_SETTINGS.db.realTime.url)

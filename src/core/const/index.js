@@ -19,6 +19,10 @@ export const FIREBASE_SETTINGS = {
   },
 };
 
+export const SENTRY_SETTINGS = {
+  dsn: 'https://81e7ded58f57472f84bdb5686bbd0fe7@o76005.ingest.sentry.io/4505266371231744',
+};
+
 export const ONESIGNAL_SETTINGS = {
   appID: 'XXXX',
 };
