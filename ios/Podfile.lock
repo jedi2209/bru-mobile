@@ -446,6 +446,8 @@ PODS:
     - ReactCommon/turbomodule/core
   - react-native-splash-screen (3.3.0):
     - React-Core
+  - react-native-webview (12.2.0):
+    - React-Core
   - React-NativeModulesApple (0.72.0-rc.3):
     - hermes-engine
     - React-callinvoker
@@ -641,6 +643,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -754,6 +757,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -869,6 +874,7 @@ SPEC CHECKSUMS:
   React-logger: 8a71e32605ceebf504728b93c2d32dd3e0cd48e7
   react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
+  react-native-webview: 35e076d88994c63f4435de2058e4091d1c92415e
   React-NativeModulesApple: d82edd44561e513a05de96f2fb10537009fead26
   React-perflogger: 693189a8460e7f056462a8ee2f5234f92d9fafbc
   React-RCTActionSheet: e20348de098d1a09226bac5f7ced5ba50074cafc

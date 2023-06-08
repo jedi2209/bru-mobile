@@ -1,56 +1,19 @@
-import {Text} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import {Dimensions} from 'react-native';
+import {WebView} from 'react-native-webview';
 
 import Wrapper from '@comp/Wrapper';
 
 import {colors} from '@styleConst';
 
+const height = Dimensions.get('screen').height - 60;
+
 const HelpScreen = props => {
   return (
-    <Wrapper {...props}>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-    </Wrapper>
+    <WebView
+      originWhitelist={['*']}
+      source={{uri: 'https://bru.shop/en-eu/pages/help'}}
+      style={{flex: 1, maxHeight: height, height: height, paddingBottom: 60}}
+    />
   );
 };
 

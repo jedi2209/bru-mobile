@@ -16,7 +16,10 @@ const colors = {
     dark: '#E5E5E5',
   },
   gradient: {
-    background: ['#8f8f8f', '#7e7e7e', '#6f6f6f', '#6e6e6e', '#2f2f2f'],
+    background: {
+      light: ['#8f8f8f', '#7e7e7e', '#6f6f6f', '#6e6e6e', '#2f2f2f'],
+      dark: ['#F5F5F5', '#afafaf'],
+    },
     backgroundTabbar: ['#242424', '#222222'],
   },
 };
@@ -27,24 +30,28 @@ const fonts = {
 };
 
 const tabBarStyle = {
-  backgroundColor: colors.black,
-  paddingBottom: 0,
-  paddingHorizontal: 0,
-  // borderTopRightRadius: 10,
-  // borderTopLeftRadius: 10,
-  height: 80,
-  borderTopWidth: 0,
-  marginHorizontal: 10,
-  bottom: 20,
-  borderRadius: 10,
-  position: 'absolute',
-  shadowColor: colors.brown,
-  shadowOffset: {
-    width: 0,
-    height: -10,
+  default: {
+    backgroundColor: colors.black,
+    paddingBottom: 0,
+    paddingHorizontal: 0,
+    // borderTopRightRadius: 10,
+    // borderTopLeftRadius: 10,
+    height: 80,
+    borderTopWidth: 0,
+    marginHorizontal: 10,
+    bottom: 20,
+    borderRadius: 10,
+    position: 'absolute',
+    shadowColor: colors.brown,
+    shadowOffset: {
+      width: 0,
+      height: -10,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
   },
-  shadowOpacity: 0.5,
-  shadowRadius: 10,
+  dark: {},
+  light: {},
 };
 
 const headerNavigationStyle = {
@@ -72,11 +79,21 @@ const headerNavigationStyle = {
 };
 
 const navigationTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    card: colors.green.mid,
-    border: colors.green.light,
+  dark: {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      card: colors.green.mid,
+      border: colors.green.light,
+    },
+  },
+  light: {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      card: colors.green.mid,
+      border: colors.green.light,
+    },
   },
 };
 

@@ -1,10 +1,10 @@
 import React from 'react';
 import {
   View,
-  StyleSheet,
   ImageBackground,
   Platform,
   SafeAreaView,
+  useColorScheme,
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useStore} from 'effector-react';
@@ -22,25 +22,6 @@ import Logo from '@comp/Logo';
 
 import TabBarIcon from '@nav/components/TabBarIcon';
 
-const styles = StyleSheet.create({
-  tabBarItem: {
-    alignItems: 'center',
-    verticalAlign: 'top',
-    borderRadius: 10,
-  },
-  tabBarItemIcon: {
-    marginTop: 5,
-    marginBottom: 7,
-    height: 32,
-  },
-  labelText: {
-    fontSize: 12,
-    textTransform: 'uppercase',
-    textAlign: 'center',
-    fontFamily: fonts.defaultFamily,
-  },
-});
-
 const iconSize = 32;
 const headerLogoSize = 50;
 
@@ -48,11 +29,12 @@ const Tab = createBottomTabNavigator();
 
 const NavigationBottom = props => {
   const currLang = useStore($langSettingsStore);
+  const phoneTheme = useColorScheme();
   return (
     <Tab.Navigator
       {...props}
       screenOptions={{
-        tabBarStyle,
+        tabBarStyle: [tabBarStyle.default, tabBarStyle[phoneTheme]],
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.white,
         tabBarActiveBackgroundColor: '#FFFFFF1A',

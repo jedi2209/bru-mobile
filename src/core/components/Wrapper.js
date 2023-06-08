@@ -5,6 +5,7 @@ import {
   ImageBackground,
   Animated,
   Dimensions,
+  useColorScheme,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -38,6 +39,7 @@ const MainWrapper = props => {
   const translateY = useSharedValue(100);
   const [hide, setHide] = useState(false);
 
+  const phoneTheme = useColorScheme();
   const duration = 150;
 
   const actionBarStyle = useAnimatedStyle(() => {
@@ -66,14 +68,22 @@ const MainWrapper = props => {
       setHide(true);
       animateTabBar(value);
       props.navigation.setOptions({
-        tabBarStyle: [tabBarStyle, {transform: [{translateY: animValue}]}],
+        tabBarStyle: [
+          tabBarStyle.default,
+          tabBarStyle[phoneTheme],
+          {transform: [{translateY: animValue}]},
+        ],
       });
     };
     const showTabBar = value => {
       setHide(false);
       animateTabBar(value);
       props.navigation.setOptions({
-        tabBarStyle: [tabBarStyle, {transform: [{translateY: animValue}]}],
+        tabBarStyle: [
+          tabBarStyle.default,
+          tabBarStyle[phoneTheme],
+          {transform: [{translateY: animValue}]},
+        ],
       });
     };
 
@@ -112,7 +122,13 @@ const MainWrapper = props => {
     );
   } else {
     return (
-      <View style={[styles.linearGradient, styles.mainWrapper]} {...props}>
+      <View
+        style={[
+          styles.linearGradient,
+          styles.mainWrapper,
+          props.additionalContentContainerStyle,
+        ]}
+        {...props}>
         {props.children}
       </View>
     );
@@ -121,9 +137,10 @@ const MainWrapper = props => {
 
 const Wrapper = props => {
   const {scroll = false} = props.route.params;
+  const phoneTheme = useColorScheme();
   return (
     <LinearGradient
-      colors={colors.gradient.background}
+      colors={colors.gradient.background[phoneTheme]}
       style={styles.linearGradient}>
       <ImageBackground
         source={require('../../../assets/backgroundTile.png')}

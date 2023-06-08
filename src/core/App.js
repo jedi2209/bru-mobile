@@ -15,7 +15,7 @@ import {pushUserData} from '@utils/userData';
 
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
-import {config} from '../../gluestack-ui.config';
+import {config} from '@const/gluestack-ui.config';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -37,7 +37,7 @@ Sentry.init({
 const App = props => {
   const routeNameRef = useRef();
   const navigationRef = useRef();
-  const isDarkMode = useColorScheme() === 'dark';
+  const phoneTheme = useColorScheme();
 
   const appCheck = async () => {
     const rnfbProvider = firebase
@@ -64,9 +64,9 @@ const App = props => {
   }, []);
 
   return (
-    <GluestackUIProvider config={config.theme}>
+    <GluestackUIProvider config={config.theme} colorMode={phoneTheme}>
       <NavigationContainer
-        theme={navigationTheme}
+        theme={navigationTheme[phoneTheme]}
         ref={navigationRef}
         onReady={() => {
           routeNameRef.current = navigationRef.current.getCurrentRoute().name;

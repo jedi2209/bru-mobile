@@ -24,8 +24,14 @@
   "dependencies": {
     "@dank-style/animation-plugin": "latest",
     "@dank-style/react": "latest",
+    "@gluestack-style/react": "^0.1.19",
+    "@gluestack-ui/actionsheet": "latest",
+    "@gluestack-ui/button": "latest",
     "@gluestack-ui/hstack": "latest",
     "@gluestack-ui/provider": "latest",
+    "@gluestack-ui/select": "latest",
+    "@legendapp/motion": "latest",
+    "@react-native-aria/interactions": "^0.2.8",
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-firebase/analytics": "^17.5.0",
     "@react-native-firebase/app": "^17.5.0",
@@ -57,7 +63,8 @@
     "react-native-screens": "^3.20.0",
     "react-native-splash-screen": "^3.3.0",
     "react-native-svg": "^13.9.0",
-    "react-native-vector-icons": "^9.2.0"
+    "react-native-vector-icons": "^9.2.0",
+    "react-native-webview": "^12.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
