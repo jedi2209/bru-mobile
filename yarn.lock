@@ -6811,6 +6811,11 @@ react-localization@^1.0.17:
   dependencies:
     localized-strings "^0.2.0"
 
+react-native-ble-manager@^10.1.1:
+  version "10.1.1"
+  resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-10.1.1.tgz#31507da54362c524e2157005267412e4ef5ae5c4"
+  integrity sha512-sJjwiciNxa40359U3KjFeyMxHph6z++mMuiykopq0YFhzKQvTDwS2qA5TmNNIhRzT48lq/EkWiM4ecwq4qJZXg==
+
 react-native-circular-progress-indicator@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-native-circular-progress-indicator/-/react-native-circular-progress-indicator-4.4.2.tgz#5475d045950e6fcc622e54fb63863b274790fb8e"

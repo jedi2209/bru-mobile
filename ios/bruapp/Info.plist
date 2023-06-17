@@ -26,6 +26,8 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>  
 	<false/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Our APP uses Bluetooth to find, connect and transfer data between BRU Machine</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>

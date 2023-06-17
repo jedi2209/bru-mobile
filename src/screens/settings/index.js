@@ -1,6 +1,14 @@
 import {Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 // import {Button} from 'react-native-paper';
+import BleManager, {
+  BleDisconnectPeripheralEvent,
+  BleManagerDidUpdateValueForCharacteristicEvent,
+  BleScanCallbackType,
+  BleScanMatchMode,
+  BleScanMode,
+  Peripheral,
+} from 'react-native-ble-manager';
 import {Select, HStack} from '@gluestack';
 import {useStore} from 'effector-react';
 
@@ -12,6 +20,32 @@ import {colors} from '@styleConst';
 
 const SettingsScreen = props => {
   const lang = useStore($langSettingsStore);
+
+  BleManager.enableBluetooth()
+    .then(() => {
+      // Success code
+      alert('The bluetooth is already enabled or the user confirm');
+      BleManager.start({showAlert: false}).then(() => {
+        // Success code
+        alert('Module initialized');
+        BleManager.scan([], 10, true).then(() => {
+          // Success code
+          alert('Scan started');
+          BleManager.getDiscoveredPeripherals([]).then(peripheralsArray => {
+            // Success code
+            alert('Discovered peripherals: ' + peripheralsArray.length);
+          });
+          BleManager.checkState().then(state =>
+            alert(`current BLE state = '${state}'.`),
+          );
+        });
+      });
+    })
+    .catch(error => {
+      // Failure code
+      alert('The user refuse to enable bluetooth');
+    });
+
   return (
     <Wrapper {...props}>
       <HStack>
