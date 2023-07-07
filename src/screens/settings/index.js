@@ -15,6 +15,7 @@ import {
   PermissionsAndroid,
   Pressable,
   FlatList,
+  DeviceInfo,
   Alert,
 } from 'react-native';
 import BleManager from 'react-native-ble-manager';
@@ -483,6 +484,13 @@ const SettingsScreen = () => {
           renderItem={renderItem}
           keyExtractor={item => item.id}
         />
+        <Text selectable={false} style={styles.TextVersionInfo}>
+          {'ver. ' +
+            DeviceInfo.getVersion() +
+            ' (' +
+            DeviceInfo.getBuildNumber() +
+            ')'}
+        </Text>
       </ScrollView>
     </SafeAreaView>
   );
