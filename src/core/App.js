@@ -16,6 +16,7 @@ import {pushUserData} from '@utils/userData';
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
 import {config} from '@const/gluestack-ui.config';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -64,26 +65,28 @@ const App = props => {
   }, []);
 
   return (
-    <GluestackUIProvider config={config.theme} colorMode={phoneTheme}>
-      <NavigationContainer
-        theme={navigationTheme[phoneTheme]}
-        ref={navigationRef}
-        onReady={() => {
-          routeNameRef.current = navigationRef.current.getCurrentRoute().name;
-          routingInstrumentation.registerNavigationContainer(navigationRef);
-        }}
-        onStateChange={async () => {
-          const previousRouteName = routeNameRef.current;
-          const currentRouteName = navigationRef.current.getCurrentRoute().name;
+    <GestureHandlerRootView style={{flex: 1}}>
+      <GluestackUIProvider config={config.theme} colorMode={phoneTheme}>
+        <NavigationContainer
+          theme={navigationTheme[phoneTheme]}
+          ref={navigationRef}
+          onReady={() => {
+            routeNameRef.current = navigationRef.current.getCurrentRoute().name;
+            routingInstrumentation.registerNavigationContainer(navigationRef);
+          }}
+          onStateChange={async () => {
+            const previousRouteName = routeNameRef.current;
+            const currentRouteName = navigationRef.current.getCurrentRoute().name;
 
-          if (previousRouteName !== currentRouteName) {
-            await logScreenView(currentRouteName);
-          }
-          routeNameRef.current = currentRouteName;
-        }}>
-        <NavBottom initialRouteName={INITIAL_SCREEN} {...props} />
-      </NavigationContainer>
-    </GluestackUIProvider>
+            if (previousRouteName !== currentRouteName) {
+              await logScreenView(currentRouteName);
+            }
+            routeNameRef.current = currentRouteName;
+          }}>
+          <NavBottom initialRouteName={INITIAL_SCREEN} {...props} />
+        </NavigationContainer>
+      </GluestackUIProvider>
+    </GestureHandlerRootView>
   );
 };
 

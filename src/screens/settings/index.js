@@ -26,6 +26,8 @@ import {handleReadData} from '@utils/device';
 import {ActivityIndicator} from 'react-native-paper';
 import {colors} from '@styleConst';
 
+import Wrapper from '@comp/Wrapper';
+
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
@@ -38,9 +40,9 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const SettingsScreen = () => {
+const SettingsScreen = props => {
   let device = useStore($deviceSettingsStore);
-  if (device) {
+  if (device && device != null && typeof device !== 'undefined') {
     try {
       device = JSON.parse(device);
     } catch (error) {
@@ -314,9 +316,6 @@ const SettingsScreen = () => {
   };
 
   const isDarkMode = useColorScheme() === 'dark';
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
 
   // render list of bluetooth devices
   const renderItem = ({item: item}) => {
@@ -389,110 +388,95 @@ const SettingsScreen = () => {
   }
 
   return (
-    <SafeAreaView style={[backgroundStyle, styles.mainBody]}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}
-        contentContainerStyle={styles.mainBody}
-        contentInsetAdjustmentBehavior="automatic">
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-            marginBottom: 40,
-          }}>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={styles.buttonStyle}
-            onPress={handeStartScan}>
-            <Text style={styles.buttonTextStyle}>
-              {isScanning ? 'Scanning...' : 'Scan Bluetooth Devices'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        {device?.name ? (
-          <>
-            <Text
-              style={{
-                color: 'white',
-                backgroundColor: 'green',
-                padding: 10,
-                alignSelf: 'center',
-                borderRadius: 5,
-              }}>
-              Connected device: {device?.name}
-            </Text>
-            <Pressable
-              style={styles.buttonStyle}
-              onPress={async () => {
-                setLoading(true);
-                await handleReadData(device.id, 'firmwareRevision')
-                  .then(async res => {
-                    Alert.alert('firmwareRevision', res);
-                    await sleep(1000);
-                    setLoading(false);
-                  })
-                  .catch(err => {
-                    console.error('handleReadData firmwareRevision', err);
-                  });
-              }}>
-              <Text style={styles.buttonTextStyle}>
-                {'Read firmwareRevision data'}
-              </Text>
-            </Pressable>
-            <Pressable
-              style={styles.buttonStyle}
-              onPress={async () => {
-                setLoading(true);
-                await handleReadData(device.id, 'hardwareRevision')
-                  .then(async res => {
-                    Alert.alert('hardwareRevision', res);
-                    await sleep(1000);
-                    setLoading(false);
-                  })
-                  .catch(err => {
-                    console.error('handleReadData hardwareRevision', err);
-                  });
-              }}>
-              <Text style={styles.buttonTextStyle}>
-                {'Read hardwareRevision data'}
-              </Text>
-            </Pressable>
-            <Pressable
-              style={styles.buttonStyle}
-              onPress={async () => {
-                setLoading(true);
-                await handleReadData(device.id, 'serialNumber')
-                  .then(async res => {
-                    Alert.alert('serialNumber', res);
-                    await sleep(1000);
-                    setLoading(false);
-                  })
-                  .catch(err => {
-                    console.error('handleReadData serialNumber', err);
-                  });
-              }}>
-              <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
-            </Pressable>
-          </>
-        ) : null}
-        <FlatList
-          data={Array.from(peripherals.values())}
-          contentContainerStyle={{rowGap: 12}}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-        />
-        <Text selectable={false} style={styles.TextVersionInfo}>
-          {'ver. ' +
-            DeviceInfo.getVersion() +
-            ' (' +
-            DeviceInfo.getBuildNumber() +
-            ')'}
+    <Wrapper {...props}>
+      <TouchableOpacity
+        activeOpacity={0.5}
+        style={[styles.buttonStyle, {marginBottom: 40}]}
+        onPress={handeStartScan}>
+        <Text style={styles.buttonTextStyle}>
+          {isScanning ? 'Scanning...' : 'Scan Bluetooth Devices'}
         </Text>
-      </ScrollView>
-    </SafeAreaView>
+      </TouchableOpacity>
+      {device?.name ? (
+        <>
+          <Text
+            style={{
+              color: 'white',
+              backgroundColor: 'green',
+              padding: 10,
+              alignSelf: 'center',
+              borderRadius: 5,
+            }}>
+            Connected device: {device?.name}
+          </Text>
+          <Pressable
+            style={styles.buttonStyle}
+            onPress={async () => {
+              setLoading(true);
+              await handleReadData(device.id, 'firmwareRevision')
+                .then(async res => {
+                  Alert.alert('firmwareRevision', res);
+                  await sleep(1000);
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('handleReadData firmwareRevision', err);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>
+              {'Read firmwareRevision data'}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={styles.buttonStyle}
+            onPress={async () => {
+              setLoading(true);
+              await handleReadData(device.id, 'hardwareRevision')
+                .then(async res => {
+                  Alert.alert('hardwareRevision', res);
+                  await sleep(1000);
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('handleReadData hardwareRevision', err);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>
+              {'Read hardwareRevision data'}
+            </Text>
+          </Pressable>
+          <Pressable
+            style={styles.buttonStyle}
+            onPress={async () => {
+              setLoading(true);
+              await handleReadData(device.id, 'serialNumber')
+                .then(async res => {
+                  Alert.alert('serialNumber', res);
+                  await sleep(1000);
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('handleReadData serialNumber', err);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
+          </Pressable>
+        </>
+      ) : null}
+      <FlatList
+        data={Array.from(peripherals.values())}
+        contentContainerStyle={{rowGap: 12}}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+      <Text selectable={false} style={{alignSelf: 'center'}}>
+        {'ver. ' +
+          DeviceInfo.getVersion() +
+          ' (' +
+          DeviceInfo.getBuildNumber() +
+          ')'}
+      </Text>
+    </Wrapper>
   );
 };
 const windowHeight = Dimensions.get('window').height;
@@ -505,7 +489,6 @@ const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: colors.green.main,
     borderWidth: 0,
-    color: '#FFFFFF',
     borderColor: colors.green.mid,
     height: 45,
     alignItems: 'center',

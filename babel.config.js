@@ -9,12 +9,6 @@ module.exports = {
       },
     ],
     [
-      'react-native-reanimated/plugin',
-      {
-        relativeSourceLocation: true,
-      },
-    ],
-    [
       'babel-plugin-module-resolver',
       {
         root: [path.resolve('./')],
@@ -31,6 +25,12 @@ module.exports = {
           '@store': './src/core/store',
           '@utils': './src/utils',
         },
+      },
+    ],
+    [
+      'react-native-reanimated/plugin',
+      {
+        relativeSourceLocation: true,
       },
     ],
   ],
