@@ -94,7 +94,7 @@ platform :ios do
     add_git_tag(
       grouping: "builds",
       prefix: "v",
-      suffix: lane_context[SharedValues::BUILD_NUMBER]
+      postfix: lane_context[SharedValues::BUILD_NUMBER]
     )
     push_to_git_remote(
       remote: "origin",         # optional, default: "origin"
