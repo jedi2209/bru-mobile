@@ -412,69 +412,71 @@ const SettingsScreen = () => {
           </TouchableOpacity>
         </View>
         {device?.name ? (
-          <Text
-            style={{
-              color: 'white',
-              backgroundColor: 'green',
-              padding: 10,
-              alignSelf: 'center',
-              borderRadius: 5,
-            }}>
-            Connected device: {device?.name}
-          </Text>
+          <>
+            <Text
+              style={{
+                color: 'white',
+                backgroundColor: 'green',
+                padding: 10,
+                alignSelf: 'center',
+                borderRadius: 5,
+              }}>
+              Connected device: {device?.name}
+            </Text>
+            <Pressable
+              style={styles.buttonStyle}
+              onPress={async () => {
+                setLoading(true);
+                await handleReadData(device.id, 'firmwareRevision')
+                  .then(async res => {
+                    Alert.alert('firmwareRevision', res);
+                    await sleep(1000);
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('handleReadData firmwareRevision', err);
+                  });
+              }}>
+              <Text style={styles.buttonTextStyle}>
+                {'Read firmwareRevision data'}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={styles.buttonStyle}
+              onPress={async () => {
+                setLoading(true);
+                await handleReadData(device.id, 'hardwareRevision')
+                  .then(async res => {
+                    Alert.alert('hardwareRevision', res);
+                    await sleep(1000);
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('handleReadData hardwareRevision', err);
+                  });
+              }}>
+              <Text style={styles.buttonTextStyle}>
+                {'Read hardwareRevision data'}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={styles.buttonStyle}
+              onPress={async () => {
+                setLoading(true);
+                await handleReadData(device.id, 'serialNumber')
+                  .then(async res => {
+                    Alert.alert('serialNumber', res);
+                    await sleep(1000);
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('handleReadData serialNumber', err);
+                  });
+              }}>
+              <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
+            </Pressable>
+          </>
         ) : null}
-        <Pressable
-          style={styles.buttonStyle}
-          onPress={async () => {
-            setLoading(true);
-            await handleReadData(device.id, 'firmwareRevision')
-              .then(async res => {
-                Alert.alert('firmwareRevision', res);
-                await sleep(1000);
-                setLoading(false);
-              })
-              .catch(err => {
-                console.error('handleReadData firmwareRevision', err);
-              });
-          }}>
-          <Text style={styles.buttonTextStyle}>
-            {'Read firmwareRevision data'}
-          </Text>
-        </Pressable>
-        <Pressable
-          style={styles.buttonStyle}
-          onPress={async () => {
-            setLoading(true);
-            await handleReadData(device.id, 'hardwareRevision')
-              .then(async res => {
-                Alert.alert('hardwareRevision', res);
-                await sleep(1000);
-                setLoading(false);
-              })
-              .catch(err => {
-                console.error('handleReadData hardwareRevision', err);
-              });
-          }}>
-          <Text style={styles.buttonTextStyle}>
-            {'Read hardwareRevision data'}
-          </Text>
-        </Pressable>
-        <Pressable
-          style={styles.buttonStyle}
-          onPress={async () => {
-            setLoading(true);
-            await handleReadData(device.id, 'serialNumber')
-              .then(async res => {
-                Alert.alert('serialNumber', res);
-                await sleep(1000);
-                setLoading(false);
-              })
-              .catch(err => {
-                console.error('handleReadData serialNumber', err);
-              });
-          }}>
-          <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
-        </Pressable>
         <FlatList
           data={Array.from(peripherals.values())}
           contentContainerStyle={{rowGap: 12}}
