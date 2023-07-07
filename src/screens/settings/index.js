@@ -15,10 +15,10 @@ import {
   PermissionsAndroid,
   Pressable,
   FlatList,
-  DeviceInfo,
   Alert,
 } from 'react-native';
 import BleManager from 'react-native-ble-manager';
+import DeviceInfo from 'react-native-device-info';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {$deviceSettingsStore, setDevice} from '@store/device';
 import {useStore} from 'effector-react';
