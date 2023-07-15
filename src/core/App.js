@@ -16,7 +16,7 @@ import {pushUserData} from '@utils/userData';
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
 import {config} from '@const/gluestack-ui.config';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();

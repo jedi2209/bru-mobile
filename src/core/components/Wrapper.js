@@ -115,6 +115,7 @@ const MainWrapper = props => {
           ]}
           style={[styles.linearGradient, props.additionalStyle]}
           scrollEventThrottle={300}
+          nestedScrollEnabled={true}
           {...props}>
           {props.children}
         </Animated.ScrollView>

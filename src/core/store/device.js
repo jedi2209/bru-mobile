@@ -4,8 +4,7 @@ import {createStore, createEvent, createEffect, forward} from 'effector';
 const storeName = 'device';
 
 export const setDevice = createEvent();
-export const initDevice = createEvent();
-const reset = createEvent();
+export const resetDevice = createEvent();
 
 export const $deviceSettingsStore = createStore(
   {},
@@ -13,9 +12,12 @@ export const $deviceSettingsStore = createStore(
     name: storeName,
   },
 )
-  .on(setDevice, (_, device) => JSON.stringify(device))
-  .on(initDevice, (_, device) => JSON.stringify(device))
-  .reset(reset);
+  .on(setDevice, (_, device) => device)
+  .reset(resetDevice);
+
+$deviceSettingsStore.watch(state =>
+  console.log('$deviceSettingsStore changed', state),
+);
 
 const fetchDevice = createEffect({
   async handler() {
@@ -25,13 +27,13 @@ const fetchDevice = createEffect({
 });
 
 fetchDevice.doneData.watch(result => {
-  initDevice(result);
+  setDevice(result);
 });
 
 export const updateDevice = createEffect({
   async handler(device) {
     try {
-      await AsyncStorage.setItem(storeName, device, err => {
+      await AsyncStorage.setItem(storeName, JSON.stringify(device), err => {
         if (err) {
           console.error(err);
         }

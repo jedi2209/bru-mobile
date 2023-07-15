@@ -17,8 +17,8 @@ const colors = {
   },
   gradient: {
     background: {
-      light: ['#8f8f8f', '#7e7e7e', '#6f6f6f', '#6e6e6e', '#2f2f2f'],
-      dark: ['#F5F5F5', '#afafaf'],
+      dark: ['#8f8f8f', '#7e7e7e', '#6f6f6f', '#6e6e6e', '#2f2f2f'],
+      light: ['#F5F5F5', '#afafaf'],
     },
     backgroundTabbar: ['#242424', '#222222'],
   },
