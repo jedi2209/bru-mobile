@@ -13,7 +13,7 @@ import {
 import DeviceInfo from 'react-native-device-info';
 import {$deviceSettingsStore, resetDevice} from '@store/device';
 import {useStore} from 'effector-react';
-import {Device} from '@utils/device';
+import {Device, sendDataCommand, sleep} from '@utils/device';
 import {ActivityIndicator} from 'react-native-paper';
 import {colors} from '@styleConst';
 
@@ -29,10 +29,6 @@ const deviceManager = new Device({
   allowDuplicates: false,
 });
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 const SettingsScreen = props => {
   let device = useStore($deviceSettingsStore);
   if (device) {
@@ -40,6 +36,7 @@ const SettingsScreen = props => {
   }
   const [isScanning, setIsScanning] = useState(false);
   const [connected, setConnected] = useState(false);
+  const [isBrewing, setBrewing] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [peripherals, setPeripherals] = useState(null);
 
@@ -217,7 +214,7 @@ const SettingsScreen = props => {
             }}>
             <Text style={styles.buttonTextStyle}>{'Read modelName'}</Text>
           </Pressable>
-          <Pressable
+          {/* <Pressable
             style={styles.buttonStyle}
             onPress={async () => {
               setLoading(true);
@@ -235,37 +232,40 @@ const SettingsScreen = props => {
                 });
             }}>
             <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
-          </Pressable>
+          </Pressable> */}
+          <Text style={{marginTop: 20, fontSize: 20}}>Actions</Text>
           <Pressable
-            style={styles.buttonStyle}
+            style={[
+              styles.buttonStyle,
+              {backgroundColor: isBrewing ? 'red' : colors.green.mid},
+            ]}
             onPress={async () => {
               setLoading(true);
-              const toSend = Buffer.from('0xB6');
-              // {"data": [104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100], "type": "Buffer"}
-              // toSend.toString('hex')
-              // toSend.toJSON().data
+              const command = sendDataCommand(
+                0xb1,
+                new Uint8Array([!isBrewing ? 0x01 : 0x00]),
+                1,
+              );
               await deviceManager
-                .sendNotification(
-                  'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0',
-                  'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0',
-                  toSend.toJSON().data,
-                )
-                .then(async res => {
-                  if (res) {
-                    console.log('sendNotification res', res);
-                    // Alert.alert('writeValueAndNotify', res);
-                    await sleep(1000);
-                  }
+                .writeValueAndNotify(Buffer(command).toJSON().data)
+                .then(async () => {
+                  await sleep(1000);
+                  setBrewing(!isBrewing);
                   setLoading(false);
                 })
                 .catch(err => {
-                  console.error('sendNotification error', err);
+                  console.error('Start Brewing error', err);
                 });
             }}>
-            <Text style={styles.buttonTextStyle}>{'sendNotification'}</Text>
+            <Text style={styles.buttonTextStyle}>
+              {!isBrewing ? 'Start Brew' : '== Stop Brew'}
+            </Text>
           </Pressable>
           <Pressable
-            style={[styles.buttonStyle, {backgroundColor: 'red'}]}
+            style={[
+              styles.buttonStyle,
+              {backgroundColor: 'red', marginTop: 100},
+            ]}
             onPress={() => {
               resetDevice();
               setPeripherals();

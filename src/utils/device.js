@@ -14,7 +14,7 @@ var Buffer = require('buffer/').Buffer; // note: the trailing slash is important
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
-const customUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
+const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
 const TX = 'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0';
 const RX = 'aae28f02-71b5-42a1-8c3c-f9cf6ac969d0';
 
@@ -310,27 +310,44 @@ export class Device {
   };
 
   // Function to write value and trigger notification
-  writeValueAndNotify = async (serviceUUID, characteristicUUID, value) => {
-    await BleManager.connect(this.deviceUUID).then(async () => {
-      await BleManager.retrieveServices(this.deviceUUID).then(async res => {
-        try {
-          await BleManager.writeWithoutResponse(
-            this.deviceUUID,
-            serviceUUID,
-            characteristicUUID,
-            value,
-          ).then(res => {
-            console.log('Value written successfully', res);
-          });
-        } catch (error) {
-          const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
-          if (buffer) {
-            console.log('Error writing value:', buffer.toString('utf8')); // ответ переводим просто в строку
-          } else {
-            console.log('Error writing value:', error);
-          }
-        }
-      });
+  writeValueAndNotify = async (
+    value,
+    serviceUUID = mainUUID,
+    characteristicUUID = RX,
+  ) => {
+    return await BleManager.connect(this.deviceUUID).then(async () => {
+      BleManager.requestMTU(this.deviceUUID, 251)
+        .then(async mtu => {
+          // Success code
+          console.log('MTU size changed to ' + mtu + ' bytes', value);
+          return await BleManager.retrieveServices(this.deviceUUID).then(
+            async () => {
+              try {
+                await BleManager.writeWithoutResponse(
+                  this.deviceUUID,
+                  serviceUUID,
+                  characteristicUUID,
+                  value,
+                ).then(async () => {
+                  console.log('Value written successfully');
+                  return true;
+                });
+              } catch (error) {
+                const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
+                if (buffer) {
+                  console.log('Error writing value:', buffer.toString('utf8')); // ответ переводим просто в строку
+                } else {
+                  console.log('Error writing value:', error);
+                }
+                return false;
+              }
+            },
+          );
+        })
+        .catch(error => {
+          // Failure code
+          console.log(error);
+        });
     });
   };
 
@@ -499,6 +516,38 @@ const _showPermissionAlert = () => {
       },
     },
   );
+};
+
+export const sendDataCommand = (cmd, data, len) => {
+  let sendBufferPlus = new Uint8Array(5);
+  sendBufferPlus[0] = 0xff;
+  sendBufferPlus[1] = 4;
+  sendBufferPlus[2] = cmd;
+
+  if (data !== null) {
+    for (let i = 0; i < len; i++) {
+      sendBufferPlus[3 + i] = data[i];
+    }
+    sendBufferPlus[1] += len;
+  }
+
+  len = sendBufferPlus[1] - 1;
+  sendBufferPlus[len] = calcChecksum(sendBufferPlus, len);
+  return sendBufferPlus;
+};
+
+export const calcChecksum = (dat, len) => {
+  let chksum = 0;
+  for (let i = 0; i < len; i++) {
+    chksum += dat[i];
+  }
+  chksum = 0 - chksum;
+  chksum ^= 0x3a;
+  return chksum;
+};
+
+export const sleep = ms => {
+  return new Promise(resolve => setTimeout(resolve, ms));
 };
 
 // const retrieveConnected = async () => {
