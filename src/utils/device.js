@@ -6,9 +6,8 @@ import {
   PermissionsAndroid,
   Linking,
   Alert,
-  LogBox,
 } from 'react-native';
-import {setDevice} from '@store/device';
+import {setDevice, resetDevice} from '@store/device';
 var Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
@@ -17,6 +16,7 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
 const TX = 'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0';
 const RX = 'aae28f02-71b5-42a1-8c3c-f9cf6ac969d0';
+const DEFAULT_MTU = 100;
 
 const deviceInfo = {
   // check2: {
@@ -130,6 +130,10 @@ export class Device {
     this.deviceUUID = deviceUUID;
   };
 
+  clearDevice = () => {
+    this.setCurrentDevice(null);
+  };
+
   getCurrentDevice = () => {
     return this.device;
   };
@@ -176,7 +180,7 @@ export class Device {
         ...this.device,
         connecting: true,
       });
-      await BleManager.connect(deviceUUID)
+      return await BleManager.connect(deviceUUID)
         .then(async () => {
           console.info('Connected to device ' + deviceUUID);
           this._addOrUpdatePeripheral(deviceUUID, {
@@ -184,7 +188,7 @@ export class Device {
             connecting: false,
             connected: true,
           });
-          await BleManager.retrieveServices(deviceUUID).then(res => {
+          return await BleManager.retrieveServices(deviceUUID).then(res => {
             console.info('\tDiscovered services', res);
             console.info('\tDiscovered characteristics', res?.characteristics);
             res.writableServices = [];
@@ -214,8 +218,7 @@ export class Device {
                 );
               }
             });
-            this.setCurrentDevice(res);
-            setDevice(res);
+            return res;
           });
         })
         .catch(err => {
@@ -309,6 +312,47 @@ export class Device {
     );
   };
 
+  removeBond = async (device = this.deviceUUID) => {
+    await this.getBondedPeripherals().then(res => {
+      if (res) {
+        BleManager.removeBond(device).catch(err => {
+          console.error('BleManager.removeBond error', err);
+        });
+      }
+      this.clearDevice();
+      resetDevice();
+      return true;
+    });
+  };
+
+  checkBondedStatus = async (device = this.deviceUUID) => {
+    sleep(1000);
+    return await this.getBondedPeripherals(device).then(res => {
+      if (res === true) {
+        this.setCurrentDevice(device);
+        setDevice(device);
+        return true;
+      }
+      return this.checkBondedStatus(device);
+    });
+  };
+
+  getBondedPeripherals = async (device = this.deviceUUID) => {
+    return await BleManager.getBondedPeripherals().then(items => {
+      const data = items.map(el => {
+        if (el.id === device) {
+          return true;
+        }
+        return null;
+      });
+      const res = data.filter(el => el !== null);
+      if (res.length > 0) {
+        return true;
+      }
+      return false;
+    });
+  };
+
   // Function to write value and trigger notification
   writeValueAndNotify = async (
     value,
@@ -319,7 +363,7 @@ export class Device {
       // Success code
       return await BleManager.retrieveServices(this.deviceUUID).then(
         async () => {
-          BleManager.requestMTU(this.deviceUUID, 180)
+          BleManager.requestMTU(this.deviceUUID, DEFAULT_MTU)
             .then(async mtu => {
               console.log('MTU size changed to ' + mtu + ' bytes', value);
               try {
@@ -536,7 +580,7 @@ export const sendDataCommand = (cmd, data, len) => {
   return sendBufferPlus;
 };
 
-export const calcChecksum = (dat, len) => {
+const calcChecksum = (dat, len) => {
   let chksum = 0;
   for (let i = 0; i < len; i++) {
     chksum += dat[i];

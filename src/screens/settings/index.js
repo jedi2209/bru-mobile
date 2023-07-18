@@ -11,7 +11,7 @@ import {
   Alert,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {$deviceSettingsStore, resetDevice} from '@store/device';
+import {$deviceSettingsStore, setDevice, resetDevice} from '@store/device';
 import {useStore} from 'effector-react';
 import {Device, sendDataCommand, sleep} from '@utils/device';
 import {ActivityIndicator} from 'react-native-paper';
@@ -53,6 +53,7 @@ const SettingsScreen = props => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const searchDevices = async () => {
+    deviceManager.setCurrentDevice(null);
     resetDevice();
     setIsScanning(true);
     await deviceManager.handleAndroidPermissions().then(res => {
@@ -79,9 +80,17 @@ const SettingsScreen = props => {
       <TouchableOpacity
         onPress={async () => {
           setLoading(true);
-          await deviceManager.connectToDevice(item.id).then(res => {
-            setLoading(false);
-          });
+          await deviceManager
+            .connectToDevice(item.id)
+            .then(async deviceInfo => {
+              await deviceManager.checkBondedStatus(item.id).then(status => {
+                if (status === true) {
+                  deviceManager.setCurrentDevice(deviceInfo);
+                  setDevice(deviceInfo);
+                  setLoading(false);
+                }
+              });
+            });
         }}>
         <View
           style={{
@@ -235,6 +244,23 @@ const SettingsScreen = props => {
           </Pressable> */}
           <Text style={{marginTop: 20, fontSize: 20}}>Actions</Text>
           <Pressable
+            style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
+            onPress={async () => {
+              setLoading(true);
+              const command = sendDataCommand(0xb6, 0, 0);
+              await deviceManager
+                .writeValueAndNotify(Buffer(command).toJSON().data)
+                .then(async () => {
+                  await sleep(1000);
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('Get Machine setup', err);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>{'Get Machine setup'}</Text>
+          </Pressable>
+          <Pressable
             style={[
               styles.buttonStyle,
               {backgroundColor: isBrewing ? 'red' : colors.green.mid},
@@ -266,9 +292,15 @@ const SettingsScreen = props => {
               styles.buttonStyle,
               {backgroundColor: 'red', marginTop: 100},
             ]}
-            onPress={() => {
-              resetDevice();
-              setPeripherals();
+            onPress={async () => {
+              setLoading(true);
+              await deviceManager
+                .removeBond()
+                .then(res => {
+                  setPeripherals();
+                  setLoading(false);
+                })
+                .catch(err => console.error('onPress Unpair device', err));
             }}>
             <Text style={styles.buttonTextStyle}>{'Unpair device'}</Text>
           </Pressable>
