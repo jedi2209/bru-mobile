@@ -316,12 +316,12 @@ export class Device {
     characteristicUUID = RX,
   ) => {
     return await BleManager.connect(this.deviceUUID).then(async () => {
-      BleManager.requestMTU(this.deviceUUID, 251)
-        .then(async mtu => {
-          // Success code
-          console.log('MTU size changed to ' + mtu + ' bytes', value);
-          return await BleManager.retrieveServices(this.deviceUUID).then(
-            async () => {
+      // Success code
+      return await BleManager.retrieveServices(this.deviceUUID).then(
+        async () => {
+          BleManager.requestMTU(this.deviceUUID, 180)
+            .then(async mtu => {
+              console.log('MTU size changed to ' + mtu + ' bytes', value);
               try {
                 await BleManager.writeWithoutResponse(
                   this.deviceUUID,
@@ -341,13 +341,13 @@ export class Device {
                 }
                 return false;
               }
-            },
-          );
-        })
-        .catch(error => {
-          // Failure code
-          console.log(error);
-        });
+            })
+            .catch(error => {
+              // Failure code
+              console.log(error);
+            });
+        },
+      );
     });
   };
 
