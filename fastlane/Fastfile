@@ -75,7 +75,7 @@ platform :ios do
       notify_external_testers: true,
       changelog: lane_context[SharedValues::FL_CHANGELOG],
       groups: [
-        "Zavarka Team"
+        "BRU"
       ],
       api_key: api_key
     )
