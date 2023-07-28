@@ -2,6 +2,7 @@ export const FIREBASE_SETTINGS = {
   appCheck: {
     android: {
       provider: __DEV__ ? 'debug' : 'playIntegrity',
+      // debugToken: 'XXXX',
       debugToken: 'XXXX',
     },
     apple: {
@@ -11,6 +12,11 @@ export const FIREBASE_SETTINGS = {
   },
   storage: {
     bucket: 'gs://brutea-app.appspot.com',
+    firmware: {
+      rules: {
+        path: 'firmware/update-rules.json',
+      },
+    },
   },
   db: {
     realTime: {

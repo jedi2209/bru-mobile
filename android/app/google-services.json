@@ -1,20 +1,21 @@
 {
   "project_info": {
     "project_number": "XXXX",
+    "firebase_url": "https://XXXX.europe-west1.firebasedatabase.app",
     "project_id": "brutea-app",
     "storage_bucket": "brutea-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:XXXX:android:f6feccfb94fa000fa73c9e",
+        "mobilesdk_app_id": "1:XXXX:android:b076598ace450e8ba73c9e",
         "android_client_info": {
           "package_name": "shop.bru.bruapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "XXXX-5kl380n7m9sfd30c5281ot3oklpacflo.apps.googleusercontent.com",
+          "client_id": "XXXX-ljskaetehmt0bkc34e1o4hg982aukuve.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "shop.bru.bruapp",
@@ -22,7 +23,7 @@
           }
         },
         {
-          "client_id": "XXXX-of1nihkrm14b31erarng9ohbb8djkltp.apps.googleusercontent.com",
+          "client_id": "XXXX-u5he8p67n8duadlfdf7mes70g9mnggis.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
