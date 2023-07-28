@@ -12,6 +12,7 @@ import {FIREBASE_SETTINGS, SENTRY_SETTINGS, INITIAL_SCREEN} from '@const';
 import {firebase} from '@react-native-firebase/app-check';
 import {analyticsLog, logScreenView} from '@utils/analytics';
 import {pushUserData} from '@utils/userData';
+import {fetchFirmwareMeta} from '@utils/firmware';
 
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
@@ -46,10 +47,22 @@ const App = props => {
       .newReactNativeFirebaseAppCheckProvider();
     rnfbProvider.configure(FIREBASE_SETTINGS.appCheck);
     try {
-      firebase.appCheck().initializeAppCheck({
-        provider: rnfbProvider,
-        isTokenAutoRefreshEnabled: true,
-      });
+      firebase
+        .appCheck()
+        .initializeAppCheck({
+          provider: rnfbProvider,
+          isTokenAutoRefreshEnabled: true,
+        })
+        .then(async () => {
+          try {
+            const {token} = await firebase.appCheck().getToken(true);
+            if (token.length > 0) {
+              console.log('AppCheck verification passed');
+            }
+          } catch (error) {
+            console.log('AppCheck verification failed', error);
+          }
+        });
     } catch (error) {
       console.error('AppCheck verification failed');
     }
@@ -62,6 +75,7 @@ const App = props => {
     }, 550);
     appCheck();
     analyticsLog('app_init', {os: Platform.OS, version: Platform.Version});
+    fetchFirmwareMeta();
   }, []);
 
   return (
@@ -76,7 +90,8 @@ const App = props => {
           }}
           onStateChange={async () => {
             const previousRouteName = routeNameRef.current;
-            const currentRouteName = navigationRef.current.getCurrentRoute().name;
+            const currentRouteName =
+              navigationRef.current.getCurrentRoute().name;
 
             if (previousRouteName !== currentRouteName) {
               await logScreenView(currentRouteName);

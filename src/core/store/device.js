@@ -15,9 +15,9 @@ export const $deviceSettingsStore = createStore(
   .on(setDevice, (_, device) => device)
   .reset(resetDevice);
 
-$deviceSettingsStore.watch(state => {
-  console.log('$deviceSettingsStore changed', state);
-});
+// $deviceSettingsStore.watch(state => {
+//   console.log('$deviceSettingsStore changed', state);
+// });
 
 const fetchDevice = createEffect({
   async handler() {

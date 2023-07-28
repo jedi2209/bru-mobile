@@ -5,17 +5,21 @@ import {
   Platform,
   SafeAreaView,
   useColorScheme,
+  Linking,
 } from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator} from '@react-navigation/stack';
 import {useStore} from 'effector-react';
 
 import {$langSettingsStore} from '@store/lang';
+import {LANGUAGE} from '@const';
 
 import InstantBrewScreen from '@screens/instant-brew';
 import TeaAlarmScreen from '@screens/tea-alarm';
 import PresetsScreen from '@screens/presets';
 import HelpScreen from '@screens/help';
 import SettingsScreen from '@screens/settings';
+import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
 
 import {colors, fonts, tabBarStyle, headerNavigationStyle} from '@styleConst';
 import Logo from '@comp/Logo';
@@ -26,6 +30,32 @@ const iconSize = 32;
 const headerLogoSize = 50;
 
 const Tab = createBottomTabNavigator();
+const StackSettings = createStackNavigator();
+
+const SettingsStackView = ({navigation, route}) => (
+  <StackSettings.Navigator initialRouteName="SettingsScreen">
+    <StackSettings.Screen
+      name="SettingsScreen"
+      component={SettingsScreen}
+      initialParams={{
+        scroll: true,
+      }}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <StackSettings.Screen
+      name="UpdateFirmwareScreen"
+      component={UpdateFirmwareScreen}
+      initialParams={{
+        scroll: true,
+      }}
+      options={{
+        headerShown: false,
+      }}
+    />
+  </StackSettings.Navigator>
+);
 
 const NavigationBottom = props => {
   const currLang = useStore($langSettingsStore);
@@ -38,9 +68,6 @@ const NavigationBottom = props => {
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.white,
         tabBarActiveBackgroundColor: '#FFFFFF1A',
-        tabBarItemStyle: {
-          borderRadius: 10,
-        },
         tabBarBackground: () => (
           <View
             colors={colors.gradient.backgroundTabbar}
@@ -83,9 +110,14 @@ const NavigationBottom = props => {
               title="MenuBottom.InstantBrew"
             />
           ),
+          tabBarItemStyle: {
+            borderRadius: 0,
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+          },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Tea Alarm"
         component={TeaAlarmScreen}
         initialParams={{
@@ -148,10 +180,16 @@ const NavigationBottom = props => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Help"
         component={HelpScreen}
+        listeners={{
+          tabPress: e => {
+            e.preventDefault();
+            Linking.openURL(LANGUAGE[currLang].urls.help);
+          },
+        }}
         initialParams={{
           scroll: true,
         }}
@@ -183,10 +221,7 @@ const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Settings"
-        component={SettingsScreen}
-        initialParams={{
-          scroll: true,
-        }}
+        component={SettingsStackView}
         options={{
           header: () => {
             return (
@@ -211,6 +246,11 @@ const NavigationBottom = props => {
               title="MenuBottom.Settings"
             />
           ),
+          tabBarItemStyle: {
+            borderRadius: 0,
+            borderTopRightRadius: 10,
+            borderBottomRightRadius: 10,
+          },
         }}
       />
     </Tab.Navigator>

@@ -8,6 +8,7 @@
 #import <Firebase.h>
 #import "RNFBAppCheckModule.h" // ⬅️ ADD THIS LINE
 #import "RNSplashScreen.h"
+#import "RNNordicDfu.h"
 
 @interface AppDelegate () <RCTBridgeDelegate>
   @property (nonatomic, strong) NSDictionary *launchOptions;
@@ -17,10 +18,23 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [FIRApp configure];
   self.moduleName = @"bruapp";
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
+
+  [RNNordicDfu setCentralManagerGetter:^() {
+    return [[CBCentralManager alloc] initWithDelegate:nil queue:dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)];
+  }];
+
+  // Reset manager delegate since the Nordic DFU lib "steals" control over it
+  [RNNordicDfu setOnDFUComplete:^() {
+      NSLog(@"onDFUComplete");
+  }];
+  [RNNordicDfu setOnDFUError:^() {
+      NSLog(@"onDFUError");
+  }];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

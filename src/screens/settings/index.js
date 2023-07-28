@@ -10,14 +10,20 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-import {$deviceSettingsStore, setDevice, resetDevice} from '@store/device';
+import {Select, HStack} from '@gluestack';
 import {useStore} from 'effector-react';
-import {Device, sendDataCommand, sleep} from '@utils/device';
 import {ActivityIndicator} from 'react-native-paper';
-import {colors} from '@styleConst';
+import DeviceInfo from 'react-native-device-info';
+
+import {$deviceSettingsStore, setDevice, resetDevice} from '@store/device';
+import {$langSettingsStore, setLanguage} from '@store/lang';
 
 import Wrapper from '@comp/Wrapper';
+
+import {Device, sendDataCommand, sleep} from '@utils/device';
+
+import {get} from 'lodash';
+import {colors} from '@styleConst';
 
 const SECONDS_TO_SCAN_FOR = 2;
 const DEVICE_NAME_PREFIX = 'BRU';
@@ -30,7 +36,8 @@ const deviceManager = new Device({
 });
 
 const SettingsScreen = props => {
-  let device = useStore($deviceSettingsStore);
+  const device = useStore($deviceSettingsStore);
+  const lang = useStore($langSettingsStore);
   if (device) {
     deviceManager.setCurrentDevice(device);
   }
@@ -39,6 +46,8 @@ const SettingsScreen = props => {
   const [isBrewing, setBrewing] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [peripherals, setPeripherals] = useState(null);
+
+  const {navigation} = props;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -67,6 +76,17 @@ const SettingsScreen = props => {
         setIsScanning(false);
       }
     });
+  };
+
+  const _unpairDevice = async () => {
+    setLoading(true);
+    await deviceManager
+      .removeBond()
+      .then(res => {
+        setPeripherals();
+        setLoading(false);
+      })
+      .catch(err => console.error('onPress Unpair device', err));
   };
 
   // render list of bluetooth devices
@@ -243,15 +263,15 @@ const SettingsScreen = props => {
             <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
           </Pressable> */}
           <Text style={{marginTop: 20, fontSize: 20}}>Actions</Text>
-          <Pressable
+          {/* <Pressable
             style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
             onPress={async () => {
               setLoading(true);
-              const command = sendDataCommand(0xb6, 0, 0);
+              const command = sendDataCommand(0xb6);
               await deviceManager
                 .writeValueAndNotify(Buffer(command).toJSON().data)
                 .then(async () => {
-                  await sleep(1000);
+                  await sleep(1500);
                   setLoading(false);
                 })
                 .catch(err => {
@@ -259,7 +279,7 @@ const SettingsScreen = props => {
                 });
             }}>
             <Text style={styles.buttonTextStyle}>{'Get Machine setup'}</Text>
-          </Pressable>
+          </Pressable> */}
           <Pressable
             style={[
               styles.buttonStyle,
@@ -275,7 +295,7 @@ const SettingsScreen = props => {
               await deviceManager
                 .writeValueAndNotify(Buffer(command).toJSON().data)
                 .then(async () => {
-                  await sleep(1000);
+                  await sleep(1500);
                   setBrewing(!isBrewing);
                   setLoading(false);
                 })
@@ -287,20 +307,61 @@ const SettingsScreen = props => {
               {!isBrewing ? 'Start Brew' : '== Stop Brew'}
             </Text>
           </Pressable>
+          {/* <Pressable
+            style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
+            onPress={async () => {
+              const buff = Buffer.from('FF04E5CS', 'hex');
+              setLoading(true);
+              // 0xFF, 0x04, 0xE5, 0xCS
+              const command = sendDataCommand(0xe5);
+              console.log(
+                'Buffer(command).toJSON()',
+                // bufferToHex(buff.toJSON().data),
+                bufferToHex(Buffer(command).toJSON().data),
+              );
+              await deviceManager
+                .writeValueAndNotify(Buffer(command).toJSON().data)
+                // .writeValueAndNotify(buff.toJSON().data)
+                .then(async res => {
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('Test device error', err);
+                  setLoading(false);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>
+              {'Get test device status'}
+            </Text>
+          </Pressable> */}
+          <Pressable
+            style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
+            onPress={() => {
+              navigation.navigate('UpdateFirmwareScreen');
+            }}>
+            <Text style={styles.buttonTextStyle}>{'Update Firmware'}</Text>
+          </Pressable>
           <Pressable
             style={[
               styles.buttonStyle,
               {backgroundColor: 'red', marginTop: 100},
             ]}
-            onPress={async () => {
-              setLoading(true);
-              await deviceManager
-                .removeBond()
-                .then(res => {
-                  setPeripherals();
-                  setLoading(false);
-                })
-                .catch(err => console.error('onPress Unpair device', err));
+            onPress={() => {
+              Alert.alert(
+                'Are you shure?',
+                'After unpair device you should pair it again.',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Unpair',
+                    style: 'destructive',
+                    onPress: async () => _unpairDevice(),
+                  },
+                ],
+              );
             }}>
             <Text style={styles.buttonTextStyle}>{'Unpair device'}</Text>
           </Pressable>
@@ -338,6 +399,30 @@ const SettingsScreen = props => {
           ) : null}
         </>
       )}
+      <HStack mt={10} alignItems={'center'}>
+        <Text>Language</Text>
+        <Select
+          selectedValue={lang}
+          isDisabled={false}
+          isInvalid={false}
+          w={'70%'}
+          ml={10}
+          onValueChange={res => setLanguage(res)}>
+          <Select.Trigger variant="underlined">
+            <Select.Input placeholder={lang} />
+          </Select.Trigger>
+          <Select.Portal>
+            <Select.Backdrop />
+            <Select.Content>
+              <Select.DragIndicatorWrapper>
+                <Select.DragIndicator />
+              </Select.DragIndicatorWrapper>
+              <Select.Item label="EN" value="en" />
+              <Select.Item label="DE" value="de" />
+            </Select.Content>
+          </Select.Portal>
+        </Select>
+      </HStack>
       <Text
         selectable={false}
         style={{

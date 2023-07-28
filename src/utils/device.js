@@ -8,6 +8,9 @@ import {
   Alert,
 } from 'react-native';
 import {setDevice, resetDevice} from '@store/device';
+import {getFirmwareData} from '@utils/firmware';
+import {get} from 'lodash';
+import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
 var Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
@@ -16,7 +19,8 @@ const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
 const TX = 'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0';
 const RX = 'aae28f02-71b5-42a1-8c3c-f9cf6ac969d0';
-const DEFAULT_MTU = 100;
+const SOME = 'aae21541-71b5-42a1-8c3c-f9cf6ac969d0';
+const DEFAULT_MTU = 200;
 
 const deviceInfo = {
   // check2: {
@@ -61,6 +65,7 @@ const deviceInfo = {
     service: '180A',
     characteristic: '2A29',
   },
+  OTAMode: 0x27,
 };
 export class Device {
   constructor({
@@ -116,7 +121,7 @@ export class Device {
     for (const listener of this.listeners) {
       listener.remove();
     }
-    console.info(`class Device is destroyed`);
+    console.info('class Device is destroyed');
   };
 
   setCurrentDevice = device => {
@@ -124,10 +129,17 @@ export class Device {
     if (device?.id) {
       this.setCurrentDeviceID(device.id);
     }
+    if (device?.name) {
+      this.setCurrentDeviceName(device.name);
+    }
   };
 
   setCurrentDeviceID = deviceUUID => {
     this.deviceUUID = deviceUUID;
+  };
+
+  setCurrentDeviceName = deviceName => {
+    this.deviceName = deviceName;
   };
 
   clearDevice = () => {
@@ -142,6 +154,10 @@ export class Device {
     return this.deviceUUID;
   };
 
+  getCurrentDeviceName = () => {
+    return this.deviceName;
+  };
+
   getPeripherals = () => {
     return Array.from(this.peripherals.values());
   };
@@ -153,8 +169,8 @@ export class Device {
       this.settings.SECONDS_TO_SCAN_FOR,
       this.settings.ALLOW_DUPLICATES,
     )
-      .then(results => {
-        console.debug('[searchBleDevices] promise returned successfully.');
+      .then(() => {
+        console.info('[searchBleDevices] promise returned successfully.');
         // return BleManager.getDiscoveredPeripherals([]).then(
         //   discoveredDevices => {
         //     if (discoveredDevices.length === 0) {
@@ -260,38 +276,38 @@ export class Device {
   };
 
   // Send notification request
-  sendNotification = async (serviceUUID, characteristicUUID, value) => {
+  sendNotification = async (
+    serviceUUID = mainUUID,
+    characteristicUUID = RX,
+  ) => {
     await BleManager.connect(this.deviceUUID).then(async () => {
-      await BleManager.retrieveServices(this.deviceUUID).then(async res => {
-        try {
-          return await BleManager.startNotification(
-            this.deviceUUID,
-            serviceUUID,
-            characteristicUUID,
-          ).then(answer =>
-            console.log(
-              'Notification request to ' +
-                this.deviceUUID +
-                ', service ' +
-                serviceUUID +
-                ', characteristic ' +
-                characteristicUUID +
-                ' sent successfully',
-              answer,
-            ),
+      await BleManager.retrieveServices(this.deviceUUID);
+      try {
+        await BleManager.startNotification(
+          this.deviceUUID,
+          serviceUUID,
+          characteristicUUID,
+        );
+        console.log(
+          'Notification request to ' +
+            this.deviceUUID +
+            ', service ' +
+            serviceUUID +
+            ', characteristic ' +
+            characteristicUUID +
+            ' sent successfully',
+        );
+      } catch (error) {
+        const buffer = Buffer.from(error);
+        if (buffer) {
+          console.log(
+            'Error sendNotification from buffer:',
+            buffer.toString('utf8'),
           );
-        } catch (error) {
-          const buffer = Buffer.from(error);
-          if (buffer) {
-            console.log(
-              'Error sendNotification from buffer:',
-              buffer.toString('utf8'),
-            );
-          } else {
-            console.log('Error sendNotification plain:', error);
-          }
+        } else {
+          console.log('Error sendNotification plain:', error);
         }
-      });
+      }
     });
   };
 
@@ -354,7 +370,7 @@ export class Device {
   };
 
   // Function to write value and trigger notification
-  writeValueAndNotify = async (
+  writeValue = async (
     value,
     serviceUUID = mainUUID,
     characteristicUUID = RX,
@@ -373,7 +389,9 @@ export class Device {
                   characteristicUUID,
                   value,
                 ).then(async () => {
-                  console.log('Value written successfully');
+                  console.log(
+                    'writeValue => writeWithoutResponse written successfully',
+                  );
                   return true;
                 });
               } catch (error) {
@@ -395,6 +413,86 @@ export class Device {
     });
   };
 
+  writeValueAndNotify = async (
+    value,
+    serviceUUID = mainUUID,
+    characteristicUUID = RX,
+  ) => {
+    return await BleManager.connect(this.deviceUUID).then(async () => {
+      // Success code
+      return await BleManager.retrieveServices(this.deviceUUID)
+        .then(async () => {
+          try {
+            await BleManager.write(
+              this.deviceUUID,
+              serviceUUID,
+              characteristicUUID,
+              value,
+            );
+            await BleManager.retrieveServices(this.deviceUUID).then(
+              async res => {
+                // console.log('retrieveServices', res);
+                // res.characteristics.map(el => {
+                //   console.log('\tservice ', el);
+                // });
+                this.sendNotification(serviceUUID, SOME);
+              },
+            );
+            return true;
+          } catch (error) {
+            const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
+            if (buffer) {
+              console.log('Error writing value:', buffer.toString('utf8')); // ответ переводим просто в строку
+            } else {
+              console.log('Error writing value:', error);
+            }
+            return false;
+          }
+        })
+        .catch(error => {
+          // Failure code
+          console.log(error);
+        });
+    });
+  };
+
+  startDFU = async filePath => {
+    const command = sendDataCommand(deviceInfo.OTAMode);
+    return await this.writeValueAndNotify(Buffer(command).toJSON().data).then(
+      async res => {
+        await sleep(5000);
+        await this.searchBleDevices();
+        await sleep(3000);
+        const deviceID = get(this.getPeripherals(), '0.id', null);
+        if (deviceID) {
+          return await BleManager.connect(deviceID).then(async deviceInfo => {
+            return NordicDFU.startDFU({
+              deviceAddress: deviceID,
+              filePath: filePath,
+            })
+              .then(res => {
+                // {"deviceAddress": "F8:C9:42:C4:61:D6"}
+                // console.info('DFU transfer done:', res);
+                DFUEmitter.removeAllListeners('DFUStateChanged');
+                DFUEmitter.removeAllListeners('DFUProgress');
+                return res;
+              })
+              .catch(err => {
+                console.error('NordicDFU.startDFU error', err);
+                return false;
+              });
+          });
+        } else {
+          console.error('Device not found');
+        }
+      },
+    );
+  };
+
+  checkUpdateFirmware = () => {
+    return;
+  };
+
   _setPeripheral = (id, updatedPeripheral) => {
     const map = new Map();
     this.peripherals = new Map(map.set(id, updatedPeripheral));
@@ -407,9 +505,8 @@ export class Device {
   };
 
   _handleUpdateValueForCharacteristic = data => {
-    console.debug(
-      `[handleUpdateValueForCharacteristic] received data from '${data.peripheral}' with characteristic='${data.characteristic}' and value='${data.value}'`,
-    );
+    const response = Buffer.from(data.value).toString('utf8');
+    console.info(response);
   };
 
   _handleDisconnectedPeripheral = event => {
@@ -430,7 +527,7 @@ export class Device {
     if (!peripheral.name?.includes(this.settings.DEVICE_NAME_PREFIX)) {
       return;
     }
-    console.debug('[handleDiscoverPeripheral] new BLE peripheral=', peripheral);
+    // console.debug('[handleDiscoverPeripheral] new BLE peripheral=', peripheral);
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
     }
@@ -562,8 +659,11 @@ const _showPermissionAlert = () => {
   );
 };
 
-export const sendDataCommand = (cmd, data, len) => {
-  let sendBufferPlus = new Uint8Array(5);
+export const sendDataCommand = (cmd, data = 0, len = 0) => {
+  let sendBufferPlus = new Int8Array(4);
+  if (data) {
+    sendBufferPlus = new Uint8Array(5);
+  }
   sendBufferPlus[0] = 0xff;
   sendBufferPlus[1] = 4;
   sendBufferPlus[2] = cmd;
@@ -594,151 +694,11 @@ export const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-// const retrieveConnected = async () => {
-//   try {
-//     const connectedPeripherals = await BleManager.getConnectedPeripherals();
-//     if (connectedPeripherals.length === 0) {
-//       console.warn('[retrieveConnected] No connected peripherals found.');
-//       return;
-//     }
-
-//     console.debug(
-//       '[retrieveConnected] connectedPeripherals',
-//       connectedPeripherals,
-//     );
-
-//     for (var i = 0; i < connectedPeripherals.length; i++) {
-//       var peripheral = connectedPeripherals[i];
-//       addOrUpdatePeripheral(peripheral.id, {...peripheral, connected: true});
-//     }
-//   } catch (error) {
-//     console.error(
-//       '[retrieveConnected] unable to retrieve connected peripherals.',
-//       error,
-//     );
-//   }
-// };
-
-// const handeStartScan = () => {
-//   if (isScanning) {
-//     return;
-//   }
-//   // reset found peripherals before scan
-//   setPeripherals(new Map());
-
-//   try {
-//     setIsScanning(true);
-//     BleManager.scan(SERVICE_UUIDS, SECONDS_TO_SCAN_FOR, ALLOW_DUPLICATES)
-//       .then(() => {
-//         console.debug('[startScan] scan promise returned successfully.');
-//       })
-//       .catch(err => {
-//         console.error('[startScan] ble scan returned in error', err);
-//       });
-//   } catch (error) {
-//     console.error('[startScan] ble scan error thrown', error);
-//   }
-// };
-
-// const handleStopScan = () => {
-//   setIsScanning(false);
-//   console.debug('[handleStopScan] scan is stopped.');
-// };
-
-// const handleDiscoverPeripheral = peripheral => {
-//   if (!peripheral.name?.includes(DEVICE_NAME_PREFIX)) {
-//     return;
-//   }
-//   console.debug('[handleDiscoverPeripheral] new BLE peripheral=', peripheral);
-//   if (!peripheral.name) {
-//     peripheral.name = 'NO NAME';
-//   }
-//   addOrUpdatePeripheral(peripheral.id, peripheral);
-// };
-
-// const connectPeripheral = async peripheral => {
-//   try {
-//     if (peripheral) {
-//       addOrUpdatePeripheral(peripheral.id, {...peripheral, connecting: true});
-
-//       await BleManager.connect(peripheral.id);
-//       console.debug(`[connectPeripheral][${peripheral.id}] connected.`);
-
-//       addOrUpdatePeripheral(peripheral.id, {
-//         ...peripheral,
-//         connecting: false,
-//         connected: true,
-//       });
-
-//       // before retrieving services, it is often a good idea to let bonding & connection finish properly
-//       await sleep(900);
-
-//       /* Test read current RSSI value, retrieve services first */
-//       const peripheralData = await BleManager.retrieveServices(peripheral.id);
-//       console.debug(
-//         `[connectPeripheral][${peripheral.id}] retrieved peripheral services`,
-//         peripheralData,
-//       );
-//       peripheralData.characteristics.map(el => {
-//         console.log('characteristics', el);
-//       });
-//       setDevice(peripheralData);
-
-//       const rssi = await BleManager.readRSSI(peripheral.id);
-//       console.debug(
-//         `[connectPeripheral][${peripheral.id}] retrieved current RSSI value: ${rssi}.`,
-//       );
-
-//       if (peripheralData.characteristics) {
-//         for (let characteristic of peripheralData.characteristics) {
-//           if (characteristic.descriptors) {
-//             for (let descriptor of characteristic.descriptors) {
-//               try {
-//                 let data = await BleManager.readDescriptor(
-//                   peripheral.id,
-//                   characteristic.service,
-//                   characteristic.characteristic,
-//                   descriptor.uuid,
-//                 );
-//                 console.debug(
-//                   `[connectPeripheral][${peripheral.id}] descriptor read as:`,
-//                   data,
-//                 );
-//               } catch (error) {
-//                 console.error(
-//                   `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
-//                   error,
-//                 );
-//               }
-//             }
-//           }
-//         }
-//       }
-
-//       let p = peripherals.get(peripheral.id);
-//       if (p) {
-//         addOrUpdatePeripheral(peripheral.id, {...peripheral, rssi});
-//       }
-//     }
-//   } catch (error) {
-//     console.error(
-//       `[connectPeripheral][${peripheral.id}] connectPeripheral error`,
-//       error,
-//     );
-//   }
-// };
-
-// const togglePeripheralConnection = async peripheral => {
-//   if (peripheral && peripheral.connected) {
-//     try {
-//       await BleManager.disconnect(peripheral.id);
-//     } catch (error) {
-//       console.error(
-//         `[togglePeripheralConnection][${peripheral.id}] error when trying to disconnect device.`,
-//         error,
-//       );
-//     }
-//   } else {
-//     await connectPeripheral(peripheral);
-//   }
-// };
+export const bufferToHex = buffer => {
+  var s = '',
+    h = '0123456789ABCDEF';
+  new Uint8Array(buffer).forEach(v => {
+    s += h[v >> 4] + h[v & 15];
+  });
+  return s;
+};

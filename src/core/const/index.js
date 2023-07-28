@@ -37,10 +37,16 @@ let LANGUAGES = {
   en: {
     name: 'English',
     code: 'en',
+    urls: {
+      help: 'https://bru.shop/en-eu/pages/help',
+    },
   },
   de: {
     name: 'Deutsch',
     code: 'de',
+    urls: {
+      help: 'https://bru.shop/pages/help',
+    },
   },
 };
 

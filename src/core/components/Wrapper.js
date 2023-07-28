@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -63,7 +63,6 @@ const MainWrapper = props => {
         useNativeDriver: true,
       }).start();
     };
-
     const hideTabBar = value => {
       setHide(true);
       animateTabBar(value);
@@ -86,7 +85,6 @@ const MainWrapper = props => {
         ],
       });
     };
-
     const scrollHandler = event => {
       const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
       const minScrollToHide = Dimensions.get('screen').height * 0.15;
