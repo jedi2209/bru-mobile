@@ -16,6 +16,8 @@ var Buffer = require('buffer/').Buffer; // note: the trailing slash is important
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
 
+const isAndroid = Platform.OS === 'android';
+
 const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
 const TX = 'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0';
 const RX = 'aae28f02-71b5-42a1-8c3c-f9cf6ac969d0';
@@ -79,6 +81,7 @@ export class Device {
     this.deviceUUID = DEVICE_ID || DEVICE?.id || null;
     this.serviceUUID = null;
     this.characteristicUUID = null;
+    this.bleStarted = false;
 
     this.settings = {
       SECONDS_TO_SCAN_FOR,
@@ -104,17 +107,6 @@ export class Device {
         this._handleUpdateValueForCharacteristic,
       ),
     ];
-
-    try {
-      BleManager.start({showAlert: false})
-        .then(() => console.debug('BleManager started.'))
-        .catch(error =>
-          console.error('BeManager could not be started.', error),
-        );
-    } catch (error) {
-      console.error('unexpected error starting BleManager.', error);
-      return;
-    }
   }
 
   destructor = () => {
@@ -122,6 +114,25 @@ export class Device {
       listener.remove();
     }
     console.info('class Device is destroyed');
+  };
+
+  _checkManager = async () => {
+    if (!this.bleStarted) {
+      BleManager.start({showAlert: true})
+        .then(() => {
+          console.info('BleManager started.');
+          this.bleStarted = true;
+          return true;
+        })
+        .catch(async error => {
+          console.error('BeManager could not be started.', error);
+          this.bleStarted = false;
+          await sleep(1000);
+          return this._checkManager();
+        });
+    }
+    console.info('BleManager already started');
+    return true;
   };
 
   setCurrentDevice = device => {
@@ -163,6 +174,7 @@ export class Device {
   };
 
   searchBleDevices = async () => {
+    await this._checkManager();
     console.log('Searching for available BLE devices...');
     return BleManager.scan(
       this.settings.SERVICE_UUIDS,
@@ -191,6 +203,7 @@ export class Device {
 
   // Function to connect to a BLE device
   connectToDevice = async deviceUUID => {
+    await this._checkManager();
     try {
       this._addOrUpdatePeripheral(deviceUUID, {
         ...this.device,
@@ -239,13 +252,15 @@ export class Device {
         })
         .catch(err => {
           console.error('BleManager.connect error', err);
+          return false;
         });
     } catch (error) {
       console.error('Error connecting to device:', error);
+      return false;
     }
   };
 
-  handleReadData = async characteristicUUID => {
+  handleReadData = async (characteristicUUID, index = 0) => {
     if (!deviceInfo[characteristicUUID]) {
       console.error('No such characteristic');
       return false;
@@ -267,8 +282,16 @@ export class Device {
             characteristicUUID,
           );
         })
-        .catch(err => {
-          console.error('BleManager.connect', err);
+        .catch(async error => {
+          console.error('BleManager.connect', error, index);
+          if (index >= 5) {
+            return false;
+          }
+          if (error.indexOf('Could not find peripheral') !== -1) {
+            // try to reconnect
+            await sleep(500);
+            return this.handleReadData(characteristicUUID, ++index);
+          }
         });
     } catch (error) {
       console.error('handleReadData', error);
@@ -280,6 +303,7 @@ export class Device {
     serviceUUID = mainUUID,
     characteristicUUID = RX,
   ) => {
+    await this._checkManager();
     await BleManager.connect(this.deviceUUID).then(async () => {
       await BleManager.retrieveServices(this.deviceUUID);
       try {
@@ -297,6 +321,7 @@ export class Device {
             characteristicUUID +
             ' sent successfully',
         );
+        return true;
       } catch (error) {
         const buffer = Buffer.from(error);
         if (buffer) {
@@ -307,12 +332,14 @@ export class Device {
         } else {
           console.log('Error sendNotification plain:', error);
         }
+        return false;
       }
     });
   };
 
   // Listen for notifications
   listenNotifications = async (serviceUUID, characteristicUUID) => {
+    await this._checkManager();
     return BleManager.monitorCharacteristicForDevice(
       this.deviceUUID,
       serviceUUID,
@@ -329,6 +356,7 @@ export class Device {
   };
 
   removeBond = async (device = this.deviceUUID) => {
+    await this._checkManager();
     await this.getBondedPeripherals().then(res => {
       if (res) {
         BleManager.removeBond(device).catch(err => {
@@ -342,31 +370,50 @@ export class Device {
   };
 
   checkBondedStatus = async (device = this.deviceUUID) => {
-    sleep(1000);
-    return await this.getBondedPeripherals(device).then(res => {
-      if (res === true) {
-        this.setCurrentDevice(device);
-        setDevice(device);
-        return true;
-      }
-      return this.checkBondedStatus(device);
-    });
+    await this._checkManager();
+    const isBonded = await this.getBondedPeripherals(device);
+    if (isBonded) {
+      this.setCurrentDevice(device);
+      setDevice(device);
+      return true;
+    }
+    await sleep(1500);
+    return this.checkBondedStatus(device);
+  };
+
+  _getConnectedDeviceIds = async serviceUUIDs => {
+    const connectedPeripherals = await BleManager.getConnectedPeripherals(
+      serviceUUIDs,
+    );
+    return connectedPeripherals.map(peripheral => peripheral.id);
   };
 
   getBondedPeripherals = async (device = this.deviceUUID) => {
-    return await BleManager.getBondedPeripherals().then(items => {
-      const data = items.map(el => {
-        if (el.id === device) {
-          return true;
-        }
-        return null;
-      });
-      const res = data.filter(el => el !== null);
-      if (res.length > 0) {
+    await this._checkManager();
+    let items = null;
+    if (isAndroid) {
+      items = await BleManager.getBondedPeripherals();
+    } else {
+      const command = sendDataCommand(0xb6);
+      const isConnected = await this.writeValueAndNotify(
+        Buffer(command).toJSON().data,
+        mainUUID,
+        RX,
+        device,
+      );
+      if (!isConnected) {
+        return false;
+      }
+      items = [{id: device}];
+    }
+    const data = items.map(el => {
+      if (el.id === device) {
         return true;
       }
-      return false;
+      return null;
     });
+    const res = data.filter(el => el !== null);
+    return res.length > 0;
   };
 
   // Function to write value and trigger notification
@@ -375,6 +422,7 @@ export class Device {
     serviceUUID = mainUUID,
     characteristicUUID = RX,
   ) => {
+    await this._checkManager();
     return await BleManager.connect(this.deviceUUID).then(async () => {
       // Success code
       return await BleManager.retrieveServices(this.deviceUUID).then(
@@ -417,43 +465,72 @@ export class Device {
     value,
     serviceUUID = mainUUID,
     characteristicUUID = RX,
+    device = this.deviceUUID,
+    index = 0,
   ) => {
-    return await BleManager.connect(this.deviceUUID).then(async () => {
-      // Success code
-      return await BleManager.retrieveServices(this.deviceUUID)
-        .then(async () => {
-          try {
-            await BleManager.write(
-              this.deviceUUID,
-              serviceUUID,
-              characteristicUUID,
-              value,
-            );
-            await BleManager.retrieveServices(this.deviceUUID).then(
-              async res => {
+    await this._checkManager();
+    await BleManager.connect(device)
+      .then(async () => {
+        console.log('writeValueAndNotify ==> connected to ' + device);
+        // Success code
+        return await BleManager.retrieveServices(device)
+          .then(async () => {
+            try {
+              await BleManager.write(
+                device,
+                serviceUUID,
+                characteristicUUID,
+                value,
+              );
+              await BleManager.retrieveServices(device).then(async res => {
                 // console.log('retrieveServices', res);
                 // res.characteristics.map(el => {
                 //   console.log('\tservice ', el);
                 // });
-                this.sendNotification(serviceUUID, SOME);
-              },
-            );
-            return true;
-          } catch (error) {
-            const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
-            if (buffer) {
-              console.log('Error writing value:', buffer.toString('utf8')); // ответ переводим просто в строку
-            } else {
-              console.log('Error writing value:', error);
+                return await this.sendNotification(serviceUUID, SOME);
+              });
+              return true;
+            } catch (error) {
+              let errorText = '';
+              const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
+              if (buffer) {
+                errorText = buffer.toString('utf8');
+              } else {
+                errorText = error;
+              }
+              switch (errorText) {
+                case 'Encryption is insufficient.': // iOS not paired
+                  return false;
+                case 'Wrong UUID format (null)': // iOS is paired
+                  return true;
+              }
             }
-            return false;
-          }
-        })
-        .catch(error => {
-          // Failure code
-          console.log(error);
-        });
-    });
+          })
+          .catch(error => {
+            // Failure code
+            console.log(error);
+          });
+      })
+      .catch(async error => {
+        console.error(
+          'writeValueAndNotify => BleManager.connect failed',
+          error,
+        );
+        if (index >= 3) {
+          return false;
+        }
+        if (error.indexOf('Could not find peripheral') !== -1) {
+          // try to reconnect
+          await sleep(500);
+          return this.writeValueAndNotify(
+            device,
+            serviceUUID,
+            characteristicUUID,
+            value,
+            ++index,
+          );
+        }
+      });
   };
 
   startDFU = async filePath => {
@@ -468,7 +545,7 @@ export class Device {
           return await BleManager.connect(deviceID).then(async deviceInfo => {
             return NordicDFU.startDFU({
               deviceAddress: deviceID,
-              filePath: filePath,
+              filePath: isAndroid ? filePath : 'file://' + filePath,
             })
               .then(res => {
                 // {"deviceAddress": "F8:C9:42:C4:61:D6"}
@@ -535,6 +612,7 @@ export class Device {
   };
 
   _readDataFromBleDevice = async (deviceID, characteristic) => {
+    await this._checkManager();
     return await BleManager.retrieveServices(deviceID) // запрашиваем сначала все сервисы, заодно подключаясь к устройству
       .then(async () => {
         // затем начинаем читать
@@ -560,13 +638,11 @@ export class Device {
       });
   };
 
-  handleAndroidPermissions = async () => {
-    console.info(
-      'Platform.OS, Platform.Version',
-      Platform.OS,
-      Platform.Version,
-    );
-    if (Platform.OS === 'android' && Platform.Version >= 31) {
+  handlePermissions = async () => {
+    if (!isAndroid) {
+      return true;
+    }
+    if (Platform.Version >= 31) {
       const permissions = [
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
@@ -576,25 +652,25 @@ export class Device {
         result => {
           if (!_checkPermissionsLocal(result)) {
             console.error(
-              '[handleAndroidPermissions] User refuses runtime permissions android 12+',
+              '[handlePermissions] User refuses runtime permissions android 12+',
               result,
             );
             _showPermissionAlert();
             return false;
           }
           console.info(
-            '[handleAndroidPermissions] User accepts runtime permissions android 12+',
+            '[handlePermissions] User accepts runtime permissions android 12+',
             result,
           );
           return true;
         },
       );
-    } else if (Platform.OS === 'android' && Platform.Version >= 23) {
+    } else if (Platform.Version >= 23) {
       const permissions = PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION;
       return await PermissionsAndroid.check(permissions).then(checkResult => {
         if (checkResult) {
           console.info(
-            '[handleAndroidPermissions] runtime permission Android <12 already OK',
+            '[handlePermissions] runtime permission Android <12 already OK',
             checkResult,
           );
           return true;
@@ -602,22 +678,20 @@ export class Device {
           PermissionsAndroid.request(permissions).then(result => {
             if (!_checkPermissionsLocal(result)) {
               console.error(
-                '[handleAndroidPermissions] User refuses runtime permission android <12',
+                '[handlePermissions] User refuses runtime permission android <12',
                 checkResult,
               );
               _showPermissionAlert();
               return false;
             }
             console.info(
-              '[handleAndroidPermissions] User accepts runtime permission android <12',
+              '[handlePermissions] User accepts runtime permission android <12',
               checkResult,
             );
             return true;
           });
         }
       });
-    } else if (Platform.OS === 'ios') {
-      return true;
     }
   };
 }
@@ -676,11 +750,11 @@ export const sendDataCommand = (cmd, data = 0, len = 0) => {
   }
 
   len = sendBufferPlus[1] - 1;
-  sendBufferPlus[len] = calcChecksum(sendBufferPlus, len);
+  sendBufferPlus[len] = _calcChecksum(sendBufferPlus, len);
   return sendBufferPlus;
 };
 
-const calcChecksum = (dat, len) => {
+const _calcChecksum = (dat, len) => {
   let chksum = 0;
   for (let i = 0; i < len; i++) {
     chksum += dat[i];

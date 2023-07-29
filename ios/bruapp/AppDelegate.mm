@@ -8,6 +8,7 @@
 #import <Firebase.h>
 #import "RNFBAppCheckModule.h" // ⬅️ ADD THIS LINE
 #import "RNSplashScreen.h"
+#import <RNFSManager.h>
 #import "RNNordicDfu.h"
 
 @interface AppDelegate () <RCTBridgeDelegate>
@@ -15,6 +16,7 @@
 @end
 
 @implementation AppDelegate
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -37,6 +39,11 @@
   }];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (void)application:(UIApplication *)application handleEventsForBackgroundURLSession:(NSString *)identifier completionHandler:(void (^)())completionHandler
+{
+  [RNFSManager setCompletionHandlerForIdentifier:identifier completionHandler:completionHandler];
 }
 
 - (RCTBridge *)initializeReactNativeApp

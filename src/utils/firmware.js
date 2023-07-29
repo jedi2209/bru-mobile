@@ -6,16 +6,12 @@ import RNFS, {exists, downloadFile as fsDownloadFile} from 'react-native-fs';
 import {FIREBASE_SETTINGS} from '@const';
 import moment from 'moment';
 import {get} from 'lodash';
-import {Platform} from 'react-native';
 
 const filePath = storage().ref(FIREBASE_SETTINGS.storage.firmware.rules.path);
 const currLang = $langSettingsStore.getState();
 
 export const downloadFile = async (url, fileName) => {
-  const dir =
-    Platform.OS === 'ios'
-      ? RNFS.LibraryDirectoryPath
-      : RNFS.DocumentDirectoryPath;
+  const dir = RNFS.DocumentDirectoryPath;
   const localFile = `${dir}/${fileName}`;
   //Define path to store file along with the extension
   const headers = {

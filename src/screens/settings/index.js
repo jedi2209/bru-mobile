@@ -25,7 +25,7 @@ import {Device, sendDataCommand, sleep} from '@utils/device';
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 
-const SECONDS_TO_SCAN_FOR = 2;
+const SECONDS_TO_SCAN_FOR = 5;
 const DEVICE_NAME_PREFIX = 'BRU';
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -65,7 +65,7 @@ const SettingsScreen = props => {
     deviceManager.setCurrentDevice(null);
     resetDevice();
     setIsScanning(true);
-    await deviceManager.handleAndroidPermissions().then(res => {
+    await deviceManager.handlePermissions().then(res => {
       if (res) {
         deviceManager.searchBleDevices();
         return sleep(3000).then(() => {
@@ -76,6 +76,16 @@ const SettingsScreen = props => {
         setIsScanning(false);
       }
     });
+  };
+
+  const _pairDevice = async itemID => {
+    const deviceInfo = await deviceManager.connectToDevice(itemID);
+    const bondedStatus = await deviceManager.checkBondedStatus(itemID);
+    if (bondedStatus === true) {
+      deviceManager.setCurrentDevice(deviceInfo);
+      setDevice(deviceInfo);
+      setLoading(false);
+    }
   };
 
   const _unpairDevice = async () => {
@@ -100,17 +110,11 @@ const SettingsScreen = props => {
       <TouchableOpacity
         onPress={async () => {
           setLoading(true);
-          await deviceManager
-            .connectToDevice(item.id)
-            .then(async deviceInfo => {
-              await deviceManager.checkBondedStatus(item.id).then(status => {
-                if (status === true) {
-                  deviceManager.setCurrentDevice(deviceInfo);
-                  setDevice(deviceInfo);
-                  setLoading(false);
-                }
-              });
-            });
+          const pairingStatus = await _pairDevice(item.id);
+          console.log('pairingStatus', pairingStatus);
+          if (pairingStatus === true) {
+            setLoading(false);
+          }
         }}>
         <View
           style={{

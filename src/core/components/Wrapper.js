@@ -47,6 +47,7 @@ const MainWrapper = props => {
       paddingBottom: withTiming(translateY.value, {
         duration,
         easing: Easing.inOut(Easing.ease),
+        useNativeDriver: true,
       }),
     };
   });

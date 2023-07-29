@@ -22,58 +22,77 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
 
-Sentry.init({
+let sentryParams = {
   dsn: SENTRY_SETTINGS.dsn,
-  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-  // We recommend adjusting this value in production.
-  tracesSampleRate: 1.0,
+  tracesSampleRate: 0.2,
   integrations: [
     new Sentry.ReactNativeTracing({
-      // Pass instrumentation to be used as `routingInstrumentation`
       routingInstrumentation,
       enableUserInteractionTracing: true,
+      tracingOrigins: ['localhost', 'bru.shop', 'appspot.com'],
     }),
   ],
-});
+};
+
+if (__DEV__) {
+  // LogBox.ignoreLogs([
+  //   'NativeBase: The contrast ratio of',
+  //   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
+  //   "If you do not provide children, you must specify an aria-label for accessibility",
+  // ]);
+  sentryParams = {
+    dsn: SENTRY_SETTINGS.dsn,
+    debug: true,
+    tracesSampleRate: 1.0,
+    integrations: [
+      new Sentry.ReactNativeTracing({
+        routingInstrumentation,
+        enableUserInteractionTracing: true,
+        tracingOrigins: ['localhost', 'bru.shop', 'appspot.com'],
+      }),
+    ],
+  };
+}
+
+const _appCheckInit = async () => {
+  const rnfbProvider = firebase
+    .appCheck()
+    .newReactNativeFirebaseAppCheckProvider();
+  rnfbProvider.configure(FIREBASE_SETTINGS.appCheck);
+  try {
+    firebase
+      .appCheck()
+      .initializeAppCheck({
+        provider: rnfbProvider,
+        isTokenAutoRefreshEnabled: true,
+      })
+      .then(async () => {
+        try {
+          const {token} = await firebase.appCheck().getToken(true);
+          if (token.length > 0) {
+            console.log('AppCheck verification passed');
+          }
+        } catch (error) {
+          console.log('AppCheck verification failed', error);
+        }
+      });
+  } catch (error) {
+    console.error('AppCheck verification failed');
+  }
+};
 
 const App = props => {
   const routeNameRef = useRef();
   const navigationRef = useRef();
   const phoneTheme = useColorScheme();
 
-  const appCheck = async () => {
-    const rnfbProvider = firebase
-      .appCheck()
-      .newReactNativeFirebaseAppCheckProvider();
-    rnfbProvider.configure(FIREBASE_SETTINGS.appCheck);
-    try {
-      firebase
-        .appCheck()
-        .initializeAppCheck({
-          provider: rnfbProvider,
-          isTokenAutoRefreshEnabled: true,
-        })
-        .then(async () => {
-          try {
-            const {token} = await firebase.appCheck().getToken(true);
-            if (token.length > 0) {
-              console.log('AppCheck verification passed');
-            }
-          } catch (error) {
-            console.log('AppCheck verification failed', error);
-          }
-        });
-    } catch (error) {
-      console.error('AppCheck verification failed');
-    }
-  };
-
   useEffect(() => {
+    Sentry.init(sentryParams);
     pushUserData();
     setTimeout(() => {
       SplashScreen.hide();
     }, 550);
-    appCheck();
+    _appCheckInit();
     analyticsLog('app_init', {os: Platform.OS, version: Platform.Version});
     fetchFirmwareMeta();
   }, []);
