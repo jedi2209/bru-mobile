@@ -67,8 +67,8 @@ const SettingsScreen = props => {
     setIsScanning(true);
     await deviceManager.handlePermissions().then(res => {
       if (res) {
-        deviceManager.searchBleDevices();
-        return sleep(3000).then(() => {
+        deviceManager.repeatFunc('searchBleDevices');
+        return sleep(3500).then(() => {
           setPeripherals(deviceManager.getPeripherals());
           setIsScanning(false);
         });
@@ -299,7 +299,7 @@ const SettingsScreen = props => {
               await deviceManager
                 .writeValueAndNotify(Buffer(command).toJSON().data)
                 .then(async () => {
-                  await sleep(1500);
+                  await sleep(2000);
                   setBrewing(!isBrewing);
                   setLoading(false);
                 })
@@ -382,7 +382,7 @@ const SettingsScreen = props => {
           </TouchableOpacity>
           {isScanning ? (
             <ActivityIndicator size="large" />
-          ) : peripherals ? (
+          ) : peripherals && peripherals.length ? (
             <>
               <Text
                 style={{

@@ -24,6 +24,9 @@ const RX = 'aae28f02-71b5-42a1-8c3c-f9cf6ac969d0';
 const SOME = 'aae21541-71b5-42a1-8c3c-f9cf6ac969d0';
 const DEFAULT_MTU = 200;
 
+const defaultTimeout = 1000;
+const maxAttemps = 30;
+
 const deviceInfo = {
   // check2: {
   //   service: '1800',
@@ -127,7 +130,7 @@ export class Device {
         .catch(async error => {
           console.error('BeManager could not be started.', error);
           this.bleStarted = false;
-          await sleep(1000);
+          await sleep();
           return this._checkManager();
         });
     }
@@ -218,8 +221,8 @@ export class Device {
             connected: true,
           });
           return await BleManager.retrieveServices(deviceUUID).then(res => {
-            console.info('\tDiscovered services', res);
-            console.info('\tDiscovered characteristics', res?.characteristics);
+            // console.info('\tDiscovered services', res);
+            // console.info('\tDiscovered characteristics', res?.characteristics);
             res.writableServices = [];
             res.readableServices = [];
             res.notifyServices = [];
@@ -239,12 +242,12 @@ export class Device {
               } else if (el.properties['Notify']) {
                 res.notifyServices.push(el);
               }
-              console.log('\t\tCharacteristic ' + el?.characteristic, el);
+              // console.info('\t\tCharacteristic ' + el?.characteristic, el);
               if (el?.descriptors) {
-                console.log(
-                  '\t\t\tDescriptors of ' + el?.characteristic,
-                  el.descriptors,
-                );
+                // console.info(
+                //   '\t\t\tDescriptors of ' + el?.characteristic,
+                //   el.descriptors,
+                // );
               }
             });
             return res;
@@ -284,12 +287,12 @@ export class Device {
         })
         .catch(async error => {
           console.error('BleManager.connect', error, index);
-          if (index >= 5) {
+          if (index >= maxAttemps) {
             return false;
           }
           if (error.indexOf('Could not find peripheral') !== -1) {
             // try to reconnect
-            await sleep(500);
+            await sleep();
             return this.handleReadData(characteristicUUID, ++index);
           }
         });
@@ -304,7 +307,7 @@ export class Device {
     characteristicUUID = RX,
   ) => {
     await this._checkManager();
-    await BleManager.connect(this.deviceUUID).then(async () => {
+    return BleManager.connect(this.deviceUUID).then(async () => {
       await BleManager.retrieveServices(this.deviceUUID);
       try {
         await BleManager.startNotification(
@@ -312,7 +315,7 @@ export class Device {
           serviceUUID,
           characteristicUUID,
         );
-        console.log(
+        console.info(
           'Notification request to ' +
             this.deviceUUID +
             ', service ' +
@@ -325,12 +328,12 @@ export class Device {
       } catch (error) {
         const buffer = Buffer.from(error);
         if (buffer) {
-          console.log(
+          console.info(
             'Error sendNotification from buffer:',
             buffer.toString('utf8'),
           );
         } else {
-          console.log('Error sendNotification plain:', error);
+          console.info('Error sendNotification plain:', error);
         }
         return false;
       }
@@ -369,7 +372,10 @@ export class Device {
     });
   };
 
-  checkBondedStatus = async (device = this.deviceUUID) => {
+  checkBondedStatus = async (device = this.deviceUUID, index = 0) => {
+    if (index >= maxAttemps) {
+      return false;
+    }
     await this._checkManager();
     const isBonded = await this.getBondedPeripherals(device);
     if (isBonded) {
@@ -377,8 +383,8 @@ export class Device {
       setDevice(device);
       return true;
     }
-    await sleep(1500);
-    return this.checkBondedStatus(device);
+    await sleep();
+    return this.checkBondedStatus(device, ++index);
   };
 
   _getConnectedDeviceIds = async serviceUUIDs => {
@@ -469,11 +475,10 @@ export class Device {
     index = 0,
   ) => {
     await this._checkManager();
-    await BleManager.connect(device)
+    return BleManager.connect(device)
       .then(async () => {
-        console.log('writeValueAndNotify ==> connected to ' + device);
         // Success code
-        return await BleManager.retrieveServices(device)
+        return BleManager.retrieveServices(device)
           .then(async () => {
             try {
               await BleManager.write(
@@ -482,13 +487,17 @@ export class Device {
                 characteristicUUID,
                 value,
               );
-              await BleManager.retrieveServices(device).then(async res => {
-                // console.log('retrieveServices', res);
-                // res.characteristics.map(el => {
-                //   console.log('\tservice ', el);
-                // });
-                return await this.sendNotification(serviceUUID, SOME);
-              });
+              const services = await BleManager.retrieveServices(device);
+              if (services) {
+                const notificationStatus = await this.sendNotification(
+                  serviceUUID,
+                  SOME,
+                );
+              }
+              // console.log('retrieveServices', res);
+              // res.characteristics.map(el => {
+              //   console.log('\tservice ', el);
+              // });
               return true;
             } catch (error) {
               let errorText = '';
@@ -521,7 +530,7 @@ export class Device {
         }
         if (error.indexOf('Could not find peripheral') !== -1) {
           // try to reconnect
-          await sleep(500);
+          await sleep();
           return this.writeValueAndNotify(
             device,
             serviceUUID,
@@ -537,9 +546,9 @@ export class Device {
     const command = sendDataCommand(deviceInfo.OTAMode);
     return await this.writeValueAndNotify(Buffer(command).toJSON().data).then(
       async res => {
-        await sleep(5000);
+        await sleep(5 * defaultTimeout);
         await this.searchBleDevices();
-        await sleep(3000);
+        await sleep(3 * defaultTimeout);
         const deviceID = get(this.getPeripherals(), '0.id', null);
         if (deviceID) {
           return await BleManager.connect(deviceID).then(async deviceInfo => {
@@ -694,6 +703,21 @@ export class Device {
       });
     }
   };
+
+  repeatFunc = async (func, times = 2, delay = 500) => {
+    return new Promise(resolve => {
+      let i = 0;
+      const interval = setInterval(async () => {
+        const res = await this[func]();
+        console.log('res repeatFunc', res);
+        i++;
+        if (i === times) {
+          clearInterval(interval);
+          resolve();
+        }
+      }, delay);
+    });
+  };
 }
 
 const _checkPermissionsLocal = result => {
@@ -764,7 +788,7 @@ const _calcChecksum = (dat, len) => {
   return chksum;
 };
 
-export const sleep = ms => {
+export const sleep = (ms = defaultTimeout) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
 

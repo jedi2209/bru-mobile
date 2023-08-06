@@ -60,8 +60,8 @@ const MainWrapper = props => {
       Animated.timing(animValue, {
         toValue,
         duration,
-        easing: Easing.inOut(Easing.ease),
         useNativeDriver: true,
+        easing: Easing.inOut(Easing.ease),
       }).start();
     };
     const hideTabBar = value => {
