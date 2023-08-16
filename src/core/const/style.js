@@ -5,6 +5,7 @@ const colors = {
     light: '#8CA474',
     mid: '#71883A',
     main: '#28502E',
+    tabbar: '#4e5736',
   },
   blue: '#1B2F33',
   black: '#202020',
@@ -17,10 +18,23 @@ const colors = {
   },
   gradient: {
     background: {
-      dark: ['#8f8f8f', '#7e7e7e', '#6f6f6f', '#6e6e6e', '#2f2f2f'],
+      dark: ['#5e5e5e', '#4e4e4e', '#4f4f4f', '#3e3e3e'],
       light: ['#F5F5F5', '#afafaf'],
     },
     backgroundTabbar: ['#242424', '#222222'],
+  },
+};
+
+const themeProfile = {
+  dark: {
+    Text: {
+      color: colors.white,
+    },
+  },
+  light: {
+    Text: {
+      color: colors.black,
+    },
   },
 };
 
@@ -83,18 +97,29 @@ const navigationTheme = {
     ...DarkTheme,
     colors: {
       ...DarkTheme.colors,
+      primary: colors.green.main,
       card: colors.green.mid,
       border: colors.green.light,
+      text: colors.gray.dark,
     },
   },
   light: {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
+      primary: colors.green.main,
       card: colors.green.mid,
       border: colors.green.light,
+      text: colors.black,
     },
   },
 };
 
-export {colors, fonts, tabBarStyle, headerNavigationStyle, navigationTheme};
+export {
+  colors,
+  themeProfile,
+  fonts,
+  tabBarStyle,
+  headerNavigationStyle,
+  navigationTheme,
+};

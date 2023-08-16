@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {useColorScheme, Platform} from 'react-native';
+import {useColorScheme, Platform, Text} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import NavBottom from '@nav/NavigationBottom';
@@ -13,6 +13,7 @@ import {firebase} from '@react-native-firebase/app-check';
 import {analyticsLog, logScreenView} from '@utils/analytics';
 import {pushUserData} from '@utils/userData';
 import {fetchFirmwareMeta} from '@utils/firmware';
+import isInternet from '@utils/isInternet';
 
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack';
@@ -47,7 +48,7 @@ if (__DEV__) {
     integrations: [
       new Sentry.ReactNativeTracing({
         routingInstrumentation,
-        enableUserInteractionTracing: true,
+        enableUserInteractionTracing: false,
         tracingOrigins: ['localhost', 'bru.shop', 'appspot.com'],
       }),
     ],
@@ -55,29 +56,35 @@ if (__DEV__) {
 }
 
 const _appCheckInit = async () => {
-  const rnfbProvider = firebase
-    .appCheck()
-    .newReactNativeFirebaseAppCheckProvider();
-  rnfbProvider.configure(FIREBASE_SETTINGS.appCheck);
-  try {
-    firebase
+  const connectionStatus = await isInternet();
+  if (!connectionStatus) {
+    return false;
+  }
+  if (Platform.OS === 'android') {
+    const rnfbProvider = firebase
       .appCheck()
-      .initializeAppCheck({
-        provider: rnfbProvider,
-        isTokenAutoRefreshEnabled: true,
-      })
-      .then(async () => {
-        try {
-          const {token} = await firebase.appCheck().getToken(true);
-          if (token.length > 0) {
-            console.log('AppCheck verification passed');
+      .newReactNativeFirebaseAppCheckProvider();
+    rnfbProvider.configure(FIREBASE_SETTINGS.appCheck);
+    try {
+      firebase
+        .appCheck()
+        .initializeAppCheck({
+          provider: rnfbProvider,
+          isTokenAutoRefreshEnabled: true,
+        })
+        .then(async () => {
+          try {
+            const {token} = await firebase.appCheck().getToken(true);
+            if (token.length > 0) {
+              console.log('AppCheck verification passed');
+            }
+          } catch (error) {
+            console.log('AppCheck verification failed', error);
           }
-        } catch (error) {
-          console.log('AppCheck verification failed', error);
-        }
-      });
-  } catch (error) {
-    console.error('AppCheck verification failed');
+        });
+    } catch (error) {
+      console.error('AppCheck verification failed');
+    }
   }
 };
 
