@@ -7,51 +7,48 @@ import {colors} from '@styleConst';
 const InstantBrewScreen = props => {
   return (
     <Wrapper {...props}>
-      <Icon name="rocket" size={30} color={colors.black} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
       <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
-      <Text>Home Screen</Text>
-      <Icon name="rocket" size={30} color={colors.black} />
+      <Icon name="rocket" size={30} />
     </Wrapper>
   );
 };

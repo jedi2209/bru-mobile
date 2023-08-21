@@ -32,9 +32,15 @@
 		<dict>
 			<key>localhost</key>
 			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
+			<key>NSAllowsLocalNetworking</key>
+			<true/>
 		</dict>
 	</dict>
 	<key>NSBluetoothAlwaysUsageDescription</key>

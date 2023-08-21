@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, Alert, useColorScheme} from 'react-native';
+import {Text, View, StyleSheet, Alert} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {createProgress} from '@gluestack-ui/progress';
 import {
@@ -8,7 +8,16 @@ import {
 } from '../../gluestack/core/Progress/styled-components';
 
 import {DFUEmitter} from 'react-native-nordic-dfu';
-import {HStack, Pressable, Button, VStack, Toast, useToast} from '@gluestack';
+import {
+  HStack,
+  Pressable,
+  Button,
+  VStack,
+  Toast,
+  ToastTitle,
+  ToastDescription,
+  useToast,
+} from '@gluestack';
 import {useStore} from 'effector-react';
 import {$deviceSettingsStore} from '@store/device';
 import {$currentFirmwareStore} from '@store/firmware';
@@ -19,7 +28,7 @@ import {Device, sleep} from '@utils/device';
 import {getFileURL, downloadFile, getTextFromFirmware} from '@utils/firmware';
 
 import {get} from 'lodash';
-import {tabBarStyle, colors} from '@styleConst';
+import {colors} from '@styleConst';
 
 const SECONDS_TO_SCAN_FOR = 2;
 const DEVICE_NAME_PREFIX = 'BRU';
@@ -43,7 +52,7 @@ const _renderProgressBar = value => {
   );
 };
 
-const _renderProgress = (updateStatus, progress) => {
+const _renderProgress = (updateStatus, progress, props) => {
   if (!updateStatus) {
     return null;
   }
@@ -73,7 +82,16 @@ const _renderProgress = (updateStatus, progress) => {
     case 'finish':
       return (
         <View style={styles.statusWrapper}>
-          <Text>Update Complete!</Text>
+          <Text>Update is complete!</Text>
+          <Text>Please wait a few seconds for BRU to reboot.</Text>
+          <Button
+            mt="$4"
+            size="lg"
+            onPress={() => {
+              props.navigation.goBack();
+            }}>
+            <Button.Text>Hurra!🎉</Button.Text>
+          </Button>
         </View>
       );
     default:
@@ -90,19 +108,26 @@ const _renderProgress = (updateStatus, progress) => {
 };
 
 const UpdateFirmwareScreen = props => {
-  const device = useStore($deviceSettingsStore);
+  let device = useStore($deviceSettingsStore);
+  if (!get(device, 'id', false) && get(props, 'route.params.device', false)) {
+    device = props.route.params.device;
+  }
   const firmware = useStore($currentFirmwareStore);
   const lang = useStore($langSettingsStore);
-  if (device) {
+  if (device && device?.id) {
     deviceManager.setCurrentDevice(device);
   }
 
-  const phoneTheme = useColorScheme();
   const [progress, setProgress] = useState(0);
   const [isDownloading, setDownloading] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
 
   const toast = useToast();
+
+  if (!device || !device?.id) {
+    props.navigation.goBack();
+    return false;
+  }
 
   const _updateFirmware = async (itemID, file) => {
     setDownloading(itemID);
@@ -114,11 +139,11 @@ const UpdateFirmwareScreen = props => {
         return (
           <Toast nativeId={id} action="info" variant="accent">
             <VStack space="lg">
-              <Toast.Title>🔄 Download firmware</Toast.Title>
-              <Toast.Description>
+              <ToastTitle>🔄 Download firmware</ToastTitle>
+              <ToastDescription>
                 Downloading firmware will take only a few seconds. Please do not
                 close the app.
-              </Toast.Description>
+              </ToastDescription>
             </VStack>
           </Toast>
         );
@@ -135,10 +160,10 @@ const UpdateFirmwareScreen = props => {
           return (
             <Toast nativeId={id} action="error" variant="accent">
               <VStack space="lg">
-                <Toast.Title>😢 Error</Toast.Title>
-                <Toast.Description>
+                <ToastTitle>😢 Error</ToastTitle>
+                <ToastDescription>
                   Sorry, we can't download firmware. Please try again later.
-                </Toast.Description>
+                </ToastDescription>
               </VStack>
             </Toast>
           );
@@ -170,32 +195,36 @@ const UpdateFirmwareScreen = props => {
             setUpdateStatus('updating');
             break;
           case 'DEVICE_DISCONNECTING':
+            toast.show({
+              placement: 'top',
+              duration: 5000,
+              render: ({id}) => {
+                return (
+                  <Toast nativeId={id} action="success" variant="accent">
+                    <VStack space="lg">
+                      <ToastTitle>✅ Update is complete!</ToastTitle>
+                      <ToastDescription>
+                        Update is complete. Please wait a few seconds for BRU to
+                        reboot.
+                      </ToastDescription>
+                    </VStack>
+                  </Toast>
+                );
+              },
+              onCloseComplete: () => {
+                setUpdateStatus(false);
+              },
+            });
             setUpdateStatus('finish');
             setProgress(0);
             break;
         }
       });
-      deviceManager.startDFU(fileDownloaded).then(finish => {
-        toast.show({
-          placement: 'top',
-          duration: 5000,
-          render: ({id}) => {
-            return (
-              <Toast nativeId={id} action="success" variant="accent">
-                <VStack space="lg">
-                  <Toast.Title>✅ Update is complete!</Toast.Title>
-                  <Toast.Description>
-                    Update is complete. Please wait a few seconds for BRU to
-                    reboot.
-                  </Toast.Description>
-                </VStack>
-              </Toast>
-            );
-          },
-          onCloseComplete: () => {
-            setUpdateStatus(false);
-          },
-        });
+      deviceManager.startDFU(fileDownloaded).then(async finishFirst => {
+        if (!finishFirst) {
+          const finishSecond = await deviceManager.startDFU(fileDownloaded);
+          console.log('finishSecond', finishSecond);
+        }
       });
     } else {
       console.error('fileDownloaded', fileDownloaded);
@@ -286,7 +315,7 @@ const UpdateFirmwareScreen = props => {
   return (
     <Wrapper {...props}>
       {updateStatus
-        ? _renderProgress(updateStatus, progress)
+        ? _renderProgress(updateStatus, progress, props)
         : _renderFirmware()}
     </Wrapper>
   );

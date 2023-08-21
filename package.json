@@ -17,7 +17,7 @@
     "lint": "eslint .",
     "postinstall": "npx patch-package && cd ios && pod update && cd ../ && npx pod-install;",
     "react": "watchman watch-del $(pwd);  watchman watch-project $(pwd); yarn start;",
-    "start": "react-native start --resetCache",
+    "start": "react-native start --resetCache ",
     "test": "jest",
     "version": "./version.sh"
   },

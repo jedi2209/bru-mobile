@@ -10,7 +10,7 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import {Select, HStack} from '@gluestack';
+import {Select, HStack, Button} from '@gluestack';
 import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
@@ -24,6 +24,7 @@ import {Device, sendDataCommand, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
+import {convertStyledToStyledVerbosed} from '@dank-style/react';
 
 const SECONDS_TO_SCAN_FOR = 5;
 const DEVICE_NAME_PREFIX = 'BRU';
@@ -62,30 +63,58 @@ const SettingsScreen = props => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const searchDevices = async () => {
+    const permissionGranted = await deviceManager.handlePermissions();
     deviceManager.setCurrentDevice(null);
     resetDevice();
     setIsScanning(true);
-    await deviceManager.handlePermissions().then(res => {
-      if (res) {
-        deviceManager.repeatFunc('searchBleDevices');
+    if (permissionGranted) {
+      deviceManager.clearPeripherals();
+      const devices = await deviceManager.repeatFunc('searchBleDevices');
+      if (devices) {
         return sleep(3500).then(() => {
-          setPeripherals(deviceManager.getPeripherals());
+          const peripheralsTmp = deviceManager.getPeripherals();
+          if (!peripheralsTmp || peripheralsTmp.length === 0) {
+            Alert.alert(
+              'No devices found 🤷‍♂️',
+              'Please try again.\r\n\r\nMake sure that you turn on Bluetooth on BRU device.\r\n\r\nTo do it just navigate to 🛠️Machine Setup => Bluetooth',
+            );
+          } else {
+            setPeripherals(peripheralsTmp);
+          }
           setIsScanning(false);
         });
-      } else {
-        setIsScanning(false);
       }
-    });
+    } else {
+      deviceManager.handlePermissions().then(res => {
+        console.log('deviceManager.handlePermissions() res', res);
+      });
+      setIsScanning(false);
+    }
   };
 
   const _pairDevice = async itemID => {
     const deviceInfo = await deviceManager.connectToDevice(itemID);
-    const bondedStatus = await deviceManager.checkBondedStatus(itemID);
-    if (bondedStatus === true) {
-      deviceManager.setCurrentDevice(deviceInfo);
-      setDevice(deviceInfo);
-      setLoading(false);
+    const deviceStatus = deviceManager.getPeripherals(itemID);
+    if (deviceInfo) {
+      if (deviceStatus?.connected) {
+        const bondedStatus = await deviceManager.checkBondedStatus(
+          itemID,
+          0,
+          3,
+        );
+        console.log('bondedStatus', bondedStatus);
+        if (bondedStatus === true) {
+          deviceManager.setCurrentDevice(deviceInfo);
+          setDevice(deviceInfo);
+        }
+      } else {
+        Alert.alert(
+          'Connection error',
+          '\r\nMake sure that you choose "Pair New Device" from 🛠️Machine Setup menu on BRU device',
+        );
+      }
     }
+    setLoading(false);
   };
 
   const _unpairDevice = async () => {
@@ -109,12 +138,40 @@ const SettingsScreen = props => {
     return (
       <TouchableOpacity
         onPress={async () => {
+          // navigation.navigate('UpdateFirmwareScreen', {device: item});
           setLoading(true);
-          const pairingStatus = await _pairDevice(item.id);
-          console.log('pairingStatus', pairingStatus);
-          if (pairingStatus === true) {
-            setLoading(false);
-          }
+          Alert.alert(
+            'Pairing Mode',
+            'Please activate first pairing mode on BRU device.\r\n\r\nTo do this go to Machine Setup => "Pair New Device" ->\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
+            [
+              {
+                text: 'Done!',
+                style: 'default',
+                isPreferred: true,
+                onPress: async () => {
+                  const pairingStatus = await _pairDevice(item.id);
+                  console.log('pairingStatus', pairingStatus);
+                  if (pairingStatus === true) {
+                    setLoading(false);
+                  }
+                },
+              },
+              {
+                text: 'Cancel',
+                style: 'cancel',
+                onPress: () => {
+                  setLoading(false);
+                },
+              },
+            ],
+            {
+              cancelable: true,
+              onDismiss: () => {
+                setLoading(false);
+                return false;
+              },
+            },
+          );
         }}>
         <View
           style={{
@@ -140,13 +197,13 @@ const SettingsScreen = props => {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <Text
+            {/* <Text
               style={{
                 fontSize: 14,
                 color: isDarkMode ? colors.white : colors.black,
               }}>
               RSSI: {item.rssi}
-            </Text>
+            </Text> */}
             <Text
               style={{
                 fontSize: 14,
@@ -284,7 +341,7 @@ const SettingsScreen = props => {
             }}>
             <Text style={styles.buttonTextStyle}>{'Get Machine setup'}</Text>
           </Pressable> */}
-          <Pressable
+          {/* <Pressable
             style={[
               styles.buttonStyle,
               {backgroundColor: isBrewing ? 'red' : colors.green.mid},
@@ -310,7 +367,7 @@ const SettingsScreen = props => {
             <Text style={styles.buttonTextStyle}>
               {!isBrewing ? 'Start Brew' : '== Stop Brew'}
             </Text>
-          </Pressable>
+          </Pressable> */}
           {/* <Pressable
             style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
             onPress={async () => {
@@ -372,23 +429,24 @@ const SettingsScreen = props => {
         </>
       ) : (
         <>
-          <TouchableOpacity
-            activeOpacity={0.5}
-            style={[styles.buttonStyle, {marginBottom: 40}]}
+          <Button
+            // activeOpacity={0.5}
+            variant={'primary'}
+            // style={[styles.buttonStyle]}
             onPress={() => searchDevices()}>
             <Text style={styles.buttonTextStyle}>
               {isScanning ? 'Scanning...' : 'Scan Bluetooth Devices'}
             </Text>
-          </TouchableOpacity>
+          </Button>
           {isScanning ? (
-            <ActivityIndicator size="large" />
+            <ActivityIndicator size="large" style={{marginTop: '10%'}} />
           ) : peripherals && peripherals.length ? (
             <>
               <Text
                 style={{
                   fontSize: 20,
                   marginLeft: 10,
-                  marginBottom: 5,
+                  marginVertical: 5,
                   color: isDarkMode ? colors.white : colors.black,
                 }}>
                 Nearby Devices:
@@ -410,14 +468,14 @@ const SettingsScreen = props => {
           isDisabled={false}
           isInvalid={false}
           w={'70%'}
-          ml={10}
+          m={10}
           onValueChange={res => setLanguage(res)}>
           <Select.Trigger variant="underlined">
             <Select.Input placeholder={lang} />
           </Select.Trigger>
           <Select.Portal>
             <Select.Backdrop />
-            <Select.Content>
+            <Select.Content pb={30}>
               <Select.DragIndicatorWrapper>
                 <Select.DragIndicator />
               </Select.DragIndicatorWrapper>
@@ -431,7 +489,7 @@ const SettingsScreen = props => {
         selectable={false}
         style={{
           alignSelf: 'center',
-          color: isDarkMode ? colors.white : colors.black,
+          color: isDarkMode ? colors.gray.dark : colors.black,
           marginTop: 20,
         }}>
         {'ver. ' +

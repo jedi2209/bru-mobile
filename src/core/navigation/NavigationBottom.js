@@ -67,7 +67,8 @@ const NavigationBottom = props => {
         tabBarStyle: [tabBarStyle.default, tabBarStyle[phoneTheme]],
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.white,
-        tabBarActiveBackgroundColor: '#FFFFFF1A',
+        tabBarInactiveTintColor: colors.gray.inactive,
+        tabBarActiveBackgroundColor: colors.green.tabbar,
         tabBarBackground: () => (
           <View
             colors={colors.gradient.backgroundTabbar}
@@ -87,19 +88,25 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          header: () => {
+          headerTransparent: true,
+          headerBlurEffect: 'regular',
+          headerBackground: () => {
             return (
               <SafeAreaView
                 style={[
                   headerNavigationStyle.viewWrapper.default,
                   headerNavigationStyle.viewWrapper[Platform.OS],
-                ]}>
-                <Logo
-                  width={headerLogoSize}
-                  height={headerLogoSize}
-                  style={headerNavigationStyle.logo[Platform.OS]}
-                />
-              </SafeAreaView>
+                ]}
+              />
+            );
+          },
+          headerTitle: () => {
+            return (
+              <Logo
+                width={headerLogoSize}
+                height={headerLogoSize}
+                style={headerNavigationStyle.logo[Platform.OS]}
+              />
             );
           },
           tabBarIcon: ({focused}) => (

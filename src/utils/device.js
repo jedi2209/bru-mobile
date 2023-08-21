@@ -25,7 +25,7 @@ const SOME = 'aae21541-71b5-42a1-8c3c-f9cf6ac969d0';
 const DEFAULT_MTU = 200;
 
 const defaultTimeout = 1000;
-const maxAttemps = 30;
+const maxAttemps = 10;
 
 const deviceInfo = {
   // check2: {
@@ -109,6 +109,15 @@ export class Device {
         'BleManagerDidUpdateValueForCharacteristic',
         this._handleUpdateValueForCharacteristic,
       ),
+      bleManagerEmitter.addListener(
+        'BleManagerDidUpdateNotificationStateFor',
+        this._handleUpdateNotificationStateFor,
+      ),
+
+      bleManagerEmitter.addListener(
+        'BleManagerDidUpdateState',
+        this._handleUpdateState,
+      ),
     ];
   }
 
@@ -120,6 +129,10 @@ export class Device {
   };
 
   _checkManager = async () => {
+    const permissionGranted = await this.handlePermissions();
+    if (!permissionGranted) {
+      return false;
+    }
     if (!this.bleStarted) {
       BleManager.start({showAlert: true})
         .then(() => {
@@ -172,41 +185,43 @@ export class Device {
     return this.deviceName;
   };
 
-  getPeripherals = () => {
+  getPeripherals = (itemID = null) => {
+    if (itemID) {
+      return this.peripherals.get(itemID);
+    }
     return Array.from(this.peripherals.values());
   };
 
+  clearPeripherals = () => {
+    this.peripherals = new Map();
+    return this.peripherals;
+  };
+
   searchBleDevices = async () => {
-    await this._checkManager();
-    console.log('Searching for available BLE devices...');
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     return BleManager.scan(
       this.settings.SERVICE_UUIDS,
       this.settings.SECONDS_TO_SCAN_FOR,
       this.settings.ALLOW_DUPLICATES,
     )
       .then(() => {
-        console.info('[searchBleDevices] promise returned successfully.');
-        // return BleManager.getDiscoveredPeripherals([]).then(
-        //   discoveredDevices => {
-        //     if (discoveredDevices.length === 0) {
-        //       console.log('No BLE devices found.');
-        //     } else {
-        //       console.log(`Found ${discoveredDevices.length} BLE devices:`);
-        //       discoveredDevices.forEach(device => {
-        //         console.log(`- ${device.id}: ${device.name}`);
-        //       });
-        //     }
-        //   },
-        // );
+        return true;
       })
       .catch(error => {
         console.error('[searchBleDevices] promise returned in error', error);
+        return false;
       });
   };
 
   // Function to connect to a BLE device
   connectToDevice = async deviceUUID => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     try {
       this._addOrUpdatePeripheral(deviceUUID, {
         ...this.device,
@@ -306,7 +321,10 @@ export class Device {
     serviceUUID = mainUUID,
     characteristicUUID = RX,
   ) => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     return BleManager.connect(this.deviceUUID).then(async () => {
       await BleManager.retrieveServices(this.deviceUUID);
       try {
@@ -342,24 +360,30 @@ export class Device {
 
   // Listen for notifications
   listenNotifications = async (serviceUUID, characteristicUUID) => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     return BleManager.monitorCharacteristicForDevice(
       this.deviceUUID,
       serviceUUID,
       characteristicUUID,
       (error, characteristic) => {
         if (error) {
-          console.log('Error receiving notification:', error);
+          console.error('Error receiving notification:', error);
           return;
         }
 
-        console.log('Received notification:', characteristic.value);
+        console.info('Received notification:', characteristic.value);
       },
     );
   };
 
   removeBond = async (device = this.deviceUUID) => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     await this.getBondedPeripherals().then(res => {
       if (res) {
         BleManager.removeBond(device).catch(err => {
@@ -372,19 +396,26 @@ export class Device {
     });
   };
 
-  checkBondedStatus = async (device = this.deviceUUID, index = 0) => {
-    if (index >= maxAttemps) {
+  checkBondedStatus = async (
+    device = this.deviceUUID,
+    index = 0,
+    maxAttempsLocal = maxAttemps,
+  ) => {
+    if (index >= maxAttempsLocal) {
       return false;
     }
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     const isBonded = await this.getBondedPeripherals(device);
     if (isBonded) {
       this.setCurrentDevice(device);
       setDevice(device);
       return true;
     }
-    await sleep();
-    return this.checkBondedStatus(device, ++index);
+    await sleep(5000);
+    return this.checkBondedStatus(device, ++index, maxAttempsLocal);
   };
 
   _getConnectedDeviceIds = async serviceUUIDs => {
@@ -395,18 +426,22 @@ export class Device {
   };
 
   getBondedPeripherals = async (device = this.deviceUUID) => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     let items = null;
     if (isAndroid) {
       items = await BleManager.getBondedPeripherals();
     } else {
-      const command = sendDataCommand(0xb6);
+      const command = sendDataCommand(0xb4);
       const isConnected = await this.writeValueAndNotify(
         Buffer(command).toJSON().data,
         mainUUID,
         RX,
         device,
       );
+      console.log('getBondedPeripherals isConnected', isConnected);
       if (!isConnected) {
         return false;
       }
@@ -428,14 +463,17 @@ export class Device {
     serviceUUID = mainUUID,
     characteristicUUID = RX,
   ) => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     return await BleManager.connect(this.deviceUUID).then(async () => {
       // Success code
-      return await BleManager.retrieveServices(this.deviceUUID).then(
-        async () => {
+      return await BleManager.retrieveServices(this.deviceUUID)
+        .then(async () => {
           BleManager.requestMTU(this.deviceUUID, DEFAULT_MTU)
             .then(async mtu => {
-              console.log('MTU size changed to ' + mtu + ' bytes', value);
+              console.info('MTU size changed to ' + mtu + ' bytes', value);
               try {
                 await BleManager.writeWithoutResponse(
                   this.deviceUUID,
@@ -443,7 +481,7 @@ export class Device {
                   characteristicUUID,
                   value,
                 ).then(async () => {
-                  console.log(
+                  console.info(
                     'writeValue => writeWithoutResponse written successfully',
                   );
                   return true;
@@ -451,19 +489,25 @@ export class Device {
               } catch (error) {
                 const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
                 if (buffer) {
-                  console.log('Error writing value:', buffer.toString('utf8')); // ответ переводим просто в строку
+                  console.error(
+                    'Error writing value:',
+                    buffer.toString('utf8'),
+                  ); // ответ переводим просто в строку
                 } else {
-                  console.log('Error writing value:', error);
+                  console.info('Error writing value:', error);
                 }
                 return false;
               }
             })
             .catch(error => {
               // Failure code
-              console.log(error);
+              console.error('writeValue => BleManager.requestMTU', error);
             });
-        },
-      );
+        })
+        .catch(error => {
+          // Failure code
+          console.error('writeValue => BleManager.retrieveServices', error);
+        });
     });
   };
 
@@ -474,7 +518,10 @@ export class Device {
     device = this.deviceUUID,
     index = 0,
   ) => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     return BleManager.connect(device)
       .then(async () => {
         // Success code
@@ -507,6 +554,7 @@ export class Device {
               } else {
                 errorText = error;
               }
+              console.log('errorText', errorText);
               switch (errorText) {
                 case 'Encryption is insufficient.': // iOS not paired
                   return false;
@@ -544,35 +592,41 @@ export class Device {
 
   startDFU = async filePath => {
     const command = sendDataCommand(deviceInfo.OTAMode);
-    return await this.writeValueAndNotify(Buffer(command).toJSON().data).then(
-      async res => {
-        await sleep(5 * defaultTimeout);
-        await this.searchBleDevices();
-        await sleep(3 * defaultTimeout);
-        const deviceID = get(this.getPeripherals(), '0.id', null);
-        if (deviceID) {
-          return await BleManager.connect(deviceID).then(async deviceInfo => {
-            return NordicDFU.startDFU({
-              deviceAddress: deviceID,
-              filePath: isAndroid ? filePath : 'file://' + filePath,
-            })
-              .then(res => {
-                // {"deviceAddress": "F8:C9:42:C4:61:D6"}
-                // console.info('DFU transfer done:', res);
-                DFUEmitter.removeAllListeners('DFUStateChanged');
-                DFUEmitter.removeAllListeners('DFUProgress');
-                return res;
-              })
-              .catch(err => {
-                console.error('NordicDFU.startDFU error', err);
-                return false;
-              });
-          });
-        } else {
-          console.error('Device not found');
-        }
-      },
+    await this.repeatFunc(
+      'writeValueAndNotify',
+      Buffer(command).toJSON().data,
+      3,
     );
+    await sleep(5 * defaultTimeout);
+    const devices = await this.repeatFunc('searchBleDevices');
+    if (devices) {
+      await sleep(3 * defaultTimeout);
+      const deviceID = get(this.getPeripherals(), '0.id', null);
+      if (deviceID) {
+        return await BleManager.connect(deviceID).then(async deviceInfo => {
+          return NordicDFU.startDFU({
+            deviceAddress: deviceID,
+            filePath: isAndroid ? filePath : 'file://' + filePath,
+          })
+            .then(res => {
+              // {"deviceAddress": "F8:C9:42:C4:61:D6"}
+              // console.info('DFU transfer done:', res);
+              DFUEmitter.removeAllListeners('DFUStateChanged');
+              DFUEmitter.removeAllListeners('DFUProgress');
+              return res;
+            })
+            .catch(err => {
+              console.error('startDFU => NordicDFU.startDFU error', err);
+              return false;
+            });
+        });
+      } else {
+        console.error('startDFU => Device not found');
+        return false;
+      }
+    } else {
+      return false;
+    }
   };
 
   checkUpdateFirmware = () => {
@@ -593,6 +647,14 @@ export class Device {
   _handleUpdateValueForCharacteristic = data => {
     const response = Buffer.from(data.value).toString('utf8');
     console.info(response);
+  };
+
+  _handleUpdateNotificationStateFor = data => {
+    console.log('_handleUpdateNotificationStateFor', data);
+  };
+
+  _handleUpdateState = state => {
+    console.log('_handleUpdateState', state);
   };
 
   _handleDisconnectedPeripheral = event => {
@@ -621,7 +683,10 @@ export class Device {
   };
 
   _readDataFromBleDevice = async (deviceID, characteristic) => {
-    await this._checkManager();
+    const preCheck = await this._checkManager();
+    if (!preCheck) {
+      return false;
+    }
     return await BleManager.retrieveServices(deviceID) // запрашиваем сначала все сервисы, заодно подключаясь к устройству
       .then(async () => {
         // затем начинаем читать
@@ -667,10 +732,10 @@ export class Device {
             _showPermissionAlert();
             return false;
           }
-          console.info(
-            '[handlePermissions] User accepts runtime permissions android 12+',
-            result,
-          );
+          // console.info(
+          //   '[handlePermissions] User accepts runtime permissions android 12+',
+          //   result,
+          // );
           return true;
         },
       );
@@ -704,16 +769,15 @@ export class Device {
     }
   };
 
-  repeatFunc = async (func, times = 2, delay = 500) => {
+  repeatFunc = async (func, params = null, times = 3, delay = 500) => {
     return new Promise(resolve => {
       let i = 0;
       const interval = setInterval(async () => {
-        const res = await this[func]();
-        console.log('res repeatFunc', res);
+        const res = await this[func](params);
         i++;
         if (i === times) {
           clearInterval(interval);
-          resolve();
+          resolve(res);
         }
       }, delay);
     });
@@ -737,7 +801,7 @@ const _checkPermissionsLocal = result => {
 const _showPermissionAlert = () => {
   Alert.alert(
     'Error',
-    'Please enable location and bluetooth permissions to be able to find BRU machine',
+    'Please enable Location and Bluetooth permissions to be able to find and communicate with BRU machine',
     [
       {
         text: 'Open Settings',
