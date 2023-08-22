@@ -132,6 +132,38 @@ const UpdateFirmwareScreen = props => {
   const _updateFirmware = async (itemID, file) => {
     setDownloading(itemID);
     setUpdateStatus('start');
+    const checkPermissions = await deviceManager._checkManager();
+    console.log('checkPermissions', checkPermissions);
+    if (!checkPermissions) {
+      await sleep(5000);
+      const checkPermissionsSecond = await deviceManager._checkManager();
+      console.log('checkPermissionsSecond', checkPermissions);
+      if (!checkPermissionsSecond) {
+        toast.show({
+          placement: 'top',
+          duration: 5000,
+          render: ({id}) => {
+            return (
+              <Toast nativeId={id} action="success" variant="accent">
+                <VStack space="lg">
+                  <ToastTitle>✅ Update is complete!</ToastTitle>
+                  <ToastDescription>
+                    Update is complete. Please wait a few seconds for BRU to
+                    reboot.
+                  </ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+          onCloseComplete: () => {
+            setUpdateStatus(false);
+          },
+        });
+        setDownloading(false);
+        setUpdateStatus(false);
+        return false;
+      }
+    }
     toast.show({
       placement: 'top',
       duration: 5000,
@@ -150,9 +182,6 @@ const UpdateFirmwareScreen = props => {
       },
     });
     const filePath = await getFileURL('firmware/' + file).catch(err => {
-      console.error('getFileURL', err);
-      setDownloading(false);
-      setUpdateStatus(false);
       toast.show({
         placement: 'top',
         duration: 5000,
@@ -169,13 +198,12 @@ const UpdateFirmwareScreen = props => {
           );
         },
       });
-      return false;
-    });
-    const fileDownloaded = await downloadFile(filePath, file).catch(err => {
-      console.error('downloadFile', err);
       setDownloading(false);
       setUpdateStatus(false);
-      return false;
+    });
+    const fileDownloaded = await downloadFile(filePath, file).catch(err => {
+      setDownloading(false);
+      setUpdateStatus(false);
     });
     if (fileDownloaded) {
       await sleep(6000);
@@ -212,7 +240,7 @@ const UpdateFirmwareScreen = props => {
                 );
               },
               onCloseComplete: () => {
-                setUpdateStatus(false);
+                setUpdateStatus('finish');
               },
             });
             setUpdateStatus('finish');
@@ -223,7 +251,10 @@ const UpdateFirmwareScreen = props => {
       deviceManager.startDFU(fileDownloaded).then(async finishFirst => {
         if (!finishFirst) {
           const finishSecond = await deviceManager.startDFU(fileDownloaded);
-          console.log('finishSecond', finishSecond);
+          if (!finishSecond) {
+            setUpdateStatus(false);
+            setProgress(0);
+          }
         }
       });
     } else {
@@ -287,6 +318,7 @@ const UpdateFirmwareScreen = props => {
                   },
                   {
                     text: 'Update',
+                    isPreferred: true,
                     style: 'destructive',
                     onPress: async () => _updateFirmware(itemID, file),
                   },

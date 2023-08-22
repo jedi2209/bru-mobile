@@ -32,6 +32,27 @@ const headerLogoSize = 50;
 const Tab = createBottomTabNavigator();
 const StackSettings = createStackNavigator();
 
+const headerTitle = () => {
+  return (
+    <Logo
+      width={headerLogoSize}
+      height={headerLogoSize}
+      style={headerNavigationStyle.logo[Platform.OS]}
+    />
+  );
+};
+
+const headerBackground = () => {
+  return (
+    <SafeAreaView
+      style={[
+        headerNavigationStyle.viewWrapper.default,
+        headerNavigationStyle.viewWrapper[Platform.OS],
+      ]}
+    />
+  );
+};
+
 const SettingsStackView = ({navigation, route}) => (
   <StackSettings.Navigator initialRouteName="SettingsScreen">
     <StackSettings.Screen
@@ -41,7 +62,8 @@ const SettingsStackView = ({navigation, route}) => (
         scroll: true,
       }}
       options={{
-        headerShown: false,
+        headerShown: true,
+        headerTitle,
       }}
     />
     <StackSettings.Screen
@@ -51,7 +73,9 @@ const SettingsStackView = ({navigation, route}) => (
         scroll: true,
       }}
       options={{
-        headerShown: false,
+        headerBackTitle: 'Back',
+        headerShown: true,
+        headerTitle,
       }}
     />
   </StackSettings.Navigator>
@@ -88,27 +112,7 @@ const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
-          headerTransparent: true,
-          headerBlurEffect: 'regular',
-          headerBackground: () => {
-            return (
-              <SafeAreaView
-                style={[
-                  headerNavigationStyle.viewWrapper.default,
-                  headerNavigationStyle.viewWrapper[Platform.OS],
-                ]}
-              />
-            );
-          },
-          headerTitle: () => {
-            return (
-              <Logo
-                width={headerLogoSize}
-                height={headerLogoSize}
-                style={headerNavigationStyle.logo[Platform.OS]}
-              />
-            );
-          },
+          headerTitle,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="instantBrew"
@@ -230,26 +234,13 @@ const NavigationBottom = props => {
         name="Settings"
         component={SettingsStackView}
         options={{
-          header: () => {
-            return (
-              <SafeAreaView
-                style={[
-                  headerNavigationStyle.viewWrapper.default,
-                  headerNavigationStyle.viewWrapper[Platform.OS],
-                ]}>
-                <Logo
-                  width={headerLogoSize}
-                  height={headerLogoSize}
-                  style={headerNavigationStyle.logo[Platform.OS]}
-                />
-              </SafeAreaView>
-            );
-          },
+          headerShown: false,
+          headerBackground,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="settings"
-              focused={focused}
               iconSize={iconSize}
+              focused={focused}
               title="MenuBottom.Settings"
             />
           ),
@@ -258,6 +249,34 @@ const NavigationBottom = props => {
             borderTopRightRadius: 10,
             borderBottomRightRadius: 10,
           },
+          // header: () => {
+          //   return (
+          //     <SafeAreaView
+          //       style={[
+          //         headerNavigationStyle.viewWrapper.default,
+          //         headerNavigationStyle.viewWrapper[Platform.OS],
+          //       ]}>
+          //       <Logo
+          //         width={headerLogoSize}
+          //         height={headerLogoSize}
+          //         style={headerNavigationStyle.logo[Platform.OS]}
+          //       />
+          //     </SafeAreaView>
+          //   );
+          // },
+          // tabBarIcon: ({focused}) => (
+          //   <TabBarIcon
+          //     iconName="settings"
+          //     focused={focused}
+          //     iconSize={iconSize}
+          //     title="MenuBottom.Settings"
+          //   />
+          // ),
+          // tabBarItemStyle: {
+          //   borderRadius: 0,
+          //   borderTopRightRadius: 10,
+          //   borderBottomRightRadius: 10,
+          // },
         }}
       />
     </Tab.Navigator>

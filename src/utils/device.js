@@ -1,4 +1,5 @@
 import BleManager from 'react-native-ble-manager';
+import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 import {
   NativeModules,
   NativeEventEmitter,
@@ -9,6 +10,7 @@ import {
 } from 'react-native';
 import {setDevice, resetDevice} from '@store/device';
 import {getFirmwareData} from '@utils/firmware';
+import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {get} from 'lodash';
 import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
 var Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
@@ -85,6 +87,8 @@ export class Device {
     this.serviceUUID = null;
     this.characteristicUUID = null;
     this.bleStarted = false;
+    this.bluetoothState = false;
+    this.permissionGranted = false;
 
     this.settings = {
       SECONDS_TO_SCAN_FOR,
@@ -129,8 +133,9 @@ export class Device {
   };
 
   _checkManager = async () => {
-    const permissionGranted = await this.handlePermissions();
-    if (!permissionGranted) {
+    const bluetoothState = await this.handleBluetoothState();
+    if (!bluetoothState) {
+      _showBluetoothAlert();
       return false;
     }
     if (!this.bleStarted) {
@@ -147,7 +152,11 @@ export class Device {
           return this._checkManager();
         });
     }
-    console.info('BleManager already started');
+    const permissionGranted = await this.handlePermissions();
+    if (!permissionGranted) {
+      _showPermissionAlert();
+      return false;
+    }
     return true;
   };
 
@@ -385,7 +394,7 @@ export class Device {
       return false;
     }
     await this.getBondedPeripherals().then(res => {
-      if (res) {
+      if (res && isAndroid) {
         BleManager.removeBond(device).catch(err => {
           console.error('BleManager.removeBond error', err);
         });
@@ -654,6 +663,11 @@ export class Device {
   };
 
   _handleUpdateState = state => {
+    if (get(state, 'state') === 'unauthorized') {
+      this.permissionGranted = false;
+    } else {
+      this.permissionGranted = true;
+    }
     console.log('_handleUpdateState', state);
   };
 
@@ -712,9 +726,30 @@ export class Device {
       });
   };
 
+  handleBluetoothState = async () => {
+    const bluetoothState = await BluetoothStateManager.getState();
+    this.bluetoothState = false;
+    if (bluetoothState === 'PoweredOn') {
+      this.bluetoothState = true;
+    }
+    return this.bluetoothState;
+  };
+
   handlePermissions = async () => {
     if (!isAndroid) {
-      return true;
+      const result = await check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+        case RESULTS.DENIED:
+        case RESULTS.BLOCKED:
+          this.permissionGranted = false;
+          break;
+        case RESULTS.LIMITED:
+        case RESULTS.GRANTED:
+          this.permissionGranted = true;
+          break;
+      }
+      return this.permissionGranted;
     }
     if (Platform.Version >= 31) {
       const permissions = [
@@ -729,6 +764,7 @@ export class Device {
               '[handlePermissions] User refuses runtime permissions android 12+',
               result,
             );
+            this.permissionGranted = false;
             _showPermissionAlert();
             return false;
           }
@@ -736,6 +772,7 @@ export class Device {
           //   '[handlePermissions] User accepts runtime permissions android 12+',
           //   result,
           // );
+          this.permissionGranted = true;
           return true;
         },
       );
@@ -747,6 +784,7 @@ export class Device {
             '[handlePermissions] runtime permission Android <12 already OK',
             checkResult,
           );
+          this.permissionGranted = true;
           return true;
         } else {
           PermissionsAndroid.request(permissions).then(result => {
@@ -756,12 +794,14 @@ export class Device {
                 checkResult,
               );
               _showPermissionAlert();
+              this.permissionGranted = false;
               return false;
             }
             console.info(
               '[handlePermissions] User accepts runtime permission android <12',
               checkResult,
             );
+            this.permissionGranted = true;
             return true;
           });
         }
@@ -783,6 +823,7 @@ export class Device {
     });
   };
 }
+// Device class
 
 const _checkPermissionsLocal = result => {
   if (
@@ -800,12 +841,38 @@ const _checkPermissionsLocal = result => {
 
 const _showPermissionAlert = () => {
   Alert.alert(
-    'Error',
-    'Please enable Location and Bluetooth permissions to be able to find and communicate with BRU machine',
+    'Bluetooth and Local Network access required',
+    '\r\nPlease enable Local Network and Bluetooth permissions to be able to find and communicate with BRU machine',
     [
       {
         text: 'Open Settings',
+        isPreferred: true,
+        style: 'default',
         onPress: () => Linking.openSettings(),
+      },
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+    ],
+    {
+      cancelable: false,
+      onDismiss: () => {
+        return false;
+      },
+    },
+  );
+};
+
+const _showBluetoothAlert = () => {
+  Alert.alert(
+    'Bluetooth must be enabled',
+    '\r\nPlease enable Bluetooth to be able to find and communicate with BRU machine',
+    [
+      {
+        text: 'OK',
+        isPreferred: true,
+        style: 'default',
       },
       {
         text: 'Cancel',

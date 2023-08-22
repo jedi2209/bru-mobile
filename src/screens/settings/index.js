@@ -63,7 +63,7 @@ const SettingsScreen = props => {
   const isDarkMode = useColorScheme() === 'dark';
 
   const searchDevices = async () => {
-    const permissionGranted = await deviceManager.handlePermissions();
+    const permissionGranted = await deviceManager._checkManager();
     deviceManager.setCurrentDevice(null);
     resetDevice();
     setIsScanning(true);
@@ -85,9 +85,6 @@ const SettingsScreen = props => {
         });
       }
     } else {
-      deviceManager.handlePermissions().then(res => {
-        console.log('deviceManager.handlePermissions() res', res);
-      });
       setIsScanning(false);
     }
   };
