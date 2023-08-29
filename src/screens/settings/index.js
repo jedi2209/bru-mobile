@@ -10,13 +10,13 @@ import {
   FlatList,
   Alert,
 } from 'react-native';
-import {Select, HStack, Button} from '@gluestack';
+import {Button} from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 
 import {$deviceSettingsStore, setDevice, resetDevice} from '@store/device';
-import {$langSettingsStore, setLanguage} from '@store/lang';
+import {$langSettingsStore} from '@store/lang';
 
 import Wrapper from '@comp/Wrapper';
 
@@ -43,8 +43,6 @@ const SettingsScreen = props => {
     deviceManager.setCurrentDevice(device);
   }
   const [isScanning, setIsScanning] = useState(false);
-  const [connected, setConnected] = useState(false);
-  const [isBrewing, setBrewing] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [peripherals, setPeripherals] = useState(null);
 
@@ -427,26 +425,31 @@ const SettingsScreen = props => {
       ) : (
         <>
           <Button
-            // activeOpacity={0.5}
+            size="lg"
             variant={'primary'}
-            // style={[styles.buttonStyle]}
+            style={[styles.buttonStyle]}
             onPress={() => searchDevices()}>
             <Text style={styles.buttonTextStyle}>
-              {isScanning ? 'Scanning...' : 'Scan Bluetooth Devices'}
+              {isScanning
+                ? 'Scanning...'
+                : peripherals?.length
+                ? 'New scan'
+                : 'Connect new machine'}
             </Text>
           </Button>
           {isScanning ? (
             <ActivityIndicator size="large" style={{marginTop: '10%'}} />
-          ) : peripherals && peripherals.length ? (
+          ) : peripherals?.length ? (
             <>
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: 16,
                   marginLeft: 10,
                   marginVertical: 5,
+                  marginTop: 20,
                   color: isDarkMode ? colors.white : colors.black,
                 }}>
-                Nearby Devices:
+                Nearby devices:
               </Text>
               <FlatList
                 data={peripherals}
@@ -458,36 +461,13 @@ const SettingsScreen = props => {
           ) : null}
         </>
       )}
-      <HStack mt={10} alignItems={'center'}>
-        <Text>Language</Text>
-        <Select
-          selectedValue={lang}
-          isDisabled={false}
-          isInvalid={false}
-          w={'70%'}
-          m={10}
-          onValueChange={res => setLanguage(res)}>
-          <Select.Trigger variant="underlined">
-            <Select.Input placeholder={lang} />
-          </Select.Trigger>
-          <Select.Portal>
-            <Select.Backdrop />
-            <Select.Content pb={30}>
-              <Select.DragIndicatorWrapper>
-                <Select.DragIndicator />
-              </Select.DragIndicatorWrapper>
-              <Select.Item label="EN" value="en" />
-              <Select.Item label="DE" value="de" />
-            </Select.Content>
-          </Select.Portal>
-        </Select>
-      </HStack>
       <Text
         selectable={false}
         style={{
           alignSelf: 'center',
           color: isDarkMode ? colors.gray.dark : colors.black,
-          marginTop: 20,
+          opacity: 0.2,
+          marginTop: 40,
         }}>
         {'ver. ' +
           DeviceInfo.getVersion() +
@@ -506,19 +486,17 @@ const styles = StyleSheet.create({
     height: windowHeight,
   },
   buttonStyle: {
-    backgroundColor: colors.green.main,
-    borderWidth: 0,
-    borderColor: colors.green.mid,
-    height: 45,
+    height: 55,
     alignItems: 'center',
-    borderRadius: 5,
-    marginHorizontal: '5%',
+    borderRadius: 20,
+    marginHorizontal: '15%',
     marginTop: 25,
   },
   buttonTextStyle: {
     color: '#FFFFFF',
     paddingVertical: 10,
     fontSize: 16,
+    textTransform: 'uppercase',
   },
 });
 export default SettingsScreen;

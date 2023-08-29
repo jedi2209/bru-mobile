@@ -1,23 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import {Text, View, StyleSheet, Alert} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
-import {createProgress} from '@gluestack-ui/progress';
-import {
-  Root,
-  FilledTrack,
-} from '../../gluestack/core/Progress/styled-components';
 
 import {DFUEmitter} from 'react-native-nordic-dfu';
 import {
-  HStack,
-  Pressable,
   Button,
   VStack,
   Toast,
   ToastTitle,
   ToastDescription,
+  Progress,
+  ProgressFilledTrack,
   useToast,
-} from '@gluestack';
+} from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
 import {$deviceSettingsStore} from '@store/device';
 import {$currentFirmwareStore} from '@store/firmware';
@@ -41,13 +36,13 @@ const deviceManager = new Device({
 });
 
 const _renderProgressBar = value => {
-  const Progress = createProgress({
-    Root,
-    FilledTrack,
-  });
+  // const Progress = createProgress({
+  //   Root,
+  //   FilledTrack,
+  // });
   return (
     <Progress value={value} h="$1">
-      <Progress.FilledTrack h="$1" bg="$primary500" />
+      <ProgressFilledTrack h="$1" bg="$primary500" />
     </Progress>
   );
 };

@@ -16,7 +16,7 @@ import {fetchFirmwareMeta} from '@utils/firmware';
 import isInternet from '@utils/isInternet';
 
 import {navigationTheme} from '@styleConst';
-import {GluestackUIProvider} from '@gluestack';
+import {GluestackUIProvider} from '@gluestack-ui/themed';
 import {config} from '@const/gluestack-ui.config';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 

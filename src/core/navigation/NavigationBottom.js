@@ -10,8 +10,19 @@ import {
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useStore} from 'effector-react';
+import {
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicatorWrapper,
+  SelectDragIndicator,
+  SelectItem,
+} from '@gluestack-ui/themed';
 
-import {$langSettingsStore} from '@store/lang';
+import {$langSettingsStore, setLanguage} from '@store/lang';
 import {LANGUAGE} from '@const';
 
 import InstantBrewScreen from '@screens/instant-brew';
@@ -53,33 +64,58 @@ const headerBackground = () => {
   );
 };
 
-const SettingsStackView = ({navigation, route}) => (
-  <StackSettings.Navigator initialRouteName="SettingsScreen">
-    <StackSettings.Screen
-      name="SettingsScreen"
-      component={SettingsScreen}
-      initialParams={{
-        scroll: true,
-      }}
-      options={{
-        headerShown: true,
-        headerTitle,
-      }}
-    />
-    <StackSettings.Screen
-      name="UpdateFirmwareScreen"
-      component={UpdateFirmwareScreen}
-      initialParams={{
-        scroll: true,
-      }}
-      options={{
-        headerBackTitle: 'Back',
-        headerShown: true,
-        headerTitle,
-      }}
-    />
-  </StackSettings.Navigator>
-);
+const SettingsStackView = ({navigation, route}) => {
+  const currLang = useStore($langSettingsStore);
+  return (
+    <StackSettings.Navigator initialRouteName="SettingsScreen">
+      <StackSettings.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        initialParams={{
+          scroll: true,
+        }}
+        options={{
+          headerShown: true,
+          headerTitle,
+          // headerRight: () => (
+          //   <Select
+          //     selectedValue={currLang}
+          //     isDisabled={false}
+          //     isInvalid={false}
+          //     w={'70%'}
+          //     onValueChange={res => setLanguage(res)}>
+          //     <SelectTrigger>
+          //       <SelectInput placeholder={currLang} />
+          //     </SelectTrigger>
+          //     <SelectPortal>
+          //       <SelectBackdrop />
+          //       <SelectContent>
+          //         <SelectDragIndicatorWrapper>
+          //           <SelectDragIndicator />
+          //         </SelectDragIndicatorWrapper>
+          //         <SelectItem label="EN" value="en" />
+          //         <SelectItem label="DE" value="de" />
+          //       </SelectContent>
+          //     </SelectPortal>
+          //   </Select>
+          // ),
+        }}
+      />
+      <StackSettings.Screen
+        name="UpdateFirmwareScreen"
+        component={UpdateFirmwareScreen}
+        initialParams={{
+          scroll: true,
+        }}
+        options={{
+          headerBackTitle: 'Back',
+          headerShown: true,
+          headerTitle,
+        }}
+      />
+    </StackSettings.Navigator>
+  );
+};
 
 const NavigationBottom = props => {
   const currLang = useStore($langSettingsStore);
@@ -105,7 +141,7 @@ const NavigationBottom = props => {
           </View>
         ),
       }}>
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Home"
         component={InstantBrewScreen}
         initialParams={{
@@ -127,7 +163,7 @@ const NavigationBottom = props => {
             borderBottomLeftRadius: 10,
           },
         }}
-      />
+      /> */}
       {/* <Tab.Screen
         name="Tea Alarm"
         component={TeaAlarmScreen}
@@ -228,6 +264,11 @@ const NavigationBottom = props => {
               title="MenuBottom.Help"
             />
           ),
+          tabBarItemStyle: {
+            borderRadius: 0,
+            borderTopLeftRadius: 10,
+            borderBottomLeftRadius: 10,
+          },
         }}
       />
       <Tab.Screen

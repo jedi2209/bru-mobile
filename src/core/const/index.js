@@ -52,4 +52,4 @@ let LANGUAGES = {
 
 export const LANGUAGE = {...LANGUAGES, default: LANGUAGES.en};
 
-export const INITIAL_SCREEN = 'Profile';
+export const INITIAL_SCREEN = 'Settings';
