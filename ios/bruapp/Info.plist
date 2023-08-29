@@ -48,7 +48,7 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>We need a Bluetooth access to find, connect and transfer data from/to your BRU Machine</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>We need access to your location to be able find, connect and transfer data from/to your BRU Machine</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
