@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, Alert} from 'react-native';
+import {RefreshControl, View, StyleSheet, Alert} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
 import {DFUEmitter} from 'react-native-nordic-dfu';
@@ -11,6 +11,7 @@ import {
   ToastDescription,
   Progress,
   ProgressFilledTrack,
+  Text,
   useToast,
 } from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
@@ -20,7 +21,12 @@ import {$langSettingsStore} from '@store/lang';
 import Wrapper from '@comp/Wrapper';
 
 import {Device, sleep} from '@utils/device';
-import {getFileURL, downloadFile, getTextFromFirmware} from '@utils/firmware';
+import {
+  fetchFirmwareMeta,
+  getFileURL,
+  downloadFile,
+  getTextFromFirmware,
+} from '@utils/firmware';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
@@ -115,6 +121,7 @@ const UpdateFirmwareScreen = props => {
 
   const [progress, setProgress] = useState(0);
   const [isDownloading, setDownloading] = useState(false);
+  const [isRefreshing, setRefreshing] = useState(false);
   const [updateStatus, setUpdateStatus] = useState(false);
 
   const toast = useToast();
@@ -289,12 +296,25 @@ const UpdateFirmwareScreen = props => {
             styles.firmwareWrapper,
             isLast ? styles.firmwareWrapperLast : {},
           ]}>
-          <Text>{[name, itemID].join(' -- ')}</Text>
-          <Text>
-            {[descriptionBase, descriptionBugFix, descriptionFeatures].join(
-              '\n\n',
-            )}
-          </Text>
+          <Text fontSize={24}>{[name].join(' -- ')}</Text>
+          {descriptionBase ? (
+            <View style={{marginVertical: 8}}>
+              <Text fontWeight="$bold">Base</Text>
+              <Text>{descriptionBase}</Text>
+            </View>
+          ) : null}
+          {descriptionFeatures ? (
+            <View style={{marginVertical: 8}}>
+              <Text fontWeight="$bold">New Features</Text>
+              <Text>{descriptionFeatures}</Text>
+            </View>
+          ) : null}
+          {descriptionBugFix ? (
+            <View style={{marginVertical: 8}}>
+              <Text fontWeight="$bold">Bugfix</Text>
+              <Text>{descriptionBugFix}</Text>
+            </View>
+          ) : null}
           <Button
             size="md"
             variant="solid"
@@ -327,7 +347,15 @@ const UpdateFirmwareScreen = props => {
     });
   };
 
-  if (!get(firmware, 'data', null) || isDownloading) {
+  const _onRefresh = async () => {
+    setRefreshing(true);
+    await fetchFirmwareMeta();
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1500);
+  };
+
+  if (!get(firmware, 'data', null) || isDownloading || isRefreshing) {
     return (
       <Wrapper {...props}>
         <ActivityIndicator
@@ -340,7 +368,15 @@ const UpdateFirmwareScreen = props => {
   }
 
   return (
-    <Wrapper {...props}>
+    <Wrapper
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={_onRefresh}
+          tintColor="#fff"
+        />
+      }
+      {...props}>
       {updateStatus
         ? _renderProgress(updateStatus, progress, props)
         : _renderFirmware()}

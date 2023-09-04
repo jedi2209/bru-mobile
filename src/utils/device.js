@@ -134,9 +134,15 @@ export class Device {
 
   _checkManager = async () => {
     const bluetoothState = await this.handleBluetoothState();
-    if (!bluetoothState) {
-      _showBluetoothAlert();
-      return false;
+    switch (bluetoothState) {
+      case 'PoweredOff':
+        _showBluetoothAlert();
+        return false;
+      case 'Unauthorized':
+        _showPermissionAlert();
+        return false;
+      case 'PoweredOn':
+        break;
     }
     if (!this.bleStarted) {
       BleManager.start({showAlert: true})
@@ -732,7 +738,7 @@ export class Device {
     if (bluetoothState === 'PoweredOn') {
       this.bluetoothState = true;
     }
-    return this.bluetoothState;
+    return bluetoothState;
   };
 
   handlePermissions = async () => {

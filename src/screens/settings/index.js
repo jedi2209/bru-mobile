@@ -124,7 +124,7 @@ const SettingsScreen = props => {
   };
 
   // render list of bluetooth devices
-  const renderItem = ({item: item}) => {
+  const renderItem = item => {
     const color = item?.connected
       ? colors.green.mid
       : isDarkMode
@@ -132,6 +132,7 @@ const SettingsScreen = props => {
       : colors.gray.inactive;
     return (
       <TouchableOpacity
+        key={'bru' + item.id}
         onPress={async () => {
           // navigation.navigate('UpdateFirmwareScreen', {device: item});
           setLoading(true);
@@ -451,12 +452,15 @@ const SettingsScreen = props => {
                 }}>
                 Nearby devices:
               </Text>
-              <FlatList
+              {peripherals.map(item => {
+                return renderItem(item);
+              })}
+              {/* <FlatList
                 data={peripherals}
                 contentContainerStyle={{rowGap: 12}}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
-              />
+              /> */}
             </>
           ) : null}
         </>
