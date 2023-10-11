@@ -30,7 +30,6 @@ import TeaAlarmScreen from '@screens/tea-alarm';
 import PresetsScreen from '@screens/presets';
 import HelpScreen from '@screens/help';
 import SettingsScreen from '@screens/settings';
-import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
 import AddNewDeviceScreen from '@screens/settings/addNewDevice';
 
 import {colors, fonts, tabBarStyle, headerNavigationStyle} from '@styleConst';
@@ -109,19 +108,6 @@ const SettingsStackView = ({navigation, route}) => {
           //     </SelectPortal>
           //   </Select>
           // ),
-        }}
-      />
-      <StackSettings.Screen
-        name="UpdateFirmwareScreen"
-        component={UpdateFirmwareScreen}
-        initialParams={{
-          scroll: true,
-        }}
-        options={{
-          headerBackTitle: 'Back',
-          headerShown: true,
-          headerTitleAlign: 'center',
-          headerTitle,
         }}
       />
       {/* <StackSettings.Screen

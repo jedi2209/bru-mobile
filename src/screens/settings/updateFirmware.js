@@ -109,15 +109,17 @@ const _renderProgress = (updateStatus, progress, props) => {
 };
 
 const UpdateFirmwareScreen = props => {
-  let device = useStore($deviceSettingsStore);
+  let devices = useStore($deviceSettingsStore);
+  let device = {};
+  if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
+    device = devices[0];
+  }
   if (!get(device, 'id', false) && get(props, 'route.params.device', false)) {
     device = props.route.params.device;
   }
+  deviceManager.setCurrentDevice(devices[0]);
   const firmware = useStore($currentFirmwareStore);
   const lang = useStore($langSettingsStore);
-  if (device && device?.id) {
-    deviceManager.setCurrentDevice(device);
-  }
 
   const [progress, setProgress] = useState(0);
   const [isDownloading, setDownloading] = useState(false);
@@ -126,7 +128,7 @@ const UpdateFirmwareScreen = props => {
 
   const toast = useToast();
 
-  if (!device || !device?.id) {
+  if (!get(device, 'id')) {
     props.navigation.goBack();
     return false;
   }

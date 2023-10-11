@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {useColorScheme, Platform} from 'react-native';
+import {useColorScheme, Platform, LogBox} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import NavMain from '@nav/Navigation';
@@ -35,15 +35,17 @@ let sentryParams = {
   ],
 };
 
+LogBox.ignoreLogs([
+  'NativeBase: The contrast ratio of',
+  "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
+  'If you do not provide children, you must specify an aria-label for accessibility',
+  'Animated: `useNativeDriver` was not specified. This is a required option and must be explicitly set to `true` or `false`',
+]);
+
 if (__DEV__) {
-  // LogBox.ignoreLogs([
-  //   'NativeBase: The contrast ratio of',
-  //   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
-  //   "If you do not provide children, you must specify an aria-label for accessibility",
-  // ]);
   sentryParams = {
     dsn: SENTRY_SETTINGS.dsn,
-    debug: true,
+    debug: false,
     tracesSampleRate: 1.0,
     integrations: [
       new Sentry.ReactNativeTracing({

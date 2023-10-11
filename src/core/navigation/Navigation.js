@@ -6,6 +6,7 @@ import {
   headerTitle,
 } from '@nav/NavigationBottom';
 import AddNewDeviceScreen from '@screens/settings/addNewDevice';
+import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
 
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
@@ -26,6 +27,19 @@ const NavMain = props => {
           tabBarStyle: {
             display: 'none',
           },
+          headerBackTitle: 'Back',
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerTitle,
+        }}
+      />
+      <Stack.Screen
+        name="UpdateFirmwareScreen"
+        component={UpdateFirmwareScreen}
+        initialParams={{
+          scroll: true,
+        }}
+        options={{
           headerBackTitle: 'Back',
           headerShown: true,
           headerTitleAlign: 'center',
