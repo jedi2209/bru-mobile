@@ -12,7 +12,7 @@ export const $deviceSettingsStore = createStore([], {
 })
   .on(setDevice, (state, device) => {
     if (!device?.id) {
-      return state;
+      return [...state];
     }
     const isObjectExists = state.some(obj => obj.id === device.id);
     if (!isObjectExists) {
@@ -23,7 +23,7 @@ export const $deviceSettingsStore = createStore([], {
       // If device is not exists in state, then add it
       state.push(device);
     }
-    return state;
+    return [...state];
   })
   .reset(resetDevice);
 
@@ -37,12 +37,13 @@ $deviceSettingsStore.watch(state => {
 const fetchDevice = createEffect({
   async handler() {
     const value = await AsyncStorage.getItem(storeName);
-    console.log('fetchDevice value from AsyncStorage.getItem', value);
+    console.info('============= fetchDevice value from AsyncStorage.getItem =============', value);
     return JSON.parse(value);
   },
 });
 
 fetchDevice.doneData.watch(result => {
+  console.info('============= fetchDevice.doneData =============', result);
   setDevice(result);
 });
 

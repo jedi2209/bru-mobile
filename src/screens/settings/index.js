@@ -9,7 +9,9 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
-import {Button, ButtonText, FlatList} from '@gluestack-ui/themed';
+import {useNavigation} from '@react-navigation/native';
+import {Button, ButtonText, HStack, FlatList} from '@gluestack-ui/themed';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
@@ -22,7 +24,6 @@ import {Device, sendDataCommand, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
-import {convertStyledToStyledVerbosed} from '@dank-style/react';
 
 const SECONDS_TO_SCAN_FOR = 5;
 const DEVICE_NAME_PREFIX = 'BRU';
@@ -34,40 +35,104 @@ const deviceManager = new Device({
   allowDuplicates: false,
 });
 
+const _renderItem = ({item, _onPressUpdate}) => {
+  return (
+    <HStack key={item?.id} justifyContent={'space-between'}>
+      <Text
+        style={{
+          color: 'white',
+          backgroundColor: 'green',
+          padding: 10,
+          alignSelf: 'center',
+          borderRadius: 5,
+        }}>
+        {item?.name}
+      </Text>
+      <HStack>
+        {/* <Button
+          variant={'outline'}
+          onPress={async () => {
+            await deviceManager
+              .handleReadData('firmwareRevision')
+              .then(async res => {
+                if (res) {
+                  Alert.alert('firmwareRevision', res);
+                  await sleep(1000);
+                }
+              })
+              .catch(err => {
+                console.error('handleReadData firmwareRevision', err);
+              });
+          }}>
+          <Icon name="cog-refresh-outline" size={20} color="white" />
+        </Button> */}
+        <Button variant={'outline'} onPress={_onPressUpdate}>
+          <Icon name="cog-refresh-outline" size={20} color="white" />
+        </Button>
+        <Button
+          variant={'outline'}
+          onPress={() => {
+            Alert.alert(
+              'Are you shure?',
+              'After unpair device you should pair it again.',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Unpair',
+                  style: 'destructive',
+                  onPress: async () =>
+                    _unpairDevice(get(deviceManager, 'device.id', null)),
+                },
+              ],
+            );
+          }}>
+          <Icon name="trash-can-outline" size={20} color="white" />
+        </Button>
+      </HStack>
+    </HStack>
+  );
+};
+
+const _unpairDevice = async () => {
+  await deviceManager
+    .removeBond()
+    .then(res => {
+      console.log('onPress Unpair device', res);
+    })
+    .catch(err => console.error('onPress Unpair device', err));
+};
+
 // resetDevice();
 
 const SettingsScreen = props => {
   const devices = useStore($deviceSettingsStore);
-  console.log('-------- device Store --------', devices);
-  if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
-    deviceManager.setCurrentDevice(devices[0]);
-  }
+
   const [isLoading, setLoading] = useState(false);
 
   const {navigation} = props;
 
   useEffect(() => {
-    console.log('-------- device useEffect --------', devices);
+    setLoading(true);
+    if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
+      console.info('-------- device useEffect --------', devices);
+      deviceManager.setCurrentDevice(devices[0]);
+    }
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+    console.info('++++++ device useEffect +++++', deviceManager.device);
     return () => {
       console.debug('[app] main component unmounting. Removing listeners...');
       if (typeof deviceManager !== 'undefined') {
         deviceManager.destructor();
       }
     };
-  }, []);
+  }, [devices]);
 
   const isDarkMode = useColorScheme() === 'dark';
-
-  const _unpairDevice = async () => {
-    setLoading(true);
-    await deviceManager
-      .removeBond()
-      .then(res => {
-        console.log('onPress Unpair device', res);
-        setLoading(false);
-      })
-      .catch(err => console.error('onPress Unpair device', err));
-  };
 
   if (isLoading) {
     return (
@@ -80,6 +145,10 @@ const SettingsScreen = props => {
       </Wrapper>
     );
   }
+
+  const _onPressUpdate = () => {
+    navigation.navigate('UpdateFirmwareScreen', {device: deviceManager.device});
+  };
 
   return (
     <Wrapper {...props}>
@@ -95,68 +164,9 @@ const SettingsScreen = props => {
           <Text>Connected machines</Text>
           <FlatList
             data={devices}
-            renderItem={({item}) => {
-              console.log('item', item);
-              return <></>;
-            }}
+            renderItem={({item}) => _renderItem({item, _onPressUpdate})}
             keyExtractor={item => item.id}
           />
-          {/* {device.map(item => (
-            <HStack key={item?.id}>
-              <Text
-                style={{
-                  color: 'white',
-                  backgroundColor: 'green',
-                  padding: 10,
-                  alignSelf: 'center',
-                  borderRadius: 5,
-                }}>
-                {item?.name}
-              </Text>
-              <Pressable
-                onPress={() => {
-                  Alert.alert(
-                    'Are you shure?',
-                    'After unpair device you should pair it again.',
-                    [
-                      {
-                        text: 'Cancel',
-                        style: 'cancel',
-                      },
-                      {
-                        text: 'Unpair',
-                        style: 'destructive',
-                        onPress: async () =>
-                          _unpairDevice(get(deviceManager, 'device.id', null)),
-                      },
-                    ],
-                  );
-                }}>
-                <Text style={styles.buttonTextStyle}>{'Unpair'}</Text>
-              </Pressable>
-            </HStack>
-          ))} */}
-          <Pressable
-            style={styles.buttonStyle}
-            onPress={async () => {
-              setLoading(true);
-              await deviceManager
-                .handleReadData('firmwareRevision')
-                .then(async res => {
-                  if (res) {
-                    Alert.alert('firmwareRevision', res);
-                    await sleep(1000);
-                  }
-                  setLoading(false);
-                })
-                .catch(err => {
-                  console.error('handleReadData firmwareRevision', err);
-                });
-            }}>
-            <Text style={styles.buttonTextStyle}>
-              {'Read firmwareRevision data'}
-            </Text>
-          </Pressable>
           <Pressable
             style={styles.buttonStyle}
             onPress={async () => {
@@ -198,69 +208,68 @@ const SettingsScreen = props => {
             <Text style={styles.buttonTextStyle}>{'Read modelName'}</Text>
           </Pressable> */}
           {/* <Pressable
-          style={styles.buttonStyle}
-          onPress={async () => {
-            setLoading(true);
-            await deviceManager
-              .handleReadData('serialNumber')
-              .then(async res => {
-                if (res) {
-                  Alert.alert('serialNumber', res);
-                  await sleep(1000);
-                }
-                setLoading(false);
-              })
-              .catch(err => {
-                console.error('handleReadData serialNumber', err);
-              });
-          }}>
-          <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
-        </Pressable> */}
-          <Text style={{marginTop: 20, fontSize: 20}}>Actions</Text>
+            style={styles.buttonStyle}
+            onPress={async () => {
+              setLoading(true);
+              await deviceManager
+                .handleReadData('serialNumber')
+                .then(async res => {
+                  if (res) {
+                    Alert.alert('serialNumber', res);
+                    await sleep(1000);
+                  }
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('handleReadData serialNumber', err);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
+          </Pressable> */}
           {/* <Pressable
-          style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
-          onPress={async () => {
-            setLoading(true);
-            const command = sendDataCommand(0xb6);
-            await deviceManager
-              .writeValueAndNotify(Buffer(command).toJSON().data)
-              .then(async () => {
-                await sleep(1500);
-                setLoading(false);
-              })
-              .catch(err => {
-                console.error('Get Machine setup', err);
-              });
-          }}>
-          <Text style={styles.buttonTextStyle}>{'Get Machine setup'}</Text>
-        </Pressable> */}
+            style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
+            onPress={async () => {
+              setLoading(true);
+              const command = sendDataCommand(0xb6);
+              await deviceManager
+                .writeValueAndNotify(Buffer(command).toJSON().data)
+                .then(async () => {
+                  await sleep(1500);
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('Get Machine setup', err);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>{'Get Machine setup'}</Text>
+          </Pressable> */}
           {/* <Pressable
-          style={[
-            styles.buttonStyle,
-            {backgroundColor: isBrewing ? 'red' : colors.green.mid},
-          ]}
-          onPress={async () => {
-            setLoading(true);
-            const command = sendDataCommand(
-              0xb1,
-              new Uint8Array([!isBrewing ? 0x01 : 0x00]),
-              1,
-            );
-            await deviceManager
-              .writeValueAndNotify(Buffer(command).toJSON().data)
-              .then(async () => {
-                await sleep(2000);
-                setBrewing(!isBrewing);
-                setLoading(false);
-              })
-              .catch(err => {
-                console.error('Start Brewing error', err);
-              });
-          }}>
-          <Text style={styles.buttonTextStyle}>
-            {!isBrewing ? 'Start Brew' : '== Stop Brew'}
-          </Text>
-        </Pressable> */}
+            style={[
+              styles.buttonStyle,
+              {backgroundColor: isBrewing ? 'red' : colors.green.mid},
+            ]}
+            onPress={async () => {
+              setLoading(true);
+              const command = sendDataCommand(
+                0xb1,
+                new Uint8Array([!isBrewing ? 0x01 : 0x00]),
+                1,
+              );
+              await deviceManager
+                .writeValueAndNotify(Buffer(command).toJSON().data)
+                .then(async () => {
+                  await sleep(2000);
+                  setBrewing(!isBrewing);
+                  setLoading(false);
+                })
+                .catch(err => {
+                  console.error('Start Brewing error', err);
+                });
+            }}>
+            <Text style={styles.buttonTextStyle}>
+              {!isBrewing ? 'Start Brew' : '== Stop Brew'}
+            </Text>
+          </Pressable> */}
           {/* <Pressable
           style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
           onPress={async () => {
@@ -288,13 +297,6 @@ const SettingsScreen = props => {
             {'Get test device status'}
           </Text>
         </Pressable> */}
-          <Pressable
-            style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
-            onPress={() => {
-              navigation.navigate('UpdateFirmwareScreen');
-            }}>
-            <Text style={styles.buttonTextStyle}>{'Update Firmware'}</Text>
-          </Pressable>
         </>
       ) : null}
       <Text
