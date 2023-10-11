@@ -17,7 +17,7 @@ import isInternet from '@utils/isInternet';
 
 import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack-ui/themed';
-import {config} from '@const/gluestack-ui.config';
+import {config} from '../../config/gluestack-ui.config';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
@@ -106,7 +106,7 @@ const App = props => {
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <GluestackUIProvider config={config.theme} colorMode={phoneTheme}>
+      <GluestackUIProvider config={config} colorMode={phoneTheme}>
         <NavigationContainer
           theme={navigationTheme[phoneTheme]}
           ref={navigationRef}
