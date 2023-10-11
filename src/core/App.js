@@ -1,8 +1,8 @@
 import React, {useEffect, useRef} from 'react';
-import {useColorScheme, Platform, Text} from 'react-native';
+import {useColorScheme, Platform} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
-import NavBottom from '@nav/NavigationBottom';
+import NavMain from '@nav/Navigation';
 
 import SplashScreen from 'react-native-splash-screen';
 import * as Sentry from '@sentry/react-native';
@@ -124,7 +124,7 @@ const App = props => {
             }
             routeNameRef.current = currentRouteName;
           }}>
-          <NavBottom initialRouteName={INITIAL_SCREEN} {...props} />
+          <NavMain initialRouteName={INITIAL_SCREEN} {...props} />
         </NavigationContainer>
       </GluestackUIProvider>
     </GestureHandlerRootView>

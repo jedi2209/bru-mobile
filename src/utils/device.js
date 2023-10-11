@@ -8,7 +8,7 @@ import {
   Linking,
   Alert,
 } from 'react-native';
-import {setDevice, resetDevice} from '@store/device';
+import {setDevice} from '@store/device';
 import {getFirmwareData} from '@utils/firmware';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {get} from 'lodash';
@@ -135,6 +135,8 @@ export class Device {
   _checkManager = async () => {
     const bluetoothState = await this.handleBluetoothState();
     switch (bluetoothState) {
+      case 'Unsupported':
+        return false;
       case 'PoweredOff':
         _showBluetoothAlert();
         return false;
@@ -166,7 +168,7 @@ export class Device {
     return true;
   };
 
-  setCurrentDevice = device => {
+  setCurrentDevice = (device = null) => {
     this.device = device;
     if (device?.id) {
       this.setCurrentDeviceID(device.id);
@@ -185,7 +187,7 @@ export class Device {
   };
 
   clearDevice = () => {
-    this.setCurrentDevice(null);
+    this.setCurrentDevice();
   };
 
   getCurrentDevice = () => {
@@ -400,13 +402,15 @@ export class Device {
       return false;
     }
     await this.getBondedPeripherals().then(res => {
+      console.log('this.getBondedPeripherals().then res', res);
       if (res && isAndroid) {
         BleManager.removeBond(device).catch(err => {
           console.error('BleManager.removeBond error', err);
         });
       }
+      this.device.isCurrent = false;
+      setDevice(this.device);
       this.clearDevice();
-      resetDevice();
       return true;
     });
   };
@@ -426,10 +430,9 @@ export class Device {
     const isBonded = await this.getBondedPeripherals(device);
     if (isBonded) {
       this.setCurrentDevice(device);
-      setDevice(device);
+      // setDevice(device);
       return true;
     }
-    await sleep(5000);
     return this.checkBondedStatus(device, ++index, maxAttempsLocal);
   };
 
@@ -542,6 +545,9 @@ export class Device {
         // Success code
         return BleManager.retrieveServices(device)
           .then(async () => {
+            console.log(
+              'writeValueAndNotify => BleManager.connect => BleManager.retrieveServices.then',
+            );
             try {
               await BleManager.write(
                 device,
@@ -569,7 +575,10 @@ export class Device {
               } else {
                 errorText = error;
               }
-              console.log('errorText', errorText);
+              console.error(
+                'writeValueAndNotify => BleManager.connect => BleManager.retrieveServices.cacth',
+                errorText,
+              );
               switch (errorText) {
                 case 'Encryption is insufficient.': // iOS not paired
                   return false;
@@ -580,7 +589,10 @@ export class Device {
           })
           .catch(error => {
             // Failure code
-            console.log(error);
+            console.error(
+              'writeValueAndNotify => BleManager.connect => BleManager.retrieveServices.catch',
+              error,
+            );
           });
       })
       .catch(async error => {
@@ -592,8 +604,9 @@ export class Device {
           return false;
         }
         if (error.indexOf('Could not find peripheral') !== -1) {
+          console.log(5);
           // try to reconnect
-          await sleep();
+          await sleep(5 * defaultTimeout);
           return this.writeValueAndNotify(
             device,
             serviceUUID,

@@ -23,7 +23,7 @@ import {
 } from '@gluestack-ui/themed';
 
 import {$langSettingsStore, setLanguage} from '@store/lang';
-import {LANGUAGE} from '@const';
+import {LANGUAGE, INITIAL_SCREEN} from '@const';
 
 import InstantBrewScreen from '@screens/instant-brew';
 import TeaAlarmScreen from '@screens/tea-alarm';
@@ -31,6 +31,7 @@ import PresetsScreen from '@screens/presets';
 import HelpScreen from '@screens/help';
 import SettingsScreen from '@screens/settings';
 import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
+import AddNewDeviceScreen from '@screens/settings/addNewDevice';
 
 import {colors, fonts, tabBarStyle, headerNavigationStyle} from '@styleConst';
 import Logo from '@comp/Logo';
@@ -43,26 +44,34 @@ const headerLogoSize = 50;
 const Tab = createBottomTabNavigator();
 const StackSettings = createStackNavigator();
 
-const headerTitle = () => {
-  return (
-    <Logo
-      width={headerLogoSize}
-      height={headerLogoSize}
-      style={headerNavigationStyle.logo[Platform.OS]}
-    />
-  );
-};
+export const headerTitle = () => (
+  <Logo
+    width={headerLogoSize}
+    height={headerLogoSize}
+    style={headerNavigationStyle.logo[Platform.OS]}
+  />
+);
 
-const headerBackground = () => {
-  return (
-    <SafeAreaView
-      style={[
-        headerNavigationStyle.viewWrapper.default,
-        headerNavigationStyle.viewWrapper[Platform.OS],
-      ]}
+const headerBackground = () => (
+  <SafeAreaView
+    style={[
+      headerNavigationStyle.viewWrapper.default,
+      headerNavigationStyle.viewWrapper[Platform.OS],
+    ]}
+  />
+);
+
+const tabBarBackground = () => (
+  <View
+    colors={colors.gradient.backgroundTabbar}
+    style={{flex: 1, borderRadius: 10}}>
+    <ImageBackground
+      source={require('../../../assets/backgroundTile.png')}
+      resizeMode="repeat"
+      style={{flex: 1}}
     />
-  );
-};
+  </View>
+);
 
 const SettingsStackView = ({navigation, route}) => {
   const currLang = useStore($langSettingsStore);
@@ -76,6 +85,7 @@ const SettingsStackView = ({navigation, route}) => {
         }}
         options={{
           headerShown: true,
+          headerTitleAlign: 'center',
           headerTitle,
           // headerRight: () => (
           //   <Select
@@ -110,36 +120,44 @@ const SettingsStackView = ({navigation, route}) => {
         options={{
           headerBackTitle: 'Back',
           headerShown: true,
+          headerTitleAlign: 'center',
           headerTitle,
         }}
       />
+      {/* <StackSettings.Screen
+        name="AddNewDeviceScreen"
+        component={AddNewDeviceScreen}
+        initialParams={{
+          scroll: true,
+        }}
+        options={{
+          tabBarStyle: {
+            display: 'none',
+          },
+          headerBackTitle: 'Back',
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerTitle,
+        }}
+      /> */}
     </StackSettings.Navigator>
   );
 };
 
-const NavigationBottom = props => {
+export const NavigationBottom = props => {
   const currLang = useStore($langSettingsStore);
   const phoneTheme = useColorScheme();
   return (
     <Tab.Navigator
       {...props}
+      initialRouteName={INITIAL_SCREEN}
       screenOptions={{
         tabBarStyle: [tabBarStyle.default, tabBarStyle[phoneTheme]],
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.white,
         tabBarInactiveTintColor: colors.gray.inactive,
         tabBarActiveBackgroundColor: colors.green.tabbar,
-        tabBarBackground: () => (
-          <View
-            colors={colors.gradient.backgroundTabbar}
-            style={{flex: 1, borderRadius: 10}}>
-            <ImageBackground
-              source={require('../../../assets/backgroundTile.png')}
-              resizeMode="repeat"
-              style={{flex: 1}}
-            />
-          </View>
-        ),
+        tabBarBackground,
       }}>
       {/* <Tab.Screen
         name="Home"
@@ -323,5 +341,3 @@ const NavigationBottom = props => {
     </Tab.Navigator>
   );
 };
-
-export default NavigationBottom;
