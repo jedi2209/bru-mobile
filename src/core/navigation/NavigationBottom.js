@@ -80,7 +80,7 @@ const SettingsStackView = ({navigation, route}) => {
         name="SettingsScreen"
         component={SettingsScreen}
         initialParams={{
-          scroll: true,
+          scroll: false,
         }}
         options={{
           headerShown: true,

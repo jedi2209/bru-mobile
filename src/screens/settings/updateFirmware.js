@@ -28,18 +28,12 @@ import {
   getTextFromFirmware,
 } from '@utils/firmware';
 
+import {DEVICE_MANAGER_CONFIG} from '@const';
+
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 
-const SECONDS_TO_SCAN_FOR = 2;
-const DEVICE_NAME_PREFIX = 'BRU';
-const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
-
-const deviceManager = new Device({
-  prefix: DEVICE_NAME_PREFIX,
-  secondsToScan: SECONDS_TO_SCAN_FOR,
-  allowDuplicates: false,
-});
+const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const _renderProgressBar = value => {
   // const Progress = createProgress({
@@ -137,18 +131,18 @@ const UpdateFirmwareScreen = props => {
     setDownloading(itemID);
     setUpdateStatus('start');
     const checkPermissions = await deviceManager._checkManager();
-    console.log('checkPermissions', checkPermissions);
+    // console.log('checkPermissions', checkPermissions);
     if (!checkPermissions) {
       await sleep(5000);
       const checkPermissionsSecond = await deviceManager._checkManager();
-      console.log('checkPermissionsSecond', checkPermissions);
+      // console.log('checkPermissionsSecond', checkPermissions);
       if (!checkPermissionsSecond) {
         toast.show({
           placement: 'top',
           duration: 5000,
-          render: ({id}) => {
+          render: () => {
             return (
-              <Toast nativeId={id} action="success" variant="accent">
+              <Toast action="success" variant="accent">
                 <VStack space="lg">
                   <ToastTitle>✅ Update is complete!</ToastTitle>
                   <ToastDescription>
@@ -168,30 +162,34 @@ const UpdateFirmwareScreen = props => {
         return false;
       }
     }
-    toast.show({
-      placement: 'top',
-      duration: 5000,
-      render: ({id}) => {
-        return (
-          <Toast nativeId={id} action="info" variant="accent">
-            <VStack space="lg">
-              <ToastTitle>🔄 Download firmware</ToastTitle>
-              <ToastDescription>
-                Downloading firmware will take only a few seconds. Please do not
-                close the app.
-              </ToastDescription>
-            </VStack>
-          </Toast>
-        );
-      },
-    });
-    const filePath = await getFileURL('firmware/' + file).catch(err => {
+    // toast.show({
+    //   placement: 'top',
+    //   duration: 50000,
+    //   render: () => {
+    //     return (
+    //       <Toast action="info" variant="accent">
+    //         <VStack space="lg">
+    //           <ToastTitle>🔄 Download firmware</ToastTitle>
+    //           <ToastDescription>
+    //             Downloading firmware will take only a few seconds. Please do not
+    //             close the app.
+    //           </ToastDescription>
+    //         </VStack>
+    //       </Toast>
+    //     );
+    //   },
+    // });
+    const filePath = await getFileURL('firmware/' + file);
+    if (!filePath) {
+      setDownloading(false);
+      setUpdateStatus(false);
+      // toast.closeAll();
       toast.show({
         placement: 'top',
         duration: 5000,
-        render: ({id}) => {
+        render: () => {
           return (
-            <Toast nativeId={id} action="error" variant="accent">
+            <Toast id="filePathErrorToast" action="error" variant="accent">
               <VStack space="lg">
                 <ToastTitle>😢 Error</ToastTitle>
                 <ToastDescription>
@@ -202,68 +200,72 @@ const UpdateFirmwareScreen = props => {
           );
         },
       });
-      setDownloading(false);
-      setUpdateStatus(false);
-    });
-    const fileDownloaded = await downloadFile(filePath, file).catch(err => {
-      setDownloading(false);
-      setUpdateStatus(false);
-    });
-    if (fileDownloaded) {
-      await sleep(6000);
-      setDownloading(false);
-      setUpdateStatus('rebooting');
-      DFUEmitter.addListener(
-        'DFUProgress',
-        ({percent, currentPart, partsTotal, avgSpeed, speed}) => {
-          setProgress(percent);
-        },
-      );
-
-      DFUEmitter.addListener('DFUStateChanged', ({state}) => {
-        console.info('DFU State inside:', state);
-        switch (state) {
-          case 'DFU_PROCESS_STARTING':
-            setUpdateStatus('updating');
-            break;
-          case 'DEVICE_DISCONNECTING':
-            toast.show({
-              placement: 'top',
-              duration: 5000,
-              render: ({id}) => {
-                return (
-                  <Toast nativeId={id} action="success" variant="accent">
-                    <VStack space="lg">
-                      <ToastTitle>✅ Update is complete!</ToastTitle>
-                      <ToastDescription>
-                        Update is complete. Please wait a few seconds for BRU to
-                        reboot.
-                      </ToastDescription>
-                    </VStack>
-                  </Toast>
-                );
-              },
-              onCloseComplete: () => {
-                setUpdateStatus('finish');
-              },
-            });
-            setUpdateStatus('finish');
-            setProgress(0);
-            break;
-        }
-      });
-      deviceManager.startDFU(fileDownloaded).then(async finishFirst => {
-        if (!finishFirst) {
-          const finishSecond = await deviceManager.startDFU(fileDownloaded);
-          if (!finishSecond) {
-            setUpdateStatus(false);
-            setProgress(0);
-          }
-        }
-      });
-    } else {
-      console.error('fileDownloaded', fileDownloaded);
+      return false;
     }
+
+    const fileDownloaded = await downloadFile(filePath, file).catch(err => {
+      Alert.alert('fileDownloaded error', err);
+      setDownloading(false);
+      setUpdateStatus(false);
+      return err;
+    });
+
+    if (!fileDownloaded) {
+      console.error('fileDownloaded', fileDownloaded);
+      return false;
+    }
+
+    await sleep(6000);
+    setDownloading(false);
+    setUpdateStatus('rebooting');
+    DFUEmitter.addListener(
+      'DFUProgress',
+      ({percent, currentPart, partsTotal, avgSpeed, speed}) => {
+        setProgress(percent);
+      },
+    );
+
+    DFUEmitter.addListener('DFUStateChanged', ({state}) => {
+      console.info('DFU State inside:', state);
+      switch (state) {
+        case 'DFU_PROCESS_STARTING':
+          setUpdateStatus('updating');
+          break;
+        case 'DEVICE_DISCONNECTING':
+          toast.show({
+            placement: 'top',
+            duration: 5000,
+            render: ({id}) => {
+              return (
+                <Toast nativeID={id} action="success" variant="accent">
+                  <VStack space="lg">
+                    <ToastTitle>✅ Update is complete!</ToastTitle>
+                    <ToastDescription>
+                      Update is complete. Please wait a few seconds for BRU to
+                      reboot.
+                    </ToastDescription>
+                  </VStack>
+                </Toast>
+              );
+            },
+            onCloseComplete: () => {
+              setUpdateStatus('finish');
+            },
+          });
+          setUpdateStatus('finish');
+          setProgress(0);
+          break;
+      }
+    });
+    deviceManager.startDFU(fileDownloaded).then(async finishFirst => {
+      if (!finishFirst) {
+        const finishSecond = await deviceManager.startDFU(fileDownloaded);
+        if (!finishSecond) {
+          setUpdateStatus(false);
+          setProgress(0);
+        }
+      }
+    });
   };
 
   const _renderFirmware = () => {

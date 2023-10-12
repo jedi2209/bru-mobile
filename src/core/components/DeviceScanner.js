@@ -26,15 +26,9 @@ import {get} from 'lodash';
 import {colors} from '@styleConst';
 import {convertStyledToStyledVerbosed} from '@dank-style/react';
 
-const SECONDS_TO_SCAN_FOR = 5;
-const DEVICE_NAME_PREFIX = 'BRU';
-const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
+import {DEVICE_MANAGER_CONFIG} from '@const';
 
-const deviceManager = new Device({
-  prefix: DEVICE_NAME_PREFIX,
-  secondsToScan: SECONDS_TO_SCAN_FOR,
-  allowDuplicates: false,
-});
+const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const DeviceScanner = props => {
   const {onItemPress, autoScan} = props;

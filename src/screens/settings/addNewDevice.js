@@ -21,17 +21,11 @@ import {Device, sleep} from '@utils/device';
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 
-const SECONDS_TO_SCAN_FOR = 3;
-const DEVICE_NAME_PREFIX = 'BRU';
-const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
+import {DEVICE_MANAGER_CONFIG} from '@const';
 
 const isAndroid = Platform.OS === 'android';
 
-const deviceManager = new Device({
-  prefix: DEVICE_NAME_PREFIX,
-  secondsToScan: SECONDS_TO_SCAN_FOR,
-  allowDuplicates: false,
-});
+const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const stepsContent = [
   null,
@@ -80,10 +74,24 @@ const _pairDevice = async itemID => {
   if (deviceInfo) {
     if (get(deviceStatus, 'connected')) {
       const bondedStatus = await deviceManager.checkBondedStatus(itemID, 0, 3);
-      console.log('bondedStatus', bondedStatus);
+      // console.log('bondedStatus', bondedStatus);
       if (bondedStatus === true) {
         deviceManager.setCurrentDevice(deviceInfo);
+        // Get device hardwareRevision and firmwareRevision
+        const hardwareRevision = await deviceManager.handleReadData(
+          'hardwareRevision',
+        );
+        if (hardwareRevision) {
+          deviceInfo.hardwareRevision = hardwareRevision;
+        }
+        const firmwareRevision = await deviceManager.handleReadData(
+          'firmwareRevision',
+        );
+        if (firmwareRevision) {
+          deviceInfo.firmwareRevision = firmwareRevision;
+        }
         deviceInfo.isCurrent = true;
+        // console.info('============= _pairDevice deviceInfo =============', deviceInfo);
         setDevice(deviceInfo);
       }
       if (isAndroid) {

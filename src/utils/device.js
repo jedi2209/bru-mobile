@@ -13,7 +13,7 @@ import {getFirmwareData} from '@utils/firmware';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {get} from 'lodash';
 import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
-var Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
+const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -402,7 +402,7 @@ export class Device {
       return false;
     }
     await this.getBondedPeripherals().then(res => {
-      console.log('this.getBondedPeripherals().then res', res);
+      // console.log('this.getBondedPeripherals().then res', res);
       if (res && isAndroid) {
         BleManager.removeBond(device).catch(err => {
           console.error('BleManager.removeBond error', err);
@@ -459,7 +459,7 @@ export class Device {
         RX,
         device,
       );
-      console.log('getBondedPeripherals isConnected', isConnected);
+      // console.log('getBondedPeripherals isConnected', isConnected);
       if (!isConnected) {
         return false;
       }
@@ -505,11 +505,11 @@ export class Device {
                   return true;
                 });
               } catch (error) {
-                const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
-                if (buffer) {
+                const bufferError = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
+                if (bufferError) {
                   console.error(
                     'Error writing value:',
-                    buffer.toString('utf8'),
+                    bufferError.toString('utf8'),
                   ); // ответ переводим просто в строку
                 } else {
                   console.info('Error writing value:', error);
@@ -545,9 +545,9 @@ export class Device {
         // Success code
         return BleManager.retrieveServices(device)
           .then(async () => {
-            console.log(
-              'writeValueAndNotify => BleManager.connect => BleManager.retrieveServices.then',
-            );
+            // console.log(
+            //   'writeValueAndNotify => BleManager.connect => BleManager.retrieveServices.then',
+            // );
             try {
               await BleManager.write(
                 device,
@@ -604,7 +604,6 @@ export class Device {
           return false;
         }
         if (error.indexOf('Could not find peripheral') !== -1) {
-          console.log(5);
           // try to reconnect
           await sleep(5 * defaultTimeout);
           return this.writeValueAndNotify(
@@ -637,7 +636,6 @@ export class Device {
             filePath: isAndroid ? filePath : 'file://' + filePath,
           })
             .then(res => {
-              // {"deviceAddress": "F8:C9:42:C4:61:D6"}
               // console.info('DFU transfer done:', res);
               DFUEmitter.removeAllListeners('DFUStateChanged');
               DFUEmitter.removeAllListeners('DFUProgress');
@@ -674,11 +672,11 @@ export class Device {
 
   _handleUpdateValueForCharacteristic = data => {
     const response = Buffer.from(data.value).toString('utf8');
-    console.info(response);
+    console.info('[_handleUpdateValueForCharacteristic]', response);
   };
 
   _handleUpdateNotificationStateFor = data => {
-    console.log('_handleUpdateNotificationStateFor', data);
+    console.log('[_handleUpdateNotificationStateFor]', data);
   };
 
   _handleUpdateState = state => {
@@ -687,7 +685,7 @@ export class Device {
     } else {
       this.permissionGranted = true;
     }
-    console.log('_handleUpdateState', state);
+    console.log('[_handleUpdateState]', state);
   };
 
   _handleDisconnectedPeripheral = event => {

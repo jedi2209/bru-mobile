@@ -45,7 +45,7 @@ LogBox.ignoreLogs([
 if (__DEV__) {
   sentryParams = {
     dsn: SENTRY_SETTINGS.dsn,
-    debug: false,
+    debug: true,
     tracesSampleRate: 1.0,
     integrations: [
       new Sentry.ReactNativeTracing({
@@ -56,6 +56,8 @@ if (__DEV__) {
     ],
   };
 }
+
+Sentry.init(sentryParams);
 
 const _appCheckInit = async () => {
   const connectionStatus = await isInternet();
@@ -96,7 +98,6 @@ const App = props => {
   const phoneTheme = useColorScheme();
 
   useEffect(() => {
-    Sentry.init(sentryParams);
     pushUserData();
     setTimeout(() => {
       SplashScreen.hide();

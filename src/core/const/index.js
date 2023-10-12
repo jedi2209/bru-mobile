@@ -50,6 +50,12 @@ let LANGUAGES = {
   },
 };
 
+export const DEVICE_MANAGER_CONFIG = {
+  prefix: 'BRU',
+  secondsToScan: 5,
+  allowDuplicates: false,
+};
+
 export const LANGUAGE = {...LANGUAGES, default: LANGUAGES.en};
 
 export const INITIAL_SCREEN = 'Settings';

@@ -4,6 +4,7 @@ import {get} from 'lodash';
 
 const storeName = 'device';
 
+export const initDevice = createEvent();
 export const setDevice = createEvent();
 export const resetDevice = createEvent();
 
@@ -25,26 +26,27 @@ export const $deviceSettingsStore = createStore([], {
     }
     return [...state];
   })
+  .on(initDevice, (_, device) => {
+    return [...device];
+  })
   .reset(resetDevice);
 
-$deviceSettingsStore.watch(state => {
-  console.info(
-    '============= $deviceSettingsStore changed =============',
-    state,
-  );
-});
+// $deviceSettingsStore.watch(state => {
+//   console.info(
+//     '============= $deviceSettingsStore changed =============',
+//     state,
+//   );
+// });
 
 const fetchDevice = createEffect({
   async handler() {
     const value = await AsyncStorage.getItem(storeName);
-    console.info('============= fetchDevice value from AsyncStorage.getItem =============', value);
     return JSON.parse(value);
   },
 });
 
 fetchDevice.doneData.watch(result => {
-  console.info('============= fetchDevice.doneData =============', result);
-  setDevice(result);
+  initDevice(result);
 });
 
 export const updateDevice = createEffect({

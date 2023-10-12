@@ -44,7 +44,13 @@ export const downloadFile = async (url, fileName) => {
 };
 
 export const getFileURL = async path => {
-  return await storage().ref(path).getDownloadURL();
+  return await storage()
+    .ref(path)
+    .getDownloadURL()
+    .catch(err => {
+      console.error('getFileURL error ' + path, err);
+      return false;
+    });
 };
 
 export const fetchFirmwareMeta = async () => {

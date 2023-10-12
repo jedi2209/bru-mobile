@@ -16,7 +16,7 @@ import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
 
-import {$deviceSettingsStore} from '@store/device';
+import {$deviceSettingsStore, resetDevice} from '@store/device';
 
 import Wrapper from '@comp/Wrapper';
 
@@ -25,15 +25,11 @@ import {Device, sendDataCommand, sleep} from '@utils/device';
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 
-const SECONDS_TO_SCAN_FOR = 5;
-const DEVICE_NAME_PREFIX = 'BRU';
-const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
+import {DEVICE_MANAGER_CONFIG} from '@const';
 
-const deviceManager = new Device({
-  prefix: DEVICE_NAME_PREFIX,
-  secondsToScan: SECONDS_TO_SCAN_FOR,
-  allowDuplicates: false,
-});
+const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
+
+const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const _renderItem = ({item, _onPressUpdate}) => {
   return (
@@ -49,23 +45,6 @@ const _renderItem = ({item, _onPressUpdate}) => {
         {item?.name}
       </Text>
       <HStack>
-        {/* <Button
-          variant={'outline'}
-          onPress={async () => {
-            await deviceManager
-              .handleReadData('firmwareRevision')
-              .then(async res => {
-                if (res) {
-                  Alert.alert('firmwareRevision', res);
-                  await sleep(1000);
-                }
-              })
-              .catch(err => {
-                console.error('handleReadData firmwareRevision', err);
-              });
-          }}>
-          <Icon name="cog-refresh-outline" size={20} color="white" />
-        </Button> */}
         <Button variant={'outline'} onPress={_onPressUpdate}>
           <Icon name="cog-refresh-outline" size={20} color="white" />
         </Button>
@@ -73,7 +52,7 @@ const _renderItem = ({item, _onPressUpdate}) => {
           variant={'outline'}
           onPress={() => {
             Alert.alert(
-              'Are you shure?',
+              'Are you sure?',
               'After unpair device you should pair it again.',
               [
                 {
@@ -100,7 +79,7 @@ const _unpairDevice = async () => {
   await deviceManager
     .removeBond()
     .then(res => {
-      console.log('onPress Unpair device', res);
+      // console.log('onPress Unpair device', res);
     })
     .catch(err => console.error('onPress Unpair device', err));
 };
@@ -117,13 +96,11 @@ const SettingsScreen = props => {
   useEffect(() => {
     setLoading(true);
     if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
-      console.info('-------- device useEffect --------', devices);
       deviceManager.setCurrentDevice(devices[0]);
     }
     setTimeout(() => {
       setLoading(false);
     }, 500);
-    console.info('++++++ device useEffect +++++', deviceManager.device);
     return () => {
       console.debug('[app] main component unmounting. Removing listeners...');
       if (typeof deviceManager !== 'undefined') {
@@ -167,27 +144,6 @@ const SettingsScreen = props => {
             renderItem={({item}) => _renderItem({item, _onPressUpdate})}
             keyExtractor={item => item.id}
           />
-          <Pressable
-            style={styles.buttonStyle}
-            onPress={async () => {
-              setLoading(true);
-              await deviceManager
-                .handleReadData('hardwareRevision')
-                .then(async res => {
-                  if (res) {
-                    Alert.alert('hardwareRevision', res);
-                    await sleep(1000);
-                  }
-                  setLoading(false);
-                })
-                .catch(err => {
-                  console.error('handleReadData hardwareRevision', err);
-                });
-            }}>
-            <Text style={styles.buttonTextStyle}>
-              {'Read hardwareRevision data'}
-            </Text>
-          </Pressable>
           {/* <Pressable
             style={styles.buttonStyle}
             onPress={async () => {
