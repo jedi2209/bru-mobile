@@ -1,4 +1,4 @@
-fastlane_version '2.212.0'
+fastlane_version '2.216.0'
 
 fastlane_require 'dotenv'
 
@@ -93,8 +93,7 @@ platform :ios do
     )
     add_git_tag(
       grouping: "builds",
-      prefix: "v",
-      postfix: lane_context[SharedValues::BUILD_NUMBER]
+      prefix: "v#{lane_context[SharedValues::VERSION_NUMBER]}."
     )
     push_to_git_remote(
       remote: "origin",         # optional, default: "origin"
