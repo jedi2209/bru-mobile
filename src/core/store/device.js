@@ -27,7 +27,10 @@ export const $deviceSettingsStore = createStore([], {
     return [...state];
   })
   .on(initDevice, (_, device) => {
-    return [...device];
+    if (get(device, 'length')) {
+      return [...device];
+    }
+    return [];
   })
   .reset(resetDevice);
 

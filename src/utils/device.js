@@ -259,7 +259,7 @@ export class Device {
             res.readableServices = [];
             res.notifyServices = [];
 
-            res?.characteristics.map(el => {
+            get(res, 'characteristics', []).map(el => {
               if (
                 el.properties['Write'] ||
                 el.properties['WriteWithoutResponse']
