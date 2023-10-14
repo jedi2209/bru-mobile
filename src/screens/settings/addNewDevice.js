@@ -15,6 +15,7 @@ import {useStore} from 'effector-react';
 import {$deviceSettingsStore, setDevice} from '@store/device';
 import Wrapper from '@comp/Wrapper';
 import DeviceScanner from '@comp/DeviceScanner';
+import LottieView from 'lottie-react-native';
 
 import {Device, sleep} from '@utils/device';
 
@@ -30,35 +31,42 @@ const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 const stepsContent = [
   null,
   {
+    // 1
     img: require('@assets/deviceImages/image-1.png'),
     header: 'Connect the power',
     text: 'Place BRU Machine on the leveled surface. Connect the power cord, plug it into the mains outlet.',
   },
   {
+    // 2
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Activate bluetooth',
-    text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
+    text: 'Please activate bluetooth on your phone and BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
   },
   {
+    // 3
     img: require('@assets/deviceImages/image-1.png'),
     header: 'Search for BRU Machine',
   },
   {
+    // 4
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Ready for pairing',
     text: 'Cool! We found your BRU Machine!\r\n\r\nPlease activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
   },
   {
+    // 5
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Trying to connect...',
     text: 'Now we are trying to connect to your BRU Machine.\r\n\r\nPlease wait a few seconds.',
   },
   {
+    // 6
     img: require('@assets/deviceImages/image-1.png'),
     header: 'Ooops...',
     text: 'Please check your BRU Machine. You need to activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
   },
   {
+    // 7
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Success!',
     text: 'Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app',
@@ -112,10 +120,10 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
   if (isLoadingLocal) {
     return (
       <>
-        <ActivityIndicator size="large" color={colors.green.mid} />
         <Button
           variant="solid"
           action="primary"
+          disabled={isLoadingLocal}
           style={styles.buttonBottom}
           size={'xl'}>
           <ButtonSpinner
@@ -129,7 +137,6 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
   }
   switch (step) {
     case 1:
-    case 2:
       return (
         <Button
           style={styles.buttonBottom}
@@ -146,6 +153,36 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           />
           <ButtonText>Done</ButtonText>
         </Button>
+      );
+    case 2:
+      return (
+        <>
+          <LottieView
+            source={
+              isAndroid
+                ? require('@assets/lottie/Animation-1697319770697.lottie')
+                : require('@assets/lottie/Animation-1697319484663.lottie')
+            }
+            height={200}
+            autoPlay
+            loop
+          />
+          <Button
+            style={styles.buttonBottom}
+            variant={'solid'}
+            action={'primary'}
+            size={'xl'}
+            onPress={() => {
+              setStep(step + 1);
+            }}>
+            <Icon
+              name="check-square-o"
+              style={styles.buttonBottomIcon}
+              size={24}
+            />
+            <ButtonText>Done</ButtonText>
+          </Button>
+        </>
       );
     case 3:
       return (

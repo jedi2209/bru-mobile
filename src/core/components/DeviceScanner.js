@@ -14,6 +14,7 @@ import {Button} from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
 import DeviceInfo from 'react-native-device-info';
+import LottieView from 'lottie-react-native';
 
 import {$deviceSettingsStore, setDevice, resetDevice} from '@store/device';
 import {$langSettingsStore} from '@store/lang';
@@ -123,10 +124,11 @@ const DeviceScanner = props => {
 
   if (isLoading || isScanning) {
     return (
-      <ActivityIndicator
-        size="large"
-        color={colors.green.mid}
-        style={{marginTop: '20%'}}
+      <LottieView
+        source={require('@assets/lottie/Animation-1697316689983.lottie')}
+        height={270}
+        autoPlay
+        loop
       />
     );
   }
@@ -154,9 +156,11 @@ const DeviceScanner = props => {
           })}
         </View>
       ) : null}
-      <Button size="lg" variant={'primary'} onPress={() => searchDevices()}>
-        <Text style={styles.buttonTextStyle}>Scan</Text>
-      </Button>
+      {!autoScan && !isScanning ? (
+        <Button size="lg" variant={'primary'} onPress={() => searchDevices()}>
+          <Text style={styles.buttonTextStyle}>Scan</Text>
+        </Button>
+      ) : null}
     </>
   );
 };

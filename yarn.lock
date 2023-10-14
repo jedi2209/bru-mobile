@@ -1112,10 +1112,17 @@
   resolved "https://registry.yarnpkg.com/@babel/regjsgen/-/regjsgen-0.8.0.tgz#f0ba69b075e1f05fb2825b7fad991e7adbb18310"
   integrity sha512-x/rqGMdzj+fWZvCOYForTghzbtqPDZ5gPwaoNGHdgDfF2QA/XZbCBp4Moo5scrkAMPhB7z26XM/AaHuIJdgauA==
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.18.6", "@babel/runtime@^7.20.0", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.18.6", "@babel/runtime@^7.20.0", "@babel/runtime@^7.8.4":
   version "7.23.1"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.1.tgz#72741dc4d413338a91dcb044a86f3c0bc402646d"
   integrity sha512-hC2v6p8ZSI/W0HUzh3V8C5g+NwSKzKPtJwSpTjwl0o297GP9+ZLQSkdvHz46CM3LqyoXxq+5G9komY+eSqSO0g==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
+"@babel/runtime@^7.8.7":
+  version "7.23.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.23.2.tgz#062b0ac103261d68a966c4c7baf2ae3e62ec3885"
+  integrity sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==
   dependencies:
     regenerator-runtime "^0.14.0"
 
@@ -1275,9 +1282,9 @@
   integrity sha512-rB5HIhVzpgPQ9C1JJvY30a1bP0sQRWWFgUHVaiefH8dA/XRAQpmAIMF48JDctrvoBi/tKp5xN10mLE5CtnDRHg==
 
 "@gluestack-style/react@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@gluestack-style/react/-/react-1.0.3.tgz#3db524809967ea4a304059f1b6b4ee2806a25542"
-  integrity sha512-scYp13G61/XEgnOGmObX2pTfsRSUpwrvoHXWGPCiuI08LLq/0pYgqk4oJHhDt+zteq9j8q9Wxo8KTKDXeQvBDg==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@gluestack-style/react/-/react-1.0.5.tgz#80c3255d935cf619eaff3423f182560765bf058e"
+  integrity sha512-zVyt74Tn/uqzo/F9ctYIaYoyggG+oWDw2XfOBDcuCGTwkclvAcprYdXWPDkCvy4aBOfIRUkwlz1qaEgaD40G0w==
   dependencies:
     inline-style-prefixer "^6.0.1"
     normalize-css-color "^1.0.2"
@@ -1562,9 +1569,9 @@
     "@react-stately/toggle" "^3.4.4"
 
 "@gluestack-ui/tabs@^0.1.12":
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/@gluestack-ui/tabs/-/tabs-0.1.12.tgz#c9adf163442a7081e3595b014e8bb08d8a427362"
-  integrity sha512-9O+lxcvNMe9Q5Ezgh8CGJEP42qgUdkPcOBLa4z7cSzBLF0PV1VqAvZ/J3yaR0V01O+0w7MiYEwd8abu0AolzGg==
+  version "0.1.13"
+  resolved "https://registry.yarnpkg.com/@gluestack-ui/tabs/-/tabs-0.1.13.tgz#5ed096c48c4e3b376beae2cb9e96c4b9fc7fe466"
+  integrity sha512-6GTu7Euhak/ODG+Pk0tU0rF0LI+sjduVXVYRj8NZMq7wcn+pXVR4iozjcJ9yEXJEIIC2zlZDFR5ywn4IaghyiQ==
   dependencies:
     "@gluestack-ui/utils" "^0.1.5"
     "@react-native-aria/focus" "^0.2.8"
@@ -1580,9 +1587,9 @@
     "@react-native-aria/focus" "^0.2.7"
 
 "@gluestack-ui/themed@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@gluestack-ui/themed/-/themed-1.0.4.tgz#e738fbbb225f4497b3b303985fb58d22d21dc214"
-  integrity sha512-UiwF+crzuq0Yzb8uIiMvoTTgV9si9H3nCJ5KGTrnOxSt7uBEwksGODDpkle80Irm5qspOjGUZ8v9pBMp1rKhSw==
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@gluestack-ui/themed/-/themed-1.0.5.tgz#92c7f4cdb2e514985ae512637976050c545a1ad1"
+  integrity sha512-LDuh6HHWgrgyCFWZ3YaT9fFHy0do27xjDERLr4m5cztByZDK42Ws0ucCXlpeRaQO670a4dJ3DTFMp5lg2nhRVg==
   dependencies:
     "@expo/html-elements" latest
     "@gluestack-style/animation-resolver" "^1.0.2"
@@ -6789,6 +6796,11 @@ loose-envify@^1.0.0, loose-envify@^1.1.0, loose-envify@^1.4.0:
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
+lottie-react-native@^6.3.1:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/lottie-react-native/-/lottie-react-native-6.3.1.tgz#3ad152da79601e6a79ea811436a12a84fe1a4a72"
+  integrity sha512-M18nAVYeGMF//bhL27D2zuMcrFPH0jbD/deBvcWi0CCcfZf6LQfx45xt+cuDqwr5nh6dMm+ta8KfZJmkbNhtlg==
+
 lower-case@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/lower-case/-/lower-case-2.0.2.tgz#6fa237c63dbdc4a82ca0fd882e4722dc5e634e28"
@@ -8101,9 +8113,9 @@ react-localization@^1.0.17:
     localized-strings "^0.2.0"
 
 react-native-ble-manager@^10.1.1:
-  version "10.1.4"
-  resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-10.1.4.tgz#c6e66dd8e5cb7e0f32e86bd1056a9f97a657b37f"
-  integrity sha512-2nJr0d1OM/HBxejzgJoEuUTPcc/5B7gb9xLL7ljHGGFOMUbAB2qwnkNRw7v9AAega4swPxMLAmggwviDhuRI3w==
+  version "10.1.5"
+  resolved "https://registry.yarnpkg.com/react-native-ble-manager/-/react-native-ble-manager-10.1.5.tgz#c7b156db336fd554f6fb5100b70771cdb2114569"
+  integrity sha512-74qyH9IV81oY2J1ECul09M3Png7jTHPq74YG6VSa2I2Q/ZvU27NTNUu1DHYsk7Wwpexs+HJ1kAQWgJBaAM9IcQ==
 
 react-native-bluetooth-state-manager@^1.3.5:
   version "1.3.5"
