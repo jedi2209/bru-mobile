@@ -143,7 +143,7 @@ const Wrapper = props => {
       colors={colors.gradient.background[phoneTheme]}
       style={styles.linearGradient}>
       <ImageBackground
-        source={require('../../../assets/backgroundTile.png')}
+        source={require('@assets/backgroundTile.png')}
         resizeMode="repeat"
         style={styles.linearGradient}>
         <MainWrapper scroll={scroll} {...props} />

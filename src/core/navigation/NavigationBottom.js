@@ -65,7 +65,7 @@ const tabBarBackground = () => (
     colors={colors.gradient.backgroundTabbar}
     style={{flex: 1, borderRadius: 10}}>
     <ImageBackground
-      source={require('../../../assets/backgroundTile.png')}
+      source={require('@assets/backgroundTile.png')}
       resizeMode="repeat"
       style={{flex: 1}}
     />

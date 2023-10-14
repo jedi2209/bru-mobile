@@ -10,7 +10,14 @@ import {
   Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Button, ButtonText, HStack, FlatList} from '@gluestack-ui/themed';
+import {
+  Button,
+  ButtonText,
+  HStack,
+  FlatList,
+  Heading,
+  ButtonGroup,
+} from '@gluestack-ui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
@@ -45,31 +52,37 @@ const _renderItem = ({item, _onPressUpdate}) => {
         {item?.name}
       </Text>
       <HStack>
-        <Button variant={'outline'} onPress={_onPressUpdate}>
-          <Icon name="cog-refresh-outline" size={20} color="white" />
-        </Button>
-        <Button
-          variant={'outline'}
-          onPress={() => {
-            Alert.alert(
-              'Are you sure?',
-              'After unpair device you should pair it again.',
-              [
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-                {
-                  text: 'Unpair',
-                  style: 'destructive',
-                  onPress: async () =>
-                    _unpairDevice(get(deviceManager, 'device.id', null)),
-                },
-              ],
-            );
-          }}>
-          <Icon name="trash-can-outline" size={20} color="white" />
-        </Button>
+        <ButtonGroup space={'xl'}>
+          <Button
+            variant={'solid'}
+            action={'secondary'}
+            onPress={_onPressUpdate}>
+            <Icon name="cog-refresh" size={20} color="white" />
+          </Button>
+          <Button
+            variant={'solid'}
+            action={'negative'}
+            onPress={() => {
+              Alert.alert(
+                'Are you sure?',
+                'After unpair device you should pair it again.',
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'Unpair',
+                    style: 'destructive',
+                    onPress: async () =>
+                      _unpairDevice(get(deviceManager, 'device.id', null)),
+                  },
+                ],
+              );
+            }}>
+            <Icon name="trash-can-outline" size={20} color="white" />
+          </Button>
+        </ButtonGroup>
       </HStack>
     </HStack>
   );
@@ -138,7 +151,7 @@ const SettingsScreen = props => {
       </Button>
       {get(deviceManager, 'device', null) ? (
         <>
-          <Text>Connected machines</Text>
+          <Heading mb={16}>Connected machines</Heading>
           <FlatList
             data={devices}
             renderItem={({item}) => _renderItem({item, _onPressUpdate})}

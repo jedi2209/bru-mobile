@@ -217,6 +217,7 @@ export class Device {
   searchBleDevices = async () => {
     const preCheck = await this._checkManager();
     if (!preCheck) {
+      console.error('searchBleDevices preCheck', preCheck);
       return false;
     }
     return BleManager.scan(
@@ -225,6 +226,7 @@ export class Device {
       this.settings.ALLOW_DUPLICATES,
     )
       .then(() => {
+        console.info('BleManager.scan successfully');
         return true;
       })
       .catch(error => {
@@ -335,6 +337,7 @@ export class Device {
 
   // Send notification request
   sendNotification = async (
+    deviceUUID = this.deviceUUID,
     serviceUUID = mainUUID,
     characteristicUUID = RX,
   ) => {
@@ -342,17 +345,17 @@ export class Device {
     if (!preCheck) {
       return false;
     }
-    return BleManager.connect(this.deviceUUID).then(async () => {
-      await BleManager.retrieveServices(this.deviceUUID);
+    return BleManager.connect(deviceUUID).then(async () => {
+      await BleManager.retrieveServices(deviceUUID);
       try {
         await BleManager.startNotification(
-          this.deviceUUID,
+          deviceUUID,
           serviceUUID,
           characteristicUUID,
         );
         console.info(
           'Notification request to ' +
-            this.deviceUUID +
+            deviceUUID +
             ', service ' +
             serviceUUID +
             ', characteristic ' +
@@ -538,10 +541,13 @@ export class Device {
   ) => {
     const preCheck = await this._checkManager();
     if (!preCheck) {
+      console.error('writeValueAndNotify preCheck', preCheck);
       return false;
     }
+    console.info('writeValueAndNotify preCheck', preCheck);
     return BleManager.connect(device)
-      .then(async () => {
+      .then(async connectRes => {
+        console.info('writeValueAndNotify => BleManager.connect', connectRes);
         // Success code
         return BleManager.retrieveServices(device)
           .then(async () => {
@@ -558,6 +564,7 @@ export class Device {
               const services = await BleManager.retrieveServices(device);
               if (services) {
                 const notificationStatus = await this.sendNotification(
+                  device,
                   serviceUUID,
                   SOME,
                 );
@@ -619,24 +626,18 @@ export class Device {
 
   startDFU = async filePath => {
     const command = sendDataCommand(deviceInfo.OTAMode);
-    await this.repeatFunc(
-      'writeValueAndNotify',
-      Buffer(command).toJSON().data,
-      3,
-    );
-    await sleep(5 * defaultTimeout);
     const devices = await this.repeatFunc('searchBleDevices');
     if (devices) {
-      await sleep(3 * defaultTimeout);
       const deviceID = get(this.getPeripherals(), '0.id', null);
+      console.info('startDFU => deviceID', deviceID);
       if (deviceID) {
-        return await BleManager.connect(deviceID).then(async deviceInfo => {
+        return BleManager.connect(deviceID).then(async deviceInfo => {
           return NordicDFU.startDFU({
             deviceAddress: deviceID,
             filePath: isAndroid ? filePath : 'file://' + filePath,
           })
             .then(res => {
-              // console.info('DFU transfer done:', res);
+              console.info('DFU transfer done:', res);
               DFUEmitter.removeAllListeners('DFUStateChanged');
               DFUEmitter.removeAllListeners('DFUProgress');
               return res;
@@ -827,14 +828,21 @@ export class Device {
   };
 
   repeatFunc = async (func, params = null, times = 3, delay = 500) => {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       let i = 0;
       const interval = setInterval(async () => {
-        const res = await this[func](params);
-        i++;
-        if (i === times) {
+        try {
+          const res = await this[func](params);
+          i++;
+          console.info('repeatFunc => ' + func, res, i, times);
+          if (i === times) {
+            clearInterval(interval);
+            resolve(res);
+          }
+        } catch (error) {
           clearInterval(interval);
-          resolve(res);
+          console.error('repeatFunc => ' + func, error);
+          reject(error);
         }
       }, delay);
     });
