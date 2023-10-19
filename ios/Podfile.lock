@@ -487,12 +487,6 @@ PODS:
     - React-Core
   - react-native-splash-screen (3.3.0):
     - React-Core
-  - react-native-video (6.0.0-alpha.8):
-    - React-Core
-    - react-native-video/Video (= 6.0.0-alpha.8)
-  - react-native-video/Video (6.0.0-alpha.8):
-    - PromisesSwift
-    - React-Core
   - react-native-webview (13.6.2):
     - React-Core
   - React-NativeModulesApple (0.72.6):
@@ -726,7 +720,6 @@ DEPENDENCIES:
   - react-native-nordic-dfu (from `../node_modules/react-native-nordic-dfu`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
-  - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -860,8 +853,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
-  react-native-video:
-    :path: "../node_modules/react-native-video"
   react-native-webview:
     :path: "../node_modules/react-native-webview"
   React-NativeModulesApple:
@@ -998,7 +989,6 @@ SPEC CHECKSUMS:
   react-native-nordic-dfu: aaf362b8afaeba5d911f3d84b7f140ec5f64cbc1
   react-native-safe-area-context: 238cd8b619e05cb904ccad97ef42e84d1b5ae6ec
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
-  react-native-video: 86950ad481cec184d7c9420ec3bca0c27904bbcd
   react-native-webview: 8fc09f66a1a5b16bbe37c3878fda27d5982bb776
   React-NativeModulesApple: 1802a680a4cd891d2ab97780771bcb2ff11fdc0b
   React-perflogger: e3596db7e753f51766bceadc061936ef1472edc3
