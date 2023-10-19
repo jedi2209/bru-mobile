@@ -13,6 +13,7 @@ import {getFirmwareData} from '@utils/firmware';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {get} from 'lodash';
 import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
+import {DEVICE_MANAGER_CONFIG} from '@const';
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
@@ -160,6 +161,7 @@ export class Device {
           return this._checkManager();
         });
     }
+    await sleep();
     const permissionGranted = await this.handlePermissions();
     if (!permissionGranted) {
       _showPermissionAlert();
@@ -220,6 +222,12 @@ export class Device {
       console.error('searchBleDevices preCheck', preCheck);
       return false;
     }
+    console.info(
+      'searchBleDevices BleManager.scan',
+      this.settings.SERVICE_UUIDS,
+      this.settings.SECONDS_TO_SCAN_FOR,
+      this.settings.ALLOW_DUPLICATES,
+    );
     return BleManager.scan(
       this.settings.SERVICE_UUIDS,
       this.settings.SECONDS_TO_SCAN_FOR,
@@ -401,21 +409,32 @@ export class Device {
 
   removeBond = async (device = this.deviceUUID) => {
     const preCheck = await this._checkManager();
+    console.info(
+      'removeBond => await this._checkManager() success - value: ',
+      preCheck,
+    );
     if (!preCheck) {
       return false;
     }
-    await this.getBondedPeripherals().then(res => {
-      // console.log('this.getBondedPeripherals().then res', res);
-      if (res && isAndroid) {
-        BleManager.removeBond(device).catch(err => {
-          console.error('BleManager.removeBond error', err);
-        });
-      }
-      this.device.isCurrent = false;
-      setDevice(this.device);
-      this.clearDevice();
-      return true;
-    });
+    console.info('removeBond => this.getBondedPeripherals() start');
+    const res = await this.getBondedPeripherals();
+    console.info(
+      'removeBond => this.getBondedPeripherals() finish - value: ',
+      res,
+    );
+    if (res && isAndroid) {
+      BleManager.removeBond(device).catch(err => {
+        console.error('BleManager.removeBond error', err);
+      });
+      // console.info('removeBond await this.getBondedPeripherals => res + isAndroid', res, isAndroid);
+    }
+    this.device.isCurrent = false;
+    console.info('removeBond => setDevice start - device: ', this.device);
+    setDevice(this.device);
+    console.info('removeBond => setDevice finish, this.clearDevice start');
+    this.clearDevice();
+    console.info('removeBond => this.clearDevice finish');
+    return true;
   };
 
   checkBondedStatus = async (
@@ -462,8 +481,8 @@ export class Device {
         RX,
         device,
       );
-      // console.log('getBondedPeripherals isConnected', isConnected);
       if (!isConnected) {
+        console.error('getBondedPeripherals isConnected', isConnected);
         return false;
       }
       items = [{id: device}];
@@ -629,24 +648,32 @@ export class Device {
     const devices = await this.repeatFunc('searchBleDevices');
     if (devices) {
       const deviceID = get(this.getPeripherals(), '0.id', null);
-      console.info('startDFU => deviceID', deviceID);
       if (deviceID) {
-        return BleManager.connect(deviceID).then(async deviceInfo => {
-          return NordicDFU.startDFU({
-            deviceAddress: deviceID,
-            filePath: isAndroid ? filePath : 'file://' + filePath,
+        let connectedParams = {
+          filePath: isAndroid ? filePath : 'file://' + filePath,
+          alternativeAdvertisingNameEnabled: true,
+          deviceAddress: deviceID,
+          retries: 3,
+        };
+
+        await this.writeValue(Buffer(command).toJSON().data);
+        await sleep(6 * defaultTimeout);
+        await BleManager.connect(deviceID);
+        return NordicDFU.startDFU(connectedParams)
+          .then(res => {
+            console.info('DFU transfer done:', res);
+            DFUEmitter.removeAllListeners('DFUStateChanged');
+            DFUEmitter.removeAllListeners('DFUProgress');
+            return res;
           })
-            .then(res => {
-              console.info('DFU transfer done:', res);
-              DFUEmitter.removeAllListeners('DFUStateChanged');
-              DFUEmitter.removeAllListeners('DFUProgress');
-              return res;
-            })
-            .catch(err => {
-              console.error('startDFU => NordicDFU.startDFU error', err);
-              return false;
-            });
-        });
+          .catch(err => {
+            console.error(
+              'startDFU => NordicDFU.startDFU error',
+              err,
+              connectedParams,
+            );
+            return false;
+          });
       } else {
         console.error('startDFU => Device not found');
         return false;
@@ -956,3 +983,5 @@ export const bufferToHex = buffer => {
   });
   return s;
 };
+
+export const deviceManager = new Device(DEVICE_MANAGER_CONFIG);

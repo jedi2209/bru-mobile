@@ -20,7 +20,7 @@ import {$currentFirmwareStore} from '@store/firmware';
 import {$langSettingsStore} from '@store/lang';
 import Wrapper from '@comp/Wrapper';
 
-import {Device, sleep} from '@utils/device';
+import {deviceManager, sleep} from '@utils/device';
 import {
   fetchFirmwareMeta,
   getFileURL,
@@ -28,12 +28,8 @@ import {
   getTextFromFirmware,
 } from '@utils/firmware';
 
-import {DEVICE_MANAGER_CONFIG} from '@const';
-
 import {get} from 'lodash';
 import {colors} from '@styleConst';
-
-const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const _renderProgressBar = value => {
   // const Progress = createProgress({
@@ -215,7 +211,6 @@ const UpdateFirmwareScreen = props => {
       return false;
     }
 
-    await sleep(6000);
     setDownloading(false);
     setUpdateStatus('rebooting');
     DFUEmitter.addListener(
@@ -326,7 +321,7 @@ const UpdateFirmwareScreen = props => {
             mt={4}
             isDisabled={false}
             isFocusVisible={false}
-            onPress={async () => {
+            onPress={() => {
               Alert.alert(
                 'Are you shure?',
                 'This will update your BRU device. Please do not close the app.',
@@ -339,7 +334,7 @@ const UpdateFirmwareScreen = props => {
                     text: 'Update',
                     isPreferred: true,
                     style: 'destructive',
-                    onPress: async () => _updateFirmware(itemID, file),
+                    onPress: () => _updateFirmware(itemID, file),
                   },
                 ],
               );

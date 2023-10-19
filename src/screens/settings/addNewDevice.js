@@ -11,22 +11,17 @@ import {
 } from '@gluestack-ui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-import {useStore} from 'effector-react';
-import {$deviceSettingsStore, setDevice} from '@store/device';
+import {setDevice} from '@store/device';
 import Wrapper from '@comp/Wrapper';
 import DeviceScanner from '@comp/DeviceScanner';
 import LottieView from 'lottie-react-native';
 
-import {Device, sleep} from '@utils/device';
+import {deviceManager, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 
-import {DEVICE_MANAGER_CONFIG} from '@const';
-
 const isAndroid = Platform.OS === 'android';
-
-const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const stepsContent = [
   null,

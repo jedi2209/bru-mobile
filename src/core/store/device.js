@@ -23,6 +23,13 @@ export const $deviceSettingsStore = createStore([], {
       device.isCurrent = true;
       // If device is not exists in state, then add it
       state.push(device);
+    } else {
+      // If device exists in state, then update it
+      state.forEach((obj, index) => {
+        if (obj.id === device.id) {
+          state[index] = device;
+        }
+      });
     }
     return [...state];
   })
@@ -34,12 +41,12 @@ export const $deviceSettingsStore = createStore([], {
   })
   .reset(resetDevice);
 
-// $deviceSettingsStore.watch(state => {
-//   console.info(
-//     '============= $deviceSettingsStore changed =============',
-//     state,
-//   );
-// });
+$deviceSettingsStore.watch(state => {
+  console.info(
+    '============= $deviceSettingsStore changed =============',
+    state,
+  );
+});
 
 const fetchDevice = createEffect({
   async handler() {

@@ -27,18 +27,14 @@ import {$deviceSettingsStore, resetDevice} from '@store/device';
 
 import Wrapper from '@comp/Wrapper';
 
-import {Device, sendDataCommand, sleep} from '@utils/device';
+import {deviceManager, sendDataCommand, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 
-import {DEVICE_MANAGER_CONFIG} from '@const';
-
-const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
-
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
-const _renderItem = ({item, _onPressUpdate}) => {
+const _renderItem = ({item, _onPressUpdate, _onPressUnpair}) => {
   return (
     <HStack key={item?.id} justifyContent={'space-between'}>
       <Text
@@ -74,8 +70,8 @@ const _renderItem = ({item, _onPressUpdate}) => {
                   {
                     text: 'Unpair',
                     style: 'destructive',
-                    onPress: async () =>
-                      _unpairDevice(get(deviceManager, 'device.id', null)),
+                    onPress: () =>
+                      _onPressUnpair(get(deviceManager, 'device.id', null)),
                   },
                 ],
               );
@@ -86,15 +82,6 @@ const _renderItem = ({item, _onPressUpdate}) => {
       </HStack>
     </HStack>
   );
-};
-
-const _unpairDevice = async () => {
-  await deviceManager
-    .removeBond()
-    .then(res => {
-      // console.log('onPress Unpair device', res);
-    })
-    .catch(err => console.error('onPress Unpair device', err));
 };
 
 // resetDevice();
@@ -140,6 +127,20 @@ const SettingsScreen = props => {
     navigation.navigate('UpdateFirmwareScreen', {device: deviceManager.device});
   };
 
+  const _onPressUnpair = async () => {
+    setLoading(true);
+    await deviceManager
+      .removeBond()
+      .then(res => {
+        setLoading(false);
+        // console.info('onPress Unpair device', res);
+      })
+      .catch(err => {
+        setLoading(false);
+        console.error('onPress Unpair device', err);
+      });
+  };
+
   return (
     <Wrapper {...props}>
       <Button
@@ -154,7 +155,9 @@ const SettingsScreen = props => {
           <Heading mb={16}>Connected machines</Heading>
           <FlatList
             data={devices}
-            renderItem={({item}) => _renderItem({item, _onPressUpdate})}
+            renderItem={({item}) =>
+              _renderItem({item, _onPressUpdate, _onPressUnpair})
+            }
             keyExtractor={item => item.id}
           />
           {/* <Pressable

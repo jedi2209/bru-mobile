@@ -3,38 +3,24 @@ import {
   Text,
   View,
   StyleSheet,
-  Dimensions,
   useColorScheme,
   TouchableOpacity,
-  Pressable,
-  FlatList,
   Alert,
 } from 'react-native';
 import {Button} from '@gluestack-ui/themed';
-import {useStore} from 'effector-react';
-import {ActivityIndicator} from 'react-native-paper';
-import DeviceInfo from 'react-native-device-info';
 import LottieView from 'lottie-react-native';
 
-import {$deviceSettingsStore, setDevice, resetDevice} from '@store/device';
-import {$langSettingsStore} from '@store/lang';
-
-import Wrapper from '@comp/Wrapper';
-
-import {Device, sendDataCommand, sleep} from '@utils/device';
+import {Device, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
-import {convertStyledToStyledVerbosed} from '@dank-style/react';
-
 import {DEVICE_MANAGER_CONFIG} from '@const';
 
 const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const DeviceScanner = props => {
   const {onItemPress, autoScan} = props;
-  const [isScanning, setIsScanning] = useState(false);
-  const [isLoading, setLoading] = useState(false);
+  const [isScanning, setIsScanning] = useState(autoScan);
   const [peripherals, setPeripherals] = useState(null);
 
   const isDarkMode = useColorScheme() === 'dark';
@@ -122,7 +108,7 @@ const DeviceScanner = props => {
     );
   };
 
-  if (isLoading || isScanning) {
+  if (isScanning) {
     return (
       <LottieView
         source={require('@assets/lottie/Animation-1697316689983.lottie')}
@@ -156,7 +142,7 @@ const DeviceScanner = props => {
           })}
         </View>
       ) : null}
-      {!autoScan && !isScanning ? (
+      {!isScanning ? (
         <Button size="lg" variant={'primary'} onPress={() => searchDevices()}>
           <Text style={styles.buttonTextStyle}>Scan</Text>
         </Button>
