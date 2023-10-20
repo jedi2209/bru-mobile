@@ -152,7 +152,7 @@ const SettingsScreen = props => {
       </Button>
       {get(deviceManager, 'device', null) ? (
         <>
-          <Heading mb={16}>Connected machines</Heading>
+          <Heading mb={16}>My BRU</Heading>
           <FlatList
             data={devices}
             renderItem={({item}) =>

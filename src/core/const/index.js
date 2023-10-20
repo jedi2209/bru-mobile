@@ -52,7 +52,7 @@ let LANGUAGES = {
 
 export const DEVICE_MANAGER_CONFIG = {
   prefix: 'BRU',
-  secondsToScan: 5,
+  secondsToScan: 3,
   allowDuplicates: false,
 };
 
