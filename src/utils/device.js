@@ -25,7 +25,7 @@ const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
 const TX = 'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0';
 const RX = 'aae28f02-71b5-42a1-8c3c-f9cf6ac969d0';
 const SOME = 'aae21541-71b5-42a1-8c3c-f9cf6ac969d0';
-const DEFAULT_MTU = 200;
+const DEFAULT_MTU = 100;
 
 const defaultTimeout = 1000;
 const maxAttemps = 10;
@@ -223,10 +223,10 @@ export class Device {
       return false;
     }
     console.info(
-      'searchBleDevices BleManager.scan',
-      this.settings.SERVICE_UUIDS,
-      this.settings.SECONDS_TO_SCAN_FOR,
-      this.settings.ALLOW_DUPLICATES,
+      '=========== searchBleDevices BleManager.scan params ===========',
+      this.settings.SERVICE_UUIDS + ' UUIDS, ',
+      this.settings.SECONDS_TO_SCAN_FOR + ' seconds, ',
+      this.settings.ALLOW_DUPLICATES + ' allow duplicates',
     );
     return BleManager.scan(
       this.settings.SERVICE_UUIDS,
@@ -511,38 +511,30 @@ export class Device {
       // Success code
       return await BleManager.retrieveServices(this.deviceUUID)
         .then(async () => {
-          BleManager.requestMTU(this.deviceUUID, DEFAULT_MTU)
-            .then(async mtu => {
-              console.info('MTU size changed to ' + mtu + ' bytes', value);
-              try {
-                await BleManager.writeWithoutResponse(
-                  this.deviceUUID,
-                  serviceUUID,
-                  characteristicUUID,
-                  value,
-                ).then(async () => {
-                  console.info(
-                    'writeValue => writeWithoutResponse written successfully',
-                  );
-                  return true;
-                });
-              } catch (error) {
-                const bufferError = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
-                if (bufferError) {
-                  console.error(
-                    'Error writing value:',
-                    bufferError.toString('utf8'),
-                  ); // ответ переводим просто в строку
-                } else {
-                  console.info('Error writing value:', error);
-                }
-                return false;
-              }
-            })
-            .catch(error => {
-              // Failure code
-              console.error('writeValue => BleManager.requestMTU', error);
+          try {
+            await BleManager.writeWithoutResponse(
+              this.deviceUUID,
+              serviceUUID,
+              characteristicUUID,
+              value,
+            ).then(async () => {
+              console.info(
+                'writeValue => writeWithoutResponse written successfully',
+              );
+              return true;
             });
+          } catch (error) {
+            const bufferError = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
+            if (bufferError) {
+              console.error(
+                'Error writing value:',
+                bufferError.toString('utf8'),
+              ); // ответ переводим просто в строку
+            } else {
+              console.info('Error writing value:', error);
+            }
+            return false;
+          }
         })
         .catch(error => {
           // Failure code
@@ -645,35 +637,74 @@ export class Device {
 
   startDFU = async filePath => {
     const command = sendDataCommand(deviceInfo.OTAMode);
-    const devices = await this.repeatFunc('searchBleDevices');
+    const sendToReboot = await this.repeatFunc(
+      'writeValue',
+      Buffer(command).toJSON().data,
+      2,
+    );
+    console.info('\t\t\tsendToReboot', sendToReboot);
+    await sleep(5 * defaultTimeout);
+    const devices = await this.repeatFunc('searchBleDevices', 2);
     if (devices) {
       const deviceID = get(this.getPeripherals(), '0.id', null);
       if (deviceID) {
         let connectedParams = {
           filePath: isAndroid ? filePath : 'file://' + filePath,
-          alternativeAdvertisingNameEnabled: true,
+          alternativeAdvertisingNameEnabled: false,
           deviceAddress: deviceID,
           retries: 3,
         };
-
-        await this.writeValue(Buffer(command).toJSON().data);
-        await sleep(6 * defaultTimeout);
-        await BleManager.connect(deviceID);
-        return NordicDFU.startDFU(connectedParams)
-          .then(res => {
-            console.info('DFU transfer done:', res);
-            DFUEmitter.removeAllListeners('DFUStateChanged');
-            DFUEmitter.removeAllListeners('DFUProgress');
-            return res;
-          })
-          .catch(err => {
-            console.error(
-              'startDFU => NordicDFU.startDFU error',
-              err,
-              connectedParams,
-            );
-            return false;
-          });
+        console.info(
+          'Connected!\r\n\tBleManager.connect finish => device: ',
+          deviceID,
+        );
+        try {
+          const res = await NordicDFU.startDFU(connectedParams);
+          console.info('DFU transfer done:', res);
+          DFUEmitter.removeAllListeners('DFUStateChanged');
+          DFUEmitter.removeAllListeners('DFUProgress');
+          return res;
+        } catch (err) {
+          console.error(
+            'startDFU => NordicDFU.startDFU error',
+            err,
+            connectedParams,
+          );
+          return false;
+        }
+        // return BleManager.connect(deviceID)
+        //   .then(async () => {
+        //     let connectedParams = {
+        //       filePath: isAndroid ? filePath : 'file://' + filePath,
+        //       alternativeAdvertisingNameEnabled: false,
+        //       deviceAddress: deviceID,
+        //       retries: 3,
+        //     };
+        //     // if (deviceName) {
+        //     //   connectedParams.deviceName = deviceName;
+        //     // }
+        //     console.info(
+        //       'Connected!\r\n\tBleManager.connect finish => device: ',
+        //       deviceID,
+        //     );
+        //     try {
+        //       const res = await NordicDFU.startDFU(connectedParams);
+        //       console.info('DFU transfer done:', res);
+        //       DFUEmitter.removeAllListeners('DFUStateChanged');
+        //       DFUEmitter.removeAllListeners('DFUProgress');
+        //       return res;
+        //     } catch (err) {
+        //       console.error(
+        //         'startDFU => NordicDFU.startDFU error',
+        //         err,
+        //         connectedParams,
+        //       );
+        //       return false;
+        //     }
+        //   })
+        //   .catch(err => {
+        //     console.error('\tBleManager.connect(deviceID)', deviceID);
+        //   });
       } else {
         console.error('startDFU => Device not found');
         return false;
