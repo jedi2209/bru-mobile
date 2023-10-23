@@ -135,6 +135,7 @@ export class Device {
 
   _checkManager = async () => {
     const bluetoothState = await this.handleBluetoothState();
+    sleep(defaultTimeout);
     Alert.alert('_checkManager => bluetoothState', bluetoothState);
     switch (bluetoothState) {
       case 'Unsupported':
@@ -816,6 +817,7 @@ export class Device {
   handlePermissions = async () => {
     if (!isAndroid) {
       const result = await check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
+      sleep();
       Alert.alert('handlePermissions result', result);
       switch (result) {
         case RESULTS.UNAVAILABLE:
