@@ -135,6 +135,7 @@ export class Device {
 
   _checkManager = async () => {
     const bluetoothState = await this.handleBluetoothState();
+    Alert.alert('_checkManager => bluetoothState', bluetoothState);
     switch (bluetoothState) {
       case 'Unsupported':
         return false;
@@ -163,6 +164,7 @@ export class Device {
     }
     await sleep();
     const permissionGranted = await this.handlePermissions();
+    Alert.alert('_checkManager => permissionGranted', permissionGranted);
     if (!permissionGranted) {
       _showPermissionAlert();
       return false;
@@ -640,7 +642,7 @@ export class Device {
     const sendToReboot = await this.repeatFunc(
       'writeValue',
       Buffer(command).toJSON().data,
-      2,
+      5,
     );
     console.info('\t\t\tsendToReboot', sendToReboot);
     await sleep(5 * defaultTimeout);
@@ -814,6 +816,7 @@ export class Device {
   handlePermissions = async () => {
     if (!isAndroid) {
       const result = await check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
+      Alert.alert('handlePermissions result', result);
       switch (result) {
         case RESULTS.UNAVAILABLE:
         case RESULTS.DENIED:
@@ -825,6 +828,10 @@ export class Device {
           this.permissionGranted = true;
           break;
       }
+      Alert.alert(
+        'handlePermissions => this.permissionGranted',
+        this.permissionGranted,
+      );
       return this.permissionGranted;
     }
     if (Platform.Version >= 31) {

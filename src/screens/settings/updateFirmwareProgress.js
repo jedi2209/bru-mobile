@@ -118,7 +118,7 @@ const UpdateFirmwareProgressScreen = props => {
     if (!filePath) {
       toast.closeAll();
       Alert.alert(
-        'Error',
+        'Error #1',
         "Sorry, we can't download firmware.\r\n\r\nPlease try again later.",
         [
           {
@@ -136,7 +136,7 @@ const UpdateFirmwareProgressScreen = props => {
 
     const fileDownloaded = await downloadFile(filePath, file).catch(err => {
       Alert.alert(
-        'Error',
+        'Error #2',
         "Sorry, we can't download firmware.\r\n\r\nPlease try again later.",
         [
           {
@@ -153,12 +153,17 @@ const UpdateFirmwareProgressScreen = props => {
     });
 
     if (!fileDownloaded) {
+      setDownloading(false);
+      setUpdateStatus(false);
+      Alert.alert(
+        'Error #3',
+        "Sorry, we can't download firmware.\r\n\r\nPlease try again later.",
+      );
       console.error('fileDownloaded', fileDownloaded);
       return false;
     }
     console.info('fileDownloaded', fileDownloaded);
     setDownloading(false);
-    setUpdateStatus('rebooting');
     DFUEmitter.addListener(
       'DFUProgress',
       ({percent, currentPart, partsTotal, avgSpeed, speed}) => {
@@ -201,12 +206,14 @@ const UpdateFirmwareProgressScreen = props => {
       }
     });
     console.info('DFUEmitter.addListener');
+    setUpdateStatus('rebooting');
     const statusDFU = await deviceManager.startDFU(fileDownloaded);
     if (statusDFU) {
       console.info('statusDFU Success!', statusDFU);
-      // setUpdateStatus('finish');
-      // setProgress(0);
+      setUpdateStatus('finish');
+      setProgress(0);
     } else {
+      Alert.alert('statusDFU error', statusDFU);
       console.error('statusDFU error', statusDFU);
       setUpdateStatus(false);
       setProgress(0);
