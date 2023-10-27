@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {Platform, View, StyleSheet, Alert, useColorScheme} from 'react-native';
+import {
+  Platform,
+  View,
+  StyleSheet,
+  Alert,
+  Linking,
+  useColorScheme,
+} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {
   Button,
@@ -17,6 +24,9 @@ import DeviceScanner from '@comp/DeviceScanner';
 import LottieView from 'lottie-react-native';
 
 import {deviceManager, sleep} from '@utils/device';
+// import {Device, sleep} from '@utils/device';
+// import {DEVICE_MANAGER_CONFIG} from '@const';
+// const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
@@ -26,42 +36,48 @@ const isAndroid = Platform.OS === 'android';
 const stepsContent = [
   null,
   {
-    // 1
+    // 1 checkBluetooth
     img: require('@assets/deviceImages/image-1.png'),
-    header: 'Connect the power',
-    text: 'Place BRU Machine on the leveled surface. Connect the power cord, plug it into the mains outlet.',
+    header: 'Activate bluetooth on your phone',
+    text: 'This APP need access to bluetooth to be able search and communicate with BRU.',
   },
   {
-    // 2
+    // 2 checkBluetooth => false
     img: require('@assets/deviceImages/image-2.png'),
-    header: 'Activate bluetooth',
-    text: 'Please activate bluetooth on your phone and BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
+    header: 'Ooops...',
+    text: "We need access to your phone's bluetooth to be able search and communicate with BRU.\r\n",
   },
   {
-    // 3
+    // 3 checkBluetooth => true
+    img: require('@assets/deviceImages/image-1.png'),
+    header: 'Activate bluetooth on BRU',
+    text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
+  },
+  {
+    // 4
     img: require('@assets/deviceImages/image-1.png'),
     header: 'Search for BRU Machine',
   },
   {
-    // 4
+    // 5
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Ready for pairing',
     text: 'Cool! We found your BRU Machine!\r\n\r\nPlease activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
   },
   {
-    // 5
+    // 6
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Trying to connect...',
     text: 'Now we are trying to connect to your BRU Machine.\r\n\r\nPlease wait a few seconds.',
   },
   {
-    // 6
+    // 7
     img: require('@assets/deviceImages/image-1.png'),
     header: 'Ooops...',
     text: 'Please check your BRU Machine. You need to activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
   },
   {
-    // 7
+    // 8
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Success!',
     text: 'Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app',
@@ -70,44 +86,51 @@ const stepsContent = [
 
 const _pairDevice = async itemID => {
   if (!itemID) {
+    console.error('_pairDevice !itemID', itemID);
     return false;
   }
   const deviceInfo = await deviceManager.connectToDevice(itemID);
-  const deviceStatus = deviceManager.getPeripherals(itemID);
-  if (deviceInfo) {
-    if (get(deviceStatus, 'connected')) {
-      const bondedStatus = await deviceManager.checkBondedStatus(itemID, 0, 3);
-      // console.log('bondedStatus', bondedStatus);
-      if (bondedStatus === true) {
-        deviceManager.setCurrentDevice(deviceInfo);
-        // Get device hardwareRevision and firmwareRevision
-        const hardwareRevision = await deviceManager.handleReadData(
-          'hardwareRevision',
-        );
-        if (hardwareRevision) {
-          deviceInfo.hardwareRevision = hardwareRevision;
-        }
-        const firmwareRevision = await deviceManager.handleReadData(
-          'firmwareRevision',
-        );
-        if (firmwareRevision) {
-          deviceInfo.firmwareRevision = firmwareRevision;
-        }
-        deviceInfo.isCurrent = true;
-        // console.info('============= _pairDevice deviceInfo =============', deviceInfo);
-        setDevice(deviceInfo);
-      }
-      if (isAndroid) {
-        await sleep(10 * 1000); // wait 10 seconds for Android bonding
-      }
-      return bondedStatus;
-    } else {
-      Alert.alert(
-        'Connection error',
-        '\r\nMake sure that you choose "Pair New Device" from 🛠️Machine Setup menu on BRU device',
-      );
-    }
+  console.info('_pairDevice => deviceInfo', deviceInfo);
+  if (!deviceInfo) {
+    return false;
   }
+  const deviceStatus = deviceManager.getPeripherals(itemID);
+  console.info('_pairDevice => deviceStatus', deviceStatus);
+  if (get(deviceStatus, 'connected')) {
+    const bondedStatus = await deviceManager.checkBondedStatus(itemID, 0, 3);
+    // console.log('bondedStatus', bondedStatus);
+    if (bondedStatus === true) {
+      deviceManager.setCurrentDevice(deviceInfo);
+      // Get device hardwareRevision and firmwareRevision
+      const hardwareRevision = await deviceManager.handleReadData(
+        'hardwareRevision',
+      );
+      console.info('hardwareRevision', hardwareRevision);
+      if (hardwareRevision) {
+        deviceInfo.hardwareRevision = hardwareRevision;
+      }
+      const firmwareRevision = await deviceManager.handleReadData(
+        'firmwareRevision',
+      );
+      console.info('firmwareRevision', firmwareRevision);
+      if (firmwareRevision) {
+        deviceInfo.firmwareRevision = firmwareRevision;
+      }
+      deviceInfo.isCurrent = true;
+      // console.info('============= _pairDevice deviceInfo =============', deviceInfo);
+      setDevice(deviceInfo);
+    }
+    if (isAndroid) {
+      await sleep(3 * 1000); // wait 5 seconds for Android bonding
+    }
+    return bondedStatus;
+  } else {
+    Alert.alert(
+      'Connection error',
+      '\r\nMake sure that you choose "Pair New Device" from 🛠️Machine Setup menu on BRU device',
+    );
+  }
+  return false;
 };
 
 const _renderStep = ({step, setStep, item, setItem, navigation}) => {
@@ -133,21 +156,44 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
   switch (step) {
     case 1:
       return (
-        <Button
-          style={styles.buttonBottom}
-          variant={'solid'}
-          action={'primary'}
-          size={'xl'}
-          onPress={() => {
-            setStep(step + 1);
-          }}>
-          <Icon
-            name="check-square-o"
-            style={styles.buttonBottomIcon}
-            size={24}
+        <>
+          <LottieView
+            source={
+              isAndroid
+                ? require('@assets/lottie/Animation-1697319770697.lottie')
+                : require('@assets/lottie/Animation-1697319484663.lottie')
+            }
+            height={200}
+            autoPlay
+            loop
           />
-          <ButtonText>Done</ButtonText>
-        </Button>
+          <Button
+            style={styles.buttonBottom}
+            variant={'solid'}
+            action={'primary'}
+            size={'xl'}
+            onPress={async () => {
+              const bluetoothState =
+                await deviceManager._handleBluetoothState();
+              if (!deviceManager.bluetoothState) {
+                setStep(step + 1);
+                console.error(
+                  '_renderStep 1 => bluetoothState',
+                  bluetoothState,
+                );
+              } else {
+                setStep(step + 2);
+                console.info('_renderStep 1 => bluetoothState', bluetoothState);
+              }
+            }}>
+            <Icon
+              name="check-square-o"
+              style={styles.buttonBottomIcon}
+              size={24}
+            />
+            <ButtonText>Done</ButtonText>
+          </Button>
+        </>
       );
     case 2:
       return (
@@ -156,8 +202,31 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
             source={
               isAndroid
                 ? require('@assets/lottie/Animation-1697319770697.lottie')
-                : require('@assets/lottie/Animation-1697319484663.lottie')
+                : require('@assets/lottie/Animation-1698061078225.lottie')
             }
+            height={200}
+            autoPlay
+            loop
+          />
+          <Button
+            style={styles.buttonBottom}
+            variant={'solid'}
+            action={'primary'}
+            size={'xl'}
+            onPress={() => {
+              setStep(step - 1);
+              Linking.openSettings();
+            }}>
+            <Icon name="gears" style={styles.buttonBottomIcon} size={24} />
+            <ButtonText>Open settings</ButtonText>
+          </Button>
+        </>
+      );
+    case 3:
+      return (
+        <>
+          <LottieView
+            source={require('@assets/lottie/Animation-1698061526398.lottie')}
             height={200}
             autoPlay
             loop
@@ -179,7 +248,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           </Button>
         </>
       );
-    case 3:
+    case 4:
       return (
         <DeviceScanner
           autoScan={true}
@@ -189,7 +258,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           }}
         />
       );
-    case 4:
+    case 5:
       return (
         <Button
           style={styles.buttonBottom}
@@ -205,17 +274,22 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           <ButtonText>Ready to connect!</ButtonText>
         </Button>
       );
-    case 5:
-      setIsLoadingLocal(true);
-      _pairDevice(get(item, 'id')).then(res => {
-        if (res) {
-          setStep(step + 2);
-        } else {
-          setStep(step + 1);
-        }
-        setIsLoadingLocal(false);
-      });
     case 6:
+      setIsLoadingLocal(true);
+      _pairDevice(get(item, 'id'))
+        .then(res => {
+          console.info('_pairDevice then res', res);
+          if (res) {
+            setStep(step + 2);
+          } else {
+            setStep(step + 1);
+          }
+          setIsLoadingLocal(false);
+        })
+        .catch(err => {
+          console.error('_pairDevice err', err);
+        });
+    case 7:
       return (
         <Button
           style={styles.buttonBottom}
@@ -231,7 +305,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           <ButtonText>Ready to connect!</ButtonText>
         </Button>
       );
-    case 7:
+    case 8:
       return (
         <Button
           style={styles.buttonBottom}
@@ -261,6 +335,7 @@ const IntroBlock = props => {
           w={'100%'}
           alt={'ImageStep' + step}
           minHeight={'$1/2'}
+          role="img"
         />
       ) : null}
       <View style={{flex: 1, paddingHorizontal: 30, paddingBottom: 30}}>
@@ -282,7 +357,6 @@ const AddNewDeviceScreen = props => {
   const [isloading, setLoading] = useState(false);
 
   useEffect(() => {
-    deviceManager._checkManager();
     return () => {
       setStep(1);
     };

@@ -17,14 +17,14 @@ import {
 import CircularProgress from 'react-native-circular-progress-indicator';
 import Wrapper from '@comp/Wrapper';
 
-import {Device, sleep} from '@utils/device';
+import {Device, deviceManager, sleep} from '@utils/device';
 import {getFileURL, downloadFile} from '@utils/firmware';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
-import {DEVICE_MANAGER_CONFIG} from '@const';
+// import {DEVICE_MANAGER_CONFIG} from '@const';
 
-const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
+// const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const _renderProgressBar = value => {
   return (
@@ -207,6 +207,7 @@ const UpdateFirmwareProgressScreen = props => {
     });
     console.info('DFUEmitter.addListener');
     setUpdateStatus('rebooting');
+    console.info('Rebooting...');
     const statusDFU = await deviceManager.startDFU(fileDownloaded);
     if (statusDFU) {
       console.info('statusDFU Success!', statusDFU);

@@ -27,12 +27,15 @@ import {$deviceSettingsStore, resetDevice} from '@store/device';
 
 import Wrapper from '@comp/Wrapper';
 
-import {deviceManager, sendDataCommand, sleep} from '@utils/device';
+import {Device, deviceManager, sendDataCommand, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
+
+// import {DEVICE_MANAGER_CONFIG} from '@const';
+// const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const _renderItem = ({item, _onPressUpdate, _onPressUnpair}) => {
   return (
@@ -102,10 +105,10 @@ const SettingsScreen = props => {
       setLoading(false);
     }, 500);
     return () => {
-      console.debug('[app] main component unmounting. Removing listeners...');
-      if (typeof deviceManager !== 'undefined') {
-        deviceManager.destructor();
-      }
+      // console.debug('[app] main component unmounting. Removing listeners...');
+      // if (typeof deviceManager !== 'undefined') {
+      //   deviceManager.destructor();
+      // }
     };
   }, [devices]);
 

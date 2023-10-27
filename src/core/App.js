@@ -1,6 +1,8 @@
 import React, {useEffect, useRef} from 'react';
 import {useColorScheme, Platform, LogBox} from 'react-native';
 
+import BleManager from 'react-native-ble-manager';
+
 import {NavigationContainer} from '@react-navigation/native';
 import NavMain from '@nav/Navigation';
 
@@ -45,7 +47,7 @@ LogBox.ignoreLogs([
 if (__DEV__) {
   sentryParams = {
     dsn: SENTRY_SETTINGS.dsn,
-    debug: true,
+    debug: false,
     tracesSampleRate: 1.0,
     integrations: [
       new Sentry.ReactNativeTracing({
@@ -105,6 +107,10 @@ const App = props => {
     _appCheckInit();
     analyticsLog('app_init', {os: Platform.OS, version: Platform.Version});
     fetchFirmwareMeta();
+    BleManager.start({showAlert: false}).then(() => {
+      // Success code
+      console.info('#####\t\tBleManager.start => module initialized');
+    });
   }, []);
 
   return (

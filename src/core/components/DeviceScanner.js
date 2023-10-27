@@ -10,13 +10,14 @@ import {
 import {Button} from '@gluestack-ui/themed';
 import LottieView from 'lottie-react-native';
 
-import {Device, sleep} from '@utils/device';
+import {Device, deviceManager, sleep} from '@utils/device';
+// import {Device, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
-import {DEVICE_MANAGER_CONFIG} from '@const';
+// import {DEVICE_MANAGER_CONFIG} from '@const';
 
-const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
+// const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const DeviceScanner = props => {
   const {onItemPress, autoScan} = props;
@@ -37,6 +38,7 @@ const DeviceScanner = props => {
     if (permissionGranted) {
       deviceManager.clearPeripherals();
       const devices = await deviceManager.repeatFunc('searchBleDevices');
+      console.info('searchDevices devices', devices);
       if (devices) {
         return sleep(3500).then(() => {
           const peripheralsTmp = deviceManager.getPeripherals();
