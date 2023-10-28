@@ -785,9 +785,9 @@ export class Device {
 
   startDFU = async filePath => {
     const command = sendDataCommand(deviceInfo.OTAMode);
-    await this.repeatFunc('writeValue', Buffer(command).toJSON().data, 3);
+    await this.repeatFunc('writeValue', Buffer(command).toJSON().data, 2);
     console.info('\t\t\twaiting for 5 seconds...');
-    await sleep(5 * defaultTimeout);
+    await sleep(7 * defaultTimeout);
     const devices = await this.repeatFunc('searchBleDevices', null, 3);
     if (devices) {
       const deviceID = get(this.getPeripherals(), '0.id', null);
