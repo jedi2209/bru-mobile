@@ -144,7 +144,7 @@ export class Device {
     });
   };
 
-  _connect = async deviceUUID => {
+  _connect = async (deviceUUID = this.device) => {
     await this._disconnect(deviceUUID);
     return BleManager.connect(deviceUUID)
       .then(res => {
@@ -157,7 +157,7 @@ export class Device {
       });
   };
 
-  _disconnect = async deviceUUID => {
+  _disconnect = async (deviceUUID = this.deviceUUID) => {
     return BleManager.disconnect(deviceUUID)
       .then(connectStatus => {
         console.info(
@@ -379,7 +379,7 @@ export class Device {
   };
 
   // Function to connect to a BLE device
-  connectToDevice = async deviceUUID => {
+  connectToDevice = async (deviceUUID = this.deviceUUID) => {
     const preCheck = await this._checkManager();
     if (!preCheck) {
       console.error('connectToDevice preCheck', preCheck);
@@ -784,11 +784,27 @@ export class Device {
   };
 
   startDFU = async filePath => {
-    const command = sendDataCommand(deviceInfo.OTAMode);
-    await this.repeatFunc('writeValue', Buffer(command).toJSON().data, 2);
-    console.info('\t\t\twaiting for 5 seconds...');
-    await sleep(7 * defaultTimeout);
-    const devices = await this.repeatFunc('searchBleDevices', null, 3);
+    let timerReboot = 4;
+    let devices = null;
+    if (isAndroid) {
+      timerReboot = 5;
+      await this.repeatFunc(
+        'writeValue',
+        Buffer(sendDataCommand(deviceInfo.OTAMode)).toJSON().data,
+        2,
+      );
+      console.info('\t\t\tAndroid waiting for ' + timerReboot + ' seconds...');
+      await sleep(timerReboot * defaultTimeout);
+      devices = await this.repeatFunc('searchBleDevices', null, 3);
+    } else {
+      await this.writeValue(
+        Buffer(sendDataCommand(deviceInfo.OTAMode)).toJSON().data,
+      );
+      console.info('\t\t\tiOS waiting for ' + timerReboot + ' seconds...');
+      await sleep(timerReboot * defaultTimeout);
+      devices = await this.repeatFunc('searchBleDevices', null, 3);
+    }
+    console.info('startDFU => devices after timeout', devices);
     if (devices) {
       const deviceID = get(this.getPeripherals(), '0.id', null);
       if (deviceID) {
@@ -817,39 +833,6 @@ export class Device {
           );
           return false;
         }
-        // return BleManager.connect(deviceID)
-        //   .then(async () => {
-        //     let connectedParams = {
-        //       filePath: isAndroid ? filePath : 'file://' + filePath,
-        //       alternativeAdvertisingNameEnabled: false,
-        //       deviceAddress: deviceID,
-        //       retries: 3,
-        //     };
-        //     // if (deviceName) {
-        //     //   connectedParams.deviceName = deviceName;
-        //     // }
-        //     console.info(
-        //       'Connected!\r\n\tBleManager.connect finish => device: ',
-        //       deviceID,
-        //     );
-        //     try {
-        //       const res = await NordicDFU.startDFU(connectedParams);
-        //       console.info('DFU transfer done:', res);
-        //       DFUEmitter.removeAllListeners('DFUStateChanged');
-        //       DFUEmitter.removeAllListeners('DFUProgress');
-        //       return res;
-        //     } catch (err) {
-        //       console.error(
-        //         'startDFU => NordicDFU.startDFU error',
-        //         err,
-        //         connectedParams,
-        //       );
-        //       return false;
-        //     }
-        //   })
-        //   .catch(err => {
-        //     console.error('\tBleManager.connect(deviceID)', deviceID);
-        //   });
       } else {
         console.error('startDFU => Device not found');
         return false;

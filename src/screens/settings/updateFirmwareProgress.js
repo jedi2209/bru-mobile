@@ -214,9 +214,8 @@ const UpdateFirmwareProgressScreen = props => {
       setUpdateStatus('finish');
       setProgress(0);
     } else {
-      Alert.alert('statusDFU error', statusDFU);
       console.error('statusDFU error', statusDFU);
-      setUpdateStatus(false);
+      setUpdateStatus('error');
       setProgress(0);
     }
   };
@@ -282,6 +281,36 @@ const UpdateFirmwareProgressScreen = props => {
               progressValueStyle={{fontWeight: '100', color: colors.white}}
               activeStrokeSecondaryColor={colors.green.main}
               duration={15000}
+              // radius={120}
+              // ref={progressRef}
+              // inActiveStrokeColor="white"
+              // dashedStrokeConfig={{
+              //   count: 50,
+              //   width: 4,
+              // }}
+              onAnimationComplete={() => navigation.pop(2)}
+            />
+          </VStack>
+        </Wrapper>
+      );
+    case 'error':
+      return (
+        <Wrapper {...props}>
+          <VStack style={styles.statusWrapper} space={'lg'}>
+            <Heading>Update failed!</Heading>
+            <Text size={'xl'}>
+              Please wait a few seconds for BRU to reboot.
+            </Text>
+            <CircularProgress
+              value={0}
+              initialValue={25}
+              maxValue={25}
+              inActiveStrokeOpacity={0.5}
+              activeStrokeWidth={20}
+              inActiveStrokeWidth={20}
+              progressValueStyle={{fontWeight: '100', color: colors.white}}
+              activeStrokeSecondaryColor={colors.green.main}
+              duration={25000}
               // radius={120}
               // ref={progressRef}
               // inActiveStrokeColor="white"
