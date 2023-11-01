@@ -7,6 +7,7 @@ import {
   Linking,
   useColorScheme,
 } from 'react-native';
+import RNRestart from 'react-native-restart'; // Import package from node modules
 import {ActivityIndicator} from 'react-native-paper';
 import {
   Button,
@@ -97,8 +98,14 @@ const _pairDevice = async itemID => {
   const deviceStatus = deviceManager.getPeripherals(itemID);
   console.info('_pairDevice => deviceStatus', deviceStatus);
   if (get(deviceStatus, 'connected')) {
-    const bondedStatus = await deviceManager.checkBondedStatus(itemID, 0, 3);
-    // console.log('bondedStatus', bondedStatus);
+    let bondedStatus = null;
+    if (isAndroid) {
+      await sleep(3 * 1000); // wait 5 seconds for Android bonding
+      bondedStatus = await deviceManager.checkBondedStatus(itemID, 0, 3);
+    } else {
+      bondedStatus = await deviceManager.checkBondedStatus(itemID, 0, 3);
+    }
+    console.log('_pairDevice => bondedStatus', bondedStatus);
     if (bondedStatus === true) {
       deviceManager.setCurrentDevice(deviceInfo);
       // Get device hardwareRevision and firmwareRevision
@@ -119,9 +126,6 @@ const _pairDevice = async itemID => {
       deviceInfo.isCurrent = true;
       // console.info('============= _pairDevice deviceInfo =============', deviceInfo);
       setDevice(deviceInfo);
-    }
-    if (isAndroid) {
-      await sleep(3 * 1000); // wait 5 seconds for Android bonding
     }
     return bondedStatus;
   } else {
@@ -312,6 +316,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           size={'xl'}
           onPress={() => {
             navigation.navigate('NavBottom', {screen: 'Settings'});
+            RNRestart.restart();
           }}>
           <Icon
             name="check-square-o"
