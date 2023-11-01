@@ -298,19 +298,17 @@ const UpdateFirmwareProgressScreen = props => {
         <Wrapper {...props}>
           <VStack style={styles.statusWrapper} space={'lg'}>
             <Heading>Update failed!</Heading>
-            <Text size={'xl'}>
-              Please wait a few seconds for BRU to reboot.
-            </Text>
+            <Text size={'xl'}>Please wait a few seconds...</Text>
             <CircularProgress
               value={0}
-              initialValue={25}
-              maxValue={25}
+              initialValue={20}
+              maxValue={20}
               inActiveStrokeOpacity={0.5}
               activeStrokeWidth={20}
               inActiveStrokeWidth={20}
               progressValueStyle={{fontWeight: '100', color: colors.white}}
               activeStrokeSecondaryColor={colors.green.main}
-              duration={25000}
+              duration={20000}
               // radius={120}
               // ref={progressRef}
               // inActiveStrokeColor="white"

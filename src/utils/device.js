@@ -145,7 +145,10 @@ export class Device {
   };
 
   _connect = async (deviceUUID = this.device) => {
-    await this._disconnect(deviceUUID);
+    const isConnected = await BleManager.isPeripheralConnected(deviceUUID, []);
+    if (isConnected) {
+      await this._disconnect(deviceUUID);
+    }
     return BleManager.connect(deviceUUID)
       .then(res => {
         console.info('\t\t_connect => connectStatus', deviceUUID, res);
@@ -158,6 +161,10 @@ export class Device {
   };
 
   _disconnect = async (deviceUUID = this.deviceUUID) => {
+    const isConnected = await BleManager.isPeripheralConnected(deviceUUID, []);
+    if (!isConnected) {
+      return true;
+    }
     return BleManager.disconnect(deviceUUID)
       .then(connectStatus => {
         console.info(
@@ -346,7 +353,7 @@ export class Device {
     return this.peripherals;
   };
 
-  searchBleDevices = async () => {
+  searchBleDevices = async (nameToFind = null) => {
     const preCheck = await this._checkManager();
     if (!preCheck) {
       console.error('searchBleDevices preCheck', preCheck);
@@ -366,10 +373,15 @@ export class Device {
       .then(() => {
         console.info('BleManager.scan successfully');
         const peripherals = this.getPeripherals();
+        console.info('peripherals', peripherals);
         if (!peripherals) {
           return false;
         }
-        console.info('peripherals', peripherals);
+        if (nameToFind) {
+          const res = peripherals.filter(obj => obj.name === nameToFind);
+          console.info('filtered peripherals', res);
+          return res;
+        }
         return peripherals;
       })
       .catch(error => {
@@ -795,17 +807,17 @@ export class Device {
       );
       console.info('\t\t\tAndroid waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
-      devices = await this.repeatFunc('searchBleDevices', null, 3);
+      devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);
     } else {
       await this.writeValue(
         Buffer(sendDataCommand(deviceInfo.OTAMode)).toJSON().data,
       );
       console.info('\t\t\tiOS waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
-      devices = await this.repeatFunc('searchBleDevices', null, 3);
+      devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);
     }
     console.info('startDFU => devices after timeout', devices);
-    if (devices) {
+    if (get(devices, 'length')) {
       const deviceID = get(this.getPeripherals(), '0.id', null);
       if (deviceID) {
         let connectedParams = {
@@ -814,12 +826,15 @@ export class Device {
           deviceAddress: deviceID,
           retries: 3,
         };
-        await this._connect(deviceID);
-        console.info(
-          'Connected!\r\n\tstartDFU => this._connect finish => device: ',
-          deviceID,
-        );
+        const isConnected = await this._connect(deviceID);
+        if (!isConnected) {
+          return false;
+        }
         try {
+          console.info(
+            'Connected!\r\n\tstartDFU => this._connect finish => device: ',
+            deviceID,
+          );
           const res = await NordicDFU.startDFU(connectedParams);
           console.info('DFU transfer done:', res);
           DFUEmitter.removeAllListeners('DFUStateChanged');
