@@ -67,7 +67,10 @@ const UpdateFirmwareScreen = props => {
       }
       {...props}>
       {get(firmware, 'data', []).map(item => {
-        const {id: itemID, description} = item;
+        const {id: itemID, description, available} = item;
+        if (!available) {
+          return;
+        }
         const file = get(item.file, lang, get(item.file, 'en', item.file));
         const name = get(item.name, lang, get(item.name, 'en', item.name));
 
