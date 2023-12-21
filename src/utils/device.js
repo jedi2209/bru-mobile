@@ -222,6 +222,11 @@ export class Device {
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ];
+      const requestGranted = await showPermissionInfo();
+      console.info('requestGranted', requestGranted);
+      if (!requestGranted) {
+        return false;
+      }
       return PermissionsAndroid.requestMultiple(permissions).then(result => {
         if (!_checkPermissionsLocal(result)) {
           console.error(
@@ -997,6 +1002,35 @@ const _checkPermissionsLocal = result => {
     return false;
   }
   return true;
+};
+
+const showPermissionInfo = async () => {
+  return new Promise(resolve => {
+    Alert.alert(
+      'Bluetooth and Local Network access required',
+      '\r\nThis APP needs Local Network and Bluetooth permissions to be able to find and communicate with BRU machine',
+      [
+        {
+          text: 'OK',
+          isPreferred: true,
+          style: 'default',
+          onPress: () => {
+            resolve(true);
+          },
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+          onPress: () => {
+            resolve(false);
+          },
+        },
+      ],
+      {
+        cancelable: false,
+      },
+    );
+  });
 };
 
 const _showPermissionAlert = () => {
