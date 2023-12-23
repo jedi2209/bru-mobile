@@ -13,11 +13,14 @@ import {
   Button,
   ButtonText,
   ButtonSpinner,
+  ButtonGroup,
+  ButtonIcon,
   Text,
   Image,
   Heading,
 } from '@gluestack-ui/themed';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IconMaterial from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {setDevice} from '@store/device';
 import Wrapper from '@comp/Wrapper';
@@ -55,30 +58,36 @@ const stepsContent = [
     text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
   },
   {
-    // 4
+    // 4 request for bluetooth and local network access
+    img: require('@assets/bluetooth_devices_near.png'),
+    header: 'Bluetooth and Local Network access required',
+    text: 'Bluetooth access is required to control your BRU device. Without access things may not work as expected.',
+  },
+  {
+    // 5
     img: require('@assets/deviceImages/image-1.png'),
     header: 'Search for BRU Machine',
   },
   {
-    // 5
+    // 6
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Ready for pairing',
     text: 'Cool! We found your BRU Machine!\r\n\r\nPlease activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
   },
   {
-    // 6
+    // 7
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Trying to connect...',
     text: 'Now we are trying to connect to your BRU Machine.\r\n\r\nPlease wait a few seconds.',
   },
   {
-    // 7
+    // 8
     img: require('@assets/deviceImages/image-1.png'),
     header: 'Ooops...',
     text: 'Please check your BRU Machine. You need to activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
   },
   {
-    // 8
+    // 9
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Success!',
     text: 'Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app',
@@ -254,6 +263,40 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
       );
     case 4:
       return (
+        <ButtonGroup style={styles.buttonBottom}>
+          <Button
+            variant={'solid'}
+            action={'primary'}
+            size={'xl'}
+            onPress={() => {
+              setStep(step + 1);
+            }}>
+            <Icon
+              name="check-square-o"
+              style={styles.buttonBottomIcon}
+              size={24}
+            />
+            <ButtonText>OK</ButtonText>
+          </Button>
+          <Button
+            // style={styles.buttonBottom}
+            variant={'solid'}
+            action={'negative'}
+            size={'xl'}
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <IconMaterial
+              name="cancel"
+              style={styles.buttonBottomIcon}
+              size={24}
+            />
+            <ButtonText>NO!</ButtonText>
+          </Button>
+        </ButtonGroup>
+      );
+    case 5:
+      return (
         <DeviceScanner
           autoScan={true}
           onItemPress={itemSelected => {
@@ -262,7 +305,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           }}
         />
       );
-    case 5:
+    case 6:
       return (
         <Button
           style={styles.buttonBottom}
@@ -278,7 +321,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           <ButtonText>Ready to connect!</ButtonText>
         </Button>
       );
-    case 6:
+    case 7:
       setIsLoadingLocal(true);
       _pairDevice(get(item, 'id'))
         .then(res => {
@@ -293,7 +336,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
         .catch(err => {
           console.error('_pairDevice err', err);
         });
-    case 7:
+    case 8:
       return (
         <Button
           style={styles.buttonBottom}
@@ -309,7 +352,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           <ButtonText>Ready to connect!</ButtonText>
         </Button>
       );
-    case 8:
+    case 9:
       return (
         <Button
           style={styles.buttonBottom}
