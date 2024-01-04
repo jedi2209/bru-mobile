@@ -222,7 +222,7 @@ export class Device {
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ];
-      // const requestGranted = await showPermissionInfo();
+      const requestGranted = await showPermissionInfo();
       // console.info('requestGranted', requestGranted);
       // if (!requestGranted) {
       //   return false;
