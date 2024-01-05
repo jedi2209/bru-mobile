@@ -61,7 +61,7 @@ const stepsContent = [
     // 4 request for bluetooth and local network access
     img: require('@assets/bluetooth_devices_near.png'),
     header: 'Bluetooth and Location access required',
-    text: 'Bluetooth and Location access are required to find and control your BRU device.\r\nWithout access things may not work as expected.',
+    text: 'Bluetooth and Location permissions are required to find and control your nearby BRU device even when the app is not in use.\r\nWithout access things may not work as expected.',
   },
   {
     // 5

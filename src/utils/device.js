@@ -1008,7 +1008,7 @@ const showPermissionInfo = async () => {
   return new Promise(resolve => {
     Alert.alert(
       'Bluetooth and Local Network access required',
-      '\r\nThis APP needs Local Network and Bluetooth permissions to be able to find and communicate with BRU machine',
+      '\r\nThis APP needs Local Network and Bluetooth permissions to be able to find and communicate with nearby BRU devices even when the app is not in use',
       [
         {
           text: 'OK',
