@@ -1,0 +1,72 @@
+import React, {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  useColorScheme,
+} from 'react-native';
+import {colors, fonts} from '../../../core/const/style';
+import LinearGradient from 'react-native-linear-gradient';
+
+const s = StyleSheet.create({
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 5,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  presentItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    marginRight: 20,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    paddingTop: 12,
+    paddingBottom: 15,
+    borderWidth: 4,
+    borderColor: 'transparent',
+  },
+  selectedBorder: {
+    borderWidth: 4,
+    borderColor: colors.green.mid,
+  },
+  image: {
+    width: 100,
+    height: 100,
+    marginBottom: 12,
+  },
+  title: {
+    color: colors.gray.grayDarkText,
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: fonts.defaultMenuFamily,
+  },
+});
+
+const PressetItem = ({title, id, img, selected}) => {
+  const phoneTheme = useColorScheme();
+
+  return (
+    <View style={s.shadow}>
+      <LinearGradient
+        locations={[0, 0.01, 1]}
+        colors={
+          phoneTheme === 'light'
+            ? colors.gradient.pressetItem.light
+            : colors.gradient.pressetItem.dark
+        }
+        style={[s.presentItem, selected ? s.selectedBorder : {}]}>
+        <View style={s.image}>{img ? <Image source={img} /> : <Image />}</View>
+        <Text style={s.title}>{title}</Text>
+      </LinearGradient>
+    </View>
+  );
+};
+
+export default PressetItem;

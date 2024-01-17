@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import React, {View, Text, StyleSheet} from 'react-native';
 import SVG, {Path, Circle} from 'react-native-svg';
 import {translate} from '@core/lang';
 import {$langSettingsStore} from '@store/lang';
@@ -10,12 +10,9 @@ const styles = StyleSheet.create({
   tabBarItem: {
     alignItems: 'center',
     verticalAlign: 'top',
-    borderRadius: 10,
   },
   tabBarItemIcon: {
-    marginTop: 5,
-    marginBottom: 7,
-    height: 32,
+    marginBottom: 6,
   },
   labelText: {
     default: {
@@ -24,7 +21,7 @@ const styles = StyleSheet.create({
       fontFamily: fonts.defaultFamily,
     },
     en: {
-      fontSize: 12,
+      fontSize: 8,
     },
     de: {
       fontSize: 7.5,
@@ -131,6 +128,7 @@ const iconSVG = ({iconName = null, iconSize = 24, focused = false}) => {
           />
         </SVG>
       );
+
     default:
       return false;
   }

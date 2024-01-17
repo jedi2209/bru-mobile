@@ -6,6 +6,7 @@ const colors = {
     mid: '#71883A',
     main: '#28502E',
     tabbar: '#4e5736',
+    header: '#677E30',
   },
   blue: '#1B2F33',
   black: '#202020',
@@ -15,13 +16,19 @@ const colors = {
     light: '#A9A9C3',
     inactive: '#B0B0B0',
     dark: '#E5E5E5',
+    grayDarkText: '#474747',
+    grayLightText: '#CDCACA',
   },
   gradient: {
     background: {
       dark: ['#5e5e5e', '#4e4e4e', '#4f4f4f', '#3e3e3e'],
-      light: ['#F5F5F5', '#afafaf'],
+      light: ['#EFEFEF', '#EFEFEF'],
     },
     backgroundTabbar: ['#242424', '#222222'],
+    pressetItem: {
+      dark: ['#404040', '#E6E7E8', '#CDCACA'],
+      light: ['#EBEBEB', '#E6E7E8', '#F2F2F2'],
+    },
   },
 };
 
@@ -47,19 +54,15 @@ const tabBarStyle = {
   default: {
     backgroundColor: colors.black,
     paddingBottom: 0,
-    paddingHorizontal: 0,
-    // borderTopRightRadius: 10,
-    // borderTopLeftRadius: 10,
-    height: 80,
+    height: 65,
     borderTopWidth: 0,
-    marginHorizontal: 10,
-    bottom: 20,
-    borderRadius: 10,
+    // bottom: 0,
+    paddingHorizontal: 19,
     position: 'absolute',
     shadowColor: colors.brown,
     shadowOffset: {
-      width: 0,
-      height: -10,
+      width: 5,
+      height: -5,
     },
     shadowOpacity: 0.5,
     shadowRadius: 10,

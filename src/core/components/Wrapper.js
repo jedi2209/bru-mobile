@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -14,8 +14,7 @@ import {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-
-import {colors, tabBarStyle} from '@styleConst';
+import {colors, tabBarStyle} from '../const/style';
 
 const styles = StyleSheet.create({
   linearGradient: {
@@ -25,11 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingBottom: 30,
-  },
-  mainWrapper: {
-    paddingBottom: 30,
-    paddingHorizontal: 10,
-    paddingTop: 10,
   },
 });
 
@@ -142,12 +136,13 @@ const Wrapper = props => {
     <LinearGradient
       colors={colors.gradient.background[phoneTheme]}
       style={styles.linearGradient}>
-      <ImageBackground
-        source={require('@assets/backgroundTile.png')}
+      {/* <ImageBackground
+        source={require('@assets/backgroundTile.jpg')}
         resizeMode="repeat"
         style={styles.linearGradient}>
         <MainWrapper scroll={scroll} {...props} />
-      </ImageBackground>
+      </ImageBackground> */}
+      <MainWrapper scroll={scroll} {...props} />
     </LinearGradient>
   );
 };
