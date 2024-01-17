@@ -1,10 +1,11 @@
 import React from 'react';
 import {StyleSheet, Text, View, useColorScheme} from 'react-native';
-import {colors, fonts} from '../../../core/const/style';
-import TeaAlarmIcon from '../../../core/components/icons/TeaAlarmIcon';
-import PenIcon from '../../../core/components/icons/PenIcon';
-import TrashIcon from '../../../core/components/icons/TrashIcon';
+import {colors, fonts} from '../const/style';
+import TeaAlarmIcon from './icons/TeaAlarmIcon';
+import PenIcon from './icons/PenIcon';
+import TrashIcon from './icons/TrashIcon';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import {useNavigation} from '@react-navigation/native';
 
 const s = StyleSheet.create({
   container: {
@@ -12,7 +13,6 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.green.mid,
     backgroundColor: 'rgba(239, 239, 239, 0.90)',
-    marginTop: 30,
     display: 'flex',
     flexDirection: 'row',
   },
@@ -64,6 +64,7 @@ const s = StyleSheet.create({
   darkText: {
     color: colors.gray.grayLightText,
   },
+  by: {marginRight: 16},
   icons: {
     display: 'flex',
     flexDirection: 'row',
@@ -73,8 +74,9 @@ const s = StyleSheet.create({
   },
 });
 
-const TeaAlarmInfo = () => {
+const TeaAlarmInfo = ({id, time, by, teaType, brewingData}) => {
   const phoneTheme = useColorScheme();
+  const navigation = useNavigation();
 
   return (
     <View style={[s.container, phoneTheme === 'dark' && s.darkContainer]}>
@@ -93,24 +95,25 @@ const TeaAlarmInfo = () => {
       <View style={s.infoContainer}>
         <View>
           <Text style={[s.teaAlarmText, phoneTheme === 'dark' && s.darkText]}>
-            Tea alarm set for 7:30 AM
+            Tea alarm set for {time || '1:00 AM'}
           </Text>
           <View style={s.teaInfo}>
             <Text
               style={[
                 s.teaInfoText,
-                {marginRight: 16},
+                s.by,
                 phoneTheme === 'dark' && s.darkText,
               ]}>
-              by John Denver
+              by {by || 'John Denver'}
             </Text>
             <Text style={[s.teaInfoText, phoneTheme === 'dark' && s.darkText]}>
-              Black Tea #1
+              {teaType || 'Black Tea #1'}
             </Text>
           </View>
         </View>
         <View style={s.icons}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('NewTeaAlarm', {id})}>
             <PenIcon style={s.penIcon} />
           </TouchableOpacity>
           <TouchableOpacity>

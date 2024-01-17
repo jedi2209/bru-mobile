@@ -1,6 +1,4 @@
 import React, {
-  FlatList,
-  Pressable,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,12 +8,12 @@ import React, {
 import Wrapper from '@comp/Wrapper';
 import {useState} from 'react';
 import {colors} from '../../core/const/style';
-import PressetItem from './components/PressetItem';
-import PressetInfo from './components/PressetInfo/PressetInfo';
 import SplitCups from './components/SplitCups';
-import TeaAlarmInfo from './components/TeaAlarmInfo';
+import PressetList from '../../core/components/PressetList/PressetList';
+import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
+import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 
-const mockedData = [
+export const mockedData = [
   {
     id: 10,
     title: 'Instant Brew',
@@ -85,6 +83,7 @@ const s = StyleSheet.create({
     borderRadius: 90,
     borderColor: colors.green.mid,
   },
+  teaAlarmWrapper: {marginTop: 30},
 });
 
 const InstantBrewScreen = props => {
@@ -94,23 +93,14 @@ const InstantBrewScreen = props => {
   return (
     <Wrapper {...props}>
       <View style={s.container}>
-        <FlatList
+        <PressetList
           style={s.list}
           data={mockedData}
-          horizontal
-          renderItem={({item}) => (
-            <Pressable onPress={() => setSelectedItem(item.id)}>
-              <PressetItem
-                title={item.title}
-                img={item.img}
-                selected={selectedItem === item.id}
-              />
-            </Pressable>
-          )}
-          keyExtractor={item => item.id}
+          selected={selectedItem}
+          setSelected={setSelectedItem}
         />
         <View style={s.innerContainer}>
-          <PressetInfo />
+          <TeaAlarm />
 
           <SplitCups />
           <View style={s.buttons}>
@@ -134,7 +124,9 @@ const InstantBrewScreen = props => {
               </Text>
             </TouchableOpacity>
           </View>
-          <TeaAlarmInfo />
+          <View style={s.teaAlarmWrapper}>
+            <TeaAlarmInfo />
+          </View>
         </View>
       </View>
     </Wrapper>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {colors, fonts} from '../../../../core/const/style';
+import {colors, fonts} from '../../const/style';
 
 const s = StyleSheet.create({
   pressetInfoItem: {
@@ -32,7 +32,7 @@ const s = StyleSheet.create({
   },
 });
 
-const PressetInfoItem = ({Icon, title, value}) => {
+const TeaAlarmInfoItem = ({Icon, title, value}) => {
   return (
     <View style={s.pressetInfoItem}>
       {Icon}
@@ -42,4 +42,4 @@ const PressetInfoItem = ({Icon, title, value}) => {
   );
 };
 
-export default PressetInfoItem;
+export default TeaAlarmInfoItem;

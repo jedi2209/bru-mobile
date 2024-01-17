@@ -3,6 +3,7 @@ import {combineReducers} from '@reduxjs/toolkit';
 import {persistReducer} from 'redux-persist';
 
 import {userReducers} from './modules';
+import {teaAlarmReducer} from './modules/teaAlarm';
 
 const userPersisted = persistReducer(
   {
@@ -16,4 +17,5 @@ const userPersisted = persistReducer(
 
 export const coreReducer = combineReducers({
   user: userPersisted,
+  teaAlarm: teaAlarmReducer,
 });

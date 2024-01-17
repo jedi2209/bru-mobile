@@ -1,28 +1,9 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {
-  View,
-  ImageBackground,
-  Platform,
-  SafeAreaView,
-  useColorScheme,
-  Linking,
-  Text,
-} from 'react-native';
+import {useColorScheme} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useStore} from 'effector-react';
-import {
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicatorWrapper,
-  SelectDragIndicator,
-  SelectItem,
-} from '@gluestack-ui/themed';
 
 import {$langSettingsStore, setLanguage} from '@store/lang';
 import {LANGUAGE, INITIAL_SCREEN} from '@const';
@@ -34,15 +15,16 @@ import HelpScreen from '@screens/help';
 import SettingsScreen from '@screens/settings';
 
 import {colors, fonts, tabBarStyle} from '../const/style';
-import Logo from '@comp/Logo';
 
 import TabBarIcon from '@nav/components/TabBarIcon';
 import Header from '@comp/Header';
+import NewTeaAlarmScreen from '../../screens/new-tea-alarm';
 
 const iconSize = 24;
 
 const Tab = createBottomTabNavigator();
 const StackSettings = createStackNavigator();
+const StackTeaAlarm = createStackNavigator();
 
 const SettingsStackView = ({navigation, route}) => {
   const currLang = useStore($langSettingsStore);
@@ -60,6 +42,35 @@ const SettingsStackView = ({navigation, route}) => {
         }}
       />
     </StackSettings.Navigator>
+  );
+};
+
+const TeaAlarmStackView = ({navigation, route}) => {
+  return (
+    <StackTeaAlarm.Navigator initialRouteName="TeaAlarmScreen">
+      <StackTeaAlarm.Screen
+        name="TeaAlarm"
+        component={TeaAlarmScreen}
+        initialParams={{
+          scroll: false,
+        }}
+        options={{
+          headerShown: true,
+          header: Header,
+        }}
+      />
+      <StackTeaAlarm.Screen
+        name="NewTeaAlarm"
+        component={NewTeaAlarmScreen}
+        initialParams={{
+          scroll: false,
+        }}
+        options={{
+          headerShown: true,
+          header: Header,
+        }}
+      />
+    </StackTeaAlarm.Navigator>
   );
 };
 
@@ -97,11 +108,12 @@ export const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Tea Alarm"
-        component={TeaAlarmScreen}
+        component={TeaAlarmStackView}
         initialParams={{
           scroll: true,
         }}
         options={{
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="teaAlarm"
