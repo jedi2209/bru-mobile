@@ -7,7 +7,7 @@ import React, {
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
 import {useState} from 'react';
-import {colors} from '../../core/const/style';
+import {basicStyles, colors} from '../../core/const/style';
 import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
@@ -53,20 +53,11 @@ const s = StyleSheet.create({
     justifyContent: 'space-between',
   },
   brewButton: {
-    backgroundColor: colors.green.mid,
+    ...basicStyles.backgroundButton,
     paddingHorizontal: 57,
-    paddingVertical: 15,
-    borderRadius: 90,
   },
   buttonText: {
-    color: colors.white,
-    fontSize: 12,
-    fontWeight: '700',
-    textTransform: 'uppercase',
-    lineHeight: 22,
-    letterSpacing: 0.5,
-    marginHorizontal: 0,
-    marginVertical: 0,
+    ...basicStyles.backgroundButtonText,
   },
   dispenseButton: {
     backgroundColor: 'rgba(42, 42, 42, 0.40)',

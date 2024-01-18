@@ -22,7 +22,6 @@ import {Switch} from '@gluestack-ui/themed';
 const s = StyleSheet.create({
   titleContainer: {
     ...basicStyles.row,
-    alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 16,
     marginTop: 30,
@@ -122,7 +121,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 16,
     marginBottom: 20,
   },
-  switchContainer: {...basicStyles.row, alignItems: 'center', gap: 12},
+  switchContainer: {...basicStyles.row, gap: 12},
   switchText: {
     color: colors.gray.grayDarkText,
     fontSize: 16,

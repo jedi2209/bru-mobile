@@ -34,6 +34,7 @@ const colors = {
       light: ['#f5f5f5', '#f2f2f2', '#f9fafb'],
       dark: ['#404040', '#E6E7E8', '#CDCACA'],
     },
+    helpCollapsibleDark: ['#404040', '#2b2b2b'],
   },
 };
 
@@ -128,10 +129,12 @@ const basicStyles = {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   row: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
   },
   screenTitle: {
     color: colors.gray.grayDarkText,
@@ -141,6 +144,28 @@ const basicStyles = {
     lineHeight: 24,
     letterSpacing: 0.4,
     marginBottom: 20,
+  },
+  textButton: {
+    color: colors.green.mid,
+    fontSize: 12,
+    fontWeight: '700',
+    lineHeight: 22,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  backgroundButton: {
+    backgroundColor: colors.green.mid,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    borderRadius: 90,
+  },
+  backgroundButtonText: {
+    color: colors.white,
+    fontSize: 12,
+    fontWeight: '700',
+    lineHeight: 22,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
   },
 };
 

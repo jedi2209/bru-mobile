@@ -10,7 +10,7 @@ const ArrowIcon = ({...props}) => {
       viewBox="0 0 24 24"
       fill="none"
       {...props}>
-      <Path d="M17 14.5l-5-5-5 5h10z" fill="#71883A" />
+      <Path d="M17 14.5l-5-5-5 5h10z" fill="#71883A" {...props} />
     </Svg>
   );
 };

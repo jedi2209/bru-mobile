@@ -553,7 +553,6 @@ const s = StyleSheet.create({
   filterStatus: {
     ...basicStyles.rowBetween,
     paddingVertical: 16,
-    alignItems: 'center',
   },
   bottomBorder: {
     borderBottomColor: colors.gray.grayLightText,
