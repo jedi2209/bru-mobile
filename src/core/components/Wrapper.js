@@ -84,14 +84,16 @@ const MainWrapper = props => {
       const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
       const minScrollToHide = Dimensions.get('screen').height * 0.15;
 
-      const currentOffset = Math.floor(contentOffset.y);
+      const currentOffset = Math.floor(contentOffset.y) + 100;
 
       let direction = currentOffset > offset ? 'down' : 'up';
       const isAtBottom =
-        layoutMeasurement.height + currentOffset >= contentSize.height - 20;
+        layoutMeasurement.height + currentOffset >= contentSize.height + 100;
+      console.log(isAtBottom, 'isAtBottomisAtBottomisAtBottomisAtBottom');
+      console.log(direction);
       if (direction === 'down' && currentOffset > minScrollToHide) {
         translateY.value = 0;
-        hideTabBar(200);
+        hideTabBar(100);
       } else if (!isAtBottom && direction === 'up') {
         translateY.value = 200;
         showTabBar(0);
@@ -107,7 +109,7 @@ const MainWrapper = props => {
             props.additionalContentContainerStyle,
           ]}
           style={[styles.linearGradient, props.additionalStyle]}
-          scrollEventThrottle={300}
+          scrollEventThrottle={50}
           nestedScrollEnabled={true}
           {...props}>
           {props.children}
@@ -131,6 +133,7 @@ const MainWrapper = props => {
 
 const Wrapper = props => {
   const {scroll = false} = props.route.params;
+
   const phoneTheme = useColorScheme();
   return (
     <LinearGradient

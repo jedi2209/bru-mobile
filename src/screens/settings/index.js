@@ -17,6 +17,7 @@ import {
   FlatList,
   Heading,
   ButtonGroup,
+  Switch,
 } from '@gluestack-ui/themed';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useStore} from 'effector-react';
@@ -30,7 +31,11 @@ import Wrapper from '@comp/Wrapper';
 import {Device, deviceManager, sendDataCommand, sleep} from '@utils/device';
 
 import {get} from 'lodash';
-import {colors} from '@styleConst';
+import {colors, basicStyles} from '../../core/const/style';
+import BruMachine from './components/BruMachine';
+import Collapsible from 'react-native-collapsible';
+import ConfirmationModal from '../../core/components/ConfirmationModal';
+import BruStoreModal from '../../core/components/BruStoreModal';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -91,8 +96,11 @@ const _renderItem = ({item, _onPressUpdate, _onPressUnpair}) => {
 
 const SettingsScreen = props => {
   const devices = useStore($deviceSettingsStore);
-
   const [isLoading, setLoading] = useState(false);
+  const [coldTea, setColdTea] = useState(false);
+  const [autoRinse, setAutoRinse] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [selected, setSelected] = useState('small');
 
   const {navigation} = props;
 
@@ -145,15 +153,194 @@ const SettingsScreen = props => {
   };
 
   return (
-    <Wrapper {...props}>
+    <Wrapper style={s.wrapper} {...props}>
+      <Text style={[s.screenTitle, isDarkMode && s.darkTextSecondary]}>
+        Settings
+      </Text>
+      <View>
+        <Text style={[s.h2, isDarkMode && s.darkTextSecondary]}>
+          Connected machines
+        </Text>
+        {[1, 2].map(item => {
+          return <BruMachine key={item} />;
+        })}
+      </View>
       <Button
         size="lg"
         variant={'primary'}
-        style={[styles.buttonStyle]}
+        style={[s.buttonStyle]}
         onPressIn={() => navigation.navigate('AddNewDeviceScreen')}>
-        <ButtonText style={styles.buttonTextStyle}>Add BRU</ButtonText>
+        <ButtonText style={[s.buttonTextStyle, isDarkMode && s.darkText]}>
+          Connect New Machine
+        </ButtonText>
       </Button>
-      {get(deviceManager, 'device', null) ? (
+      <Button
+        onPress={() => setIsConfirmModalOpen(true)}
+        size="lg"
+        variant={'primary'}
+        style={[
+          s.buttonStyle,
+          s.updateButton,
+          isDarkMode && s.updateButtonDark,
+        ]}
+        // onPressIn={() => navigation.navigate('AddNewDeviceScreen')}
+      >
+        <ButtonText
+          style={[
+            s.buttonTextStyle,
+            s.updateButtonText,
+            isDarkMode && s.darkTextMain,
+          ]}>
+          Update BRÜ firmware
+        </ButtonText>
+      </Button>
+
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+          Filter Status
+        </Text>
+        <Text style={[s.title, s.filterHealth]}>Health 85%</Text>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <View>
+          <Text style={[s.title, isDarkMode && s.darkTextMain]}>Cold tea</Text>
+          <Text style={s.subTitle}>
+            {coldTea
+              ? 'Add cold water to every tea you make. You may need to add more tea because of water diffusion.'
+              : 'Add cold water to every tea you make'}
+          </Text>
+        </View>
+        <Switch
+          value={coldTea}
+          onChange={() => setColdTea(prev => !prev)}
+          sx={{
+            props: {
+              trackColor: {
+                true: '#34C759',
+              },
+            },
+          }}
+        />
+      </View>
+      <View style={[s.bottomBorder, {}]}>
+        <View style={[s.filterStatus, {paddingTop: 16, paddingBottom: 11}]}>
+          <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+            Auto-rinse
+          </Text>
+          <Switch
+            value={autoRinse}
+            onChange={() => setAutoRinse(prev => !prev)}
+            sx={{
+              props: {
+                trackColor: {
+                  true: '#34C759',
+                },
+              },
+            }}
+          />
+        </View>
+        <Collapsible collapsed={!autoRinse} style={s.autoRinse}>
+          <View>
+            <Text style={[s.unitTitle, s.darkTextMain]}>Water amount</Text>
+            <View style={s.units}>
+              <TouchableOpacity
+                onPress={() => setSelected('small')}
+                style={[
+                  s.unit,
+                  isDarkMode && s.darkUnit,
+                  s.unitLeft,
+                  selected === 'small' && s.selected,
+                ]}>
+                <Text style={[s.unitText, selected === 'small' && s.selected]}>
+                  Small
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSelected('medium')}
+                style={[
+                  s.unit,
+                  isDarkMode && s.darkUnit,
+                  selected === 'medium' && s.selected,
+                ]}>
+                <Text style={[s.unitText]}>Medium</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setSelected('large')}
+                style={[
+                  s.unit,
+                  isDarkMode && s.darkUnit,
+                  s.unitRight,
+                  selected === 'large' && s.selected,
+                ]}>
+                <Text style={s.unitText}>Large</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View>
+            <Text style={[s.unitTitle, s.darkTextMain]}>Dispence to</Text>
+            <View style={s.units}>
+              <TouchableOpacity
+                style={[
+                  s.unit,
+                  isDarkMode && s.darkUnit,
+
+                  s.unitLeft,
+                  s.selected,
+                ]}>
+                <Text style={s.unitText}>Tray</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[s.unit, isDarkMode && s.darkUnit, s.unitRight]}>
+                <Text style={s.unitText}>Cup</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Collapsible>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>Units</Text>
+        <View style={s.units}>
+          <TouchableOpacity
+            style={[s.unit, isDarkMode && s.darkUnit, s.unitLeft, s.selected]}>
+            <Text style={s.unitText}>°C - ml</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[s.unit, isDarkMode && s.darkUnit, s.unitRight]}>
+            <Text style={s.unitText}>°F - oz</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+          Notifications
+        </Text>
+        <Switch
+          sx={{
+            props: {
+              trackColor: {
+                true: '#34C759',
+              },
+            },
+          }}
+        />
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <Text style={[s.title, s.darkTextMain]}>App color theme</Text>
+        <View style={s.units}>
+          <TouchableOpacity
+            style={[s.unit, isDarkMode && s.darkUnit, s.unitLeft, s.selected]}>
+            <Text style={s.unitText}>Dark</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[s.unit, isDarkMode && s.darkUnit, s.unitRight]}>
+            <Text style={s.unitText}>Light</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <Text style={[s.title, s.darkTextMain]}>About</Text>
+      </View>
+      {/* {get(deviceManager, 'device', null) ? (
         <>
           <Heading mb={16}>My BRU</Heading>
           <FlatList
@@ -163,118 +350,118 @@ const SettingsScreen = props => {
             }
             keyExtractor={item => item.id}
           />
-          {/* <Pressable
-            style={styles.buttonStyle}
-            onPress={async () => {
-              setLoading(true);
-              await deviceManager
-                .handleReadData('modelName')
-                .then(async res => {
-                  if (res) {
-                    Alert.alert('modelName', res);
-                    await sleep(1000);
-                  }
-                  setLoading(false);
-                })
-                .catch(err => {
-                  console.error('handleReadData modelName', err);
-                });
-            }}>
-            <Text style={styles.buttonTextStyle}>{'Read modelName'}</Text>
-          </Pressable> */}
-          {/* <Pressable
-            style={styles.buttonStyle}
-            onPress={async () => {
-              setLoading(true);
-              await deviceManager
-                .handleReadData('serialNumber')
-                .then(async res => {
-                  if (res) {
-                    Alert.alert('serialNumber', res);
-                    await sleep(1000);
-                  }
-                  setLoading(false);
-                })
-                .catch(err => {
-                  console.error('handleReadData serialNumber', err);
-                });
-            }}>
-            <Text style={styles.buttonTextStyle}>{'Read serialNumber'}</Text>
-          </Pressable> */}
-          {/* <Pressable
-            style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
-            onPress={async () => {
-              setLoading(true);
-              const command = sendDataCommand(0xb6);
-              await deviceManager
-                .writeValueAndNotify(Buffer(command).toJSON().data)
-                .then(async () => {
-                  await sleep(1500);
-                  setLoading(false);
-                })
-                .catch(err => {
-                  console.error('Get Machine setup', err);
-                });
-            }}>
-            <Text style={styles.buttonTextStyle}>{'Get Machine setup'}</Text>
-          </Pressable> */}
-          {/* <Pressable
-            style={[
-              styles.buttonStyle,
-              {backgroundColor: isBrewing ? 'red' : colors.green.mid},
-            ]}
-            onPress={async () => {
-              setLoading(true);
-              const command = sendDataCommand(
-                0xb1,
-                new Uint8Array([!isBrewing ? 0x01 : 0x00]),
-                1,
-              );
-              await deviceManager
-                .writeValueAndNotify(Buffer(command).toJSON().data)
-                .then(async () => {
-                  await sleep(2000);
-                  setBrewing(!isBrewing);
-                  setLoading(false);
-                })
-                .catch(err => {
-                  console.error('Start Brewing error', err);
-                });
-            }}>
-            <Text style={styles.buttonTextStyle}>
-              {!isBrewing ? 'Start Brew' : '== Stop Brew'}
-            </Text>
-          </Pressable> */}
-          {/* <Pressable
-          style={[styles.buttonStyle, {backgroundColor: colors.green.mid}]}
-          onPress={async () => {
-            const buff = Buffer.from('FF04E5CS', 'hex');
-            setLoading(true);
-            // 0xFF, 0x04, 0xE5, 0xCS
-            const command = sendDataCommand(0xe5);
-            console.log(
-              'Buffer(command).toJSON()',
-              // bufferToHex(buff.toJSON().data),
-              bufferToHex(Buffer(command).toJSON().data),
-            );
-            await deviceManager
-              .writeValueAndNotify(Buffer(command).toJSON().data)
-              // .writeValueAndNotify(buff.toJSON().data)
-              .then(async res => {
-                setLoading(false);
-              })
-              .catch(err => {
-                console.error('Test device error', err);
-                setLoading(false);
-              });
-          }}>
-          <Text style={styles.buttonTextStyle}>
-            {'Get test device status'}
-          </Text>
-        </Pressable> */}
+          <View>
+            <Pressable
+              style={s.buttonStyle}
+              onPress={async () => {
+                setLoading(true);
+                await deviceManager
+                  .handleReadData('modelName')
+                  .then(async res => {
+                    if (res) {
+                      Alert.alert('modelName', res);
+                      await sleep(1000);
+                    }
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('handleReadData modelName', err);
+                  });
+              }}>
+              <Text style={s.buttonTextStyle}>{'Read modelName'}</Text>
+            </Pressable>
+            <Pressable
+              style={s.buttonStyle}
+              onPress={async () => {
+                setLoading(true);
+                await deviceManager
+                  .handleReadData('serialNumber')
+                  .then(async res => {
+                    if (res) {
+                      Alert.alert('serialNumber', res);
+                      await sleep(1000);
+                    }
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('handleReadData serialNumber', err);
+                  });
+              }}>
+              <Text style={s.buttonTextStyle}>{'Read serialNumber'}</Text>
+            </Pressable>
+            <Pressable
+              style={[s.buttonStyle, {backgroundColor: colors.green.mid}]}
+              onPress={async () => {
+                setLoading(true);
+                const command = sendDataCommand(0xb6);
+                await deviceManager
+                  .writeValueAndNotify(Buffer(command).toJSON().data)
+                  .then(async () => {
+                    await sleep(1500);
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('Get Machine setup', err);
+                  });
+              }}>
+              <Text style={s.buttonTextStyle}>{'Get Machine setup'}</Text>
+            </Pressable>
+            <Pressable
+              style={[
+                s.buttonStyle,
+                {backgroundColor: isBrewing ? 'red' : colors.green.mid},
+              ]}
+              onPress={async () => {
+                setLoading(true);
+                const command = sendDataCommand(
+                  0xb1,
+                  new Uint8Array([!isBrewing ? 0x01 : 0x00]),
+                  1,
+                );
+                await deviceManager
+                  .writeValueAndNotify(Buffer(command).toJSON().data)
+                  .then(async () => {
+                    await sleep(2000);
+                    setBrewing(!isBrewing);
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('Start Brewing error', err);
+                  });
+              }}>
+              <Text style={s.buttonTextStyle}>
+                {!isBrewing ? 'Start Brew' : '== Stop Brew'}
+              </Text>
+            </Pressable>
+            <Pressable
+              style={[s.buttonStyle, {backgroundColor: colors.green.mid}]}
+              onPress={async () => {
+                const buff = Buffer.from('FF04E5CS', 'hex');
+                setLoading(true);
+                // 0xFF, 0x04, 0xE5, 0xCS
+                const command = sendDataCommand(0xe5);
+                console.log(
+                  'Buffer(command).toJSON()',
+                  // bufferToHex(buff.toJSON().data),
+                  bufferToHex(Buffer(command).toJSON().data),
+                );
+                await deviceManager
+                  .writeValueAndNotify(Buffer(command).toJSON().data)
+                  // .writeValueAndNotify(buff.toJSON().data)
+                  .then(async res => {
+                    setLoading(false);
+                  })
+                  .catch(err => {
+                    console.error('Test device error', err);
+                    setLoading(false);
+                  });
+              }}>
+              <Text style={s.buttonTextStyle}>{'Get test device status'}</Text>
+            </Pressable>
+          </View>
         </>
-      ) : null}
-      <Text
+      ) : null} */}
+      {/* <Text
         selectable={false}
         style={{
           alignSelf: 'center',
@@ -287,12 +474,48 @@ const SettingsScreen = props => {
           ' (' +
           DeviceInfo.getBuildNumber() +
           ')'}
-      </Text>
+      </Text> */}
+      <ConfirmationModal
+        opened={isConfirmModalOpen}
+        closeModal={() => setIsConfirmModalOpen(false)}
+        withCancelButton
+        cancelButtonText="No"
+        confirmationButtonText="Confirm"
+        modalTitle="Firmware update"
+        confirmationText="The BRU app will download and install the latest firmware to your BRU machine. Please make sure you are connected to Wi Fi to avoid additional charges."
+      />
     </Wrapper>
   );
 };
 const windowHeight = Dimensions.get('window').height;
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
+  wrapper: {
+    paddingHorizontal: 14,
+    marginVertical: 30,
+  },
+  screenTitle: {
+    color: colors.gray.grayDarkText,
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.4,
+    marginBottom: 20,
+  },
+  darkTextMain: {
+    color: colors.white,
+  },
+  darkTextSecondary: {
+    color: colors.gray.lightGray,
+  },
+  h2: {
+    color: colors.gray.grayDarkText,
+    fontSize: 18,
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.4,
+    marginBottom: 10,
+  },
   mainBody: {
     flex: 1,
     justifyContent: 'center',
@@ -301,15 +524,97 @@ const styles = StyleSheet.create({
   buttonStyle: {
     height: 55,
     alignItems: 'center',
-    borderRadius: 20,
+    borderRadius: 90,
     marginHorizontal: '15%',
-    marginVertical: 25,
+    marginBottom: 10,
+    marginTop: 20,
+    backgroundColor: colors.green.mid,
   },
   buttonTextStyle: {
     color: '#FFFFFF',
     paddingVertical: 10,
-    fontSize: 16,
+    fontSize: 12,
+    fontWeight: '700',
     textTransform: 'uppercase',
+  },
+  updateButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    marginBottom: 13,
+    borderColor: colors.green.mid,
+  },
+  updateButtonText: {
+    color: colors.green.mid,
+    textAlign: 'center',
+  },
+  updateButtonDark: {
+    backgroundColor: 'rgba(42, 42, 42, 0.40)',
+  },
+  filterStatus: {
+    ...basicStyles.rowBetween,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  bottomBorder: {
+    borderBottomColor: colors.gray.grayLightText,
+    borderBottomWidth: 1,
+  },
+  title: {
+    color: colors.gray.grayDarkText,
+    fontSize: 15,
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.4,
+  },
+  subTitle: {
+    fontSize: 12,
+    color: '#999',
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.4,
+  },
+  filterHealth: {color: colors.green.mid, lineHeight: 16},
+  unitTitle: {
+    color: colors.gray.grayDarkText,
+    fontSize: 13,
+    fontWeight: '600',
+    lineHeight: 18,
+    letterSpacing: 0.4,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  units: {
+    ...basicStyles.row,
+  },
+  unit: {
+    backgroundColor: '#C5C5C8',
+    paddingHorizontal: 10,
+    paddingVertical: 11,
+  },
+  darkUnit: {
+    backgroundColor: '#555558',
+  },
+  unitText: {
+    color: colors.white,
+    fontSize: 13,
+    fontWeight: '500',
+    lineHeight: 16,
+    letterSpacing: 0.4,
+  },
+  unitLeft: {
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
+  },
+  unitRight: {
+    borderTopRightRadius: 10,
+    borderBottomRightRadius: 10,
+  },
+  selected: {
+    backgroundColor: colors.green.mid,
+  },
+  autoRinse: {
+    ...basicStyles.rowBetween,
+    paddingBottom: 16,
   },
 });
 export default SettingsScreen;

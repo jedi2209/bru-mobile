@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
-import {colors} from '../../../core/const/style';
+import {colors} from '../const/style';
 
 const s = StyleSheet.create({
   modal: {

@@ -9,7 +9,7 @@ import TeaAlarmIcon from '../icons/TeaAlarmIcon';
 import TemperatureIcon from '../icons/TemperatureIcon';
 import WaterIcon from '../icons/WaterIcon';
 import TeaAlarmInfoItem from './TeaAlarmInfoItem';
-import WaterAmountModal from '../../../screens/instant-brew/components/WaterAmountModal';
+import WaterAmountModal from '../WaterAmountModal';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},

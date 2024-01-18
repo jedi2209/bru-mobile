@@ -1,4 +1,10 @@
-import React, {Platform, StyleSheet, Text, View} from 'react-native';
+import React, {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {colors, fonts} from '../const/style';
 import HeaderIcon from './icons/HeaderIcon';
 import UserIcon from './icons/UserIcon';
@@ -44,7 +50,9 @@ const Header = () => {
       </View>
       <View style={s.iconsWrapper}>
         <UserIcon style={s.userIcon} />
-        <CartIcon />
+        <TouchableOpacity>
+          <CartIcon />
+        </TouchableOpacity>
       </View>
     </View>
   );

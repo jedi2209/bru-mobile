@@ -18,6 +18,7 @@ const colors = {
     dark: '#E5E5E5',
     grayDarkText: '#474747',
     grayLightText: '#CDCACA',
+    lightGray: '#DADADA',
   },
   gradient: {
     background: {
@@ -118,6 +119,18 @@ const navigationTheme = {
   },
 };
 
+const basicStyles = {
+  rowBetween: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+};
+
 export {
   colors,
   themeProfile,
@@ -125,4 +138,5 @@ export {
   tabBarStyle,
   headerNavigationStyle,
   navigationTheme,
+  basicStyles,
 };

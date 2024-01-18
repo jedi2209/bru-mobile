@@ -12,6 +12,7 @@ import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
+import ConfirmationModal from '../../core/components/ConfirmationModal';
 
 export const mockedData = [
   {
@@ -92,6 +93,7 @@ const InstantBrewScreen = props => {
 
   return (
     <Wrapper {...props}>
+      {/* <ConfirmationModal opened /> */}
       <View style={s.container}>
         <PressetList
           style={s.list}

@@ -17,8 +17,10 @@ import SettingsScreen from '@screens/settings';
 import {colors, fonts, tabBarStyle} from '../const/style';
 
 import TabBarIcon from '@nav/components/TabBarIcon';
-import Header from '@comp/Header';
+
 import NewTeaAlarmScreen from '../../screens/new-tea-alarm';
+import Wrapper from '../components/Wrapper';
+import Header from '../components/Header';
 
 const iconSize = 24;
 
@@ -26,24 +28,24 @@ const Tab = createBottomTabNavigator();
 const StackSettings = createStackNavigator();
 const StackTeaAlarm = createStackNavigator();
 
-const SettingsStackView = ({navigation, route}) => {
-  const currLang = useStore($langSettingsStore);
-  return (
-    <StackSettings.Navigator initialRouteName="SettingsScreen">
-      <StackSettings.Screen
-        name="SettingsScreen"
-        component={SettingsScreen}
-        initialParams={{
-          scroll: false,
-        }}
-        options={{
-          headerShown: true,
-          header: Header,
-        }}
-      />
-    </StackSettings.Navigator>
-  );
-};
+// const SettingsStackView = (props, {navigation, route}) => {
+//   const currLang = useStore($langSettingsStore);
+//   return (
+//     <StackSettings.Navigator initialRouteName="SettingsScreen">
+//       <StackSettings.Screen
+//         name="SettingsScreen"
+//         component={SettingsScreen}
+//         initialParams={{
+//           scroll: true,
+//         }}
+//         options={{
+//           headerShown: true,
+//           header: Header,
+//         }}
+//       />
+//     </StackSettings.Navigator>
+//   );
+// };
 
 const TeaAlarmStackView = ({navigation, route}) => {
   return (
@@ -166,9 +168,10 @@ export const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Settings"
-        component={SettingsStackView}
+        component={SettingsScreen}
+        initialParams={{scroll: true}}
         options={{
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="settings"
