@@ -22,6 +22,12 @@ const s = StyleSheet.create({
     letterSpacing: 0.4,
     fontFamily: fonts.defaultMenuFamily,
   },
+  pressetScreenTitleText: {
+    color: '#231F20',
+  },
+  pressetScreenValueText: {
+    color: colors.green.mid,
+  },
   pressetValue: {
     color: colors.white,
     fontSize: 24,
@@ -32,12 +38,24 @@ const s = StyleSheet.create({
   },
 });
 
-const TeaAlarmInfoItem = ({Icon, title, value}) => {
+const TeaAlarmInfoItem = ({Icon, title, value, type}) => {
   return (
     <View style={s.pressetInfoItem}>
       {Icon}
-      <Text style={s.pressetTitle}>{title}</Text>
-      <Text style={s.pressetValue}>{value}</Text>
+      <Text
+        style={[
+          s.pressetTitle,
+          type === 'pressets' && s.pressetScreenTitleText,
+        ]}>
+        {title}
+      </Text>
+      <Text
+        style={[
+          s.pressetValue,
+          type === 'pressets' && s.pressetScreenValueText,
+        ]}>
+        {value}
+      </Text>
     </View>
   );
 };

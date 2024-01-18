@@ -198,7 +198,6 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
             },
           }}
           onConfirm={value => {
-            console.log(value);
             const {hours, minutes} = value;
             setTime({hours, minutes});
             setIsTimeModalOpen(false);

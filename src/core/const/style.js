@@ -30,6 +30,10 @@ const colors = {
       dark: ['#404040', '#E6E7E8', '#CDCACA'],
       light: ['#EBEBEB', '#E6E7E8', '#F2F2F2'],
     },
+    pressetInfo: {
+      light: ['#f5f5f5', '#f2f2f2', '#f9fafb'],
+      dark: ['#404040', '#E6E7E8', '#CDCACA'],
+    },
   },
 };
 
@@ -128,6 +132,15 @@ const basicStyles = {
   row: {
     display: 'flex',
     flexDirection: 'row',
+  },
+  screenTitle: {
+    color: colors.gray.grayDarkText,
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.4,
+    marginBottom: 20,
   },
 };
 

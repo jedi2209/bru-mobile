@@ -36,10 +36,20 @@ const s = StyleSheet.create({
     borderWidth: 4,
     borderColor: colors.green.mid,
   },
+  imageContainer: {
+    marginBottom: 12,
+  },
   image: {
     width: 100,
     height: 100,
-    marginBottom: 12,
+  },
+  pressetScreenImage: {
+    width: 74,
+    height: 68,
+    marginBottom: 0,
+  },
+  pressetScreenItem: {
+    minWidth: 134,
   },
   title: {
     color: colors.gray.grayDarkText,
@@ -49,9 +59,8 @@ const s = StyleSheet.create({
   },
 });
 
-const PressetItem = ({title, id, img, selected}) => {
+const PressetItem = ({title, id, img, selected, type}) => {
   const phoneTheme = useColorScheme();
-
   return (
     <View style={s.shadow}>
       <LinearGradient
@@ -61,8 +70,25 @@ const PressetItem = ({title, id, img, selected}) => {
             ? colors.gradient.pressetItem.light
             : colors.gradient.pressetItem.dark
         }
-        style={[s.presentItem, selected ? s.selectedBorder : {}]}>
-        <View style={s.image}>{img ? <Image source={img} /> : <Image />}</View>
+        style={[
+          s.presentItem,
+          selected ? s.selectedBorder : {},
+          type === 'pressets' && s.pressetScreenItem,
+        ]}>
+        <View
+          style={[
+            s.imageContainer,
+            type === 'pressets' && s.pressetScreenImageContainer,
+          ]}>
+          {img ? (
+            <Image
+              style={[s.image, type === 'pressets' && s.pressetScreenImage]}
+              source={img}
+            />
+          ) : (
+            <Image />
+          )}
+        </View>
         <Text style={s.title}>{title}</Text>
       </LinearGradient>
     </View>

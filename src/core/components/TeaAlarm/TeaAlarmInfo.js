@@ -20,6 +20,9 @@ const s = StyleSheet.create({
     justifyContent: 'space-between',
     borderRadius: 10,
   },
+  pressetInfoScreen: {
+    backgroundColor: 'transparent',
+  },
   divider: {
     width: 1,
     backgroundColor: 'rgba(35, 31, 32, 0.11)',
@@ -57,20 +60,22 @@ const s = StyleSheet.create({
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-const TeaAlarm = () => {
+const TeaAlarm = ({type}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
   const [waterAmount, setWaterAmount] = useState(0);
   const [time, setTime] = useState({minutes: '0', seconds: '0'});
 
   return (
-    <View style={s.pressetInfo}>
+    <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
       <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
         <TeaAlarmInfoItem
+          type={type}
           Icon={
             <TeaAlarmIcon
+              stroke={type === 'pressets' ? 'black' : colors.white}
               style={s.pressetIcon}
-              color="yellow"
+              color={type === 'pressets' ? 'green' : 'yellow'}
               width={24}
               height={24}
             />
@@ -99,7 +104,6 @@ const TeaAlarm = () => {
         minuteLabel={''}
         secondLabel={''}
         onConfirm={value => {
-          console.log(value);
           const {minutes, seconds} = value;
           setTime({minutes, seconds});
           setIsOpen(false);
@@ -109,7 +113,14 @@ const TeaAlarm = () => {
       />
       <View style={s.divider} />
       <TeaAlarmInfoItem
-        Icon={<TemperatureIcon style={s.pressetIcon} color="yellow" />}
+        type={type}
+        Icon={
+          <TemperatureIcon
+            style={s.pressetIcon}
+            color={type === 'pressets' ? 'green' : 'yellow'}
+            fill={type === 'pressets' ? 'black' : colors.white}
+          />
+        }
         title="Water temperature"
         value="90°"
       />
@@ -117,7 +128,14 @@ const TeaAlarm = () => {
       <View style={s.divider} />
       <TouchableOpacity onPress={() => setWaterAmountIsOpen(true)}>
         <TeaAlarmInfoItem
-          Icon={<WaterIcon style={s.pressetIcon} color="yellow" />}
+          type={type}
+          Icon={
+            <WaterIcon
+              style={s.pressetIcon}
+              color={type === 'pressets' ? 'green' : 'yellow'}
+              fill={type === 'pressets' ? 'black' : colors.white}
+            />
+          }
           title="Water amount"
           value={`${waterAmount}ml`}
         />

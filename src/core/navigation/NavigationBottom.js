@@ -27,6 +27,7 @@ const iconSize = 24;
 const Tab = createBottomTabNavigator();
 const StackSettings = createStackNavigator();
 const StackTeaAlarm = createStackNavigator();
+const StackPressets = createStackNavigator();
 
 // const SettingsStackView = (props, {navigation, route}) => {
 //   const currLang = useStore($langSettingsStore);
@@ -73,6 +74,24 @@ const TeaAlarmStackView = ({navigation, route}) => {
         }}
       />
     </StackTeaAlarm.Navigator>
+  );
+};
+
+const PressetsStackView = ({navigation, route}) => {
+  return (
+    <StackPressets.Navigator initialRouteName="Presets">
+      <StackPressets.Screen
+        name="Presets"
+        component={PresetsScreen}
+        initialParams={{
+          scroll: false,
+        }}
+        options={{
+          headerShown: true,
+          header: Header,
+        }}
+      />
+    </StackPressets.Navigator>
   );
 };
 
@@ -128,11 +147,9 @@ export const NavigationBottom = props => {
       />
       <Tab.Screen
         name="Presets"
-        component={PresetsScreen}
-        initialParams={{
-          scroll: true,
-        }}
+        component={PressetsStackView}
         options={{
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="presets"

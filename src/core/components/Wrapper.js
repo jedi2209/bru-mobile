@@ -89,8 +89,6 @@ const MainWrapper = props => {
       let direction = currentOffset > offset ? 'down' : 'up';
       const isAtBottom =
         layoutMeasurement.height + currentOffset >= contentSize.height + 100;
-      console.log(isAtBottom, 'isAtBottomisAtBottomisAtBottomisAtBottom');
-      console.log(direction);
       if (direction === 'down' && currentOffset > minScrollToHide) {
         translateY.value = 0;
         hideTabBar(100);
