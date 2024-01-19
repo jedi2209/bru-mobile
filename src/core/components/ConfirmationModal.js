@@ -1,6 +1,12 @@
 import React from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {colors} from '../const/style';
 
 const s = StyleSheet.create({

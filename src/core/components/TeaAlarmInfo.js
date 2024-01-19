@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, useColorScheme} from 'react-native';
-import {colors, fonts} from '../const/style';
+import {basicStyles, colors, fonts} from '../const/style';
 import TeaAlarmIcon from './icons/TeaAlarmIcon';
 import PenIcon from './icons/PenIcon';
 import TrashIcon from './icons/TrashIcon';
@@ -61,9 +61,6 @@ const s = StyleSheet.create({
     letterSpacing: 0.4,
     fontFamily: fonts.defaultMenuFamily,
   },
-  darkText: {
-    color: colors.gray.grayLightText,
-  },
   by: {marginRight: 16},
   icons: {
     display: 'flex',
@@ -94,7 +91,11 @@ const TeaAlarmInfo = ({id, time, by, teaType, brewingData}) => {
       </View>
       <View style={s.infoContainer}>
         <View>
-          <Text style={[s.teaAlarmText, phoneTheme === 'dark' && s.darkText]}>
+          <Text
+            style={[
+              s.teaAlarmText,
+              phoneTheme === 'dark' && basicStyles.darkText,
+            ]}>
             Tea alarm set for {time || '1:00 AM'}
           </Text>
           <View style={s.teaInfo}>
@@ -102,11 +103,15 @@ const TeaAlarmInfo = ({id, time, by, teaType, brewingData}) => {
               style={[
                 s.teaInfoText,
                 s.by,
-                phoneTheme === 'dark' && s.darkText,
+                phoneTheme === 'dark' && basicStyles.darkText,
               ]}>
               by {by || 'John Denver'}
             </Text>
-            <Text style={[s.teaInfoText, phoneTheme === 'dark' && s.darkText]}>
+            <Text
+              style={[
+                s.teaInfoText,
+                phoneTheme === 'dark' && basicStyles.darkText,
+              ]}>
               {teaType || 'Black Tea #1'}
             </Text>
           </View>

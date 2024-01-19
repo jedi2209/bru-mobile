@@ -154,11 +154,11 @@ const SettingsScreen = props => {
 
   return (
     <Wrapper style={s.wrapper} {...props}>
-      <Text style={[s.screenTitle, isDarkMode && s.darkTextSecondary]}>
+      <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
         Settings
       </Text>
       <View>
-        <Text style={[s.h2, isDarkMode && s.darkTextSecondary]}>
+        <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
           Connected machines
         </Text>
         {[1, 2].map(item => {
@@ -170,9 +170,7 @@ const SettingsScreen = props => {
         variant={'primary'}
         style={[s.buttonStyle]}
         onPressIn={() => navigation.navigate('AddNewDeviceScreen')}>
-        <ButtonText style={[s.buttonTextStyle, isDarkMode && s.darkText]}>
-          Connect New Machine
-        </ButtonText>
+        <ButtonText style={s.buttonTextStyle}>Connect New Machine</ButtonText>
       </Button>
       <Button
         onPress={() => setIsConfirmModalOpen(true)}
@@ -196,9 +194,20 @@ const SettingsScreen = props => {
       </Button>
 
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
-          Filter Status
-        </Text>
+        <View>
+          <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+            Filter Status
+          </Text>
+          <Text style={s.filterNotification}>
+            Please replace the water filter
+          </Text>
+          <TouchableOpacity>
+            <Text
+              style={[s.filterTutorial, isDarkMode && s.filterTutorialDark]}>
+              View tutorial video
+            </Text>
+          </TouchableOpacity>
+        </View>
         <Text style={[s.title, s.filterHealth]}>Health 85%</Text>
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
@@ -216,7 +225,7 @@ const SettingsScreen = props => {
           sx={{
             props: {
               trackColor: {
-                true: '#34C759',
+                true: colors.green.mid,
               },
             },
           }}
@@ -233,7 +242,7 @@ const SettingsScreen = props => {
             sx={{
               props: {
                 trackColor: {
-                  true: '#34C759',
+                  true: colors.green.mid,
                 },
               },
             }}
@@ -318,7 +327,7 @@ const SettingsScreen = props => {
           sx={{
             props: {
               trackColor: {
-                true: '#34C759',
+                true: colors.green.mid,
               },
             },
           }}
@@ -505,9 +514,6 @@ const s = StyleSheet.create({
   darkTextMain: {
     color: colors.white,
   },
-  darkTextSecondary: {
-    color: colors.gray.lightGray,
-  },
   h2: {
     color: colors.gray.grayDarkText,
     fontSize: 18,
@@ -614,6 +620,24 @@ const s = StyleSheet.create({
   autoRinse: {
     ...basicStyles.rowBetween,
     paddingBottom: 16,
+  },
+  filterNotification: {
+    color: '#999',
+    fontSize: 12,
+    fontWeight: '600',
+    lineHeight: 18,
+    letterSpacing: 0.4,
+  },
+  filterTutorial: {
+    color: colors.green.mid,
+    textDecorationLine: 'underline',
+    fontSize: 12,
+    fontWeight: '600',
+    lineHeight: 18,
+    letterSpacing: 0.4,
+  },
+  filterTutorialDark: {
+    color: '#FFF',
   },
 });
 export default SettingsScreen;

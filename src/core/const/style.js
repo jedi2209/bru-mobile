@@ -35,6 +35,14 @@ const colors = {
       dark: ['#404040', '#E6E7E8', '#CDCACA'],
     },
     helpCollapsibleDark: ['#404040', '#2b2b2b'],
+    profileInfo: {
+      light: [
+        'rgba(245, 245, 245, 0.70)',
+        'rgba(242, 242, 242, 0.70)',
+        'rgba(249, 250, 251, 0.70)',
+      ],
+      dark: ['rgba(64, 64, 64, 0.70)', 'rgba(43, 43, 43, 0.70)'],
+    },
   },
 };
 
@@ -167,6 +175,8 @@ const basicStyles = {
     letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
+  darkText: {color: colors.gray.grayLightText},
+  darkTextProfile: {color: colors.gray.lightGray},
 };
 
 export {

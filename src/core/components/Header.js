@@ -9,6 +9,9 @@ import {colors, fonts} from '../const/style';
 import HeaderIcon from './icons/HeaderIcon';
 import UserIcon from './icons/UserIcon';
 import CartIcon from './icons/CartIcon';
+import {useNavigation} from '@react-navigation/native';
+import {useState} from 'react';
+import BruStoreModal from './BruStoreModal';
 
 const s = StyleSheet.create({
   header: {
@@ -42,6 +45,8 @@ const s = StyleSheet.create({
 });
 
 const Header = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={s.header}>
       <View style={s.nameIconWrapper}>
@@ -49,7 +54,9 @@ const Header = () => {
         <HeaderIcon />
       </View>
       <View style={s.iconsWrapper}>
-        <UserIcon style={s.userIcon} />
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <UserIcon style={s.userIcon} />
+        </TouchableOpacity>
         <TouchableOpacity>
           <CartIcon />
         </TouchableOpacity>

@@ -20,9 +20,6 @@ const s = StyleSheet.create({
     marginBottom: 30,
   },
   screenTitle: {...basicStyles.screenTitle, marginTop: 30, marginBottom: 20},
-  darkText: {
-    color: colors.gray.grayLightText,
-  },
   questionWrapper: {
     ...basicStyles.rowBetween,
     borderBottomColor: colors.gray.grayLightText,
@@ -116,7 +113,9 @@ const HelpScreen = props => {
 
   return (
     <Wrapper style={s.wrapper} {...props}>
-      <Text style={[s.screenTitle, isDarkMode && s.darkText]}>Help</Text>
+      <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
+        Help
+      </Text>
       <TouchableOpacity onPress={() => setFirstCollapsed(prev => !prev)}>
         <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
           <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
@@ -208,7 +207,7 @@ const HelpScreen = props => {
               ? colors.gradient.helpCollapsibleDark
               : [colors.white, colors.white]
           }>
-          <Text style={[s.contactTitle, isDarkMode && s.darkText]}>
+          <Text style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
             Please provide the issue details to the BRU Support. We will assist
             you as soon as possible.
           </Text>
@@ -221,11 +220,17 @@ const HelpScreen = props => {
               multiline={true}
               numberOfLines={10}
             />
-            <Text style={s.attachPhoto}>Attach photo</Text>
+            <TouchableOpacity>
+              <Text style={s.attachPhoto}>Attach photo</Text>
+            </TouchableOpacity>
           </View>
           <View style={basicStyles.rowBetween}>
             <TouchableOpacity>
-              <Text style={[basicStyles.textButton, isDarkMode && s.darkText]}>
+              <Text
+                style={[
+                  basicStyles.textButton,
+                  isDarkMode && basicStyles.darkText,
+                ]}>
                 Cancel
               </Text>
             </TouchableOpacity>

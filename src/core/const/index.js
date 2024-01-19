@@ -58,4 +58,4 @@ export const DEVICE_MANAGER_CONFIG = {
 
 export const LANGUAGE = {...LANGUAGES, default: LANGUAGES.en};
 
-export const INITIAL_SCREEN = 'Help';
+export const INITIAL_SCREEN = 'Profile';

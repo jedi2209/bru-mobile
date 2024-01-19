@@ -33,9 +33,6 @@ const s = StyleSheet.create({
     marginRight: 'auto',
     marginBottom: 0,
   },
-  darkText: {
-    color: colors.gray.lightGray,
-  },
   plusIcon: {},
   list: {paddingLeft: 16, marginBottom: 20},
   pressetInfo: {
@@ -149,7 +146,9 @@ const PresetsScreen = props => {
   return (
     <Wrapper {...props}>
       <View style={s.titleContainer}>
-        <Text style={[s.screenTitle, isDarkMode && s.darkText]}>Presets</Text>
+        <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
+          Presets
+        </Text>
         {mode === 'list' && (
           <TouchableOpacity onPress={() => setMode('create')}>
             <PlusCircle style={s.plusIcon} />
@@ -222,7 +221,7 @@ const PresetsScreen = props => {
                 },
               }}
             />
-            <Text style={[s.switchText, isDarkMode && s.darkText]}>
+            <Text style={[s.switchText, isDarkMode && basicStyles.darkText]}>
               Cold water
             </Text>
           </View>
@@ -236,7 +235,7 @@ const PresetsScreen = props => {
                 },
               }}
             />
-            <Text style={[s.switchText, isDarkMode && s.darkText]}>
+            <Text style={[s.switchText, isDarkMode && basicStyles.darkText]}>
               Cleaning
             </Text>
           </View>

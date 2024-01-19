@@ -30,7 +30,7 @@ const s = StyleSheet.create({
     marginBottom: 23,
   },
   darkScreenLabel: {
-    color: '#DADADA',
+    color: colors.gray.lightGray,
   },
   addButton: {
     backgroundColor: colors.green.mid,

@@ -6,7 +6,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import {colors} from '../../core/const/style';
+import {basicStyles, colors} from '../../core/const/style';
 import {TimerPickerModal} from 'react-native-timer-picker';
 import Wrapper from '../../core/components/Wrapper';
 import dayjs from 'dayjs';
@@ -35,7 +35,7 @@ const s = StyleSheet.create({
     letterSpacing: 0.4,
   },
   darkText: {
-    color: '#DADADA',
+    color: colors.gray.lightGray,
   },
   prepareWrapper: {
     display: 'flex',
@@ -110,7 +110,7 @@ const s = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   cleaningText: {
-    color: '#DADADA',
+    color: colors.gray.lightGray,
     fontSize: 16,
     fontWeight: '500',
     marginLeft: 12,

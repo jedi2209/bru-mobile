@@ -112,7 +112,7 @@ const s = StyleSheet.create({
     alignItems: 'center',
   },
   cleaningText: {
-    color: '#DADADA',
+    color: colors.gray.lightGray,
     fontSize: 16,
     fontWeight: '500',
     marginLeft: 12,

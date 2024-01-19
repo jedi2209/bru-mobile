@@ -21,6 +21,7 @@ import TabBarIcon from '@nav/components/TabBarIcon';
 import NewTeaAlarmScreen from '../../screens/new-tea-alarm';
 import Wrapper from '../components/Wrapper';
 import Header from '../components/Header';
+import ProfileScreen from '../../screens/profile';
 
 const iconSize = 24;
 
@@ -146,7 +147,7 @@ export const NavigationBottom = props => {
         }}
       />
       <Tab.Screen
-        name="Presets"
+        name="PresetsStackView"
         component={PressetsStackView}
         options={{
           headerShown: false,
@@ -197,6 +198,16 @@ export const NavigationBottom = props => {
               title="MenuBottom.Settings"
             />
           ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        initialParams={{scroll: false}}
+        options={{
+          tabBarItemStyle: {
+            display: 'none',
+          },
         }}
       />
     </Tab.Navigator>

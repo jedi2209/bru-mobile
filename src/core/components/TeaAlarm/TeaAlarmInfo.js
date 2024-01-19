@@ -10,6 +10,7 @@ import TemperatureIcon from '../icons/TemperatureIcon';
 import WaterIcon from '../icons/WaterIcon';
 import TeaAlarmInfoItem from './TeaAlarmInfoItem';
 import WaterAmountModal from '../WaterAmountModal';
+import ConfirmationModal from '../ConfirmationModal';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
