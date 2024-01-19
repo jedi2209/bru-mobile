@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -15,8 +16,21 @@ import UserIcon from '../../core/components/icons/UserIcon';
 import {EyeIcon} from '@gluestack-ui/themed';
 import ArrowLeftIcon from '../../core/components/icons/ArrowLeftIcon';
 import ArrowRightIcon from '../../core/components/icons/ArrowRightIcon';
+import ConfirmationModal from '../../core/components/ConfirmationModal';
 
 const maxBarHeight = 80;
+
+const resetModal = {
+  text: 'st',
+  cancelButtonText: 'dasd',
+  cancelButton: () => {},
+};
+
+const acceptModal = {
+  text: 'st',
+  cancelButtonText: 'dasd',
+  cancelButton: () => {},
+};
 
 const s = StyleSheet.create({
   wrapper: {
@@ -186,6 +200,25 @@ const s = StyleSheet.create({
     textTransform: 'uppercase',
     lineHeight: 22,
   },
+  inputWrapper: {
+    marginBottom: 15,
+  },
+  inputLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: colors.green.mid,
+    marginBottom: 5,
+  },
+  input: {
+    paddingLeft: 15,
+    paddingVertical: 14,
+    backgroundColor: '#E6E7E8',
+  },
+  saveButton: {
+    ...basicStyles.backgroundButton,
+    alignSelf: 'center',
+    marginTop: 15,
+  },
 });
 
 const chartDaysData = [
@@ -209,6 +242,8 @@ const ProfileScreen = props => {
   const phoneTheme = useColorMode();
   const isDarkMode = phoneTheme === 'dark';
   const [selectedFilter, setselectedFilter] = useState('days');
+  const [mode, setMode] = useState('view');
+  const [modal, setModal] = useState(null);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -227,178 +262,271 @@ const ProfileScreen = props => {
             : colors.gradient.profileInfo.light
         }>
         <View style={s.profileInfoWrapper}>
-          <TouchableOpacity style={s.editButton}>
-            <PenIcon width={24} height={24} />
-          </TouchableOpacity>
+          {mode === 'view' && (
+            <TouchableOpacity
+              onPress={() => setMode('edit')}
+              style={s.editButton}>
+              <PenIcon width={24} height={24} />
+            </TouchableOpacity>
+          )}
           <View style={[s.image, s.noImage, isDarkMode && s.noImageDark]}>
             <UserIcon width={66} height={66} fill="#999999" />
           </View>
         </View>
         <View style={s.userDataWrapper}>
-          <View style={s.userData}>
-            <Text
-              style={[
-                s.userDataText,
-                s.label,
-                isDarkMode && basicStyles.darkTextProfile,
-              ]}>
-              Name
-            </Text>
-            <Text
-              style={[
-                s.userDataText,
-                s.value,
-                isDarkMode && basicStyles.darkTextProfile,
-              ]}>
-              John Doe
-            </Text>
-          </View>
-          <View style={s.userData}>
-            <Text
-              style={[
-                s.userDataText,
-                s.label,
-                isDarkMode && basicStyles.darkTextProfile,
-              ]}>
-              Email
-            </Text>
-            <Text
-              style={[
-                s.userDataText,
-                s.value,
-                isDarkMode && basicStyles.darkTextProfile,
-              ]}>
-              john@usermail.com
-            </Text>
-            <TouchableOpacity style={s.userDataButton}>
-              <Text style={s.validateButton}>Validate</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={s.userData}>
-            <Text
-              style={[
-                s.userDataText,
-                s.label,
-                isDarkMode && basicStyles.darkTextProfile,
-              ]}>
-              Password
-            </Text>
-            <Text
-              style={[
-                s.userDataText,
-                s.value,
-                isDarkMode && basicStyles.darkTextProfile,
-              ]}>
-              ***************
-            </Text>
-            <TouchableOpacity style={s.userDataButton}>
-              <EyeIcon width={24} height={24} color={colors.green.mid} />
-            </TouchableOpacity>
-          </View>
+          {mode === 'view' ? (
+            <View style={s.userData}>
+              <Text
+                style={[
+                  s.userDataText,
+                  s.label,
+                  isDarkMode && basicStyles.darkTextProfile,
+                ]}>
+                Name
+              </Text>
+              <Text
+                style={[
+                  s.userDataText,
+                  s.value,
+                  isDarkMode && basicStyles.darkTextProfile,
+                ]}>
+                John Doe
+              </Text>
+            </View>
+          ) : (
+            <View style={s.inputWrapper}>
+              <Text style={s.inputLabel}>Name</Text>
+              <TextInput
+                placeholderTextColor={colors.gray.grayDarkText}
+                style={s.input}
+                value="John Doe"
+              />
+            </View>
+          )}
+
+          {mode === 'view' ? (
+            <View style={s.userData}>
+              <Text
+                style={[
+                  s.userDataText,
+                  s.label,
+                  isDarkMode && basicStyles.darkTextProfile,
+                ]}>
+                Email
+              </Text>
+              <Text
+                style={[
+                  s.userDataText,
+                  s.value,
+                  isDarkMode && basicStyles.darkTextProfile,
+                ]}>
+                john@usermail.com
+              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  setModal({
+                    confirmationText:
+                      'Please follow the link in the email that we have sent to john@usermail.com. Validating on email address allows you to receive special tea deals and promotions fom BRU ',
+                    confirmationButtonText: 'OK',
+                    onConfirm: () => setModal(null),
+                  })
+                }
+                style={s.userDataButton}>
+                <Text style={s.validateButton}>Validate</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={s.inputWrapper}>
+              <Text style={s.inputLabel}>Email</Text>
+              <TextInput
+                placeholderTextColor={colors.gray.grayDarkText}
+                style={s.input}
+                value="john@usermail.com"
+              />
+            </View>
+          )}
+          {mode === 'view' ? (
+            <View style={s.userData}>
+              <Text
+                style={[
+                  s.userDataText,
+                  s.label,
+                  isDarkMode && basicStyles.darkTextProfile,
+                ]}>
+                Password
+              </Text>
+              <Text
+                style={[
+                  s.userDataText,
+                  s.value,
+                  isDarkMode && basicStyles.darkTextProfile,
+                ]}>
+                ***************
+              </Text>
+              <TouchableOpacity style={s.userDataButton}>
+                <EyeIcon width={24} height={24} color={colors.green.mid} />
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={s.inputWrapper}>
+              <Text style={s.inputLabel}>Password</Text>
+              <TextInput
+                secureTextEntry
+                placeholderTextColor={colors.gray.grayDarkText}
+                style={s.input}
+                value="****************"
+              />
+            </View>
+          )}
         </View>
+        {mode === 'edit' && (
+          <TouchableOpacity
+            onPress={() => setMode('view')}
+            style={s.saveButton}>
+            <Text style={[basicStyles.backgroundButtonText, {width: 132}]}>
+              Save
+            </Text>
+          </TouchableOpacity>
+        )}
       </LinearGradient>
-      <Text style={[s.subtitle, isDarkMode && basicStyles.darkTextProfile]}>
-        My statistics
-      </Text>
-      <View style={s.statisticWrapper}>
-        <View style={s.statisticSelectors}>
-          <TouchableOpacity
-            onPress={() => setselectedFilter('days')}
-            style={selectedFilter === 'days' && s.statisticSelectorSelected}>
-            <Text style={s.statisticSelectorText}>Days</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setselectedFilter('weeks')}
-            style={selectedFilter === 'weeks' && s.statisticSelectorSelected}>
-            <Text style={s.statisticSelectorText}>Weeks</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setselectedFilter('months')}
-            style={selectedFilter === 'months' && s.statisticSelectorSelected}>
-            <Text style={s.statisticSelectorText}>Months</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setselectedFilter('years')}
-            style={selectedFilter === 'years' && s.statisticSelectorSelected}>
-            <Text style={s.statisticSelectorText}>Years</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={s.dateFilterWrapper}>
-          <TouchableOpacity>
-            <ArrowLeftIcon />
-          </TouchableOpacity>
-          <Text style={s.dateFilterText}>
-            <Text style={s.dateFilterMonth}>Oct 28, </Text>
-            2020
+      {mode === 'view' && (
+        <>
+          <Text style={[s.subtitle, isDarkMode && basicStyles.darkTextProfile]}>
+            My statistics
           </Text>
-          <TouchableOpacity>
-            <ArrowRightIcon />
-          </TouchableOpacity>
-        </View>
-        <ScrollView
-          contentContainerStyle={[
-            basicStyles.row,
-            {alignItems: 'flex-end', gap: 1},
-          ]}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={s.barStatistic}>
-          <Text style={s.totalTea}>53242 litres</Text>
-          {chartDaysData.map(item => {
-            return (
-              <View>
-                {/* {item ? <Text>{item}</Text> : null} */}
-                <View
-                  key={item + new Date().getDate()}
-                  style={[
-                    s.chartBar,
-                    {
-                      height: scaleValue(
-                        0,
-                        Math.max(...chartDaysData),
-                        item,
-                        maxBarHeight,
-                      ),
-                    },
-                  ]}
-                />
+          <View style={s.statisticWrapper}>
+            <View style={s.statisticSelectors}>
+              <TouchableOpacity
+                onPress={() => setselectedFilter('days')}
+                style={
+                  selectedFilter === 'days' && s.statisticSelectorSelected
+                }>
+                <Text style={s.statisticSelectorText}>Days</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setselectedFilter('weeks')}
+                style={
+                  selectedFilter === 'weeks' && s.statisticSelectorSelected
+                }>
+                <Text style={s.statisticSelectorText}>Weeks</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setselectedFilter('months')}
+                style={
+                  selectedFilter === 'months' && s.statisticSelectorSelected
+                }>
+                <Text style={s.statisticSelectorText}>Months</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setselectedFilter('years')}
+                style={
+                  selectedFilter === 'years' && s.statisticSelectorSelected
+                }>
+                <Text style={s.statisticSelectorText}>Years</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={s.dateFilterWrapper}>
+              <TouchableOpacity>
+                <ArrowLeftIcon />
+              </TouchableOpacity>
+              <Text style={s.dateFilterText}>
+                <Text style={s.dateFilterMonth}>Oct 28, </Text>
+                2020
+              </Text>
+              <TouchableOpacity>
+                <ArrowRightIcon />
+              </TouchableOpacity>
+            </View>
+            <ScrollView
+              contentContainerStyle={[
+                basicStyles.row,
+                {alignItems: 'flex-end', gap: 1},
+              ]}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={s.barStatistic}>
+              <Text style={s.totalTea}>53242 litres</Text>
+              {chartDaysData.map(item => {
+                return (
+                  <View>
+                    {/* {item ? <Text>{item}</Text> : null} */}
+                    <View
+                      key={item + new Date().getDate()}
+                      style={[
+                        s.chartBar,
+                        {
+                          height: scaleValue(
+                            0,
+                            Math.max(...chartDaysData),
+                            item,
+                            maxBarHeight,
+                          ),
+                        },
+                      ]}
+                    />
+                  </View>
+                );
+              })}
+            </ScrollView>
+            <View style={s.popularPressets}>
+              <View style={s.popularPresset}>
+                <Text style={s.popularPressetCounter}>Most popular preset</Text>
+                <View>
+                  <Text
+                    style={[s.popularPressetCounter, s.popularPressetTitle]}>
+                    Black Tea
+                  </Text>
+                  <Text style={s.popularPressetValue}>2132 cups</Text>
+                </View>
               </View>
-            );
-          })}
-        </ScrollView>
-        <View style={s.popularPressets}>
-          <View style={s.popularPresset}>
-            <Text style={s.popularPressetCounter}>Most popular preset</Text>
-            <View>
-              <Text style={[s.popularPressetCounter, s.popularPressetTitle]}>
-                Black Tea
-              </Text>
-              <Text style={s.popularPressetValue}>2132 cups</Text>
+              <View style={s.popularPresset}>
+                <Text style={s.popularPressetCounter}>
+                  2nd most popular preset
+                </Text>
+                <View>
+                  <Text
+                    style={[s.popularPressetCounter, s.popularPressetTitle]}>
+                    Green Tea
+                  </Text>
+                  <Text style={s.popularPressetValue}>1432 cups</Text>
+                </View>
+              </View>
+              <View style={s.popularPresset}>
+                <Text style={s.popularPressetCounter}>
+                  3nd most popular preset
+                </Text>
+                <View>
+                  <Text
+                    style={[s.popularPressetCounter, s.popularPressetTitle]}>
+                    Pu Er
+                  </Text>
+                  <Text style={s.popularPressetValue}>132 cups</Text>
+                </View>
+              </View>
             </View>
           </View>
-          <View style={s.popularPresset}>
-            <Text style={s.popularPressetCounter}>2nd most popular preset</Text>
-            <View>
-              <Text style={[s.popularPressetCounter, s.popularPressetTitle]}>
-                Green Tea
-              </Text>
-              <Text style={s.popularPressetValue}>1432 cups</Text>
-            </View>
-          </View>
-          <View style={s.popularPresset}>
-            <Text style={s.popularPressetCounter}>3nd most popular preset</Text>
-            <View>
-              <Text style={[s.popularPressetCounter, s.popularPressetTitle]}>
-                Pu Er
-              </Text>
-              <Text style={s.popularPressetValue}>132 cups</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-      <TouchableOpacity style={s.resetButton}>
-        <Text style={s.resetButtonText}>Reset My Stats</Text>
-      </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() =>
+              setModal({
+                withCancelButton: true,
+                cancelButtonText: 'No',
+                modalTitle: 'Attention!',
+                confirmationText:
+                  'Reseting your tea consumption statistics cannot be undone!',
+                confirmationButtonText: 'Yes, Reset',
+                onConfirm: () => setModal(null),
+              })
+            }
+            style={s.resetButton}>
+            <Text style={s.resetButtonText}>Reset My Stats</Text>
+          </TouchableOpacity>
+        </>
+      )}
+      <ConfirmationModal
+        opened={!!modal}
+        closeModal={() => setModal(null)}
+        {...modal}
+      />
     </Wrapper>
   );
 };

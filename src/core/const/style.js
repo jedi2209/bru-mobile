@@ -174,6 +174,7 @@ const basicStyles = {
     lineHeight: 22,
     letterSpacing: 0.5,
     textTransform: 'uppercase',
+    textAlign: 'center',
   },
   darkText: {color: colors.gray.grayLightText},
   darkTextProfile: {color: colors.gray.lightGray},

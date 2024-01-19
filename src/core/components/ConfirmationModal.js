@@ -26,7 +26,7 @@ const s = StyleSheet.create({
   },
   modalContainer: {
     backgroundColor: 'white',
-    width: 277,
+    maxWidth: 325,
     paddingHorizontal: 19,
     paddingVertical: 25,
     borderRadius: 10,
@@ -80,6 +80,7 @@ const ConfirmationModal = ({
   modalTitle = '',
   confirmationText = '',
   confirmationButtonText = '',
+  onConfirm = () => {},
 }) => {
   return (
     <Modal
@@ -98,7 +99,7 @@ const ConfirmationModal = ({
             <Text style={[s.text, s.modalTitle]}>{modalTitle}</Text>
           ) : null}
           <Text style={[s.text, s.confirmationText]}>{confirmationText}</Text>
-          <TouchableOpacity style={s.confirmationButton}>
+          <TouchableOpacity onPress={onConfirm} style={s.confirmationButton}>
             <Text style={s.confirmationButtonText}>
               {confirmationButtonText}
             </Text>
