@@ -193,7 +193,7 @@ export const NavigationBottom = props => {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
-        initialParams={{scroll: false}}
+        initialParams={{scroll: true}}
         options={{
           headerShown: false,
           tabBarItemStyle: {

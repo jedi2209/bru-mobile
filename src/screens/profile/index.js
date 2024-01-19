@@ -13,6 +13,8 @@ import PenIcon from '../../core/components/icons/PenIcon';
 import LinearGradient from 'react-native-linear-gradient';
 import UserIcon from '../../core/components/icons/UserIcon';
 import {EyeIcon} from '@gluestack-ui/themed';
+import ArrowLeftIcon from '../../core/components/icons/ArrowLeftIcon';
+import ArrowRightIcon from '../../core/components/icons/ArrowRightIcon';
 
 const maxBarHeight = 80;
 
@@ -85,8 +87,7 @@ const s = StyleSheet.create({
   statisticWrapper: {
     marginHorizontal: 16,
     backgroundColor: '#ECECEC',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderRadius: 10,
   },
   statisticSelectors: {
     ...basicStyles.rowBetween,
@@ -115,11 +116,75 @@ const s = StyleSheet.create({
     width: 311,
     height: 90,
     opacity: 0.5,
+    position: 'relative',
+    marginBottom: 20,
   },
   chartBar: {
     width: 8,
     maxHeight: maxBarHeight,
     backgroundColor: colors.green.mid,
+  },
+  dateFilterWrapper: {
+    ...basicStyles.rowBetween,
+    marginHorizontal: 35,
+    marginVertical: 11,
+  },
+  dateFilterText: {
+    fontSize: 13,
+    fontWeight: '400',
+    color: colors.gray.grayDarkText,
+    textTransform: 'uppercase',
+  },
+  dateFilterMonth: {fontWeight: '700'},
+  totalTea: {
+    fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 24,
+    letterSpacing: 0.4,
+    color: '#999',
+    position: 'absolute',
+    top: 1,
+    right: -80,
+  },
+  popularPressets: {
+    marginHorizontal: 16,
+  },
+  popularPresset: {
+    ...basicStyles.rowBetween,
+    alignItems: 'flex-start',
+    marginBottom: 10,
+  },
+  popularPressetCounter: {
+    color: colors.gray.grayDarkText,
+    fontSize: 15,
+    lineHeight: 24,
+    letterSpacing: 0.4,
+    fontWeight: '600',
+  },
+  popularPressetTitle: {
+    fontWeight: '400',
+    alignSelf: 'flex-end',
+  },
+  popularPressetValue: {
+    color: colors.green.mid,
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 0.4,
+    fontWeight: '400',
+    alignSelf: 'flex-end',
+  },
+  resetButton: {
+    alignSelf: 'flex-end',
+    marginRight: 16,
+    marginTop: 16,
+    marginBottom: 20,
+  },
+  resetButtonText: {
+    color: '#9D9D9D',
+    fontSize: 14,
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    lineHeight: 22,
   },
 });
 
@@ -258,6 +323,18 @@ const ProfileScreen = props => {
             <Text style={s.statisticSelectorText}>Years</Text>
           </TouchableOpacity>
         </View>
+        <View style={s.dateFilterWrapper}>
+          <TouchableOpacity>
+            <ArrowLeftIcon />
+          </TouchableOpacity>
+          <Text style={s.dateFilterText}>
+            <Text style={s.dateFilterMonth}>Oct 28, </Text>
+            2020
+          </Text>
+          <TouchableOpacity>
+            <ArrowRightIcon />
+          </TouchableOpacity>
+        </View>
         <ScrollView
           contentContainerStyle={[
             basicStyles.row,
@@ -266,6 +343,7 @@ const ProfileScreen = props => {
           horizontal
           showsHorizontalScrollIndicator={false}
           style={s.barStatistic}>
+          <Text style={s.totalTea}>53242 litres</Text>
           {chartDaysData.map(item => {
             return (
               <View>
@@ -288,7 +366,39 @@ const ProfileScreen = props => {
             );
           })}
         </ScrollView>
+        <View style={s.popularPressets}>
+          <View style={s.popularPresset}>
+            <Text style={s.popularPressetCounter}>Most popular preset</Text>
+            <View>
+              <Text style={[s.popularPressetCounter, s.popularPressetTitle]}>
+                Black Tea
+              </Text>
+              <Text style={s.popularPressetValue}>2132 cups</Text>
+            </View>
+          </View>
+          <View style={s.popularPresset}>
+            <Text style={s.popularPressetCounter}>2nd most popular preset</Text>
+            <View>
+              <Text style={[s.popularPressetCounter, s.popularPressetTitle]}>
+                Green Tea
+              </Text>
+              <Text style={s.popularPressetValue}>1432 cups</Text>
+            </View>
+          </View>
+          <View style={s.popularPresset}>
+            <Text style={s.popularPressetCounter}>3nd most popular preset</Text>
+            <View>
+              <Text style={[s.popularPressetCounter, s.popularPressetTitle]}>
+                Pu Er
+              </Text>
+              <Text style={s.popularPressetValue}>132 cups</Text>
+            </View>
+          </View>
+        </View>
       </View>
+      <TouchableOpacity style={s.resetButton}>
+        <Text style={s.resetButtonText}>Reset My Stats</Text>
+      </TouchableOpacity>
     </Wrapper>
   );
 };

@@ -9,7 +9,6 @@ import AddNewDeviceScreen from '@screens/settings/addNewDevice';
 import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
 import UpdateFirmwareProgressScreen from '@screens/settings/updateFirmwareProgress';
 import {default as CustomHeader} from '../components/Header';
-import {Header} from '@react-navigation/stack';
 
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
