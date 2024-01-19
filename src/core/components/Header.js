@@ -46,6 +46,7 @@ const s = StyleSheet.create({
 
 const Header = () => {
   const navigation = useNavigation();
+  const [isOpened, setIsOpened] = useState(false);
 
   return (
     <View style={s.header}>
@@ -57,9 +58,13 @@ const Header = () => {
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <UserIcon style={s.userIcon} />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => setIsOpened(true)}>
           <CartIcon />
         </TouchableOpacity>
+        <BruStoreModal
+          opened={isOpened}
+          closeModal={() => setIsOpened(false)}
+        />
       </View>
     </View>
   );

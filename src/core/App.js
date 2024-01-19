@@ -117,6 +117,7 @@ const App = props => {
   }, []);
 
   return (
+    // eslint-disable-next-line react-native/no-inline-styles
     <GestureHandlerRootView style={{flex: 1}}>
       <Provider store={store}>
         <PersistGate persistor={persistor} loading={null}>

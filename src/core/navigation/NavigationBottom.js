@@ -14,19 +14,16 @@ import PresetsScreen from '@screens/presets';
 import HelpScreen from '@screens/help';
 import SettingsScreen from '@screens/settings';
 
-import {colors, fonts, tabBarStyle} from '../const/style';
+import {colors, tabBarStyle} from '../const/style';
 
 import TabBarIcon from '@nav/components/TabBarIcon';
 
 import NewTeaAlarmScreen from '../../screens/new-tea-alarm';
-import Wrapper from '../components/Wrapper';
-import Header from '../components/Header';
 import ProfileScreen from '../../screens/profile';
 
 const iconSize = 24;
 
 const Tab = createBottomTabNavigator();
-const StackSettings = createStackNavigator();
 const StackTeaAlarm = createStackNavigator();
 const StackPressets = createStackNavigator();
 
@@ -51,16 +48,14 @@ const StackPressets = createStackNavigator();
 
 const TeaAlarmStackView = ({navigation, route}) => {
   return (
-    <StackTeaAlarm.Navigator initialRouteName="TeaAlarmScreen">
+    <StackTeaAlarm.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName="TeaAlarmScreen">
       <StackTeaAlarm.Screen
         name="TeaAlarm"
         component={TeaAlarmScreen}
         initialParams={{
           scroll: false,
-        }}
-        options={{
-          headerShown: true,
-          header: Header,
         }}
       />
       <StackTeaAlarm.Screen
@@ -69,10 +64,6 @@ const TeaAlarmStackView = ({navigation, route}) => {
         initialParams={{
           scroll: false,
         }}
-        options={{
-          headerShown: true,
-          header: Header,
-        }}
       />
     </StackTeaAlarm.Navigator>
   );
@@ -80,16 +71,14 @@ const TeaAlarmStackView = ({navigation, route}) => {
 
 const PressetsStackView = ({navigation, route}) => {
   return (
-    <StackPressets.Navigator initialRouteName="Presets">
+    <StackPressets.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName="Presets">
       <StackPressets.Screen
         name="Presets"
         component={PresetsScreen}
         initialParams={{
           scroll: false,
-        }}
-        options={{
-          headerShown: true,
-          header: Header,
         }}
       />
     </StackPressets.Navigator>
@@ -97,7 +86,7 @@ const PressetsStackView = ({navigation, route}) => {
 };
 
 export const NavigationBottom = props => {
-  const currLang = useStore($langSettingsStore);
+  // const currLang = useStore($langSettingsStore);
   const phoneTheme = useColorScheme();
   return (
     <Tab.Navigator
@@ -109,7 +98,6 @@ export const NavigationBottom = props => {
         tabBarActiveTintColor: colors.white,
         tabBarInactiveTintColor: colors.gray.inactive,
         tabBarActiveBackgroundColor: colors.green.tabbar,
-        header: Header,
       }}>
       <Tab.Screen
         name="Instant Brew"
@@ -118,6 +106,7 @@ export const NavigationBottom = props => {
           scroll: false,
         }}
         options={{
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="instantBrew"
@@ -174,6 +163,7 @@ export const NavigationBottom = props => {
           scroll: true,
         }}
         options={{
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="help"
@@ -189,7 +179,7 @@ export const NavigationBottom = props => {
         component={SettingsScreen}
         initialParams={{scroll: true}}
         options={{
-          headerShown: true,
+          headerShown: false,
           tabBarIcon: ({focused}) => (
             <TabBarIcon
               iconName="settings"
@@ -205,6 +195,7 @@ export const NavigationBottom = props => {
         component={ProfileScreen}
         initialParams={{scroll: false}}
         options={{
+          headerShown: false,
           tabBarItemStyle: {
             display: 'none',
           },

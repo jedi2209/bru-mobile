@@ -6,7 +6,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import {basicStyles, colors} from '../../core/const/style';
+import {colors} from '../../core/const/style';
 import {TimerPickerModal} from 'react-native-timer-picker';
 import Wrapper from '../../core/components/Wrapper';
 import dayjs from 'dayjs';
@@ -152,32 +152,31 @@ dayjs.extend(duration);
 
 const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
   const phoneTheme = useColorScheme();
+  const isDarkMode = phoneTheme === 'dark';
   const [time, setTime] = useState({hours: '0', minutes: '0'});
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(10);
   const {id} = route.params;
   return (
     <Wrapper route={route} navigation={navigation} {...props}>
-      <Text style={[s.screenLabel, phoneTheme === 'dark' && s.darkText]}>
-        Tea Alarm
-      </Text>
+      <Text style={[s.screenLabel, isDarkMode && s.darkText]}>Tea Alarm</Text>
       <View style={s.prepareWrapper}>
-        <Text style={[s.subTitle, s.prepareText]}>Prepare tea by</Text>
+        <Text style={[s.subTitle, s.prepareText, isDarkMode && s.darkText]}>
+          Prepare tea by
+        </Text>
         <TouchableOpacity
           onPress={() => setIsTimeModalOpen(true)}
           style={s.timeWrapper}>
           <Text
-            style={[
-              s.subTitle,
-              s.timeText,
-              phoneTheme === 'dark' && s.darkTime,
-            ]}>{`${dayjs.duration(time.hours, 'hours').format('HH[h]')} ${dayjs
+            style={[s.subTitle, s.timeText, isDarkMode && s.darkTime]}>{`${dayjs
+            .duration(time.hours, 'hours')
+            .format('HH[h]')} ${dayjs
             .duration(time.minutes, 'minutes')
             .format('mm[m]')}`}</Text>
           <ArrowIcon
             style={[
               isTimeModalOpen ? {} : s.arrowIcon,
-              phoneTheme === 'dark' && s.darkTime,
+              isDarkMode && s.darkTime,
             ]}
           />
         </TouchableOpacity>
@@ -213,12 +212,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         />
       </View>
       <View style={s.innerContainer}>
-        <Text
-          style={[
-            s.subTitle,
-            s.selectPresset,
-            phoneTheme === 'dark' && s.darkText,
-          ]}>
+        <Text style={[s.subTitle, s.selectPresset, isDarkMode && s.darkText]}>
           Select preset
         </Text>
         <PressetList

@@ -70,7 +70,7 @@ const BruStoreModal = ({opened, closeModal}) => {
             <TouchableOpacity style={s.button}>
               <Text style={s.buttonText}>Parts and Accessories</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={s.button}>
+            <TouchableOpacity onPress={closeModal} style={s.button}>
               <Text style={s.buttonText}>Back</Text>
             </TouchableOpacity>
           </View>
