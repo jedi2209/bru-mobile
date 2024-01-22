@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -7,7 +7,8 @@ import {
   View,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {colors} from '../const/style';
+import {basicStyles, colors} from '../const/style';
+import CheckedIcon from './icons/Checked';
 
 const s = StyleSheet.create({
   modal: {
@@ -30,6 +31,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 19,
     paddingVertical: 25,
     borderRadius: 10,
+    alignItems: 'center',
   },
   text: {
     color: colors.gray.grayDarkText,
@@ -70,18 +72,42 @@ const s = StyleSheet.create({
     textTransform: 'uppercase',
     textAlign: 'center',
   },
+  dontShowAgainWrapper: {
+    ...basicStyles.row,
+    marginBottom: 17,
+  },
+  dontShowAgainFalse: {
+    borderWidth: 1,
+    borderColor: colors.gray.light,
+    width: 22,
+    height: 22,
+    borderRadius: 100,
+    marginRight: 15,
+  },
+  dontShowAgainText: {
+    marginBottom: 0,
+    fontWeight: '600',
+    lineHeight: 24,
+  },
+  dontShowAgainTrue: {
+    marginRight: 15,
+  },
 });
 
 const ConfirmationModal = ({
   opened = false,
   closeModal = () => {},
   withCancelButton = false,
+  withDontShowAgain = false,
   cancelButtonText = '',
   modalTitle = '',
   confirmationText = '',
   confirmationButtonText = '',
   onConfirm = () => {},
+  dontShowAgainText = '',
 }) => {
+  const [dontShow, setDontShow] = useState(false);
+
   return (
     <Modal
       transparent={true}
@@ -99,6 +125,24 @@ const ConfirmationModal = ({
             <Text style={[s.text, s.modalTitle]}>{modalTitle}</Text>
           ) : null}
           <Text style={[s.text, s.confirmationText]}>{confirmationText}</Text>
+          {withDontShowAgain && (
+            <View style={s.dontShowAgainWrapper}>
+              {dontShow ? (
+                <TouchableOpacity
+                  style={s.dontShowAgainTrue}
+                  onPress={() => setDontShow(false)}>
+                  <CheckedIcon />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity onPress={() => setDontShow(true)}>
+                  <View style={s.dontShowAgainFalse} />
+                </TouchableOpacity>
+              )}
+              <Text style={[s.text, s.dontShowAgainText]}>
+                {dontShowAgainText}
+              </Text>
+            </View>
+          )}
           <TouchableOpacity onPress={onConfirm} style={s.confirmationButton}>
             <Text style={s.confirmationButtonText}>
               {confirmationButtonText}

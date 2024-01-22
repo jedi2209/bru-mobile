@@ -60,12 +60,14 @@ const BruMachine = () => {
       <View style={s.row}>
         <Text style={s.version}>Firmware 1.2.44</Text>
         <PenIcon
-          fill={isDarkMode && colors.white}
+          fill={isDarkMode ? colors.white : colors.green.mid}
           width={24}
           height={24}
           style={s.penIcon}
         />
-        <TrashIconOutlined fill={isDarkMode && colors.white} />
+        <TrashIconOutlined
+          fill={isDarkMode ? colors.white : colors.green.mid}
+        />
       </View>
     </View>
   );

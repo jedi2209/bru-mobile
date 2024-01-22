@@ -189,10 +189,12 @@ const PresetsScreen = props => {
             )}
           </View>
           {mode === 'create' ? (
-            <Image
-              style={s.teaImage}
-              source={require('../../../assets/teaImages/emptyPressetImage.png')}
-            />
+            <TouchableOpacity>
+              <Image
+                style={s.teaImage}
+                source={require('../../../assets/teaImages/emptyPressetImage.png')}
+              />
+            </TouchableOpacity>
           ) : (
             <Image style={s.teaImage} source={selected.img} />
           )}

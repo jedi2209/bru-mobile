@@ -20,6 +20,7 @@ import TabBarIcon from '@nav/components/TabBarIcon';
 
 import NewTeaAlarmScreen from '../../screens/new-tea-alarm';
 import ProfileScreen from '../../screens/profile';
+import BrewingScreen from '../../screens/brewing';
 
 const iconSize = 24;
 
@@ -194,6 +195,17 @@ export const NavigationBottom = props => {
         name="Profile"
         component={ProfileScreen}
         initialParams={{scroll: true}}
+        options={{
+          headerShown: false,
+          tabBarItemStyle: {
+            display: 'none',
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Brewing"
+        component={BrewingScreen}
+        initialParams={{scroll: false}}
         options={{
           headerShown: false,
           tabBarItemStyle: {

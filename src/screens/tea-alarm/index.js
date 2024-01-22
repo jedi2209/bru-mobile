@@ -51,47 +51,11 @@ const s = StyleSheet.create({
 });
 
 const TeaAlarmScreen = (props, {navigation}) => {
-  // const progressRef = useRef(null);
   const phoneTheme = useColorScheme();
   const teaAlarms = useSelector(selectTeaAlarms);
   const navigate = useNavigation();
   return (
     <Wrapper style={s.wrapper} {...props}>
-      <View>
-        {/* <CircularProgress
-          title={'%'}
-          value={97}
-          radius={120}
-          ref={progressRef}
-          inActiveStrokeOpacity={0.5}
-          activeStrokeWidth={20}
-          inActiveStrokeWidth={20}
-          progressValueStyle={{fontWeight: '100', color: 'white'}}
-          activeStrokeSecondaryColor="yellow"
-          inActiveStrokeColor="white"
-          duration={30000}
-          dashedStrokeConfig={{
-            count: 50,
-            width: 4,
-          }}
-          progressFormatter={value => {
-            'worklet';
-            if (value <= 30) {
-              return 0;
-            }
-            if (value > 30 && value <= 60) {
-              return 30;
-            }
-            if (value > 60 && value <= 90) {
-              return 60;
-            }
-            if (value > 90) {
-              return 90;
-            }
-          }}
-          onAnimationComplete={() => {}}
-        /> */}
-      </View>
       <View>
         <Text
           style={[s.screenLabel, phoneTheme === 'dark' && s.darkScreenLabel]}>

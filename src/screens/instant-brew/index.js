@@ -13,6 +13,7 @@ import PressetList from '../../core/components/PressetList/PressetList';
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
+import {useNavigation} from '@react-navigation/native';
 
 export const mockedData = [
   {
@@ -81,10 +82,12 @@ const s = StyleSheet.create({
 const InstantBrewScreen = props => {
   const phoneTheme = useColorScheme();
   const [selectedItem, setSelectedItem] = useState(0);
+  const [modal, setModal] = useState(null);
+  const navigation = useNavigation();
 
   return (
     <Wrapper {...props}>
-      {/* <ConfirmationModal opened /> */}
+      {modal ? <ConfirmationModal {...modal} /> : null}
       <View style={s.container}>
         <PressetList
           style={s.list}
@@ -97,7 +100,9 @@ const InstantBrewScreen = props => {
 
           <SplitCups />
           <View style={s.buttons}>
-            <TouchableOpacity style={s.brewButton}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Brewing')}
+              style={s.brewButton}>
               <Text style={s.buttonText}>Brew it</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -105,6 +110,27 @@ const InstantBrewScreen = props => {
                 phoneTheme === 'light'
                   ? s.dispenseButtonLight
                   : s.dispenseButton
+              }
+              onPress={() =>
+                setModal({
+                  opened: true,
+                  withCancelButton: true,
+                  cancelButtonText: 'Later',
+                  modalTitle:
+                    'Do you want to save this configutation as a new preset?',
+                  confirmationText: (
+                    <Text>
+                      You will be able to create new presets later in{' '}
+                      <Text style={{color: colors.green.mid}}>Presets</Text>{' '}
+                      page.
+                    </Text>
+                  ),
+                  confirmationButtonText: 'Save preset',
+                  withDontShowAgain: true,
+                  onConfirm: () => setModal(null),
+                  closeModal: () => setModal(null),
+                  dontShowAgainText: "Don't show me again",
+                })
               }>
               <Text
                 style={[

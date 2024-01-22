@@ -20,6 +20,7 @@ const colors = {
     grayLightText: '#CDCACA',
     lightGray: '#DADADA',
   },
+  red: '#AF1F23',
   gradient: {
     background: {
       dark: ['#5e5e5e', '#4e4e4e', '#4f4f4f', '#3e3e3e'],

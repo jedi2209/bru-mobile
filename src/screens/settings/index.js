@@ -9,7 +9,6 @@ import {
   Pressable,
   Alert,
 } from 'react-native';
-import {useNavigation} from '@react-navigation/native';
 import {
   Button,
   ButtonText,
@@ -334,7 +333,9 @@ const SettingsScreen = props => {
         />
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, s.darkTextMain]}>App color theme</Text>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+          App color theme
+        </Text>
         <View style={s.units}>
           <TouchableOpacity
             style={[s.unit, isDarkMode && s.darkUnit, s.unitLeft, s.selected]}>
@@ -347,7 +348,7 @@ const SettingsScreen = props => {
         </View>
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, s.darkTextMain]}>About</Text>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
       </View>
       {/* {get(deviceManager, 'device', null) ? (
         <>
