@@ -35,6 +35,7 @@ import BruMachine from './components/BruMachine';
 import Collapsible from 'react-native-collapsible';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import BruStoreModal from '../../core/components/BruStoreModal';
+import NotificationModal from '../../core/components/NotificationModal';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -101,8 +102,19 @@ const SettingsScreen = props => {
   const [autoRinse, setAutoRinse] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [selected, setSelected] = useState('small');
+  const [modalIsOpened, setModalIsOpened] = useState(false);
 
   const {navigation} = props;
+
+  useEffect(() => {
+    console.log(
+      navigation.getState(),
+      'useEffectuseEffectuseEffectuseEffectuseEffect',
+    );
+    if (navigation.getState().params?.previous_screen === 'DownloadingUpdate') {
+      setModalIsOpened(true);
+    }
+  }, [props, navigation]);
 
   useEffect(() => {
     setLoading(true);
@@ -498,6 +510,11 @@ const SettingsScreen = props => {
         confirmationButtonText="Confirm"
         modalTitle="Firmware update"
         confirmationText="The BRU app will download and install the latest firmware to your BRU machine. Please make sure you are connected to Wi Fi to avoid additional charges."
+      />
+      <NotificationModal
+        opened={modalIsOpened}
+        closeModal={() => setModalIsOpened(false)}
+        modalTitle="Firmware successfully updated to ver. 12.423.4"
       />
     </Wrapper>
   );

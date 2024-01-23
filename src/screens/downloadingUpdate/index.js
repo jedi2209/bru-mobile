@@ -71,7 +71,12 @@ const UpdateScreen = props => {
           </Text>
         </View>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Settings')}
+          onPress={() => {
+            navigation.navigate('Settings', {
+              screen: 'Settings',
+              params: {previous_screen: 'DownloadingUpdate'},
+            });
+          }}
           style={basicStyles.backgroundButton}>
           <Text style={[basicStyles.backgroundButtonText, {width: 132}]}>
             Cancel

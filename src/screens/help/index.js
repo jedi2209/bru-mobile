@@ -8,12 +8,12 @@ import React, {
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
 import {basicStyles, colors} from '../../core/const/style';
-import ArrowIcon from '../../core/components/icons/ArrowIcon';
 import Collapsible from 'react-native-collapsible';
 import {useState} from 'react';
 import DownArrowIcon from '../../core/components/icons/DownArrowIcon';
 import PlayIcon from '../../core/components/icons/PlayIcon';
 import LinearGradient from 'react-native-linear-gradient';
+import NotificationModal from '../../core/components/NotificationModal';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -110,6 +110,7 @@ const HelpScreen = props => {
   const [firstCollapsed, setFirstCollapsed] = useState(true);
   const [secondCollapsed, setSecondCollapsed] = useState(true);
   const [contactCollapsed, setContactCollapsed] = useState(true);
+  const [modalOpened, setModalOpened] = useState(false);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -234,12 +235,19 @@ const HelpScreen = props => {
                 Cancel
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={s.button}>
+            <TouchableOpacity
+              onPress={() => setModalOpened(true)}
+              style={s.button}>
               <Text style={basicStyles.backgroundButtonText}>Send</Text>
             </TouchableOpacity>
           </View>
         </LinearGradient>
       </Collapsible>
+      <NotificationModal
+        opened={modalOpened}
+        closeModal={() => setModalOpened(false)}
+        modalTitle="The request has been sent. We will contact you as soon as possible."
+      />
     </Wrapper>
   );
 };
