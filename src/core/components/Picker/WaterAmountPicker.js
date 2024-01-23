@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {FlatList, StyleSheet, View, Text, Animated} from 'react-native';
+import {StyleSheet, View, Text, Animated} from 'react-native';
 
 const values = [
   '',
@@ -51,7 +51,6 @@ const WaterAmountPicker = ({setValue}) => {
     const y = event.nativeEvent.contentOffset.y;
     const index = Math.round(y / ITEM_HEIGHT) + 1;
     setValue(values[index]?.value);
-    console.log(values[index].value);
   };
 
   const scrollY = useRef(new Animated.Value(0)).current;

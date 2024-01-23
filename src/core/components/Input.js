@@ -23,6 +23,7 @@ const s = StyleSheet.create({
     paddingLeft: 15,
     paddingVertical: 14,
     backgroundColor: '#E6E7E8',
+    color: colors.gray.grayDarkText,
   },
   inputContainer: {position: 'relative'},
   icon: {
@@ -44,6 +45,7 @@ const Input = ({
   withIcon = false,
 }) => {
   const [hidden, setHidden] = useState(secure);
+  console.log(hidden);
   return (
     <View style={[s.inputWrapper, wrapperStyle]}>
       <Text style={[s.inputLabel, labelStyle]}>{label}</Text>

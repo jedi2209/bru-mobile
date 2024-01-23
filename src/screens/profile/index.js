@@ -17,6 +17,7 @@ import {EyeIcon} from '@gluestack-ui/themed';
 import ArrowLeftIcon from '../../core/components/icons/ArrowLeftIcon';
 import ArrowRightIcon from '../../core/components/icons/ArrowRightIcon';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
+import Input from '../../core/components/Input';
 
 const maxBarHeight = 80;
 
@@ -309,14 +310,11 @@ const ProfileScreen = props => {
               </Text>
             </View>
           ) : (
-            <View style={s.inputWrapper}>
-              <Text style={s.inputLabel}>Name</Text>
-              <TextInput
-                placeholderTextColor={colors.gray.grayDarkText}
-                style={s.input}
-                value="John Doe"
-              />
-            </View>
+            <Input
+              label="Name"
+              placeholder="Enter your name please"
+              value="Jogn  Dep"
+            />
           )}
 
           {mode === 'view' ? (
@@ -351,14 +349,11 @@ const ProfileScreen = props => {
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={s.inputWrapper}>
-              <Text style={s.inputLabel}>Email</Text>
-              <TextInput
-                placeholderTextColor={colors.gray.grayDarkText}
-                style={s.input}
-                value="john@usermail.com"
-              />
-            </View>
+            <Input
+              label="Email"
+              placeholder="Enter your name please"
+              value="john@usermail.com"
+            />
           )}
           {mode === 'view' ? (
             <View style={s.userData}>
@@ -383,15 +378,13 @@ const ProfileScreen = props => {
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={s.inputWrapper}>
-              <Text style={s.inputLabel}>Password</Text>
-              <TextInput
-                secureTextEntry
-                placeholderTextColor={colors.gray.grayDarkText}
-                style={s.input}
-                value="****************"
-              />
-            </View>
+            <Input
+              label="Password"
+              placeholder="Enter your name please"
+              value="*************"
+              secure
+              withIcon
+            />
           )}
         </View>
         {mode === 'edit' && (

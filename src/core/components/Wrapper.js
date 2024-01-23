@@ -106,6 +106,7 @@ const MainWrapper = props => {
             styles.mainWrapper,
             props.additionalContentContainerStyle,
           ]}
+          bounces={false}
           style={[styles.linearGradient, props.additionalStyle]}
           scrollEventThrottle={50}
           nestedScrollEnabled={true}

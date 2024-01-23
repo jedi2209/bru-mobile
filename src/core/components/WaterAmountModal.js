@@ -7,7 +7,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
 import {colors} from '../const/style';
 import WaterAmountPicker from './Picker/WaterAmountPicker';
 

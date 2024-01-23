@@ -10,7 +10,6 @@ import TemperatureIcon from '../icons/TemperatureIcon';
 import WaterIcon from '../icons/WaterIcon';
 import TeaAlarmInfoItem from './TeaAlarmInfoItem';
 import WaterAmountModal from '../WaterAmountModal';
-import ConfirmationModal from '../ConfirmationModal';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
@@ -69,7 +68,7 @@ const TeaAlarm = ({
   setWaterAmount = () => {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(true);
+  const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
 
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
