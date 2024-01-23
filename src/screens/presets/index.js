@@ -6,7 +6,6 @@ import React, {
   TextInput,
   TouchableOpacity,
   View,
-  useColorScheme,
 } from 'react-native';
 import PlusCircle from '../../core/components/icons/PlusCircle';
 import {basicStyles, colors} from '../../core/const/style';
@@ -19,6 +18,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import {Switch} from '@gluestack-ui/themed';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../core/store/theme';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -139,8 +140,8 @@ const s = StyleSheet.create({
 });
 
 const PresetsScreen = props => {
-  const phoneTheme = useColorScheme();
-  const isDarkMode = phoneTheme === 'dark';
+  const theme = useStore($themeStore);
+  const isDarkMode = theme === 'dark';
   const [selected, setSelected] = useState({
     id: 1,
     title: 'Black tea',

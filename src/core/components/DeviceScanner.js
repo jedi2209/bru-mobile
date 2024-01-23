@@ -1,12 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  useColorScheme,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {Button} from '@gluestack-ui/themed';
 import LottieView from 'lottie-react-native';
 
@@ -15,6 +8,8 @@ import {Device, deviceManager, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../store/theme';
 // import {DEVICE_MANAGER_CONFIG} from '@const';
 
 // const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
@@ -23,8 +18,8 @@ const DeviceScanner = props => {
   const {onItemPress, autoScan} = props;
   const [isScanning, setIsScanning] = useState(autoScan);
   const [peripherals, setPeripherals] = useState(null);
-
-  const isDarkMode = useColorScheme() === 'dark';
+  const theme = useStore($themeStore);
+  const isDarkMode = theme === 'dark';
 
   useEffect(() => {
     autoScan ? searchDevices() : null;

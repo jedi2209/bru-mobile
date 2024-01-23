@@ -1,10 +1,4 @@
-import React, {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from 'react-native';
+import React, {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Wrapper from '@comp/Wrapper';
 import {useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
@@ -14,6 +8,8 @@ import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useNavigation} from '@react-navigation/native';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../core/store/theme';
 
 export const mockedData = [
   {
@@ -80,7 +76,7 @@ const s = StyleSheet.create({
 });
 
 const InstantBrewScreen = props => {
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   const [selectedItem, setSelectedItem] = useState(0);
   const [modal, setModal] = useState(null);
   const navigation = useNavigation();
@@ -107,9 +103,7 @@ const InstantBrewScreen = props => {
             </TouchableOpacity>
             <TouchableOpacity
               style={
-                phoneTheme === 'light'
-                  ? s.dispenseButtonLight
-                  : s.dispenseButton
+                theme === 'light' ? s.dispenseButtonLight : s.dispenseButton
               }
               onPress={() =>
                 setModal({
@@ -135,7 +129,7 @@ const InstantBrewScreen = props => {
               <Text
                 style={[
                   s.buttonText,
-                  phoneTheme === 'light' && {
+                  theme === 'light' && {
                     color: colors.green.mid,
                   },
                 ]}>

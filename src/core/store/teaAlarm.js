@@ -1,12 +1,12 @@
 import {createEvent, createStore} from 'effector';
 
-const setTeaAlarm = createEvent();
+export const addTeaAlarm = createEvent();
 
 export const $teaAlarmStrore = createStore({
   alarms: [
     {
       id: 1,
-      time: '7:30 AM',
+      time: {hours: '7', minutes: '50'},
       by: 'Vitalii',
       teaType: 'Black Tea',
       brewingData: {
@@ -19,10 +19,11 @@ export const $teaAlarmStrore = createStore({
         img: '',
         id: 0,
       },
+      cleaning: false,
     },
     {
       id: 2,
-      time: '7:50 AM',
+      time: {hours: '7', minutes: '50'},
       by: 'John',
       teaType: 'Puer Tea',
       brewingData: {
@@ -30,9 +31,15 @@ export const $teaAlarmStrore = createStore({
         temperature: '90',
         waterAmount: '250',
       },
+      preset: {
+        title: '',
+        img: '',
+        id: 0,
+      },
+      cleaning: false,
     },
   ],
-}).on(setTeaAlarm, (state, teaAlarms) => ({
+}).on(addTeaAlarm, (state, teaAlarm) => ({
   ...state,
-  alarms: teaAlarms,
+  alarms: [...state.alarms, teaAlarm],
 }));

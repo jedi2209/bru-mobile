@@ -50,7 +50,6 @@ const NotificationModal = ({
   closeModal = () => {},
   modalTitle = '',
 }) => {
-  console.log(opened);
   return (
     <Modal
       transparent={true}

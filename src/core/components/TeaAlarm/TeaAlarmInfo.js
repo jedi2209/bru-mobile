@@ -61,11 +61,15 @@ const s = StyleSheet.create({
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-const TeaAlarm = ({type}) => {
+const TeaAlarm = ({
+  type,
+  brewingTime = {minutes: '0', seconds: '0'},
+  setBrewingTime = () => {},
+  waterAmount = 0,
+  setWaterAmount = () => {},
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
-  const [waterAmount, setWaterAmount] = useState(0);
-  const [time, setTime] = useState({minutes: '0', seconds: '0'});
 
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
@@ -83,9 +87,9 @@ const TeaAlarm = ({type}) => {
           }
           title="Brewing time"
           value={`${dayjs
-            .duration(time.minutes, 'minutes')
+            .duration(brewingTime.minutes, 'minutes')
             .format('mm')}:${dayjs
-            .duration(time.seconds, 'seconds')
+            .duration(brewingTime.seconds, 'seconds')
             .format('ss')}`}
         />
       </TouchableOpacity>
@@ -99,14 +103,14 @@ const TeaAlarm = ({type}) => {
           buttonContainer: s.timeModalButtonsContainer,
         }}
         confirmButtonText="Done"
-        initialMinutes={time.minutes}
-        initialSeconds={time.seconds}
+        initialMinutes={brewingTime.minutes}
+        initialSeconds={brewingTime.seconds}
         hideHours
         minuteLabel={''}
         secondLabel={''}
         onConfirm={value => {
           const {minutes, seconds} = value;
-          setTime({minutes, seconds});
+          setBrewingTime({minutes, seconds});
           setIsOpen(false);
         }}
         setIsVisible={setIsOpen}

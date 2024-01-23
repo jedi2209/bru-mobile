@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {useColorScheme, Platform, LogBox} from 'react-native';
+import {Platform, LogBox} from 'react-native';
 
 import BleManager from 'react-native-ble-manager';
 
@@ -21,6 +21,8 @@ import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack-ui/themed';
 import {config} from '../../config/gluestack-ui.config';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {$themeStore} from './store/theme';
+import {useStore} from 'effector-react';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -97,7 +99,7 @@ const _appCheckInit = async () => {
 const App = props => {
   const routeNameRef = useRef();
   const navigationRef = useRef();
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
 
   useEffect(() => {
     pushUserData();
@@ -116,9 +118,9 @@ const App = props => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <GestureHandlerRootView style={{flex: 1}}>
-      <GluestackUIProvider config={config} colorMode={phoneTheme}>
+      <GluestackUIProvider config={config} colorMode={theme}>
         <NavigationContainer
-          theme={navigationTheme[phoneTheme]}
+          theme={navigationTheme[theme]}
           ref={navigationRef}
           onReady={() => {
             routeNameRef.current = navigationRef.current.getCurrentRoute().name;

@@ -5,14 +5,14 @@ import {
   Text,
   TouchableOpacity,
   View,
-  useColorScheme,
 } from 'react-native';
-import {useFocusEffect} from '@react-navigation/native';
 import Wrapper from '../../core/components/Wrapper';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import {basicStyles, colors} from '../../core/const/style';
 import dayjs from 'dayjs';
 import CupIcon from '../../core/components/icons/CupIcon';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../core/store/theme';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -105,8 +105,8 @@ const BrewingScreen = props => {
   const time = 5;
   const [counter, setCounter] = useState(time);
   const [phase, setPhase] = useState(2);
-  const phoneTheme = useColorScheme();
-  const isDarkMode = phoneTheme === 'dark';
+  const theme = useStore($themeStore);
+  const isDarkMode = theme === 'dark';
   useEffect(() => {
     progressRef.current.play();
     setTimerInterval(

@@ -1,12 +1,8 @@
-import React, {
-  Image,
-  StyleSheet,
-  Text,
-  View,
-  useColorScheme,
-} from 'react-native';
+import React, {Image, StyleSheet, Text, View} from 'react-native';
 import {colors, fonts} from '../../../core/const/style';
 import LinearGradient from 'react-native-linear-gradient';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../store/theme';
 
 const s = StyleSheet.create({
   shadow: {
@@ -60,13 +56,13 @@ const s = StyleSheet.create({
 });
 
 const PressetItem = ({title, id, img, selected, type}) => {
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   return (
     <View style={s.shadow}>
       <LinearGradient
         locations={[0, 0.01, 1]}
         colors={
-          phoneTheme === 'light'
+          theme === 'light'
             ? colors.gradient.pressetItem.light
             : colors.gradient.pressetItem.dark
         }

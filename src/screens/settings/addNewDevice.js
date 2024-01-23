@@ -1,12 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Platform,
-  View,
-  StyleSheet,
-  Alert,
-  Linking,
-  useColorScheme,
-} from 'react-native';
+import {Platform, View, StyleSheet, Alert, Linking} from 'react-native';
 import RNRestart from 'react-native-restart'; // Import package from node modules
 import {ActivityIndicator} from 'react-native-paper';
 import {
@@ -34,6 +27,8 @@ import {deviceManager, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../core/store/theme';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -374,7 +369,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
 
 const IntroBlock = props => {
   const {step, setStep, item, setItem, navigation} = props;
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   return (
     <View style={{flex: 1}}>
       {get(stepsContent[step], 'img', null) ? (

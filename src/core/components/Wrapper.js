@@ -5,7 +5,6 @@ import {
   ImageBackground,
   Animated,
   Dimensions,
-  useColorScheme,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {
@@ -15,6 +14,8 @@ import {
   Easing,
 } from 'react-native-reanimated';
 import {colors, tabBarStyle} from '../const/style';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../store/theme';
 
 const styles = StyleSheet.create({
   linearGradient: {
@@ -32,8 +33,7 @@ const MainWrapper = props => {
   const [animValue] = useState(new Animated.Value(60));
   const translateY = useSharedValue(100);
   const [hide, setHide] = useState(false);
-
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   const duration = 150;
 
   const actionBarStyle = useAnimatedStyle(() => {
@@ -64,7 +64,7 @@ const MainWrapper = props => {
       props.navigation.setOptions({
         tabBarStyle: [
           tabBarStyle.default,
-          tabBarStyle[phoneTheme],
+          tabBarStyle[theme],
           {transform: [{translateY: animValue}]},
         ],
       });
@@ -75,7 +75,7 @@ const MainWrapper = props => {
       props.navigation.setOptions({
         tabBarStyle: [
           tabBarStyle.default,
-          tabBarStyle[phoneTheme],
+          tabBarStyle[theme],
           {transform: [{translateY: animValue}]},
         ],
       });
@@ -133,10 +133,10 @@ const MainWrapper = props => {
 const Wrapper = props => {
   const {scroll = false} = props.route.params;
 
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   return (
     <LinearGradient
-      colors={colors.gradient.background[phoneTheme]}
+      colors={colors.gradient.background[theme]}
       style={styles.linearGradient}>
       {/* <ImageBackground
         source={require('@assets/backgroundTile.jpg')}

@@ -4,7 +4,6 @@ import {
   View,
   StyleSheet,
   Dimensions,
-  useColorScheme,
   TouchableOpacity,
   Pressable,
   Alert,
@@ -36,6 +35,7 @@ import Collapsible from 'react-native-collapsible';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import NotificationModal from '../../core/components/NotificationModal';
 import {setSettingsModalOpen} from '../../core/store/device';
+import {$themeStore, setTheme} from '../../core/store/theme';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -102,8 +102,10 @@ const SettingsScreen = props => {
   const [autoRinse, setAutoRinse] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [selected, setSelected] = useState('small');
+  const theme = useStore($themeStore);
   const settingsStore = useStore($deviceSettingsStore);
   const notificationModalOpened = settingsStore.isOpenModal;
+  const isDarkMode = theme === 'dark';
   const {navigation} = props;
 
   useEffect(() => {
@@ -121,8 +123,6 @@ const SettingsScreen = props => {
       // }
     };
   }, [devices]);
-
-  const isDarkMode = useColorScheme() === 'dark';
 
   if (isLoading) {
     return (
@@ -341,11 +341,23 @@ const SettingsScreen = props => {
         </Text>
         <View style={s.units}>
           <TouchableOpacity
-            style={[s.unit, isDarkMode && s.darkUnit, s.unitLeft, s.selected]}>
+            onPress={() => setTheme('dark')}
+            style={[
+              s.unit,
+              isDarkMode && s.darkUnit,
+              s.unitLeft,
+              isDarkMode && s.selected,
+            ]}>
             <Text style={s.unitText}>Dark</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[s.unit, isDarkMode && s.darkUnit, s.unitRight]}>
+            onPress={() => setTheme('light')}
+            style={[
+              s.unit,
+              isDarkMode && s.darkUnit,
+              s.unitRight,
+              !isDarkMode && s.selected,
+            ]}>
             <Text style={s.unitText}>Light</Text>
           </TouchableOpacity>
         </View>

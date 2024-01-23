@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  useColorScheme,
-} from 'react-native';
+import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import Wrapper from '../../core/components/Wrapper';
@@ -14,6 +7,7 @@ import {colors} from '../../core/const/style';
 import {useNavigation} from '@react-navigation/native';
 import {useStore} from 'effector-react';
 import {$teaAlarmStrore} from '../../core/store/teaAlarm';
+import {$themeStore} from '../../core/store/theme';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -51,15 +45,13 @@ const s = StyleSheet.create({
 });
 
 const TeaAlarmScreen = (props, {navigation}) => {
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   const teaAlarms = useStore($teaAlarmStrore).alarms;
-  console.log(teaAlarms);
   const navigate = useNavigation();
   return (
     <Wrapper style={s.wrapper} {...props}>
       <View>
-        <Text
-          style={[s.screenLabel, phoneTheme === 'dark' && s.darkScreenLabel]}>
+        <Text style={[s.screenLabel, theme === 'dark' && s.darkScreenLabel]}>
           Tea Alarm
         </Text>
         <TouchableOpacity

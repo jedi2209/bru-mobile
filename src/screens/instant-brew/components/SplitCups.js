@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, useColorScheme} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import CupIcon from '../../../core/components/icons/CupIcon';
 import ArrowIcon from '../../../core/components/icons/ArrowIcon';
@@ -8,6 +8,8 @@ import {colors, fonts} from '../../../core/const/style';
 import MinusIcon from '../../../core/components/icons/MinusIcon';
 import PlusIcon from '../../../core/components/icons/PlusIcon';
 import {Switch} from '@gluestack-ui/themed';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../../core/store/theme';
 
 const s = StyleSheet.create({
   container: {
@@ -123,7 +125,7 @@ const s = StyleSheet.create({
 const SplitCups = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [splitedCups, setSplitedCups] = useState(0);
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
 
   return (
     <View style={s.container}>
@@ -135,7 +137,7 @@ const SplitCups = () => {
           <Text
             style={[
               s.splitCupButtonText,
-              phoneTheme === 'light' && {color: colors.green.mid},
+              theme === 'light' && {color: colors.green.mid},
             ]}>
             Split cups {splitedCups > 0 && `(${splitedCups})`}
           </Text>
@@ -165,7 +167,7 @@ const SplitCups = () => {
           <Text
             style={[
               s.cleaningText,
-              phoneTheme === 'light' && {color: colors.gray.grayDarkText},
+              theme === 'light' && {color: colors.gray.grayDarkText},
             ]}>
             Cleaning
           </Text>
@@ -175,20 +177,20 @@ const SplitCups = () => {
         <View
           style={[
             s.collapsible,
-            phoneTheme === 'light' && {backgroundColor: '#F2F2F2'},
+            theme === 'light' && {backgroundColor: '#F2F2F2'},
           ]}>
           <View>
             <Text
               style={[
                 s.collapsibleTitle,
-                phoneTheme === 'light' && {color: colors.gray.grayDarkText},
+                theme === 'light' && {color: colors.gray.grayDarkText},
               ]}>
               Split cups:
             </Text>
             <Text
               style={[
                 s.collapsibleSubTitle,
-                phoneTheme === 'light' && {color: colors.gray.grayDarkText},
+                theme === 'light' && {color: colors.gray.grayDarkText},
               ]}>
               *Cold Water difusion not applied
             </Text>
@@ -197,7 +199,7 @@ const SplitCups = () => {
             <Text
               style={[
                 s.collapsibleValue,
-                phoneTheme === 'light' && {color: colors.gray.grayDarkText},
+                theme === 'light' && {color: colors.gray.grayDarkText},
               ]}>
               {splitedCups}
             </Text>
@@ -213,7 +215,7 @@ const SplitCups = () => {
               style={[
                 s.counterButton,
                 s.incrementButton,
-                phoneTheme === 'light' && {backgroundColor: '#E6E7E8'},
+                theme === 'light' && {backgroundColor: '#E6E7E8'},
               ]}>
               <MinusIcon width={15} height={15} />
             </TouchableOpacity>
@@ -222,7 +224,7 @@ const SplitCups = () => {
               style={[
                 s.counterButton,
                 s.decrementButton,
-                phoneTheme === 'light' && {backgroundColor: '#E6E7E8'},
+                theme === 'light' && {backgroundColor: '#E6E7E8'},
               ]}>
               <PlusIcon width={15} height={15} />
             </TouchableOpacity>

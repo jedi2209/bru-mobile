@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {useColorScheme} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useStore} from 'effector-react';
@@ -21,6 +20,7 @@ import TabBarIcon from '@nav/components/TabBarIcon';
 import NewTeaAlarmScreen from '../../screens/new-tea-alarm';
 import ProfileScreen from '../../screens/profile';
 import BrewingScreen from '../../screens/brewing';
+import {$themeStore} from '../store/theme';
 
 const iconSize = 24;
 
@@ -88,13 +88,13 @@ const PressetsStackView = ({navigation, route}) => {
 
 export const NavigationBottom = props => {
   // const currLang = useStore($langSettingsStore);
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   return (
     <Tab.Navigator
       {...props}
       initialRouteName={INITIAL_SCREEN}
       screenOptions={{
-        tabBarStyle: [tabBarStyle.default, tabBarStyle[phoneTheme]],
+        tabBarStyle: [tabBarStyle.default, tabBarStyle[theme]],
         tabBarShowLabel: false,
         tabBarActiveTintColor: colors.white,
         tabBarInactiveTintColor: colors.gray.inactive,

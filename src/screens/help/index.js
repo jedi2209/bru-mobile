@@ -4,7 +4,6 @@ import React, {
   TextInput,
   TouchableOpacity,
   View,
-  useColorScheme,
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
 import {basicStyles, colors} from '../../core/const/style';
@@ -14,6 +13,8 @@ import DownArrowIcon from '../../core/components/icons/DownArrowIcon';
 import PlayIcon from '../../core/components/icons/PlayIcon';
 import LinearGradient from 'react-native-linear-gradient';
 import NotificationModal from '../../core/components/NotificationModal';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../core/store/theme';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -105,8 +106,8 @@ const s = StyleSheet.create({
 });
 
 const HelpScreen = props => {
-  const phoneTheme = useColorScheme();
-  const isDarkMode = phoneTheme === 'dark';
+  const theme = useStore($themeStore);
+  const isDarkMode = theme === 'dark';
   const [firstCollapsed, setFirstCollapsed] = useState(true);
   const [secondCollapsed, setSecondCollapsed] = useState(true);
   const [contactCollapsed, setContactCollapsed] = useState(true);

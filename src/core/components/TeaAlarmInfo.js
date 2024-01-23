@@ -1,11 +1,14 @@
 import React from 'react';
-import {StyleSheet, Text, View, useColorScheme} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {basicStyles, colors, fonts} from '../const/style';
 import TeaAlarmIcon from './icons/TeaAlarmIcon';
 import PenIcon from './icons/PenIcon';
 import TrashIcon from './icons/TrashIcon';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
+import dayjs from 'dayjs';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../store/theme';
 
 const s = StyleSheet.create({
   container: {
@@ -72,17 +75,17 @@ const s = StyleSheet.create({
 });
 
 const TeaAlarmInfo = ({id, time, by, teaType, brewingData}) => {
-  const phoneTheme = useColorScheme();
+  const theme = useStore($themeStore);
   const navigation = useNavigation();
 
   return (
-    <View style={[s.container, phoneTheme === 'dark' && s.darkContainer]}>
+    <View style={[s.container, theme === 'dark' && s.darkContainer]}>
       <View style={s.iconContainer}>
         <TeaAlarmIcon
           width={24}
           heigth={24}
           stroke={
-            phoneTheme === 'dark'
+            theme === 'dark'
               ? colors.gray.grayLightText
               : colors.gray.grayDarkText
           }
@@ -92,26 +95,25 @@ const TeaAlarmInfo = ({id, time, by, teaType, brewingData}) => {
       <View style={s.infoContainer}>
         <View>
           <Text
-            style={[
-              s.teaAlarmText,
-              phoneTheme === 'dark' && basicStyles.darkText,
-            ]}>
-            Tea alarm set for {time || '1:00 AM'}
+            style={[s.teaAlarmText, theme === 'dark' && basicStyles.darkText]}>
+            Tea alarm set for{' '}
+            {time
+              ? `${dayjs.duration(time.hours, 'hours').format('HH')}:${dayjs
+                  .duration(time.minutes, 'minutes')
+                  .format('mm')}`
+              : '1:00 AM'}
           </Text>
           <View style={s.teaInfo}>
             <Text
               style={[
                 s.teaInfoText,
                 s.by,
-                phoneTheme === 'dark' && basicStyles.darkText,
+                theme === 'dark' && basicStyles.darkText,
               ]}>
               by {by || 'John Denver'}
             </Text>
             <Text
-              style={[
-                s.teaInfoText,
-                phoneTheme === 'dark' && basicStyles.darkText,
-              ]}>
+              style={[s.teaInfoText, theme === 'dark' && basicStyles.darkText]}>
               {teaType || 'Black Tea #1'}
             </Text>
           </View>

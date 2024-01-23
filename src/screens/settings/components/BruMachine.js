@@ -1,9 +1,11 @@
 import {View} from '@gluestack-ui/themed';
 import React from 'react';
-import {StyleSheet, Text, useColorScheme} from 'react-native';
+import {StyleSheet, Text} from 'react-native';
 import PenIcon from '../../../core/components/icons/PenIcon';
 import {colors} from '../../../core/const/style';
 import TrashIconOutlined from '../../../core/components/icons/TrashIconOutlined';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../../core/store/theme';
 
 const s = StyleSheet.create({
   container: {
@@ -47,8 +49,8 @@ const s = StyleSheet.create({
 });
 
 const BruMachine = () => {
-  const phoneTheme = useColorScheme();
-  const isDarkMode = phoneTheme === 'dark';
+  const theme = useStore($themeStore);
+  const isDarkMode = theme === 'dark';
   return (
     <View style={s.container}>
       <View style={s.row}>
