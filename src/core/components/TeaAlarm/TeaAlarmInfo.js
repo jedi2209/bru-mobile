@@ -69,7 +69,7 @@ const TeaAlarm = ({
   setWaterAmount = () => {},
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
+  const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(true);
 
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>

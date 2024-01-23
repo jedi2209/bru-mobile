@@ -127,7 +127,10 @@ const AuthorizationScreen = () => {
   const [authState, setAuthState] = useState('login');
 
   return (
-    <ScrollView showsVerticalScrollIndicator style={s.container}>
+    <ScrollView
+      bounces={false}
+      showsVerticalScrollIndicator
+      style={s.container}>
       <View style={s.wrapper}>
         <View style={s.header}>
           <View style={s.iconWrapper}>

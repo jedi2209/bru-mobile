@@ -8,6 +8,7 @@ const PressetList = ({style, data, setSelected, selected, type}) => {
       style={style}
       data={data}
       horizontal
+      showsHorizontalScrollIndicator={false}
       renderItem={({item}) => (
         <Pressable onPress={() => setSelected(item)}>
           <PressetItem

@@ -19,7 +19,6 @@ const s = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    backgroundColor: 'white',
     marginRight: 20,
     borderRadius: 10,
     paddingHorizontal: 10,

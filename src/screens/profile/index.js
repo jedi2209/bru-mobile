@@ -228,6 +228,21 @@ const chartWeeksData = [14, 10, 8, 2];
 const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
 const chartYearsData = [365, 363, 200, 100, 150];
 
+const selectData = mode => {
+  switch (mode) {
+    case 'days':
+      return chartDaysData;
+    case 'weeks':
+      return chartWeeksData;
+    case 'months':
+      return chartMonthsData;
+    case 'years':
+      return chartYearsData;
+    default:
+      return [];
+  }
+};
+
 function scaleValue(minValue, maxValue, value, maxHeight) {
   if (value === 0) {
     return 0;
@@ -438,6 +453,7 @@ const ProfileScreen = props => {
               </TouchableOpacity>
             </View>
             <ScrollView
+              bounces={false}
               contentContainerStyle={[
                 basicStyles.row,
                 {alignItems: 'flex-end', gap: 1},
@@ -445,8 +461,8 @@ const ProfileScreen = props => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={s.barStatistic}>
-              <Text style={s.totalTea}>53242 litres</Text>
-              {chartDaysData.map(item => {
+              {/* <Text style={s.totalTea}>53242 litres</Text> */}
+              {selectData(selectedFilter).map(item => {
                 return (
                   <View>
                     {/* {item ? <Text>{item}</Text> : null} */}
@@ -457,7 +473,7 @@ const ProfileScreen = props => {
                         {
                           height: scaleValue(
                             0,
-                            Math.max(...chartDaysData),
+                            Math.max(...selectData(selectedFilter)),
                             item,
                             maxBarHeight,
                           ),

@@ -62,7 +62,7 @@ const TeaAlarmScreen = (props, {navigation}) => {
         <FlatList
           contentContainerStyle={s.listContainerStyle}
           data={teaAlarms}
-          renderItem={({item}) => <TeaAlarmInfo {...item} />}
+          renderItem={({item}) => <TeaAlarmInfo item={item} {...item} />}
         />
       </View>
     </Wrapper>

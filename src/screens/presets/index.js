@@ -26,7 +26,7 @@ const s = StyleSheet.create({
     ...basicStyles.row,
     justifyContent: 'center',
     paddingHorizontal: 16,
-    marginTop: 30,
+    marginTop: 15,
     marginBottom: 20,
   },
   screenTitle: {
@@ -150,7 +150,7 @@ const PresetsScreen = props => {
   const [mode, setMode] = useState('list');
   const [modal, setModal] = useState(null);
   return (
-    <Wrapper {...props}>
+    <Wrapper style={s.wrapper} {...props}>
       <View style={s.titleContainer}>
         <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
           Presets

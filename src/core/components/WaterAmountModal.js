@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {colors} from '../const/style';
+import WaterAmountPicker from './Picker/WaterAmountPicker';
 
 const s = StyleSheet.create({
   modal: {
@@ -69,21 +70,7 @@ const WaterAmountModal = ({
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
           <Text style={s.title}>Water amount</Text>
-          <Picker
-            selectedValue={selected || waterAmount}
-            onValueChange={value => {
-              setSelected(value);
-            }}
-            mode="dialog">
-            <Picker.Item label="150 ml" value="150" />
-            <Picker.Item label="200 ml" value="200" />
-            <Picker.Item label="250 ml" value="250" />
-            <Picker.Item label="300 ml" value="300" />
-            <Picker.Item label="350 ml" value="350" />
-            <Picker.Item label="400 ml" value="400" />
-            <Picker.Item label="450 ml" value="450" />
-            <Picker.Item label="500 ml" value="500" />
-          </Picker>
+          <WaterAmountPicker setValue={setSelected} />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>
               <Text style={s.button}>Cancel</Text>

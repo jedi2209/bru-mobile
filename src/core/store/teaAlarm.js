@@ -1,6 +1,7 @@
 import {createEvent, createStore} from 'effector';
 
 export const addTeaAlarm = createEvent();
+export const deleteTeaAlarm = createEvent();
 
 export const $teaAlarmStrore = createStore({
   alarms: [
@@ -39,7 +40,15 @@ export const $teaAlarmStrore = createStore({
       cleaning: false,
     },
   ],
-}).on(addTeaAlarm, (state, teaAlarm) => ({
-  ...state,
-  alarms: [...state.alarms, teaAlarm],
-}));
+})
+  .on(addTeaAlarm, (state, teaAlarm) => ({
+    ...state,
+    alarms: [...state.alarms, teaAlarm],
+  }))
+  .on(deleteTeaAlarm, (state, teaAlarm) => {
+    console.log(teaAlarm);
+    return {
+      ...state,
+      alarms: state.alarms.filter(item => item.id !== teaAlarm.id),
+    };
+  });

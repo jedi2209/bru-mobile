@@ -9,6 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
+import {deleteTeaAlarm} from '../store/teaAlarm';
 
 const s = StyleSheet.create({
   container: {
@@ -74,7 +75,7 @@ const s = StyleSheet.create({
   },
 });
 
-const TeaAlarmInfo = ({id, time, by, teaType, brewingData}) => {
+const TeaAlarmInfo = ({item, id, time, by, teaType, brewingData}) => {
   const theme = useStore($themeStore);
   const navigation = useNavigation();
 
@@ -123,7 +124,7 @@ const TeaAlarmInfo = ({id, time, by, teaType, brewingData}) => {
             onPress={() => navigation.navigate('NewTeaAlarm', {id})}>
             <PenIcon style={s.penIcon} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => deleteTeaAlarm(item)}>
             <TrashIcon />
           </TouchableOpacity>
         </View>

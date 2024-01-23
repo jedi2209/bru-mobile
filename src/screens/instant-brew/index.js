@@ -80,6 +80,8 @@ const InstantBrewScreen = props => {
   const [selectedItem, setSelectedItem] = useState(0);
   const [modal, setModal] = useState(null);
   const navigation = useNavigation();
+  const [waterAmount, setWaterAmount] = useState(0);
+  const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
 
   return (
     <Wrapper {...props}>
@@ -92,7 +94,12 @@ const InstantBrewScreen = props => {
           setSelected={setSelectedItem}
         />
         <View style={s.innerContainer}>
-          <TeaAlarm />
+          <TeaAlarm
+            waterAmount={waterAmount}
+            setWaterAmount={setWaterAmount}
+            brewingTime={brewingTime}
+            setBrewingTime={setBrewingTime}
+          />
 
           <SplitCups />
           <View style={s.buttons}>
