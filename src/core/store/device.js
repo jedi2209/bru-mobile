@@ -7,9 +7,11 @@ const storeName = 'device';
 export const initDevice = createEvent();
 export const setDevice = createEvent();
 export const resetDevice = createEvent();
+export const setSettingsModalOpen = createEvent();
 
 export const $deviceSettingsStore = createStore([], {
   name: storeName,
+  isOpenModal: false,
 })
   .on(setDevice, (state, device) => {
     if (!device?.id) {
@@ -38,6 +40,12 @@ export const $deviceSettingsStore = createStore([], {
       return [...device];
     }
     return [];
+  })
+  .on(setSettingsModalOpen, (state, isOpenModal) => {
+    return {
+      ...state,
+      isOpenModal,
+    };
   })
   .reset(resetDevice);
 

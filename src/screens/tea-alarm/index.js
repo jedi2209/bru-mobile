@@ -11,9 +11,9 @@ import {
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import Wrapper from '../../core/components/Wrapper';
 import {colors} from '../../core/const/style';
-import {useSelector} from 'react-redux';
-import {selectTeaAlarms} from '../../store/modules/teaAlarm/selectors';
 import {useNavigation} from '@react-navigation/native';
+import {useStore} from 'effector-react';
+import {$teaAlarmStrore} from '../../core/store/teaAlarm';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -52,7 +52,8 @@ const s = StyleSheet.create({
 
 const TeaAlarmScreen = (props, {navigation}) => {
   const phoneTheme = useColorScheme();
-  const teaAlarms = useSelector(selectTeaAlarms);
+  const teaAlarms = useStore($teaAlarmStrore).alarms;
+  console.log(teaAlarms);
   const navigate = useNavigation();
   return (
     <Wrapper style={s.wrapper} {...props}>

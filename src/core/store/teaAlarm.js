@@ -1,6 +1,8 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createEvent, createStore} from 'effector';
 
-const initialState = {
+const setTeaAlarm = createEvent();
+
+export const $teaAlarmStrore = createStore({
   alarms: [
     {
       id: 1,
@@ -30,13 +32,7 @@ const initialState = {
       },
     },
   ],
-};
-
-export const teaAlarmSlice = createSlice({
-  name: 'teaAlarm',
-  initialState,
-  reducers: {},
-});
-
-export const teaAlarmReducer = teaAlarmSlice.reducer;
-export const {} = teaAlarmSlice.actions;
+}).on(setTeaAlarm, (state, teaAlarms) => ({
+  ...state,
+  alarms: teaAlarms,
+}));
