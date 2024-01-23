@@ -1,13 +1,13 @@
 import React from 'react';
 import {ClipPath, Defs, G, Path, Rect, Svg} from 'react-native-svg';
 
-const HeaderIcon = ({style, ...props}) => {
+const HeaderIcon = ({style, size, ...props}) => {
   return (
     <Svg
       style={style}
       xmlns="http://www.w3.org/2000/svg"
-      width={70}
-      height={70}
+      width={size || 70}
+      height={size || 70}
       viewBox="0 0 70 70"
       fill="none"
       {...props}>

@@ -105,27 +105,28 @@ const InstantBrewScreen = props => {
               style={
                 theme === 'light' ? s.dispenseButtonLight : s.dispenseButton
               }
-              onPress={() =>
-                setModal({
-                  opened: true,
-                  withCancelButton: true,
-                  cancelButtonText: 'Later',
-                  modalTitle:
-                    'Do you want to save this configutation as a new preset?',
-                  confirmationText: (
-                    <Text>
-                      You will be able to create new presets later in{' '}
-                      <Text style={{color: colors.green.mid}}>Presets</Text>{' '}
-                      page.
-                    </Text>
-                  ),
-                  confirmationButtonText: 'Save preset',
-                  withDontShowAgain: true,
-                  onConfirm: () => setModal(null),
-                  closeModal: () => setModal(null),
-                  dontShowAgainText: "Don't show me again",
-                })
-              }>
+              onPress={() => {
+                navigation.navigate('Authorization');
+                // setModal({
+                //   opened: true,
+                //   withCancelButton: true,
+                //   cancelButtonText: 'Later',
+                //   modalTitle:
+                //     'Do you want to save this configutation as a new preset?',
+                //   confirmationText: (
+                //     <Text>
+                //       You will be able to create new presets later in{' '}
+                //       <Text style={{color: colors.green.mid}}>Presets</Text>{' '}
+                //       page.
+                //     </Text>
+                //   ),
+                //   confirmationButtonText: 'Save preset',
+                //   withDontShowAgain: true,
+                //   onConfirm: () => setModal(null),
+                //   closeModal: () => setModal(null),
+                //   dontShowAgainText: "Don't show me again",
+                // })
+              }}>
               <Text
                 style={[
                   s.buttonText,

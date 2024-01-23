@@ -10,6 +10,7 @@ import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
 import UpdateFirmwareProgressScreen from '@screens/settings/updateFirmwareProgress';
 import {default as CustomHeader} from '../components/Header';
 import UpdateScreen from '../../screens/downloadingUpdate';
+import AuthorizationScreen from '../../screens/authorization';
 
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
@@ -30,7 +31,7 @@ const NavMain = props => {
           tabBarStyle: {
             display: 'none',
           },
-          headerShown: true,
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -41,7 +42,7 @@ const NavMain = props => {
         }}
         options={{
           headerBackTitle: 'Back',
-          headerShown: true,
+          headerShown: false,
           headerTitleAlign: 'center',
           headerTitle,
         }}
@@ -54,7 +55,7 @@ const NavMain = props => {
         }}
         options={{
           headerBackVisible: false,
-          headerShown: true,
+          headerShown: false,
           headerTitleAlign: 'center',
           headerTitle,
         }}
@@ -65,6 +66,14 @@ const NavMain = props => {
         initialParams={{
           scroll: false,
         }}
+        options={{
+          headerBackVisible: false,
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Authorization"
+        component={AuthorizationScreen}
         options={{
           headerBackVisible: false,
           headerShown: false,
