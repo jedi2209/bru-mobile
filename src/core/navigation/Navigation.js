@@ -9,6 +9,7 @@ import AddNewDeviceScreen from '@screens/settings/addNewDevice';
 import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
 import UpdateFirmwareProgressScreen from '@screens/settings/updateFirmwareProgress';
 import {default as CustomHeader} from '../components/Header';
+import UpdateScreen from '../../screens/downloadingUpdate';
 
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
@@ -56,6 +57,17 @@ const NavMain = props => {
           headerShown: true,
           headerTitleAlign: 'center',
           headerTitle,
+        }}
+      />
+      <Stack.Screen
+        name="DownloadingUpdate"
+        component={UpdateScreen}
+        initialParams={{
+          scroll: false,
+        }}
+        options={{
+          headerBackVisible: false,
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

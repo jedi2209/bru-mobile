@@ -95,6 +95,7 @@ const _renderItem = ({item, _onPressUpdate, _onPressUnpair}) => {
 
 const SettingsScreen = props => {
   const devices = useStore($deviceSettingsStore);
+
   const [isLoading, setLoading] = useState(false);
   const [coldTea, setColdTea] = useState(false);
   const [autoRinse, setAutoRinse] = useState(false);
@@ -486,6 +487,10 @@ const SettingsScreen = props => {
           ')'}
       </Text> */}
       <ConfirmationModal
+        onConfirm={() => {
+          navigation.navigate('DownloadingUpdate');
+          setIsConfirmModalOpen(false);
+        }}
         opened={isConfirmModalOpen}
         closeModal={() => setIsConfirmModalOpen(false)}
         withCancelButton
