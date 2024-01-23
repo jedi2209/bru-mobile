@@ -43,14 +43,17 @@ const s = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 24,
     letterSpacing: 0.4,
-    marginBottom: 40,
+    marginBottom: 57,
   },
   progressDots: {...basicStyles.row, gap: 42},
-  activeDot: {
+  unactiveDot: {
     width: 8,
     height: 8,
-    backgroundColor: colors.green.mid,
     borderRadius: 100,
+    backgroundColor: '#9D9D9D',
+  },
+  activeDot: {
+    backgroundColor: colors.green.mid,
   },
   cancelButton: {
     ...basicStyles.backgroundButton,
@@ -66,13 +69,42 @@ const s = StyleSheet.create({
     lineHeight: 16,
     letterSpacing: 0.4,
   },
+  valueSuffixStyle: {
+    color: colors.green.mid,
+    backgroundColor: '#EFF0F1',
+    paddingVertical: 70,
+    paddingHorizontal: 40,
+    borderRadius: 95,
+    overflow: 'hidden',
+    fontSize: 42,
+    fontWeight: '400',
+    display: 'flex',
+  },
+  valueSuffixStyleDark: {backgroundColor: colors.gray.grayDarkText},
+  valueSuffixStyleLastPhase: {
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    backgroundColor: 'transparent',
+    overflow: 'visible',
+  },
+  cupStyle: {
+    color: colors.green.mid,
+    backgroundColor: '#EFF0F1',
+    borderRadius: 100,
+    paddingVertical: 45,
+    paddingHorizontal: 45,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
 
 const BrewingScreen = props => {
   const progressRef = useRef(null);
   const [timerInterval, setTimerInterval] = useState(null);
-  const time = 11;
+  const time = 5;
   const [counter, setCounter] = useState(time);
+  const [phase, setPhase] = useState(2);
   const phoneTheme = useColorScheme();
   const isDarkMode = phoneTheme === 'dark';
   useEffect(() => {
@@ -88,6 +120,8 @@ const BrewingScreen = props => {
     if (counter === 0) {
       clearInterval(timerInterval);
       progressRef.current.pause();
+      progressRef.current.reAnimate();
+      setPhase(3);
     }
   }, [counter, timerInterval]);
 
@@ -96,29 +130,36 @@ const BrewingScreen = props => {
       <View style={s.part}>
         <View style={s.progress}>
           <CircularProgress
-            initialValue={time - 1}
-            value={counter - 1}
+            initialValue={phase === 3 ? phase : time - 1}
+            value={phase === 3 ? phase + 1 : counter - 1}
             radius={135.5}
-            maxValue={time - 1}
+            maxValue={phase === 3 ? phase : time - 1}
             ref={progressRef}
             inActiveStrokeOpacity={0.5}
             activeStrokeWidth={20}
             inActiveStrokeWidth={20}
-            valueSuffix={dayjs.duration(counter, 'seconds').format('MM:ss')}
-            //   valueSuffix={<CupIcon />}
-            valueSuffixStyle={{
-              color: colors.green.mid,
-              backgroundColor: isDarkMode
-                ? colors.gray.grayDarkText
-                : '#EFF0F1',
-              paddingVertical: 70,
-              paddingHorizontal: 40,
-              borderRadius: 95,
-              overflow: 'hidden',
-              fontSize: 42,
-              fontWeight: '400',
-              display: 'flex',
-            }}
+            valueSuffix={
+              phase === 3 ? (
+                <View
+                  style={[s.cupStyle, isDarkMode && s.valueSuffixStyleDark]}>
+                  <CupIcon />
+                </View>
+              ) : (
+                <View>
+                  <Text
+                    style={[
+                      s.valueSuffixStyle,
+                      isDarkMode && s.valueSuffixStyleDark,
+                    ]}>
+                    {dayjs.duration(counter, 'seconds').format('mm:ss')}
+                  </Text>
+                </View>
+              )
+            }
+            valueSuffixStyle={[
+              phase === 3 && s.valueSuffixStyleLastPhase,
+              {display: 'flex'},
+            ]}
             progressValueStyle={{
               display: 'none',
             }}
@@ -135,11 +176,13 @@ const BrewingScreen = props => {
             }}
           />
         </View>
-        <Text style={[s.brewing, isDarkMode && s.darkModeText]}>Brewing</Text>
+        <Text style={[s.brewing, isDarkMode && s.darkModeText]}>
+          {phase === 3 ? 'Filling up cup' : 'Brewing'}
+        </Text>
         <View style={s.progressDots}>
-          <View style={s.activeDot} />
-          <View style={s.activeDot} />
-          <View style={s.activeDot} />
+          <View style={[s.unactiveDot, phase >= 1 && s.activeDot]} />
+          <View style={[s.unactiveDot, phase >= 2 && s.activeDot]} />
+          <View style={[s.unactiveDot, phase === 3 && s.activeDot]} />
         </View>
       </View>
       <View style={s.part}>
