@@ -18,6 +18,7 @@ import {useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import {Switch} from '@gluestack-ui/themed';
+import ConfirmationModal from '../../core/components/ConfirmationModal';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -132,6 +133,9 @@ const s = StyleSheet.create({
     width: 164,
     alignSelf: 'center',
   },
+  modalPressetName: {
+    color: colors.green.mid,
+  },
 });
 
 const PresetsScreen = props => {
@@ -143,6 +147,7 @@ const PresetsScreen = props => {
     img: require('/assets/teaImages/black_tea.png'),
   });
   const [mode, setMode] = useState('list');
+  const [modal, setModal] = useState(null);
   return (
     <Wrapper {...props}>
       <View style={s.titleContainer}>
@@ -175,7 +180,26 @@ const PresetsScreen = props => {
           style={s.pressetInfo}>
           <View style={s.pressetInfoHeader}>
             {mode === 'list' && (
-              <TrashIconOutlined width={24} height={24} fill="#B0B0B0" />
+              <TouchableOpacity
+                onPress={() =>
+                  setModal({
+                    opened: true,
+                    withCancelButton: true,
+                    cancelButtonText: 'No',
+                    modalTitle: 'Attention!',
+                    confirmationText: (
+                      <Text>
+                        Do you really want to delete current preset{' '}
+                        <Text style={s.modalPressetName}>Green Tea</Text>?
+                      </Text>
+                    ),
+                    confirmationButtonText: 'Yes, Delete',
+                    onConfirm: () => setModal(null),
+                    closeModal: () => setModal(null),
+                  })
+                }>
+                <TrashIconOutlined width={24} height={24} fill="#B0B0B0" />
+              </TouchableOpacity>
             )}
             {mode === 'edit' || mode === 'create' ? (
               <TextInput value={selected.title} style={s.teaNameInput} />
@@ -208,7 +232,20 @@ const PresetsScreen = props => {
         </LinearGradient>
       </View>
       {mode === 'list' ? (
-        <TouchableOpacity>
+        <TouchableOpacity
+          onPress={() =>
+            setModal({
+              opened: true,
+              withCancelButton: true,
+              cancelButtonText: 'No',
+              modalTitle: 'Attention!',
+              confirmationText:
+                'Do you really want to return standart tea presets to default values? We will keep the presets that you’ve added intact.',
+              confirmationButtonText: 'Yes, Return',
+              onConfirm: () => setModal(null),
+              closeModal: () => setModal(null),
+            })
+          }>
           <Text style={s.resetButton}>Reset Default presets</Text>
         </TouchableOpacity>
       ) : (
@@ -248,6 +285,7 @@ const PresetsScreen = props => {
           <Text style={s.buttonText}>Save Preset</Text>
         </TouchableOpacity>
       )}
+      {modal ? <ConfirmationModal {...modal} /> : null}
     </Wrapper>
   );
 };

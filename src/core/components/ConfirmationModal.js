@@ -44,7 +44,7 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
-  confirmationText: {fontSize: 14, fontWeight: '600'},
+  confirmationText: {fontSize: 14, fontWeight: '600', marginHorizontal: 20},
   confirmationButton: {
     backgroundColor: colors.green.mid,
     paddingVertical: 16,
