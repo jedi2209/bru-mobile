@@ -23,6 +23,8 @@ import {config} from '../../config/gluestack-ui.config';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {$themeStore} from './store/theme';
 import {useStore} from 'effector-react';
+import {isSignedIn} from '../utils/auth';
+import Toast from 'react-native-toast-message';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -100,6 +102,9 @@ const App = props => {
   const routeNameRef = useRef();
   const navigationRef = useRef();
   const theme = useStore($themeStore);
+  useEffect(() => {
+    isSignedIn();
+  }, []);
 
   useEffect(() => {
     pushUserData();
@@ -137,6 +142,7 @@ const App = props => {
             routeNameRef.current = currentRouteName;
           }}>
           <NavMain initialRouteName={INITIAL_SCREEN} {...props} />
+          <Toast />
         </NavigationContainer>
       </GluestackUIProvider>
     </GestureHandlerRootView>

@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import {EyeIcon, EyeOffIcon} from '@gluestack-ui/themed';
 import {colors} from '../const/style';
+import {useController} from 'react-hook-form';
 
 const s = StyleSheet.create({
   inputWrapper: {
@@ -37,26 +38,36 @@ const Input = ({
   label,
   value,
   onChange,
+  onBlur = () => {},
   placeholder = '',
   wrapperStyle,
   labelStyle,
   inputStyle,
   secure = false,
   withIcon = false,
+  control,
+  name,
+  defaultValue = '',
+  error,
 }) => {
   const [hidden, setHidden] = useState(secure);
-  console.log(hidden);
+  const {field} = useController({
+    name,
+    control,
+    defaultValue,
+  });
   return (
     <View style={[s.inputWrapper, wrapperStyle]}>
       <Text style={[s.inputLabel, labelStyle]}>{label}</Text>
       <View style={s.inputContainer}>
         <TextInput
           secureTextEntry={hidden}
-          onChangeText={text => console.log(text)}
+          onChangeText={field.onChange}
           placeholderTextColor={colors.gray.grayDarkText}
           placeholder={placeholder}
           style={[s.input, inputStyle]}
-          value={value}
+          value={field.value}
+          onBlur={field.onBlur}
         />
         {withIcon && (
           <TouchableOpacity

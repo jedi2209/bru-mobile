@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Platform,
   ScrollView,
@@ -13,6 +13,16 @@ import Input from '../../core/components/Input';
 import FacebookLogo from '../../core/components/icons/FacebookLogo';
 import GoogleLogo from '../../core/components/icons/GoogleLogo';
 import AppleLogo from '../../core/components/icons/AppleLogo';
+import {
+  signInWithEmailAndPassword,
+  signUpWithEmailAndPassword,
+} from '../../utils/auth';
+
+import {useNavigation} from '@react-navigation/native';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import Toast from 'react-native-toast-message';
 
 const s = StyleSheet.create({
   container: {
@@ -123,9 +133,57 @@ const s = StyleSheet.create({
   },
 });
 
+const signUpSchema = yup
+  .object({
+    name: yup.string().required('Name is required'),
+    email: yup
+      .string('Please enter correct email')
+      .email('Email is incorrect')
+      .required('Email is required'),
+    password: yup
+      .string()
+      .required('Passwords is required')
+      .min(6, 'Password is to short'),
+    confirmPassword: yup
+      .string()
+      .oneOf([yup.ref('password'), null], 'Passwords must match')
+      .required('Passwords is required'),
+  })
+  .required();
+
+const signInSchema = yup
+  .object({
+    email: yup
+      .string()
+      .email('Email is incorrect')
+      .required('Email is required'),
+    password: yup.string().required('Passwords is required'),
+  })
+  .required();
+
 const AuthorizationScreen = () => {
   const [authState, setAuthState] = useState('login');
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({
+    resolver: yupResolver(authState === 'login' ? signInSchema : signUpSchema),
+  });
 
+  useEffect(() => {
+    console.log(Object.keys(errors));
+    if (Object.keys(errors).length > 0) {
+      console.log(errors[Object.keys(errors)[0]].message);
+      Toast.show({
+        type: 'error',
+        text1: errors[Object.keys(errors)[0]].message,
+        visibilityTime: 1500,
+      });
+    }
+  }, [errors]);
+
+  const navigation = useNavigation();
   return (
     <ScrollView
       bounces={false}
@@ -159,6 +217,9 @@ const AuthorizationScreen = () => {
               labelStyle={s.label}
               placeholder="Please enter your name"
               label="Name"
+              control={control}
+              name="name"
+              error={errors.name}
             />
           )}
           <Input
@@ -166,6 +227,9 @@ const AuthorizationScreen = () => {
             labelStyle={s.label}
             placeholder="Please enter your email"
             label="Email"
+            control={control}
+            name="email"
+            error={errors.email}
           />
           <Input
             wrapperStyle={s.input}
@@ -174,6 +238,9 @@ const AuthorizationScreen = () => {
             label="Password"
             secure
             withIcon
+            name="password"
+            control={control}
+            error={errors.password}
           />
           {authState === 'register' && (
             <Input
@@ -183,6 +250,9 @@ const AuthorizationScreen = () => {
               label="Confirm Password"
               secure
               withIcon
+              control={control}
+              name="confirmPassword"
+              error={errors.confirmPassword}
             />
           )}
           {authState === 'login' && (
@@ -190,7 +260,25 @@ const AuthorizationScreen = () => {
               <Text style={s.remindPassword}>Remind my password</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={[basicStyles.backgroundButton, s.button]}>
+          <TouchableOpacity
+            onPress={handleSubmit(async data => {
+              console.log(data);
+              try {
+                if (authState === 'register') {
+                  await signUpWithEmailAndPassword(
+                    data.email,
+                    data.password,
+                    data.name,
+                  );
+                  navigation.navigate('Instant Brew');
+                } else {
+                  await signInWithEmailAndPassword(data.email, data.password);
+                }
+              } catch (error) {
+                console.log(error);
+              }
+            })}
+            style={[basicStyles.backgroundButton, s.button]}>
             <Text style={basicStyles.backgroundButtonText}>
               {authState === 'login' ? 'Log in' : 'Sign up'}
             </Text>
@@ -205,6 +293,7 @@ const AuthorizationScreen = () => {
             {authState === 'login' ? 'Sign in' : 'Sign up'} with Facebook
           </Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={[s.socialButton, s.googleButton]}>
           <View style={s.logoWrapper}>
             <GoogleLogo />

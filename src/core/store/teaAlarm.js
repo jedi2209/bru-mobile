@@ -46,7 +46,6 @@ export const $teaAlarmStrore = createStore({
     alarms: [...state.alarms, teaAlarm],
   }))
   .on(deleteTeaAlarm, (state, teaAlarm) => {
-    console.log(teaAlarm);
     return {
       ...state,
       alarms: state.alarms.filter(item => item.id !== teaAlarm.id),

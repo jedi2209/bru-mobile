@@ -113,7 +113,7 @@ const InstantBrewScreen = props => {
                 theme === 'light' ? s.dispenseButtonLight : s.dispenseButton
               }
               onPress={() => {
-                navigation.navigate('Authorization');
+                // navigation.navigate('Authorization');
                 // setModal({
                 //   opened: true,
                 //   withCancelButton: true,

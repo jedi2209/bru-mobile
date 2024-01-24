@@ -36,6 +36,7 @@ import ConfirmationModal from '../../core/components/ConfirmationModal';
 import NotificationModal from '../../core/components/NotificationModal';
 import {setSettingsModalOpen} from '../../core/store/device';
 import {$themeStore, setTheme} from '../../core/store/theme';
+import {logout} from '../../utils/auth';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -518,6 +519,12 @@ const SettingsScreen = props => {
         closeModal={() => setSettingsModalOpen(false)}
         modalTitle="Firmware successfully updated to ver. 12.423.4"
       />
+      <TouchableOpacity
+        onPress={async () => {
+          await logout();
+        }}>
+        <Text>LOGOUT</Text>
+      </TouchableOpacity>
     </Wrapper>
   );
 };

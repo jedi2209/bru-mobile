@@ -1,10 +1,9 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
 import {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -13,11 +12,14 @@ import {useColorMode} from '@gluestack-style/react';
 import PenIcon from '../../core/components/icons/PenIcon';
 import LinearGradient from 'react-native-linear-gradient';
 import UserIcon from '../../core/components/icons/UserIcon';
-import {EyeIcon} from '@gluestack-ui/themed';
 import ArrowLeftIcon from '../../core/components/icons/ArrowLeftIcon';
 import ArrowRightIcon from '../../core/components/icons/ArrowRightIcon';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import Input from '../../core/components/Input';
+import {useStore} from 'effector-react';
+import {$profileStore, getUserFx} from '../../core/store/profile';
+import {updateUser} from '../../utils/db/auth';
+import {updateEmail, updatePassword} from '../../utils/auth';
 
 const maxBarHeight = 80;
 
@@ -260,6 +262,19 @@ const ProfileScreen = props => {
   const [selectedFilter, setselectedFilter] = useState('days');
   const [mode, setMode] = useState('view');
   const [modal, setModal] = useState(null);
+  const user = useStore($profileStore);
+  const [name, setName] = useState(user?.name);
+  const [email, setEmail] = useState(user.email);
+  const [password, setPassword] = useState('');
+  console.log(user);
+  useEffect(() => {
+    getUserFx();
+  }, []);
+
+  useEffect(() => {
+    setEmail(user.email);
+    setName(user.name);
+  }, [user]);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -306,14 +321,15 @@ const ProfileScreen = props => {
                   s.value,
                   isDarkMode && basicStyles.darkTextProfile,
                 ]}>
-                John Doe
+                {user.name}
               </Text>
             </View>
           ) : (
             <Input
               label="Name"
               placeholder="Enter your name please"
-              value="Jogn  Dep"
+              value={name}
+              onChange={setName}
             />
           )}
 
@@ -333,7 +349,7 @@ const ProfileScreen = props => {
                   s.value,
                   isDarkMode && basicStyles.darkTextProfile,
                 ]}>
-                john@usermail.com
+                {user.email}
               </Text>
               <TouchableOpacity
                 onPress={() =>
@@ -352,36 +368,39 @@ const ProfileScreen = props => {
             <Input
               label="Email"
               placeholder="Enter your name please"
-              value="john@usermail.com"
+              value={email}
+              onChange={setEmail}
             />
           )}
           {mode === 'view' ? (
-            <View style={s.userData}>
-              <Text
-                style={[
-                  s.userDataText,
-                  s.label,
-                  isDarkMode && basicStyles.darkTextProfile,
-                ]}>
-                Password
-              </Text>
-              <Text
-                style={[
-                  s.userDataText,
-                  s.value,
-                  isDarkMode && basicStyles.darkTextProfile,
-                ]}>
-                ***************
-              </Text>
-              <TouchableOpacity style={s.userDataButton}>
-                <EyeIcon width={24} height={24} color={colors.green.mid} />
-              </TouchableOpacity>
-            </View>
+            <></>
           ) : (
+            // <View style={s.userData}>
+            //   <Text
+            //     style={[
+            //       s.userDataText,
+            //       s.label,
+            //       isDarkMode && basicStyles.darkTextProfile,
+            //     ]}>
+            //     Password
+            //   </Text>
+            //   <Text
+            //     style={[
+            //       s.userDataText,
+            //       s.value,
+            //       isDarkMode && basicStyles.darkTextProfile,
+            //     ]}>
+            //     ***************
+            //   </Text>
+            //   <TouchableOpacity style={s.userDataButton}>
+            //     <EyeIcon width={24} height={24} color={colors.green.mid} />
+            //   </TouchableOpacity>
+            // </View>
             <Input
               label="Password"
-              placeholder="Enter your name please"
-              value="*************"
+              placeholder="*************"
+              value={password}
+              onChange={setPassword}
               secure
               withIcon
             />
@@ -389,7 +408,16 @@ const ProfileScreen = props => {
         </View>
         {mode === 'edit' && (
           <TouchableOpacity
-            onPress={() => setMode('view')}
+            onPress={async () => {
+              if (password) {
+                await updatePassword(password);
+              }
+              if (email && email !== user.email) {
+                await updateEmail(email);
+              }
+              await updateUser(user.uid, {email, name});
+              setMode('view');
+            }}
             style={s.saveButton}>
             <Text style={[basicStyles.backgroundButtonText, {width: 132}]}>
               Save
