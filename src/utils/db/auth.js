@@ -23,8 +23,6 @@ export const createUser = async user => {
 };
 
 export const updateUser = async (uid, userData) => {
-  const newUser = await usersCollection.doc(uid).update(userData);
-  console.log(newUser, 'newUsernewUsernewUsernewUser');
+  await usersCollection.doc(uid).update(userData);
   setProfileUser({uid, ...userData});
-  return newUser;
 };

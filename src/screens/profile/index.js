@@ -20,6 +20,10 @@ import {useStore} from 'effector-react';
 import {$profileStore, getUserFx} from '../../core/store/profile';
 import {updateUser} from '../../utils/db/auth';
 import {updateEmail, updatePassword} from '../../utils/auth';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import Toast from 'react-native-toast-message';
 
 const maxBarHeight = 80;
 
@@ -256,6 +260,14 @@ function scaleValue(minValue, maxValue, value, maxHeight) {
   return clampedHeight;
 }
 
+const schema = yup
+  .object({
+    name: yup.string(),
+    email: yup.string().email('Email is incorrect'),
+    password: yup.string(),
+  })
+  .required();
+
 const ProfileScreen = props => {
   const phoneTheme = useColorMode();
   const isDarkMode = phoneTheme === 'dark';
@@ -263,10 +275,17 @@ const ProfileScreen = props => {
   const [mode, setMode] = useState('view');
   const [modal, setModal] = useState(null);
   const user = useStore($profileStore);
-  const [name, setName] = useState(user?.name);
+  const [name, setName] = useState(user.name);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState('');
-  console.log(user);
+  const {
+    control,
+    handleSubmit,
+    formState: {errors},
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
   useEffect(() => {
     getUserFx();
   }, []);
@@ -275,6 +294,16 @@ const ProfileScreen = props => {
     setEmail(user.email);
     setName(user.name);
   }, [user]);
+
+  useEffect(() => {
+    if (Object.keys(errors).length > 0) {
+      Toast.show({
+        type: 'error',
+        text1: errors[Object.keys(errors)[0]].message,
+        visibilityTime: 1500,
+      });
+    }
+  }, [errors]);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -326,10 +355,12 @@ const ProfileScreen = props => {
             </View>
           ) : (
             <Input
+              placeholder="Please enter your name"
               label="Name"
-              placeholder="Enter your name please"
-              value={name}
-              onChange={setName}
+              control={control}
+              name="name"
+              error={errors.name}
+              defaultValue={user.name}
             />
           )}
 
@@ -366,10 +397,12 @@ const ProfileScreen = props => {
             </View>
           ) : (
             <Input
+              placeholder="Please enter your email"
               label="Email"
-              placeholder="Enter your name please"
-              value={email}
-              onChange={setEmail}
+              control={control}
+              name="email"
+              error={errors.email}
+              defaultValue={user.email}
             />
           )}
           {mode === 'view' ? (
@@ -397,27 +430,38 @@ const ProfileScreen = props => {
             //   </TouchableOpacity>
             // </View>
             <Input
+              placeholder="Please enter your password"
               label="Password"
-              placeholder="*************"
-              value={password}
-              onChange={setPassword}
               secure
               withIcon
+              name="password"
+              control={control}
+              error={errors.password}
             />
           )}
         </View>
         {mode === 'edit' && (
           <TouchableOpacity
-            onPress={async () => {
-              if (password) {
+            onPress={handleSubmit(async data => {
+              if (data.password) {
+                console.log('password');
                 await updatePassword(password);
               }
-              if (email && email !== user.email) {
+              if (data.email && data.email !== user.email) {
+                console.log('email');
                 await updateEmail(email);
               }
-              await updateUser(user.uid, {email, name});
+              if (
+                (data.name && data.name !== user.name) ||
+                (data.email && data.email !== user.email)
+              ) {
+                await updateUser(user.uid, {
+                  email: data.email,
+                  name: data.name,
+                });
+              }
               setMode('view');
-            }}
+            })}
             style={s.saveButton}>
             <Text style={[basicStyles.backgroundButtonText, {width: 132}]}>
               Save

@@ -172,7 +172,6 @@ const AuthorizationScreen = () => {
   });
 
   useEffect(() => {
-    console.log(Object.keys(errors));
     if (Object.keys(errors).length > 0) {
       console.log(errors[Object.keys(errors)[0]].message);
       Toast.show({

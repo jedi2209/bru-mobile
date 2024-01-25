@@ -2,6 +2,7 @@ import auth from '@react-native-firebase/auth';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 import {setUser} from '../core/store/user';
 import {createUser} from './db/auth';
+import Toast from 'react-native-toast-message';
 
 export const signUpWithEmailAndPassword = async (email, password, name) => {
   try {
@@ -53,5 +54,10 @@ export const updatePassword = async password => {
 
 export const updateEmail = async email => {
   const user = auth().currentUser;
-  await user.updateEmail(email);
+  try {
+    await user.updateEmail(email);
+  } catch (error) {
+    console.log(error.message);
+    Toast.show({type: 'error', text1: error.message.split('] ')[1]});
+  }
 };

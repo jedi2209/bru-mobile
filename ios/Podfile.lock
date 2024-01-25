@@ -856,8 +856,8 @@ PODS:
     - Libuv-gRPC/Interface (= 0.0.10)
   - Libuv-gRPC/Interface (0.0.10)
   - lottie-ios (4.3.4)
-  - lottie-react-native (6.3.1):
-    - lottie-ios (~> 4.3.0)
+  - lottie-react-native (6.5.1):
+    - lottie-ios (~> 4.3.3)
     - React-Core
   - nanopb (2.30909.1):
     - nanopb/decode (= 2.30909.1)
@@ -1169,18 +1169,19 @@ PODS:
     - glog
   - react-native-ble-manager (10.1.5):
     - React-Core
-  - react-native-netinfo (9.4.1):
+  - react-native-netinfo (9.5.0):
     - React-Core
   - react-native-nordic-dfu (3.3.0):
     - iOSDFULibrary (~> 4.13.0)
     - React-Core
   - react-native-restart (0.0.27):
     - React-Core
-  - react-native-safe-area-context (4.7.3):
+  - react-native-safe-area-context (4.8.2):
     - React-Core
   - react-native-splash-screen (3.3.0):
     - React-Core
-  - react-native-webview (13.6.2):
+  - react-native-webview (13.6.4):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - React-NativeModulesApple (0.72.6):
     - hermes-engine
@@ -1302,7 +1303,7 @@ PODS:
     - React-Core
   - RNDateTimePicker (7.6.2):
     - React-Core
-  - RNDeviceInfo (10.11.0):
+  - RNDeviceInfo (10.12.0):
     - React-Core
   - RNFBAnalytics (17.5.0):
     - Firebase/Analytics (= 10.7.0)
@@ -1338,58 +1339,36 @@ PODS:
     - RNFBApp
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.13.3):
+  - RNGestureHandler (2.14.1):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNGoogleSignin (11.0.0):
     - GoogleSignIn (~> 7.0)
     - React-Core
-  - RNLocalize (3.0.2):
+  - RNLocalize (3.0.6):
     - React-Core
-  - RNPermissions (3.10.0):
+  - RNPermissions (3.10.1):
     - React-Core
-  - RNReanimated (3.5.4):
-    - DoubleConversion
-    - FBLazyVector
-    - glog
-    - hermes-engine
-    - RCT-Folly
-    - RCTRequired
-    - RCTTypeSafety
-    - React-callinvoker
-    - React-Core
-    - React-Core/DevSupport
-    - React-Core/RCTWebSocket
-    - React-CoreModules
-    - React-cxxreact
-    - React-hermes
-    - React-jsi
-    - React-jsiexecutor
-    - React-jsinspector
-    - React-RCTActionSheet
-    - React-RCTAnimation
-    - React-RCTAppDelegate
-    - React-RCTBlob
-    - React-RCTImage
-    - React-RCTLinking
-    - React-RCTNetwork
-    - React-RCTSettings
-    - React-RCTText
-    - ReactCommon/turbomodule/core
-    - Yoga
-  - RNScreens (3.26.0):
+  - RNReanimated (3.6.1):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNSentry (5.11.1):
+    - ReactCommon/turbomodule/core
+  - RNScreens (3.29.0):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-    - Sentry/HybridSDK (= 8.13.0)
+  - RNSentry (5.17.0):
+    - hermes-engine
+    - React-Core
+    - React-hermes
+    - Sentry/HybridSDK (= 8.17.1)
   - RNSVG (13.14.0):
     - React-Core
-  - RNVectorIcons (10.0.0):
+  - RNVectorIcons (10.0.3):
+    - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - Sentry/HybridSDK (8.13.0):
-    - SentryPrivate (= 8.13.0)
-  - SentryPrivate (8.13.0)
+  - Sentry/HybridSDK (8.17.1):
+    - SentryPrivate (= 8.17.1)
+  - SentryPrivate (8.17.1)
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
   - ZIPFoundation (0.9.11)
@@ -1705,7 +1684,7 @@ SPEC CHECKSUMS:
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   Libuv-gRPC: 55e51798e14ef436ad9bc45d12d43b77b49df378
   lottie-ios: 3d98679b41fa6fd6aff2352b3953dbd3df8a397e
-  lottie-react-native: c9f1db4f4124dcce9f8159e65d8dc6e8bcb11fb4
+  lottie-react-native: cdeae481649c11d586084b8662f03251c4dd8249
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   PromisesSwift: 28dca69a9c40779916ac2d6985a0192a5cb4a265
@@ -1725,12 +1704,12 @@ SPEC CHECKSUMS:
   React-jsinspector: 194e32c6aab382d88713ad3dd0025c5f5c4ee072
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
   react-native-ble-manager: 09724bad4d06b86a85e0cd7bd97196fecca15e9a
-  react-native-netinfo: fefd4e98d75cbdd6e85fc530f7111a8afdf2b0c5
+  react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
   react-native-nordic-dfu: aaf362b8afaeba5d911f3d84b7f140ec5f64cbc1
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
-  react-native-safe-area-context: 238cd8b619e05cb904ccad97ef42e84d1b5ae6ec
+  react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
-  react-native-webview: 8fc09f66a1a5b16bbe37c3878fda27d5982bb776
+  react-native-webview: 121397a02eb58554c24d0c3e26acf676ff6a87d2
   React-NativeModulesApple: 1802a680a4cd891d2ab97780771bcb2ff11fdc0b
   React-perflogger: e3596db7e753f51766bceadc061936ef1472edc3
   React-RCTActionSheet: 17ab132c748b4471012abbcdcf5befe860660485
@@ -1753,7 +1732,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCPicker: b18aaf30df596e9b1738e7c1f9ee55402a229dca
   RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
-  RNDeviceInfo: bf8a32acbcb875f568217285d1793b0e8588c974
+  RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
   RNFBAnalytics: b4e2f1fb446c4bd15a5e778b0554464a8a303a1e
   RNFBApp: d59efa0872fff4e27de03cca3c528c203a436ae5
   RNFBAppCheck: fdf3a0d1b342c210ff4e6aad6c4ab7b292802e88
@@ -1763,17 +1742,17 @@ SPEC CHECKSUMS:
   RNFBPerf: 5492a39509dbed2db61890613aa163435a1590e7
   RNFBStorage: b9daf1fcc51e6de5ed3781d36a2a795e90a9489d
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: 48e4a6a515fe4a47e49229ca27a78074004fd59e
+  RNGestureHandler: 16090ce1d186c348fb0595e03442843fa3b91565
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
-  RNLocalize: dbea38dcb344bf80ff18a1757b1becf11f70cae4
-  RNPermissions: 9bc5e74bab091f3e85c850eb751a68b8d522ade6
-  RNReanimated: ab2e96c6d5591c3dfbb38a464f54c8d17fb34a87
-  RNScreens: a3eacee8b26a0378c051f11c7587b7f202e9c8fe
-  RNSentry: e668d4e68fe09d475dc084bab81f02c3be2db173
+  RNLocalize: 4222a3756cdbe2dc9a5bdf445765a4d2572107cb
+  RNPermissions: c4bcc8899cc03f5fab761813116d36e505259a5a
+  RNReanimated: 8a6a83984cb4d61ebf1065b6137150b6b31ce609
+  RNScreens: 1c2444658fbb696a094272d946708167b1f63409
+  RNSentry: ed42b1443bef1fec1fc9273b5193a79b0cab1a01
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
-  RNVectorIcons: 8b5bb0fa61d54cd2020af4f24a51841ce365c7e9
-  Sentry: a067ca1db308066097314d8478e9682f3b575dee
-  SentryPrivate: 917c91aeb0f199cd079404fab2b50c83e4bad25c
+  RNVectorIcons: 6731bd488db95f4197433b30d81d03dc228b367e
+  Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
+  SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197

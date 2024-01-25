@@ -17,11 +17,10 @@ import {$themeStore} from '../../core/store/theme';
 const s = StyleSheet.create({
   wrapper: {
     marginHorizontal: 16,
-    marginTop: 52,
     display: 'flex',
     flexDirection: 'column',
     alignContent: 'space-between',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     height: Dimensions.get('window').height - 280,
   },
   progress: {
@@ -29,6 +28,7 @@ const s = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     marginBottom: 20,
+    marginTop: 52,
   },
   part: {
     display: 'flex',
@@ -60,6 +60,7 @@ const s = StyleSheet.create({
     backgroundColor: colors.red,
     marginBottom: 18,
     maxWidth: 164,
+    marginTop: 40,
   },
   warningText: {
     textAlign: 'center',

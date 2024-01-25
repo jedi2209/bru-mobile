@@ -56,14 +56,14 @@ const TeaAlarmStackView = ({navigation, route}) => {
         name="TeaAlarm"
         component={TeaAlarmScreen}
         initialParams={{
-          scroll: false,
+          scroll: true,
         }}
       />
       <StackTeaAlarm.Screen
         name="NewTeaAlarm"
         component={NewTeaAlarmScreen}
         initialParams={{
-          scroll: false,
+          scroll: true,
         }}
       />
     </StackTeaAlarm.Navigator>
@@ -79,7 +79,7 @@ const PressetsStackView = ({navigation, route}) => {
         name="Presets"
         component={PresetsScreen}
         initialParams={{
-          scroll: false,
+          scroll: true,
         }}
       />
     </StackPressets.Navigator>
@@ -104,7 +104,7 @@ export const NavigationBottom = props => {
         name="Instant Brew"
         component={InstantBrewScreen}
         initialParams={{
-          scroll: false,
+          scroll: true,
         }}
         options={{
           headerShown: false,
@@ -137,8 +137,11 @@ export const NavigationBottom = props => {
         }}
       />
       <Tab.Screen
-        name="PresetsStackView"
-        component={PressetsStackView}
+        name="Presets"
+        component={PresetsScreen}
+        initialParams={{
+          scroll: true,
+        }}
         options={{
           headerShown: false,
           tabBarIcon: ({focused}) => (
@@ -205,7 +208,7 @@ export const NavigationBottom = props => {
       <Tab.Screen
         name="Brewing"
         component={BrewingScreen}
-        initialParams={{scroll: false}}
+        initialParams={{scroll: true}}
         options={{
           headerShown: false,
           tabBarItemStyle: {
