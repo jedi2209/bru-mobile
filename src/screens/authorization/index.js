@@ -173,7 +173,6 @@ const AuthorizationScreen = () => {
 
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
-      console.log(errors[Object.keys(errors)[0]].message);
       Toast.show({
         type: 'error',
         text1: errors[Object.keys(errors)[0]].message,
@@ -261,7 +260,6 @@ const AuthorizationScreen = () => {
           )}
           <TouchableOpacity
             onPress={handleSubmit(async data => {
-              console.log(data);
               try {
                 if (authState === 'register') {
                   await signUpWithEmailAndPassword(
@@ -271,7 +269,10 @@ const AuthorizationScreen = () => {
                   );
                   navigation.navigate('Instant Brew');
                 } else {
-                  await signInWithEmailAndPassword(data.email, data.password);
+                  const currentUser = await signInWithEmailAndPassword(
+                    data.email,
+                    data.password,
+                  );
                 }
               } catch (error) {
                 console.log(error);

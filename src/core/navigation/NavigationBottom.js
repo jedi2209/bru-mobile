@@ -157,12 +157,6 @@ export const NavigationBottom = props => {
       <Tab.Screen
         name="Help"
         component={HelpScreen}
-        // listeners={{
-        //   tabPress: e => {
-        //     e.preventDefault();
-        //     Linking.openURL(LANGUAGE[currLang].urls.help);
-        //   },
-        // }}
         initialParams={{
           scroll: true,
         }}

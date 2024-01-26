@@ -77,11 +77,12 @@ const PressetItem = ({title, id, img, selected, type}) => {
           ]}>
           {img ? (
             <Image
+              resizeMode="contain"
               style={[s.image, type === 'pressets' && s.pressetScreenImage]}
               source={img}
             />
           ) : (
-            <Image />
+            <Image resizeMode="contain" />
           )}
         </View>
         <Text style={s.title}>{title}</Text>

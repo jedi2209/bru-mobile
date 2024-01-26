@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   StyleSheet,
@@ -13,6 +13,8 @@ import dayjs from 'dayjs';
 import CupIcon from '../../core/components/icons/CupIcon';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
+import {$brewingTimeStore, setTime} from '../../core/store/brewingTime';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -103,25 +105,42 @@ const s = StyleSheet.create({
 const BrewingScreen = props => {
   const progressRef = useRef(null);
   const [timerInterval, setTimerInterval] = useState(null);
-  const time = 5;
+  const time = useStore($brewingTimeStore);
+  const navigation = useNavigation();
   const [counter, setCounter] = useState(time);
   const [phase, setPhase] = useState(2);
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
+
   useEffect(() => {
-    progressRef.current.play();
-    setTimerInterval(
-      setInterval(() => {
-        setCounter(prev => prev - 1);
-      }, 1000),
-    );
+    setCounter(time);
+    return () => {
+      setCounter(0);
+    };
   }, [time]);
+
+  useFocusEffect(
+    useCallback(() => {
+      progressRef.current.play();
+      setTimerInterval(
+        setInterval(() => {
+          setCounter(prev => prev - 1);
+        }, 1000),
+      );
+      return () => {
+        setTime(0);
+        setPhase(2);
+        clearInterval(timerInterval);
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []),
+  );
 
   useEffect(() => {
     if (counter === 0) {
       clearInterval(timerInterval);
-      progressRef.current.pause();
       progressRef.current.reAnimate();
+      progressRef.current.pause();
       setPhase(3);
     }
   }, [counter, timerInterval]);
@@ -131,7 +150,7 @@ const BrewingScreen = props => {
       <View style={s.part}>
         <View style={s.progress}>
           <CircularProgress
-            initialValue={phase === 3 ? phase : time - 1}
+            initialValue={phase === 3 ? phase : counter - 1}
             value={phase === 3 ? phase + 1 : counter - 1}
             radius={135.5}
             maxValue={phase === 3 ? phase : time - 1}
@@ -190,6 +209,7 @@ const BrewingScreen = props => {
         <TouchableOpacity
           onPress={() => {
             clearInterval(timerInterval);
+            navigation.navigate('Instant Brew');
           }}
           style={s.cancelButton}>
           <Text style={basicStyles.backgroundButtonText}>Cancel brewing</Text>

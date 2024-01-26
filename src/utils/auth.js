@@ -13,11 +13,10 @@ export const signUpWithEmailAndPassword = async (email, password, name) => {
     }
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
-      console.log('That email address is already in use!');
-    }
-
-    if (error.code === 'auth/invalid-email') {
-      console.log('That email address is invalid!');
+      Toast.show({
+        type: 'error',
+        text1: 'That email address is already in use!',
+      });
     }
 
     console.error(error);
@@ -25,11 +24,8 @@ export const signUpWithEmailAndPassword = async (email, password, name) => {
 };
 
 export const signInWithEmailAndPassword = async (email, password) => {
-  auth()
-    .signInWithEmailAndPassword(email, password)
-    .then(() => {
-      console.log('Signed in successfully');
-    });
+  const user = await auth().signInWithEmailAndPassword(email, password);
+  return user;
 };
 
 export const signInWithGoogle = async () => {
@@ -57,7 +53,6 @@ export const updateEmail = async email => {
   try {
     await user.updateEmail(email);
   } catch (error) {
-    console.log(error.message);
     Toast.show({type: 'error', text1: error.message.split('] ')[1]});
   }
 };

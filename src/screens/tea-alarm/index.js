@@ -48,6 +48,7 @@ const TeaAlarmScreen = (props, {navigation}) => {
   const theme = useStore($themeStore);
   const teaAlarms = useStore($teaAlarmStrore).alarms;
   const navigate = useNavigation();
+
   return (
     <Wrapper style={s.wrapper} {...props}>
       <View>

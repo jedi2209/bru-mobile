@@ -66,13 +66,14 @@ const TeaAlarm = ({
   setBrewingTime = () => {},
   waterAmount = 0,
   setWaterAmount = () => {},
+  disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
 
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
-      <TouchableOpacity onPress={() => setIsOpen(!isOpen)}>
+      <TouchableOpacity disabled={disabled} onPress={() => setIsOpen(!isOpen)}>
         <TeaAlarmInfoItem
           type={type}
           Icon={
@@ -130,7 +131,9 @@ const TeaAlarm = ({
       />
 
       <View style={s.divider} />
-      <TouchableOpacity onPress={() => setWaterAmountIsOpen(true)}>
+      <TouchableOpacity
+        disabled={disabled}
+        onPress={() => setWaterAmountIsOpen(true)}>
         <TeaAlarmInfoItem
           type={type}
           Icon={

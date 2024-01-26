@@ -1,6 +1,6 @@
 import React, {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Wrapper from '@comp/Wrapper';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
 import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
@@ -9,31 +9,16 @@ import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useNavigation} from '@react-navigation/native';
 import {useStore} from 'effector-react';
-import {$themeStore} from '../../core/store/theme';
-
-export const mockedData = [
-  {
-    id: 10,
-    title: 'Instant Brew',
-    img: require('/assets/teaImages/instant_brew.png'),
-  },
-  {
-    id: 1,
-    title: 'Black Tea',
-    img: require('/assets/teaImages/black_tea.png'),
-  },
-  {id: 2, title: 'Puer', img: require('/assets/teaImages/puer.png')},
-  {id: 3, title: 'A lot of Puer', img: require('/assets/teaImages/puer.png')},
-  {id: 4, title: 'TItle', img: require('/assets/teaImages/puer.png')},
-  {id: 5, title: 'TItle', img: require('/assets/teaImages/puer.png')},
-  {id: 6, title: 'TItle', img: require('/assets/teaImages/puer.png')},
-  {id: 7, title: 'TItle', img: require('/assets/teaImages/puer.png')},
-  {
-    id: 8,
-    title: 'New Presset',
-    img: require('/assets/teaImages/new_presset.png'),
-  },
-];
+import {$themeStore, initThemeFx} from '../../core/store/theme';
+import {
+  $pressetsStore,
+  addPressetToStoreFx,
+  getPressetsFx,
+} from '../../core/store/pressets';
+import dayjs from 'dayjs';
+import cloneDeep from 'lodash.clonedeep';
+import isEqual from 'lodash.isequal';
+import {setTime} from '../../core/store/brewingTime';
 
 const s = StyleSheet.create({
   container: {
@@ -77,11 +62,42 @@ const s = StyleSheet.create({
 
 const InstantBrewScreen = props => {
   const theme = useStore($themeStore);
-  const [selectedItem, setSelectedItem] = useState(0);
+  const [selected, setSelected] = useState(null);
   const [modal, setModal] = useState(null);
   const navigation = useNavigation();
   const [waterAmount, setWaterAmount] = useState(0);
   const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
+  const [isCleaning, setIsCleaning] = useState(false);
+
+  useEffect(() => {
+    getPressetsFx();
+    initThemeFx();
+  }, []);
+
+  const pressets = useStore($pressetsStore);
+  useEffect(() => {
+    setSelected(pressets[0]);
+  }, [pressets]);
+
+  useEffect(() => {
+    if (selected) {
+      const selectedBrewingTime = {
+        minutes: `${dayjs
+          .duration(selected.brewing_data.time, 'seconds')
+          .format('mm')}`,
+        seconds: `${dayjs
+          .duration(selected.brewing_data.time, 'seconds')
+          .format('ss')}`,
+      };
+      setBrewingTime(selectedBrewingTime);
+      setWaterAmount(selected.brewing_data.waterAmount);
+      setIsCleaning(selected.cleaning);
+    } else {
+      setBrewingTime({minutes: '0', seconds: '0'});
+      setWaterAmount(0);
+      setIsCleaning(false);
+    }
+  }, [selected]);
 
   return (
     <Wrapper {...props}>
@@ -89,9 +105,9 @@ const InstantBrewScreen = props => {
       <View style={s.container}>
         <PressetList
           style={s.list}
-          data={mockedData}
-          selected={selectedItem}
-          setSelected={setSelectedItem}
+          data={pressets}
+          selected={selected}
+          setSelected={setSelected}
         />
         <View style={s.innerContainer}>
           <TeaAlarm
@@ -101,39 +117,64 @@ const InstantBrewScreen = props => {
             setBrewingTime={setBrewingTime}
           />
 
-          <SplitCups />
+          <SplitCups cleaning={isCleaning} setCleaning={setIsCleaning} />
           <View style={s.buttons}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('Brewing')}
+              onPress={() => {
+                const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
+                const isChanged = !isEqual(selected, {
+                  brewing_data: {time, waterAmount},
+                  cleaning: isCleaning,
+                  id: selected.id,
+                  tea_img: selected.tea_img,
+                  tea_type: selected.tea_type,
+                });
+                setTime(time);
+                if (isChanged) {
+                  setModal({
+                    opened: true,
+                    withCancelButton: true,
+                    cancelButtonText: 'Later',
+                    modalTitle:
+                      'Do you want to save this configutation as a new preset?',
+                    confirmationText: (
+                      <Text>
+                        You will be able to create new presets later in{' '}
+                        <Text style={{color: colors.green.mid}}>Presets</Text>{' '}
+                        page.
+                      </Text>
+                    ),
+                    confirmationButtonText: 'Save preset',
+                    withDontShowAgain: true,
+                    onConfirm: () => {
+                      addPressetToStoreFx({
+                        brewing_data: {time, waterAmount},
+                        cleaning: isCleaning,
+                        tea_img: selected.tea_img,
+                        tea_type: selected.tea_type,
+                      });
+                      setModal(null);
+                      navigation.navigate('Brewing', {
+                        time: time,
+                      });
+                    },
+                    closeModal: () => {
+                      setModal(null);
+                      navigation.navigate('Brewing');
+                    },
+                    dontShowAgainText: "Don't show me again",
+                  });
+                } else {
+                  navigation.navigate('Brewing');
+                }
+              }}
               style={s.brewButton}>
               <Text style={s.buttonText}>Brew it</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={
                 theme === 'light' ? s.dispenseButtonLight : s.dispenseButton
-              }
-              onPress={() => {
-                // navigation.navigate('Authorization');
-                // setModal({
-                //   opened: true,
-                //   withCancelButton: true,
-                //   cancelButtonText: 'Later',
-                //   modalTitle:
-                //     'Do you want to save this configutation as a new preset?',
-                //   confirmationText: (
-                //     <Text>
-                //       You will be able to create new presets later in{' '}
-                //       <Text style={{color: colors.green.mid}}>Presets</Text>{' '}
-                //       page.
-                //     </Text>
-                //   ),
-                //   confirmationButtonText: 'Save preset',
-                //   withDontShowAgain: true,
-                //   onConfirm: () => setModal(null),
-                //   closeModal: () => setModal(null),
-                //   dontShowAgainText: "Don't show me again",
-                // })
-              }}>
+              }>
               <Text
                 style={[
                   s.buttonText,

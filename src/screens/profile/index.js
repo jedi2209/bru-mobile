@@ -444,11 +444,9 @@ const ProfileScreen = props => {
           <TouchableOpacity
             onPress={handleSubmit(async data => {
               if (data.password) {
-                console.log('password');
                 await updatePassword(password);
               }
               if (data.email && data.email !== user.email) {
-                console.log('email');
                 await updateEmail(email);
               }
               if (

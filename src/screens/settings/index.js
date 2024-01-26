@@ -35,7 +35,7 @@ import Collapsible from 'react-native-collapsible';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import NotificationModal from '../../core/components/NotificationModal';
 import {setSettingsModalOpen} from '../../core/store/device';
-import {$themeStore, setTheme} from '../../core/store/theme';
+import {$themeStore, setThemeFx} from '../../core/store/theme';
 import {logout} from '../../utils/auth';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
@@ -342,7 +342,7 @@ const SettingsScreen = props => {
         </Text>
         <View style={s.units}>
           <TouchableOpacity
-            onPress={() => setTheme('dark')}
+            onPress={() => setThemeFx('dark')}
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
@@ -352,7 +352,7 @@ const SettingsScreen = props => {
             <Text style={s.unitText}>Dark</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setTheme('light')}
+            onPress={() => setThemeFx('light')}
             style={[
               s.unit,
               isDarkMode && s.darkUnit,

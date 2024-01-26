@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../core/const/style';
 import {TimerPickerModal} from 'react-native-timer-picker';
@@ -13,6 +13,7 @@ import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import {addTeaAlarm} from '../../core/store/teaAlarm';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
+import {$pressetsStore, getPressetsFx} from '../../core/store/pressets';
 
 const s = StyleSheet.create({
   screenLabel: {
@@ -154,9 +155,38 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
   const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
   const [waterAmount, setWaterAmount] = useState(0);
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(10);
-  const [cleaning, setCleaning] = useState(false);
+  const [selected, setSelected] = useState(null);
+  const [isCleaning, setIsCleaning] = useState(false);
   const {id} = route.params;
+  const pressets = useStore($pressetsStore);
+
+  useEffect(() => {
+    getPressetsFx();
+  }, []);
+
+  useEffect(() => {
+    setSelected(pressets[0]);
+  }, [pressets]);
+
+  useEffect(() => {
+    if (selected) {
+      const selectedBrewingTime = {
+        minutes: `${dayjs
+          .duration(selected.brewing_data.time, 'seconds')
+          .format('mm')}`,
+        seconds: `${dayjs
+          .duration(selected.brewing_data.time, 'seconds')
+          .format('ss')}`,
+      };
+      setBrewingTime(selectedBrewingTime);
+      setWaterAmount(selected.brewing_data.waterAmount);
+      setIsCleaning(selected.cleaning);
+    } else {
+      setBrewingTime({minutes: '0', seconds: '0'});
+      setWaterAmount(0);
+      setIsCleaning(false);
+    }
+  }, [selected]);
 
   return (
     <Wrapper route={route} navigation={navigation} {...props}>
@@ -218,9 +248,9 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         </Text>
         <PressetList
           style={s.list}
-          data={mockedData}
-          selected={selectedItem}
-          setSelected={setSelectedItem}
+          data={pressets}
+          selected={selected}
+          setSelected={setSelected}
         />
         <TeaAlarm
           brewingTime={brewingTime}
@@ -230,9 +260,9 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         />
         <View style={s.cleaning}>
           <Switch
-            value={cleaning}
+            value={isCleaning}
             onChange={() => {
-              setCleaning(prev => !prev);
+              setIsCleaning(prev => !prev);
             }}
             sx={{
               _light: {
@@ -273,13 +303,13 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
                 id: new Date().getDate(),
                 time: {hours: time.hours, minutes: time.minutes},
                 by: 'Me',
-                teaType: selectedItem.title,
+                teaType: selected.title,
                 brewingData: {
                   time: brewingTime,
                   temperature: '90',
                   waterAmount: waterAmount,
                 },
-                cleaning,
+                isCleaning,
               });
               navigation.navigate('TeaAlarm');
             }}

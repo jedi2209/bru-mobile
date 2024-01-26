@@ -10,16 +10,23 @@ import React, {
 import PlusCircle from '../../core/components/icons/PlusCircle';
 import {basicStyles, colors} from '../../core/const/style';
 import PressetList from '../../core/components/PressetList/PressetList';
-import {mockedData} from '../instant-brew';
 import TrashIconOutlined from '../../core/components/icons/TrashIconOutlined';
 import PenIcon from '../../core/components/icons/PenIcon';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import {Switch} from '@gluestack-ui/themed';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
+import {
+  $pressetsStore,
+  addPressetToStoreFx,
+  deletePressetFx,
+  getPressetsFx,
+  updatePressetFx,
+} from '../../core/store/pressets';
+import dayjs from 'dayjs';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -142,13 +149,46 @@ const s = StyleSheet.create({
 const PresetsScreen = props => {
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
-  const [selected, setSelected] = useState({
-    id: 1,
-    title: 'Black tea',
-    img: require('/assets/teaImages/black_tea.png'),
-  });
+  const [selected, setSelected] = useState(null);
   const [mode, setMode] = useState('list');
   const [modal, setModal] = useState(null);
+  const [newTeaName, setNewTeaName] = useState('');
+  const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
+  const [waterAmount, setWaterAmount] = useState(0);
+  const [isCleaning, setIsCleaning] = useState(false);
+
+  useEffect(() => {
+    getPressetsFx();
+  }, []);
+
+  const pressets = useStore($pressetsStore);
+
+  useEffect(() => {
+    setSelected(pressets[0]);
+  }, [pressets]);
+
+  useEffect(() => {
+    if (selected) {
+      const selectedBrewingTime = {
+        minutes: `${dayjs
+          .duration(selected.brewing_data.time, 'seconds')
+          .format('mm')}`,
+        seconds: `${dayjs
+          .duration(selected.brewing_data.time, 'seconds')
+          .format('ss')}`,
+      };
+      setBrewingTime(selectedBrewingTime);
+      setWaterAmount(selected.brewing_data.waterAmount);
+      setNewTeaName(selected.tea_type);
+      setIsCleaning(selected.cleaning);
+    } else {
+      setBrewingTime({minutes: '0', seconds: '0'});
+      setWaterAmount(0);
+      setNewTeaName('');
+      setIsCleaning(false);
+    }
+  }, [selected]);
+
   return (
     <Wrapper style={s.wrapper} {...props}>
       <View style={s.titleContainer}>
@@ -156,7 +196,11 @@ const PresetsScreen = props => {
           Presets
         </Text>
         {mode === 'list' && (
-          <TouchableOpacity onPress={() => setMode('create')}>
+          <TouchableOpacity
+            onPress={() => {
+              setSelected(null);
+              setMode('create');
+            }}>
             <PlusCircle style={s.plusIcon} />
           </TouchableOpacity>
         )}
@@ -164,7 +208,7 @@ const PresetsScreen = props => {
       <View>
         <PressetList
           style={s.list}
-          data={mockedData}
+          data={pressets}
           type="pressets"
           setSelected={setSelected}
           selected={selected}
@@ -182,6 +226,7 @@ const PresetsScreen = props => {
           <View style={s.pressetInfoHeader}>
             {mode === 'list' && (
               <TouchableOpacity
+                disabled={!selected}
                 onPress={() =>
                   setModal({
                     opened: true,
@@ -195,20 +240,34 @@ const PresetsScreen = props => {
                       </Text>
                     ),
                     confirmationButtonText: 'Yes, Delete',
-                    onConfirm: () => setModal(null),
+                    onConfirm: async () => {
+                      deletePressetFx(selected.id);
+                      setModal(null);
+                      setSelected(null);
+                    },
                     closeModal: () => setModal(null),
                   })
                 }>
                 <TrashIconOutlined width={24} height={24} fill="#B0B0B0" />
               </TouchableOpacity>
             )}
-            {mode === 'edit' || mode === 'create' ? (
-              <TextInput value={selected.title} style={s.teaNameInput} />
-            ) : (
-              <Text style={s.teaName}>{selected.title}</Text>
-            )}
+            <>
+              {mode === 'edit' || mode === 'create' ? (
+                <TextInput
+                  value={newTeaName}
+                  onChangeText={text => {
+                    setNewTeaName(text);
+                  }}
+                  style={s.teaNameInput}
+                />
+              ) : (
+                <Text style={s.teaName}>{newTeaName || 'Select presset'}</Text>
+              )}
+            </>
             {mode === 'list' && (
-              <TouchableOpacity onPress={() => setMode('edit')}>
+              <TouchableOpacity
+                disabled={!selected}
+                onPress={() => setMode('edit')}>
                 <PenIcon width={24} height={24} />
               </TouchableOpacity>
             )}
@@ -216,15 +275,32 @@ const PresetsScreen = props => {
           {mode === 'create' ? (
             <TouchableOpacity>
               <Image
+                resizeMode="contain"
                 style={s.teaImage}
                 source={require('../../../assets/teaImages/emptyPressetImage.png')}
               />
             </TouchableOpacity>
           ) : (
-            <Image style={s.teaImage} source={selected.img} />
+            <Image
+              resizeMode="contain"
+              style={s.teaImage}
+              source={
+                selected?.tea_img ||
+                require('../../../assets/teaImages/emptyPressetImage.png')
+              }
+            />
           )}
-          <TeaAlarm type="pressets" />
-          {mode === 'list' && <Text style={s.cleaningText}>+ Cleaning</Text>}
+          <TeaAlarm
+            waterAmount={waterAmount}
+            setWaterAmount={setWaterAmount}
+            brewingTime={brewingTime}
+            setBrewingTime={setBrewingTime}
+            disabled={mode === 'list'}
+            type="pressets"
+          />
+          {mode === 'list' && isCleaning && (
+            <Text style={s.cleaningText}>+ Cleaning</Text>
+          )}
           {mode === 'list' && (
             <TouchableOpacity style={s.brewButton}>
               <Text style={s.buttonText}>Brew it</Text>
@@ -233,22 +309,26 @@ const PresetsScreen = props => {
         </LinearGradient>
       </View>
       {mode === 'list' ? (
-        <TouchableOpacity
-          onPress={() =>
-            setModal({
-              opened: true,
-              withCancelButton: true,
-              cancelButtonText: 'No',
-              modalTitle: 'Attention!',
-              confirmationText:
-                'Do you really want to return standart tea presets to default values? We will keep the presets that you’ve added intact.',
-              confirmationButtonText: 'Yes, Return',
-              onConfirm: () => setModal(null),
-              closeModal: () => setModal(null),
-            })
-          }>
-          <Text style={s.resetButton}>Reset Default presets</Text>
-        </TouchableOpacity>
+        <>
+          {pressets.length ? (
+            <TouchableOpacity
+              onPress={() =>
+                setModal({
+                  opened: true,
+                  withCancelButton: true,
+                  cancelButtonText: 'No',
+                  modalTitle: 'Attention!',
+                  confirmationText:
+                    'Do you really want to return standart tea presets to default values? We will keep the presets that you’ve added intact.',
+                  confirmationButtonText: 'Yes, Return',
+                  onConfirm: () => setModal(null),
+                  closeModal: () => setModal(null),
+                })
+              }>
+              <Text style={s.resetButton}>Reset Default presets</Text>
+            </TouchableOpacity>
+          ) : null}
+        </>
       ) : (
         <View style={s.switchWrapper}>
           <View style={s.switchContainer}>
@@ -267,6 +347,8 @@ const PresetsScreen = props => {
           </View>
           <View style={s.switchContainer}>
             <Switch
+              value={isCleaning}
+              onChange={() => setIsCleaning(prev => !prev)}
               sx={{
                 props: {
                   trackColor: {
@@ -281,8 +363,37 @@ const PresetsScreen = props => {
           </View>
         </View>
       )}
+
       {mode !== 'list' && (
-        <TouchableOpacity onPress={() => setMode('list')} style={s.saveButton}>
+        <TouchableOpacity
+          onPress={() => {
+            if (mode === 'create') {
+              const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
+              addPressetToStoreFx({
+                tea_type: newTeaName,
+                tea_img: '',
+                brewing_data: {
+                  time,
+                  waterAmount,
+                },
+                cleaning: isCleaning,
+              });
+            } else if (mode === 'edit') {
+              const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
+              updatePressetFx({
+                id: selected.id,
+                tea_type: newTeaName,
+                tea_img: '',
+                brewing_data: {
+                  time,
+                  waterAmount,
+                },
+                cleaning: isCleaning,
+              });
+            }
+            setMode('list');
+          }}
+          style={s.saveButton}>
           <Text style={s.buttonText}>Save Preset</Text>
         </TouchableOpacity>
       )}

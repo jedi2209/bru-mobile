@@ -1324,7 +1324,7 @@ PODS:
     - Firebase/Database (= 10.7.0)
     - React-Core
     - RNFBApp
-  - RNFBFirestore (18.7.3):
+  - RNFBFirestore (18.8.0):
     - Firebase/Firestore (= 10.7.0)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - React-Core
@@ -1349,7 +1349,7 @@ PODS:
     - React-Core
   - RNPermissions (3.10.1):
     - React-Core
-  - RNReanimated (3.6.1):
+  - RNReanimated (3.6.2):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - ReactCommon/turbomodule/core
@@ -1738,7 +1738,7 @@ SPEC CHECKSUMS:
   RNFBAppCheck: fdf3a0d1b342c210ff4e6aad6c4ab7b292802e88
   RNFBAuth: 54e598bb1358a0cf6c0a187f43161cd1bde90455
   RNFBDatabase: 80c4a872443796fff15e75f476e0c4b793a9cede
-  RNFBFirestore: 73ed34ca863ac744462d5f0e0efd9e71fa7f8bfe
+  RNFBFirestore: 2a7654f5de97cbfb539865013e6e27fedadc527c
   RNFBPerf: 5492a39509dbed2db61890613aa163435a1590e7
   RNFBStorage: b9daf1fcc51e6de5ed3781d36a2a795e90a9489d
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
@@ -1746,7 +1746,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
   RNLocalize: 4222a3756cdbe2dc9a5bdf445765a4d2572107cb
   RNPermissions: c4bcc8899cc03f5fab761813116d36e505259a5a
-  RNReanimated: 8a6a83984cb4d61ebf1065b6137150b6b31ce609
+  RNReanimated: 6cbeb21f7def739dd4eabc2bae634a2ff2539802
   RNScreens: 1c2444658fbb696a094272d946708167b1f63409
   RNSentry: ed42b1443bef1fec1fc9273b5193a79b0cab1a01
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396

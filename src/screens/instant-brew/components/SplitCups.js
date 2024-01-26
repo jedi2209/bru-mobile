@@ -122,7 +122,7 @@ const s = StyleSheet.create({
   },
 });
 
-const SplitCups = () => {
+const SplitCups = ({cleaning, setCleaning}) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [splitedCups, setSplitedCups] = useState(0);
   const theme = useStore($themeStore);
@@ -145,6 +145,8 @@ const SplitCups = () => {
         </TouchableOpacity>
         <View style={s.cleaning}>
           <Switch
+            value={cleaning}
+            onChange={() => setCleaning(prev => !prev)}
             sx={{
               _light: {
                 props: {

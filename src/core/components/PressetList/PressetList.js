@@ -13,9 +13,12 @@ const PressetList = ({style, data, setSelected, selected, type}) => {
         <Pressable onPress={() => setSelected(item)}>
           <PressetItem
             type={type}
-            title={item.title}
-            img={item.img}
-            selected={selected.id === item.id}
+            title={item?.tea_type}
+            img={
+              item?.tea_img ||
+              require('../../../../assets/teaImages/emptyPressetImage.png')
+            }
+            selected={selected?.id === item.id}
           />
         </Pressable>
       )}
