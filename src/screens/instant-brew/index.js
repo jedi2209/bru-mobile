@@ -9,12 +9,7 @@ import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useNavigation} from '@react-navigation/native';
 import {useStore} from 'effector-react';
 import {$themeStore, initThemeFx} from '../../core/store/theme';
-import {
-  $pressetsStore,
-  addPressetToStoreFx,
-  getPressetsFx,
-} from '../../core/store/pressets';
-import dayjs from 'dayjs';
+import {addPressetToStoreFx, getPressetsFx} from '../../core/store/pressets';
 import isEqual from 'lodash.isequal';
 import {getUserFx} from '../../core/store/profile';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';

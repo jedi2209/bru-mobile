@@ -5,7 +5,6 @@ import {TimerPickerModal} from 'react-native-timer-picker';
 import {Switch} from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
-import {$pressetsStore} from '../../core/store/pressets';
 import Wrapper from '../../core/components/Wrapper';
 import dayjs from 'dayjs';
 import ArrowIcon from '../../core/components/icons/ArrowIcon';
@@ -13,7 +12,6 @@ import PressetList from '../../core/components/PressetList/PressetList';
 import {addTeaAlarmFx, updateTeaAlarmFx} from '../../core/store/teaAlarms';
 import {$profileStore} from '../../core/store/profile';
 import {$teaAlarmStrore, getTeaAlarmByIdFx} from '../../core/store/teaAlarm';
-import {useNewTeaAlarm} from '../../hooks/useNewTeaAlarm';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
 
