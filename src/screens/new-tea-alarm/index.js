@@ -5,15 +5,17 @@ import {TimerPickerModal} from 'react-native-timer-picker';
 import {Switch} from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
-import {$pressetsStore, getPressetsFx} from '../../core/store/pressets';
+import {$pressetsStore} from '../../core/store/pressets';
 import Wrapper from '../../core/components/Wrapper';
 import dayjs from 'dayjs';
 import ArrowIcon from '../../core/components/icons/ArrowIcon';
 import PressetList from '../../core/components/PressetList/PressetList';
-import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
-import {addTeaAlarmFx, updateTeaAlarmFx} from '../../core/store/teaAlarm';
+import {addTeaAlarmFx, updateTeaAlarmFx} from '../../core/store/teaAlarms';
 import {$profileStore} from '../../core/store/profile';
-import {getTeaAlarmById} from '../../utils/db/teaAlarms';
+import {$teaAlarmStrore, getTeaAlarmByIdFx} from '../../core/store/teaAlarm';
+import {useNewTeaAlarm} from '../../hooks/useNewTeaAlarm';
+import BrewingData from '../../core/components/TeaAlarm/BrewingData';
+import {useBrewingData} from '../../hooks/useBrewingData';
 
 const s = StyleSheet.create({
   screenLabel: {
@@ -121,6 +123,7 @@ const s = StyleSheet.create({
     marginTop: 25,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 50,
   },
   button: {
     paddingVertical: 16,
@@ -130,7 +133,6 @@ const s = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: colors.green.mid,
-    marginBottom: 50,
   },
   deleteButton: {
     backgroundColor: '#AF1F23',
@@ -152,54 +154,38 @@ dayjs.extend(duration);
 const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
-  const [prepareBy, setPrepareBy] = useState({hours: '0', minutes: '0'});
-  const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
-  const [waterAmount, setWaterAmount] = useState(0);
+
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [isCleaning, setIsCleaning] = useState(false);
+  const [prepareBy, setPrepareBy] = useState({hours: '', minutes: ''});
   const {id} = route.params;
-  const pressets = useStore($pressetsStore);
   const user = useStore($profileStore);
+  const teaAlarm = useStore($teaAlarmStrore);
+
+  const {
+    selected,
+    setSelected,
+    setBrewingTime,
+    setIsCleaning,
+    setWaterAmount,
+    brewingTime,
+    waterAmount,
+    isCleaning,
+    pressets,
+  } = useBrewingData();
 
   useEffect(() => {
-    getPressetsFx();
-  }, []);
-
-  useEffect(() => {
-    async function fetchData() {
-      const teaAlarm = await getTeaAlarmById(id);
-      setPrepareBy(teaAlarm.prepare_by);
-      setSelected(teaAlarm.collection.presset);
-    }
     if (id) {
-      fetchData();
+      getTeaAlarmByIdFx(id);
     }
   }, [id]);
 
   useEffect(() => {
-    setSelected(pressets[0]);
-  }, [pressets]);
-
-  useEffect(() => {
-    if (selected) {
-      const selectedBrewingTime = {
-        minutes: `${dayjs
-          .duration(selected.brewing_data.time, 'seconds')
-          .format('mm')}`,
-        seconds: `${dayjs
-          .duration(selected.brewing_data.time, 'seconds')
-          .format('ss')}`,
-      };
-      setBrewingTime(selectedBrewingTime);
-      setWaterAmount(selected.brewing_data.waterAmount);
-      setIsCleaning(selected.cleaning);
-    } else {
-      setBrewingTime({minutes: '0', seconds: '0'});
-      setWaterAmount(0);
-      setIsCleaning(false);
+    if (teaAlarm) {
+      console.log(teaAlarm.prepare_by);
+      setPrepareBy(teaAlarm.prepare_by);
+      setSelected(teaAlarm.presset);
     }
-  }, [selected]);
+  }, [setPrepareBy, setSelected, teaAlarm]);
 
   return (
     <Wrapper route={route} navigation={navigation} {...props}>
@@ -265,7 +251,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           selected={selected}
           setSelected={setSelected}
         />
-        <TeaAlarm
+        <BrewingData
           disabled
           brewingTime={brewingTime}
           setBrewingTime={setBrewingTime}
@@ -275,6 +261,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         <View style={s.cleaning}>
           <Switch
             value={isCleaning}
+            onChange={() => setIsCleaning(prev => !prev)}
             disabled
             sx={{
               _light: {

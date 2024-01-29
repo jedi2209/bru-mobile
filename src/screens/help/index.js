@@ -108,9 +108,7 @@ const s = StyleSheet.create({
 const HelpScreen = props => {
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
-  const [firstCollapsed, setFirstCollapsed] = useState(true);
-  const [secondCollapsed, setSecondCollapsed] = useState(true);
-  const [contactCollapsed, setContactCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(0);
   const [modalOpened, setModalOpened] = useState(false);
 
   return (
@@ -118,18 +116,19 @@ const HelpScreen = props => {
       <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
         Help
       </Text>
-      <TouchableOpacity onPress={() => setFirstCollapsed(prev => !prev)}>
+      <TouchableOpacity
+        onPress={() => setCollapsed(prev => (prev === 1 ? 0 : 1))}>
         <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
           <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
             How to operate BRU machine?
           </Text>
           <DownArrowIcon
             fill={isDarkMode ? colors.white : colors.green.mid}
-            style={[s.arrowIcon, !firstCollapsed && s.arrowIconActive]}
+            style={[s.arrowIcon, collapsed === 1 && s.arrowIconActive]}
           />
         </View>
       </TouchableOpacity>
-      <Collapsible collapsed={firstCollapsed}>
+      <Collapsible collapsed={collapsed !== 1}>
         <LinearGradient
           style={s.collapsible}
           colors={
@@ -179,29 +178,31 @@ const HelpScreen = props => {
           </View>
         </LinearGradient>
       </Collapsible>
-      <TouchableOpacity onPress={() => setSecondCollapsed(prev => !prev)}>
+      <TouchableOpacity
+        onPress={() => setCollapsed(prev => (prev === 2 ? 0 : 2))}>
         <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
           <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
             Where to get some good tea?
           </Text>
           <DownArrowIcon
             fill={isDarkMode ? colors.white : colors.green.mid}
-            style={[s.arrowIcon, !secondCollapsed && s.arrowIconActive]}
+            style={[s.arrowIcon, collapsed === 2 && s.arrowIconActive]}
           />
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => setContactCollapsed(prev => !prev)}>
+      <TouchableOpacity
+        onPress={() => setCollapsed(prev => (prev === 3 ? 0 : 3))}>
         <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
           <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
             Contact support
           </Text>
           <DownArrowIcon
             fill={isDarkMode ? colors.white : colors.green.mid}
-            style={[s.arrowIcon, !contactCollapsed && s.arrowIconActive]}
+            style={[s.arrowIcon, collapsed === 3 && s.arrowIconActive]}
           />
         </View>
       </TouchableOpacity>
-      <Collapsible collapsed={contactCollapsed}>
+      <Collapsible collapsed={collapsed !== 3}>
         <LinearGradient
           style={s.collapsible}
           colors={

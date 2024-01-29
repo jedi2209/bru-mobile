@@ -6,7 +6,7 @@ import Wrapper from '../../core/components/Wrapper';
 import {colors} from '../../core/const/style';
 import {useNavigation} from '@react-navigation/native';
 import {useStore} from 'effector-react';
-import {$teaAlarmStrore, getTeaAlarmsFx} from '../../core/store/teaAlarm';
+import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
 import {$themeStore} from '../../core/store/theme';
 
 const s = StyleSheet.create({
@@ -47,11 +47,12 @@ const s = StyleSheet.create({
 const TeaAlarmScreen = props => {
   const theme = useStore($themeStore);
   const navigate = useNavigation();
+
   useEffect(() => {
     getTeaAlarmsFx();
   }, []);
 
-  const teaAlarms = useStore($teaAlarmStrore);
+  const teaAlarms = useStore($teaAlarmsStrore);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -67,7 +68,7 @@ const TeaAlarmScreen = props => {
         <FlatList
           contentContainerStyle={s.listContainerStyle}
           data={teaAlarms || []}
-          renderItem={({item}) => <TeaAlarmInfo item={item} {...item} />}
+          renderItem={({item}) => <TeaAlarmInfo {...item} />}
         />
       </View>
     </Wrapper>

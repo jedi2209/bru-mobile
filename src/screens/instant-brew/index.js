@@ -5,7 +5,6 @@ import {basicStyles, colors} from '../../core/const/style';
 import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
-import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useNavigation} from '@react-navigation/native';
 import {useStore} from 'effector-react';
@@ -16,9 +15,10 @@ import {
   getPressetsFx,
 } from '../../core/store/pressets';
 import dayjs from 'dayjs';
-import cloneDeep from 'lodash.clonedeep';
 import isEqual from 'lodash.isequal';
 import {getUserFx} from '../../core/store/profile';
+import BrewingData from '../../core/components/TeaAlarm/BrewingData';
+import {useBrewingData} from '../../hooks/useBrewingData';
 
 const s = StyleSheet.create({
   container: {
@@ -62,12 +62,8 @@ const s = StyleSheet.create({
 
 const InstantBrewScreen = props => {
   const theme = useStore($themeStore);
-  const [selected, setSelected] = useState(null);
   const [modal, setModal] = useState(null);
   const navigation = useNavigation();
-  const [waterAmount, setWaterAmount] = useState(0);
-  const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
-  const [isCleaning, setIsCleaning] = useState(false);
 
   useEffect(() => {
     getPressetsFx();
@@ -75,30 +71,17 @@ const InstantBrewScreen = props => {
     initThemeFx();
   }, []);
 
-  const pressets = useStore($pressetsStore);
-  useEffect(() => {
-    setSelected(pressets[0]);
-  }, [pressets]);
-
-  useEffect(() => {
-    if (selected) {
-      const selectedBrewingTime = {
-        minutes: `${dayjs
-          .duration(selected.brewing_data.time, 'seconds')
-          .format('mm')}`,
-        seconds: `${dayjs
-          .duration(selected.brewing_data.time, 'seconds')
-          .format('ss')}`,
-      };
-      setBrewingTime(selectedBrewingTime);
-      setWaterAmount(selected.brewing_data.waterAmount);
-      setIsCleaning(selected.cleaning);
-    } else {
-      setBrewingTime({minutes: '0', seconds: '0'});
-      setWaterAmount(0);
-      setIsCleaning(false);
-    }
-  }, [selected]);
+  const {
+    setSelected,
+    selected,
+    setBrewingTime,
+    setIsCleaning,
+    setWaterAmount,
+    brewingTime,
+    waterAmount,
+    isCleaning,
+    pressets,
+  } = useBrewingData();
 
   return (
     <Wrapper {...props}>
@@ -111,7 +94,7 @@ const InstantBrewScreen = props => {
           setSelected={setSelected}
         />
         <View style={s.innerContainer}>
-          <TeaAlarm
+          <BrewingData
             waterAmount={waterAmount}
             setWaterAmount={setWaterAmount}
             brewingTime={brewingTime}

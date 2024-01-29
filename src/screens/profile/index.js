@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 import {basicStyles, colors} from '../../core/const/style';
-import {useColorMode} from '@gluestack-style/react';
 import PenIcon from '../../core/components/icons/PenIcon';
 import LinearGradient from 'react-native-linear-gradient';
 import UserIcon from '../../core/components/icons/UserIcon';
@@ -24,20 +23,10 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
+import {scaleValue} from '../../helpers/scaleValue';
+import {$themeStore} from '../../core/store/theme';
 
 const maxBarHeight = 80;
-
-const resetModal = {
-  text: 'st',
-  cancelButtonText: 'dasd',
-  cancelButton: () => {},
-};
-
-const acceptModal = {
-  text: 'st',
-  cancelButtonText: 'dasd',
-  cancelButton: () => {},
-};
 
 const s = StyleSheet.create({
   wrapper: {
@@ -235,16 +224,6 @@ const chartWeeksData = [14, 10, 8, 2];
 const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
 const chartYearsData = [365, 363, 200, 100, 150];
 
-function scaleValue(minValue, maxValue, value, maxHeight) {
-  if (value === 0) {
-    return 0;
-  }
-  const range = maxValue - minValue;
-  const scaledHeight = ((value - minValue) / range) * (maxHeight - 1);
-  const clampedHeight = Math.max(1, Math.min(maxHeight, scaledHeight));
-  return clampedHeight;
-}
-
 const schema = yup
   .object({
     name: yup.string(),
@@ -254,16 +233,8 @@ const schema = yup
   .required();
 
 const ProfileScreen = props => {
-  const phoneTheme = useColorMode();
-  const isDarkMode = phoneTheme === 'dark';
-  const [selectedFilter, setselectedFilter] = useState('days');
-
-  const [mode, setMode] = useState('view');
-  const [modal, setModal] = useState(null);
+  const theme = useStore($themeStore);
   const user = useStore($profileStore);
-  const [name, setName] = useState(user.name);
-  const [email, setEmail] = useState(user.email);
-  const [password, setPassword] = useState('');
   const {
     control,
     handleSubmit,
@@ -272,14 +243,15 @@ const ProfileScreen = props => {
     resolver: yupResolver(schema),
   });
 
+  const [mode, setMode] = useState('view');
+  const [modal, setModal] = useState(null);
+  const [selectedFilter, setselectedFilter] = useState('days');
+
+  const isDarkMode = theme === 'dark';
+
   useEffect(() => {
     getUserFx();
   }, []);
-
-  useEffect(() => {
-    setEmail(user.email);
-    setName(user.name);
-  }, [user]);
 
   useEffect(() => {
     if (Object.keys(errors).length > 0) {
@@ -445,10 +417,10 @@ const ProfileScreen = props => {
           <TouchableOpacity
             onPress={handleSubmit(async data => {
               if (data.password) {
-                await updatePassword(password);
+                await updatePassword(data.password);
               }
               if (data.email && data.email !== user.email) {
-                await updateEmail(email);
+                await updateEmail(data.email);
               }
               if (
                 (data.name && data.name !== user.name) ||

@@ -8,7 +8,7 @@ import {colors} from '../../const/style';
 import TeaAlarmIcon from '../icons/TeaAlarmIcon';
 import TemperatureIcon from '../icons/TemperatureIcon';
 import WaterIcon from '../icons/WaterIcon';
-import TeaAlarmInfoItem from './TeaAlarmInfoItem';
+import TeaAlarmInfoItem from './BrewingDataItem';
 import WaterAmountModal from '../WaterAmountModal';
 
 const s = StyleSheet.create({
@@ -60,7 +60,7 @@ const s = StyleSheet.create({
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-const TeaAlarm = ({
+const BrewingData = ({
   type,
   brewingTime = {minutes: '0', seconds: '0'},
   setBrewingTime = () => {},
@@ -159,4 +159,4 @@ const TeaAlarm = ({
   );
 };
 
-export default TeaAlarm;
+export default BrewingData;

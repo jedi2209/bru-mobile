@@ -9,7 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
-import {deleteTeaAlarm, deleteTeaAlarmFx} from '../store/teaAlarm';
+import {deleteTeaAlarm, deleteTeaAlarmFx} from '../store/teaAlarms';
 
 const s = StyleSheet.create({
   container: {
@@ -75,7 +75,7 @@ const s = StyleSheet.create({
   },
 });
 
-const TeaAlarmInfo = ({item, id, prepare_by, by, presset}) => {
+const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
   const theme = useStore($themeStore);
   const navigation = useNavigation();
 

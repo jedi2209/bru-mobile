@@ -14,19 +14,18 @@ import TrashIconOutlined from '../../core/components/icons/TrashIconOutlined';
 import PenIcon from '../../core/components/icons/PenIcon';
 import {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
 import {Switch} from '@gluestack-ui/themed';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import {
-  $pressetsStore,
   addPressetToStoreFx,
   deletePressetFx,
   getPressetsFx,
   updatePressetFx,
 } from '../../core/store/pressets';
-import dayjs from 'dayjs';
+import BrewingData from '../../core/components/TeaAlarm/BrewingData';
+import {useBrewingData} from '../../hooks/useBrewingData';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -149,43 +148,31 @@ const s = StyleSheet.create({
 const PresetsScreen = props => {
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
-  const [selected, setSelected] = useState(null);
   const [mode, setMode] = useState('list');
   const [modal, setModal] = useState(null);
   const [newTeaName, setNewTeaName] = useState('');
-  const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
-  const [waterAmount, setWaterAmount] = useState(0);
-  const [isCleaning, setIsCleaning] = useState(false);
 
   useEffect(() => {
     getPressetsFx();
   }, []);
 
-  const pressets = useStore($pressetsStore);
-
-  useEffect(() => {
-    setSelected(pressets[0]);
-  }, [pressets]);
+  const {
+    setSelected,
+    selected,
+    setBrewingTime,
+    setIsCleaning,
+    setWaterAmount,
+    brewingTime,
+    waterAmount,
+    isCleaning,
+    pressets,
+  } = useBrewingData();
 
   useEffect(() => {
     if (selected) {
-      const selectedBrewingTime = {
-        minutes: `${dayjs
-          .duration(selected.brewing_data.time, 'seconds')
-          .format('mm')}`,
-        seconds: `${dayjs
-          .duration(selected.brewing_data.time, 'seconds')
-          .format('ss')}`,
-      };
-      setBrewingTime(selectedBrewingTime);
-      setWaterAmount(selected.brewing_data.waterAmount);
       setNewTeaName(selected.tea_type);
-      setIsCleaning(selected.cleaning);
     } else {
-      setBrewingTime({minutes: '0', seconds: '0'});
-      setWaterAmount(0);
       setNewTeaName('');
-      setIsCleaning(false);
     }
   }, [selected]);
 
@@ -205,15 +192,13 @@ const PresetsScreen = props => {
           </TouchableOpacity>
         )}
       </View>
-      <View>
-        <PressetList
-          style={s.list}
-          data={pressets}
-          type="pressets"
-          setSelected={setSelected}
-          selected={selected}
-        />
-      </View>
+      <PressetList
+        style={s.list}
+        data={pressets}
+        type="pressets"
+        setSelected={setSelected}
+        selected={selected}
+      />
       <View style={s.shadow}>
         <LinearGradient
           colors={
@@ -252,7 +237,7 @@ const PresetsScreen = props => {
               </TouchableOpacity>
             )}
             <>
-              {mode === 'edit' || mode === 'create' ? (
+              {mode !== 'list' ? (
                 <TextInput
                   value={newTeaName}
                   onChangeText={text => {
@@ -290,7 +275,7 @@ const PresetsScreen = props => {
               }
             />
           )}
-          <TeaAlarm
+          <BrewingData
             waterAmount={waterAmount}
             setWaterAmount={setWaterAmount}
             brewingTime={brewingTime}

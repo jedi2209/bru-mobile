@@ -1,18 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  TouchableOpacity,
-  Pressable,
-  Alert,
-} from 'react-native';
+import {Text, View, StyleSheet, Dimensions, Alert} from 'react-native';
 import {
   Button,
   ButtonText,
   HStack,
-  FlatList,
   Heading,
   ButtonGroup,
   Switch,
@@ -31,12 +22,12 @@ import {Device, deviceManager, sendDataCommand, sleep} from '@utils/device';
 import {get} from 'lodash';
 import {colors, basicStyles} from '../../core/const/style';
 import BruMachine from './components/BruMachine';
-import Collapsible from 'react-native-collapsible';
+
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import NotificationModal from '../../core/components/NotificationModal';
 import {setSettingsModalOpen} from '../../core/store/device';
-import {$themeStore, setThemeFx} from '../../core/store/theme';
-import {logout} from '../../utils/auth';
+import {$themeStore} from '../../core/store/theme';
+import CommonSettings from './components/CommonSettings';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -99,14 +90,11 @@ const SettingsScreen = props => {
   const devices = useStore($deviceSettingsStore);
 
   const [isLoading, setLoading] = useState(false);
-  const [coldTea, setColdTea] = useState(false);
-  const [autoRinse, setAutoRinse] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
-  const [selected, setSelected] = useState('small');
   const theme = useStore($themeStore);
+  const isDarkMode = theme === 'dark';
   const settingsStore = useStore($deviceSettingsStore);
   const notificationModalOpened = settingsStore.isOpenModal;
-  const isDarkMode = theme === 'dark';
   const {navigation} = props;
 
   useEffect(() => {
@@ -196,178 +184,8 @@ const SettingsScreen = props => {
         </ButtonText>
       </Button>
 
-      <View style={[s.filterStatus, s.bottomBorder]}>
-        <View>
-          <Text style={[s.title, isDarkMode && s.darkTextMain]}>
-            Filter Status
-          </Text>
-          <Text style={s.filterNotification}>
-            Please replace the water filter
-          </Text>
-          <TouchableOpacity>
-            <Text
-              style={[s.filterTutorial, isDarkMode && s.filterTutorialDark]}>
-              View tutorial video
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={[s.title, s.filterHealth]}>Health 85%</Text>
-      </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
-        <View>
-          <Text style={[s.title, isDarkMode && s.darkTextMain]}>Cold tea</Text>
-          <Text style={s.subTitle}>
-            {coldTea
-              ? 'Add cold water to every tea you make. You may need to add more tea because of water diffusion.'
-              : 'Add cold water to every tea you make'}
-          </Text>
-        </View>
-        <Switch
-          value={coldTea}
-          onChange={() => setColdTea(prev => !prev)}
-          sx={{
-            props: {
-              trackColor: {
-                true: colors.green.mid,
-              },
-            },
-          }}
-        />
-      </View>
-      <View style={[s.bottomBorder, {}]}>
-        <View style={[s.filterStatus, {paddingTop: 16, paddingBottom: 11}]}>
-          <Text style={[s.title, isDarkMode && s.darkTextMain]}>
-            Auto-rinse
-          </Text>
-          <Switch
-            value={autoRinse}
-            onChange={() => setAutoRinse(prev => !prev)}
-            sx={{
-              props: {
-                trackColor: {
-                  true: colors.green.mid,
-                },
-              },
-            }}
-          />
-        </View>
-        <Collapsible collapsed={!autoRinse} style={s.autoRinse}>
-          <View>
-            <Text style={[s.unitTitle, s.darkTextMain]}>Water amount</Text>
-            <View style={s.units}>
-              <TouchableOpacity
-                onPress={() => setSelected('small')}
-                style={[
-                  s.unit,
-                  isDarkMode && s.darkUnit,
-                  s.unitLeft,
-                  selected === 'small' && s.selected,
-                ]}>
-                <Text style={[s.unitText, selected === 'small' && s.selected]}>
-                  Small
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setSelected('medium')}
-                style={[
-                  s.unit,
-                  isDarkMode && s.darkUnit,
-                  selected === 'medium' && s.selected,
-                ]}>
-                <Text style={[s.unitText]}>Medium</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setSelected('large')}
-                style={[
-                  s.unit,
-                  isDarkMode && s.darkUnit,
-                  s.unitRight,
-                  selected === 'large' && s.selected,
-                ]}>
-                <Text style={s.unitText}>Large</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            <Text style={[s.unitTitle, s.darkTextMain]}>Dispence to</Text>
-            <View style={s.units}>
-              <TouchableOpacity
-                style={[
-                  s.unit,
-                  isDarkMode && s.darkUnit,
+      <CommonSettings />
 
-                  s.unitLeft,
-                  s.selected,
-                ]}>
-                <Text style={s.unitText}>Tray</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[s.unit, isDarkMode && s.darkUnit, s.unitRight]}>
-                <Text style={s.unitText}>Cup</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Collapsible>
-      </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, isDarkMode && s.darkTextMain]}>Units</Text>
-        <View style={s.units}>
-          <TouchableOpacity
-            style={[s.unit, isDarkMode && s.darkUnit, s.unitLeft, s.selected]}>
-            <Text style={s.unitText}>°C - ml</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[s.unit, isDarkMode && s.darkUnit, s.unitRight]}>
-            <Text style={s.unitText}>°F - oz</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
-          Notifications
-        </Text>
-        <Switch
-          sx={{
-            props: {
-              trackColor: {
-                true: colors.green.mid,
-              },
-            },
-          }}
-        />
-      </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
-          App color theme
-        </Text>
-        <View style={s.units}>
-          <TouchableOpacity
-            onPress={() => setThemeFx('dark')}
-            style={[
-              s.unit,
-              isDarkMode && s.darkUnit,
-              s.unitLeft,
-              isDarkMode && s.selected,
-            ]}>
-            <Text style={s.unitText}>Dark</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setThemeFx('light')}
-            style={[
-              s.unit,
-              isDarkMode && s.darkUnit,
-              s.unitRight,
-              !isDarkMode && s.selected,
-            ]}>
-            <Text style={s.unitText}>Light</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
-        <TouchableOpacity onPress={() => {}}>
-          <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
-        </TouchableOpacity>
-      </View>
       {/* {get(deviceManager, 'device', null) ? (
         <>
           <Heading mb={16}>My BRU</Heading>
@@ -605,67 +423,6 @@ const s = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 24,
     letterSpacing: 0.4,
-  },
-  filterHealth: {color: colors.green.mid, lineHeight: 16},
-  unitTitle: {
-    color: colors.gray.grayDarkText,
-    fontSize: 13,
-    fontWeight: '600',
-    lineHeight: 18,
-    letterSpacing: 0.4,
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  units: {
-    ...basicStyles.row,
-  },
-  unit: {
-    backgroundColor: '#C5C5C8',
-    paddingHorizontal: 10,
-    paddingVertical: 11,
-  },
-  darkUnit: {
-    backgroundColor: '#555558',
-  },
-  unitText: {
-    color: colors.white,
-    fontSize: 13,
-    fontWeight: '500',
-    lineHeight: 16,
-    letterSpacing: 0.4,
-  },
-  unitLeft: {
-    borderTopLeftRadius: 10,
-    borderBottomLeftRadius: 10,
-  },
-  unitRight: {
-    borderTopRightRadius: 10,
-    borderBottomRightRadius: 10,
-  },
-  selected: {
-    backgroundColor: colors.green.mid,
-  },
-  autoRinse: {
-    ...basicStyles.rowBetween,
-    paddingBottom: 16,
-  },
-  filterNotification: {
-    color: '#999',
-    fontSize: 12,
-    fontWeight: '600',
-    lineHeight: 18,
-    letterSpacing: 0.4,
-  },
-  filterTutorial: {
-    color: colors.green.mid,
-    textDecorationLine: 'underline',
-    fontSize: 12,
-    fontWeight: '600',
-    lineHeight: 18,
-    letterSpacing: 0.4,
-  },
-  filterTutorialDark: {
-    color: '#FFF',
   },
 });
 export default SettingsScreen;
