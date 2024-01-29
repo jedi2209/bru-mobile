@@ -54,6 +54,9 @@ const TeaAlarmStackView = ({navigation, route}) => {
       initialRouteName="TeaAlarmScreen">
       <StackTeaAlarm.Screen
         name="TeaAlarm"
+        options={{
+          headerShown: false,
+        }}
         component={TeaAlarmScreen}
         initialParams={{
           scroll: true,
@@ -61,30 +64,34 @@ const TeaAlarmStackView = ({navigation, route}) => {
       />
       <StackTeaAlarm.Screen
         name="NewTeaAlarm"
+        options={{
+          headerShown: false,
+        }}
         component={NewTeaAlarmScreen}
         initialParams={{
           scroll: true,
+          tabBarStyle: {display: 'none'},
         }}
       />
     </StackTeaAlarm.Navigator>
   );
 };
 
-const PressetsStackView = ({navigation, route}) => {
-  return (
-    <StackPressets.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName="Presets">
-      <StackPressets.Screen
-        name="Presets"
-        component={PresetsScreen}
-        initialParams={{
-          scroll: true,
-        }}
-      />
-    </StackPressets.Navigator>
-  );
-};
+// const PressetsStackView = ({navigation, route}) => {
+//   return (
+//     <StackPressets.Navigator
+//       screenOptions={{headerShown: false}}
+//       initialRouteName="Presets">
+//       <StackPressets.Screen
+//         name="Presets"
+//         component={PresetsScreen}
+//         initialParams={{
+//           scroll: true,
+//         }}
+//       />
+//     </StackPressets.Navigator>
+//   );
+// };
 
 export const NavigationBottom = props => {
   // const currLang = useStore($langSettingsStore);

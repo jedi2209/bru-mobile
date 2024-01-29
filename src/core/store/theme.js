@@ -12,13 +12,11 @@ export const setThemeFx = createEffect(async theme => {
 });
 export const initThemeFx = createEffect(async () => {
   const user = await getCurrentUser();
-  console.log(user.theme, 'useruser');
   return user.theme;
 });
 
 export const $themeStore = createStore(defaultTheme)
   .on(initThemeFx.doneData, (_, theme) => {
-    console.log(theme, 'themethemethemethemetheme');
     return theme ? theme : defaultTheme;
   })
   .on(setThemeFx.doneData, (_, theme) => theme);

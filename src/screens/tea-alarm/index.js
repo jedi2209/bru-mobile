@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
@@ -6,7 +6,7 @@ import Wrapper from '../../core/components/Wrapper';
 import {colors} from '../../core/const/style';
 import {useNavigation} from '@react-navigation/native';
 import {useStore} from 'effector-react';
-import {$teaAlarmStrore} from '../../core/store/teaAlarm';
+import {$teaAlarmStrore, getTeaAlarmsFx} from '../../core/store/teaAlarm';
 import {$themeStore} from '../../core/store/theme';
 
 const s = StyleSheet.create({
@@ -44,10 +44,14 @@ const s = StyleSheet.create({
   listContainerStyle: {gap: 10},
 });
 
-const TeaAlarmScreen = (props, {navigation}) => {
+const TeaAlarmScreen = props => {
   const theme = useStore($themeStore);
-  const teaAlarms = useStore($teaAlarmStrore).alarms;
   const navigate = useNavigation();
+  useEffect(() => {
+    getTeaAlarmsFx();
+  }, []);
+
+  const teaAlarms = useStore($teaAlarmStrore);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -62,7 +66,7 @@ const TeaAlarmScreen = (props, {navigation}) => {
         </TouchableOpacity>
         <FlatList
           contentContainerStyle={s.listContainerStyle}
-          data={teaAlarms}
+          data={teaAlarms || []}
           renderItem={({item}) => <TeaAlarmInfo item={item} {...item} />}
         />
       </View>

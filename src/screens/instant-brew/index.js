@@ -18,7 +18,7 @@ import {
 import dayjs from 'dayjs';
 import cloneDeep from 'lodash.clonedeep';
 import isEqual from 'lodash.isequal';
-import {setTime} from '../../core/store/brewingTime';
+import {getUserFx} from '../../core/store/profile';
 
 const s = StyleSheet.create({
   container: {
@@ -71,6 +71,7 @@ const InstantBrewScreen = props => {
 
   useEffect(() => {
     getPressetsFx();
+    getUserFx();
     initThemeFx();
   }, []);
 
@@ -129,7 +130,6 @@ const InstantBrewScreen = props => {
                   tea_img: selected.tea_img,
                   tea_type: selected.tea_type,
                 });
-                setTime(time);
                 if (isChanged) {
                   setModal({
                     opened: true,
@@ -160,12 +160,16 @@ const InstantBrewScreen = props => {
                     },
                     closeModal: () => {
                       setModal(null);
-                      navigation.navigate('Brewing');
+                      navigation.navigate('Brewing', {
+                        time: time,
+                      });
                     },
                     dontShowAgainText: "Don't show me again",
                   });
                 } else {
-                  navigation.navigate('Brewing');
+                  navigation.navigate('Brewing', {
+                    time: time,
+                  });
                 }
               }}
               style={s.brewButton}>

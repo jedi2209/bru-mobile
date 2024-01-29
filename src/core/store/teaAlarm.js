@@ -1,53 +1,40 @@
-import {createEvent, createStore} from 'effector';
+import {createEffect, createStore} from 'effector';
+import {
+  createTeaAlarm,
+  deleteTeaAlarm,
+  getUserTeaAlarms,
+  updateTeaAlarm,
+} from '../../utils/db/teaAlarms';
 
-export const addTeaAlarm = createEvent();
-export const deleteTeaAlarm = createEvent();
+export const getTeaAlarmsFx = createEffect(async () => {
+  return await getUserTeaAlarms();
+});
 
-export const $teaAlarmStrore = createStore({
-  alarms: [
-    {
-      id: 1,
-      time: {hours: '7', minutes: '50'},
-      by: 'Vitalii',
-      teaType: 'Black Tea',
-      brewingData: {
-        time: {minutes: '2', seconds: '0'},
-        temperature: '90',
-        waterAmount: '100',
-      },
-      preset: {
-        title: '',
-        img: '',
-        id: 0,
-      },
-      cleaning: false,
-    },
-    {
-      id: 2,
-      time: {hours: '7', minutes: '50'},
-      by: 'John',
-      teaType: 'Puer Tea',
-      brewingData: {
-        time: {minutes: '2', seconds: '30'},
-        temperature: '90',
-        waterAmount: '250',
-      },
-      preset: {
-        title: '',
-        img: '',
-        id: 0,
-      },
-      cleaning: false,
-    },
-  ],
-})
-  .on(addTeaAlarm, (state, teaAlarm) => ({
-    ...state,
-    alarms: [...state.alarms, teaAlarm],
-  }))
-  .on(deleteTeaAlarm, (state, teaAlarm) => {
-    return {
-      ...state,
-      alarms: state.alarms.filter(item => item.id !== teaAlarm.id),
-    };
-  });
+export const addTeaAlarmFx = createEffect(async teaAlarm => {
+  return await createTeaAlarm(teaAlarm);
+});
+
+export const updateTeaAlarmFx = createEffect(async newTeaAlarm => {
+  const teaAlarm = await updateTeaAlarm(newTeaAlarm);
+  return teaAlarm;
+});
+
+export const deleteTeaAlarmFx = createEffect(async id => {
+  await deleteTeaAlarm(id);
+  return id;
+});
+
+export const $teaAlarmStrore = createStore(null)
+  .on(getTeaAlarmsFx.doneData, (_, alarms) => alarms)
+  .on(addTeaAlarmFx.doneData, (state, teaAlarm) => [...state, teaAlarm])
+  .on(updateTeaAlarmFx.doneData, (state, newTeaAlarm) =>
+    state.map(teaAlarm => {
+      if (teaAlarm.id === newTeaAlarm.id) {
+        return {...teaAlarm, ...newTeaAlarm};
+      }
+      return teaAlarm;
+    }),
+  )
+  .on(deleteTeaAlarmFx.doneData, (state, id) =>
+    state.filter(teaAlarm => teaAlarm.id !== id),
+  );

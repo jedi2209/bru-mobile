@@ -2,18 +2,18 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../core/const/style';
 import {TimerPickerModal} from 'react-native-timer-picker';
-import Wrapper from '../../core/components/Wrapper';
-import dayjs from 'dayjs';
-import ArrowIcon from '../../core/components/icons/ArrowIcon';
-import {mockedData} from '../instant-brew';
-
 import {Switch} from '@gluestack-ui/themed';
-import PressetList from '../../core/components/PressetList/PressetList';
-import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
-import {addTeaAlarm} from '../../core/store/teaAlarm';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import {$pressetsStore, getPressetsFx} from '../../core/store/pressets';
+import Wrapper from '../../core/components/Wrapper';
+import dayjs from 'dayjs';
+import ArrowIcon from '../../core/components/icons/ArrowIcon';
+import PressetList from '../../core/components/PressetList/PressetList';
+import TeaAlarm from '../../core/components/TeaAlarm/TeaAlarmInfo';
+import {addTeaAlarmFx, updateTeaAlarmFx} from '../../core/store/teaAlarm';
+import {$profileStore} from '../../core/store/profile';
+import {getTeaAlarmById} from '../../utils/db/teaAlarms';
 
 const s = StyleSheet.create({
   screenLabel: {
@@ -130,6 +130,7 @@ const s = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: colors.green.mid,
+    marginBottom: 50,
   },
   deleteButton: {
     backgroundColor: '#AF1F23',
@@ -151,7 +152,7 @@ dayjs.extend(duration);
 const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
-  const [time, setTime] = useState({hours: '0', minutes: '0'});
+  const [prepareBy, setPrepareBy] = useState({hours: '0', minutes: '0'});
   const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
   const [waterAmount, setWaterAmount] = useState(0);
   const [isTimeModalOpen, setIsTimeModalOpen] = useState(false);
@@ -159,10 +160,22 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
   const [isCleaning, setIsCleaning] = useState(false);
   const {id} = route.params;
   const pressets = useStore($pressetsStore);
+  const user = useStore($profileStore);
 
   useEffect(() => {
     getPressetsFx();
   }, []);
+
+  useEffect(() => {
+    async function fetchData() {
+      const teaAlarm = await getTeaAlarmById(id);
+      setPrepareBy(teaAlarm.prepare_by);
+      setSelected(teaAlarm.collection.presset);
+    }
+    if (id) {
+      fetchData();
+    }
+  }, [id]);
 
   useEffect(() => {
     setSelected(pressets[0]);
@@ -200,9 +213,9 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           style={s.timeWrapper}>
           <Text
             style={[s.subTitle, s.timeText, isDarkMode && s.darkTime]}>{`${dayjs
-            .duration(time.hours, 'hours')
+            .duration(prepareBy.hours, 'hours')
             .format('HH[h]')} ${dayjs
-            .duration(time.minutes, 'minutes')
+            .duration(prepareBy.minutes, 'minutes')
             .format('mm[m]')}`}</Text>
           <ArrowIcon
             style={[
@@ -229,14 +242,14 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           }}
           onConfirm={value => {
             const {hours, minutes} = value;
-            setTime({hours, minutes});
+            setPrepareBy({hours, minutes});
             setIsTimeModalOpen(false);
           }}
           setIsVisible={setIsTimeModalOpen}
           hourLabel="hours"
           minuteLabel="mins"
-          initialHours={time.hours}
-          initialMinutes={time.minutes}
+          initialHours={prepareBy.hours}
+          initialMinutes={prepareBy.minutes}
           visible={isTimeModalOpen}
           confirmButtonText="Done"
           modalTitle="Prepare tea by"
@@ -253,6 +266,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           setSelected={setSelected}
         />
         <TeaAlarm
+          disabled
           brewingTime={brewingTime}
           setBrewingTime={setBrewingTime}
           waterAmount={waterAmount}
@@ -261,9 +275,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         <View style={s.cleaning}>
           <Switch
             value={isCleaning}
-            onChange={() => {
-              setIsCleaning(prev => !prev);
-            }}
+            disabled
             sx={{
               _light: {
                 props: {
@@ -299,18 +311,21 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           ) : null}
           <TouchableOpacity
             onPress={() => {
-              addTeaAlarm({
-                id: new Date().getDate(),
-                time: {hours: time.hours, minutes: time.minutes},
-                by: 'Me',
-                teaType: selected.title,
-                brewingData: {
-                  time: brewingTime,
-                  temperature: '90',
-                  waterAmount: waterAmount,
-                },
-                isCleaning,
-              });
+              if (id) {
+                updateTeaAlarmFx({
+                  id,
+                  by: user.name,
+                  prepare_by: prepareBy,
+                  presset: selected,
+                });
+              } else {
+                addTeaAlarmFx({
+                  by: user.name,
+                  prepare_by: prepareBy,
+                  presset: selected,
+                });
+              }
+
               navigation.navigate('TeaAlarm');
             }}
             style={[s.button, s.saveButton]}>

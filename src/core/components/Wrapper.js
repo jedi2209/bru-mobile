@@ -82,7 +82,7 @@ const MainWrapper = props => {
     };
     const scrollHandler = event => {
       const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
-      const minScrollToHide = Dimensions.get('screen').height * 0.15;
+      const minScrollToHide = Dimensions.get('screen').height * 0.1;
 
       const currentOffset = Math.floor(contentOffset.y) + 100;
 

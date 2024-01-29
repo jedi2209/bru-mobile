@@ -13,7 +13,6 @@ import dayjs from 'dayjs';
 import CupIcon from '../../core/components/icons/CupIcon';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
-import {$brewingTimeStore, setTime} from '../../core/store/brewingTime';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 
 const s = StyleSheet.create({
@@ -105,8 +104,8 @@ const s = StyleSheet.create({
 const BrewingScreen = props => {
   const progressRef = useRef(null);
   const [timerInterval, setTimerInterval] = useState(null);
-  const time = useStore($brewingTimeStore);
   const navigation = useNavigation();
+  const {time} = props.route.params;
   const [counter, setCounter] = useState(time);
   const [phase, setPhase] = useState(2);
   const theme = useStore($themeStore);
@@ -114,10 +113,11 @@ const BrewingScreen = props => {
 
   useEffect(() => {
     setCounter(time);
+    setPhase(2);
     return () => {
       setCounter(0);
     };
-  }, [time]);
+  }, [props.route.params, time]);
 
   useFocusEffect(
     useCallback(() => {
@@ -128,7 +128,6 @@ const BrewingScreen = props => {
         }, 1000),
       );
       return () => {
-        setTime(0);
         setPhase(2);
         clearInterval(timerInterval);
       };
@@ -139,7 +138,7 @@ const BrewingScreen = props => {
   useEffect(() => {
     if (counter === 0) {
       clearInterval(timerInterval);
-      progressRef.current.reAnimate();
+      progressRef.current.play();
       progressRef.current.pause();
       setPhase(3);
     }
@@ -150,8 +149,8 @@ const BrewingScreen = props => {
       <View style={s.part}>
         <View style={s.progress}>
           <CircularProgress
-            initialValue={phase === 3 ? phase : counter - 1}
-            value={phase === 3 ? phase + 1 : counter - 1}
+            initialValue={phase === 3 ? phase - 1 : time - 1}
+            value={phase === 3 ? phase : counter - 1}
             radius={135.5}
             maxValue={phase === 3 ? phase : time - 1}
             ref={progressRef}

@@ -364,7 +364,9 @@ const SettingsScreen = props => {
         </View>
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
+        <TouchableOpacity onPress={() => {}}>
+          <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
+        </TouchableOpacity>
       </View>
       {/* {get(deviceManager, 'device', null) ? (
         <>
@@ -519,12 +521,6 @@ const SettingsScreen = props => {
         closeModal={() => setSettingsModalOpen(false)}
         modalTitle="Firmware successfully updated to ver. 12.423.4"
       />
-      <TouchableOpacity
-        onPress={async () => {
-          await logout();
-        }}>
-        <Text>LOGOUT</Text>
-      </TouchableOpacity>
     </Wrapper>
   );
 };

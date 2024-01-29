@@ -9,7 +9,7 @@ import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
-import {deleteTeaAlarm} from '../store/teaAlarm';
+import {deleteTeaAlarm, deleteTeaAlarmFx} from '../store/teaAlarm';
 
 const s = StyleSheet.create({
   container: {
@@ -75,7 +75,7 @@ const s = StyleSheet.create({
   },
 });
 
-const TeaAlarmInfo = ({item, id, time, by, teaType, brewingData}) => {
+const TeaAlarmInfo = ({item, id, prepare_by, by, presset}) => {
   const theme = useStore($themeStore);
   const navigation = useNavigation();
 
@@ -98,9 +98,11 @@ const TeaAlarmInfo = ({item, id, time, by, teaType, brewingData}) => {
           <Text
             style={[s.teaAlarmText, theme === 'dark' && basicStyles.darkText]}>
             Tea alarm set for{' '}
-            {time
-              ? `${dayjs.duration(time.hours, 'hours').format('HH')}:${dayjs
-                  .duration(time.minutes, 'minutes')
+            {prepare_by
+              ? `${dayjs
+                  .duration(prepare_by.hours, 'hours')
+                  .format('HH')}:${dayjs
+                  .duration(prepare_by.minutes, 'minutes')
                   .format('mm')}`
               : '1:00 AM'}
           </Text>
@@ -115,7 +117,7 @@ const TeaAlarmInfo = ({item, id, time, by, teaType, brewingData}) => {
             </Text>
             <Text
               style={[s.teaInfoText, theme === 'dark' && basicStyles.darkText]}>
-              {teaType || 'Black Tea #1'}
+              {presset?.tea_type || 'Black Tea #1'}
             </Text>
           </View>
         </View>
@@ -124,7 +126,10 @@ const TeaAlarmInfo = ({item, id, time, by, teaType, brewingData}) => {
             onPress={() => navigation.navigate('NewTeaAlarm', {id})}>
             <PenIcon style={s.penIcon} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => deleteTeaAlarm(item)}>
+          <TouchableOpacity
+            onPress={() => {
+              deleteTeaAlarmFx(id);
+            }}>
             <TrashIcon />
           </TouchableOpacity>
         </View>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
 import {
   ScrollView,
@@ -235,21 +235,6 @@ const chartWeeksData = [14, 10, 8, 2];
 const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
 const chartYearsData = [365, 363, 200, 100, 150];
 
-const selectData = mode => {
-  switch (mode) {
-    case 'days':
-      return chartDaysData;
-    case 'weeks':
-      return chartWeeksData;
-    case 'months':
-      return chartMonthsData;
-    case 'years':
-      return chartYearsData;
-    default:
-      return [];
-  }
-};
-
 function scaleValue(minValue, maxValue, value, maxHeight) {
   if (value === 0) {
     return 0;
@@ -272,6 +257,7 @@ const ProfileScreen = props => {
   const phoneTheme = useColorMode();
   const isDarkMode = phoneTheme === 'dark';
   const [selectedFilter, setselectedFilter] = useState('days');
+
   const [mode, setMode] = useState('view');
   const [modal, setModal] = useState(null);
   const user = useStore($profileStore);
@@ -304,6 +290,21 @@ const ProfileScreen = props => {
       });
     }
   }, [errors]);
+
+  const selectedFilterByDate = useMemo(() => {
+    switch (selectedFilter) {
+      case 'days':
+        return chartDaysData;
+      case 'weeks':
+        return chartWeeksData;
+      case 'months':
+        return chartMonthsData;
+      case 'years':
+        return chartYearsData;
+      default:
+        return [];
+    }
+  }, [selectedFilter]);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -525,7 +526,7 @@ const ProfileScreen = props => {
               showsHorizontalScrollIndicator={false}
               style={s.barStatistic}>
               {/* <Text style={s.totalTea}>53242 litres</Text> */}
-              {selectData(selectedFilter).map(item => {
+              {selectedFilterByDate.map(item => {
                 return (
                   <View>
                     {/* {item ? <Text>{item}</Text> : null} */}
@@ -536,7 +537,7 @@ const ProfileScreen = props => {
                         {
                           height: scaleValue(
                             0,
-                            Math.max(...selectData(selectedFilter)),
+                            Math.max(...selectedFilterByDate),
                             item,
                             maxBarHeight,
                           ),
