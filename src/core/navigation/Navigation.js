@@ -13,7 +13,6 @@ import UpdateScreen from '../../screens/downloadingUpdate';
 import AuthorizationScreen from '../../screens/authorization';
 import {useStore} from 'effector-react';
 import {$userStore} from '../store/user';
-import {getUsers} from '../../utils/db/auth';
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
   const user = useStore($userStore);

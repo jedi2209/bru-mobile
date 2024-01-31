@@ -1,8 +1,50 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-const pressetsCollection = firestore().collection('pressets');
+export const pressetsCollection = firestore().collection('pressets');
 const uid = auth().currentUser.uid;
+
+const initPressets = [
+  {
+    brewing_data: {
+      time: 150,
+      waterAmount: 250,
+    },
+    cleaning: false,
+    id: 'green_tea',
+    tea_img: 'gs://brutea-app.appspot.com/images/green_tea.png',
+    tea_type: 'Green Tea',
+  },
+  {
+    brewing_data: {
+      time: 270,
+      waterAmount: 250,
+    },
+    cleaning: false,
+    id: 'black_tea',
+    tea_img: 'gs://brutea-app.appspot.com/images/black_tea.png',
+    tea_type: 'Black Tea',
+  },
+  {
+    brewing_data: {
+      time: 210,
+      waterAmount: 250,
+    },
+    cleaning: false,
+    id: 'puer_tea',
+    tea_img: 'gs://brutea-app.appspot.com/images/puer_tea.png',
+    tea_type: 'Puer Tea',
+  },
+];
+
+export const addInitPressets = async () => {
+  try {
+    initPressets.forEach(async presset => {
+      await pressetsCollection.doc(uid).collection('pressets').add(presset);
+    });
+  } catch (error) {}
+};
+
 export const getUserPressets = async () => {
   try {
     const pressets = await pressetsCollection

@@ -1,6 +1,7 @@
 import React, {useMemo} from 'react';
 import {FlatList, Pressable} from 'react-native';
 import PressetItem from './PressetItem';
+import {usePressetList} from '../../../hooks/usePressetList';
 
 const PressetList = ({
   style,
@@ -8,23 +9,39 @@ const PressetList = ({
   selected,
   type,
   withInitData = false,
-  data,
 }) => {
+  const {pressets} = usePressetList();
   const memoizedPressets = useMemo(() => {
     if (withInitData) {
       return [
-        ...data,
         {
-          tea_type: 'New Presset',
-          type,
+          brewing_data: {
+            time: 0,
+            waterAmount: 0,
+          },
+          cleaning: false,
+          id: 'instant_brew',
+          tea_img:
+            'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Finstant_brew.png?alt=media&token=43651269-9801-46f7-aa29-7fcd4ee24541',
+          tea_type: 'Instant Brew',
+        },
+        ...pressets,
+        {
+          brewing_data: {
+            time: 0,
+            waterAmount: 0,
+          },
+          cleaning: false,
           id: 'new_presset',
-          tea_img: require('../../../../assets/teaImages/new_presset.png'),
+          tea_img:
+            'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fnew_presset.png?alt=media&token=882598be-67ae-4eea-aac7-54736a3dd5ef',
+          tea_type: 'New Presset',
         },
       ];
     }
 
-    return data;
-  }, [data, type, withInitData]);
+    return pressets;
+  }, [pressets, withInitData]);
 
   return (
     <FlatList
@@ -40,10 +57,7 @@ const PressetList = ({
           <PressetItem
             type={type}
             title={item?.tea_type}
-            img={
-              item?.tea_img ||
-              require('../../../../assets/teaImages/emptyPressetImage.png')
-            }
+            img={item?.tea_img}
             selected={selected?.id === item.id}
           />
         </Pressable>

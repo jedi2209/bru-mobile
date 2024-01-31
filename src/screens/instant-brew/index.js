@@ -88,6 +88,42 @@ const InstantBrewScreen = props => {
     isCleaning,
   } = useBrewingData(selected);
 
+  const openConfiramtionModal = time => {
+    setModal({
+      opened: true,
+      withCancelButton: true,
+      cancelButtonText: 'Later',
+      modalTitle: 'Do you want to save this configutation as a new preset?',
+      confirmationText: (
+        <Text>
+          You will be able to create new presets later in{' '}
+          <Text style={{color: colors.green.mid}}>Presets</Text> page.
+        </Text>
+      ),
+      confirmationButtonText: 'Save preset',
+      withDontShowAgain: true,
+      onConfirm: () => {
+        addPressetToStoreFx({
+          brewing_data: {time, waterAmount},
+          cleaning: isCleaning,
+          tea_img: selected.tea_img,
+          tea_type: selected.tea_type,
+        });
+        setModal(null);
+        navigation.navigate('Brewing', {
+          time: time,
+        });
+      },
+      closeModal: () => {
+        setModal(null);
+        navigation.navigate('Brewing', {
+          time: time,
+        });
+      },
+      dontShowAgainText: "Don't show me again",
+    });
+  };
+
   return (
     <Wrapper {...props}>
       {modal ? <ConfirmationModal {...modal} /> : null}
@@ -120,41 +156,7 @@ const InstantBrewScreen = props => {
                   tea_type: selected.tea_type,
                 });
                 if (isChanged) {
-                  setModal({
-                    opened: true,
-                    withCancelButton: true,
-                    cancelButtonText: 'Later',
-                    modalTitle:
-                      'Do you want to save this configutation as a new preset?',
-                    confirmationText: (
-                      <Text>
-                        You will be able to create new presets later in{' '}
-                        <Text style={{color: colors.green.mid}}>Presets</Text>{' '}
-                        page.
-                      </Text>
-                    ),
-                    confirmationButtonText: 'Save preset',
-                    withDontShowAgain: true,
-                    onConfirm: () => {
-                      addPressetToStoreFx({
-                        brewing_data: {time, waterAmount},
-                        cleaning: isCleaning,
-                        tea_img: selected.tea_img,
-                        tea_type: selected.tea_type,
-                      });
-                      setModal(null);
-                      navigation.navigate('Brewing', {
-                        time: time,
-                      });
-                    },
-                    closeModal: () => {
-                      setModal(null);
-                      navigation.navigate('Brewing', {
-                        time: time,
-                      });
-                    },
-                    dontShowAgainText: "Don't show me again",
-                  });
+                  openConfiramtionModal(time);
                 } else {
                   navigation.navigate('Brewing', {
                     time: time,

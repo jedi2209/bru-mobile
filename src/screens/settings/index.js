@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, Dimensions, Alert} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  Alert,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Button,
   ButtonText,
@@ -28,6 +35,7 @@ import NotificationModal from '../../core/components/NotificationModal';
 import {setSettingsModalOpen} from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
+import {logout} from '../../utils/auth';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -185,6 +193,10 @@ const SettingsScreen = props => {
       </Button>
 
       <CommonSettings />
+
+      <TouchableOpacity onPress={async () => logout()}>
+        <Text>LOGOUT</Text>
+      </TouchableOpacity>
 
       {/* {get(deviceManager, 'device', null) ? (
         <>

@@ -56,6 +56,7 @@ const s = StyleSheet.create({
 
 const PressetItem = ({title, id, img, selected, type}) => {
   const theme = useStore($themeStore);
+  console.log(img, 'imgimgimgimgimgimgimgimg');
   return (
     <View style={s.shadow}>
       <LinearGradient
@@ -79,10 +80,15 @@ const PressetItem = ({title, id, img, selected, type}) => {
             <Image
               resizeMode="contain"
               style={[s.image, type === 'pressets' && s.pressetScreenImage]}
-              source={img}
+              source={{
+                uri: img,
+              }}
             />
           ) : (
-            <Image resizeMode="contain" />
+            <Image
+              resizeMode="contain"
+              source={require('../../../../assets/teaImages/emptyPressetImage.png')}
+            />
           )}
         </View>
         <Text style={s.title}>{title}</Text>

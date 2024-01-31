@@ -270,8 +270,11 @@ const PresetsScreen = props => {
               resizeMode="contain"
               style={s.teaImage}
               source={
-                selected?.tea_img ||
-                require('../../../assets/teaImages/emptyPressetImage.png')
+                selected?.tea_img
+                  ? {
+                      uri: selected?.tea_img,
+                    }
+                  : require('../../../assets/teaImages/emptyPressetImage.png')
               }
             />
           )}

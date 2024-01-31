@@ -1,6 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,14 +18,15 @@ import ConfirmationModal from '../../core/components/ConfirmationModal';
 import Input from '../../core/components/Input';
 import {useStore} from 'effector-react';
 import {$profileStore, getUserFx} from '../../core/store/profile';
-import {updateUser} from '../../utils/db/auth';
+import {updateUser, uploadImage} from '../../utils/db/auth';
 import {updateEmail, updatePassword} from '../../utils/auth';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
-import {scaleValue} from '../../helpers/scaleValue';
 import {$themeStore} from '../../core/store/theme';
+import {scaleValue} from '../../helpers/scaleValue';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const maxBarHeight = 80;
 
@@ -246,6 +248,7 @@ const ProfileScreen = props => {
   const [mode, setMode] = useState('view');
   const [modal, setModal] = useState(null);
   const [selectedFilter, setselectedFilter] = useState('days');
+  const [image, setImage] = useState(null);
 
   const isDarkMode = theme === 'dark';
 
@@ -262,6 +265,8 @@ const ProfileScreen = props => {
       });
     }
   }, [errors]);
+
+  console.log(user);
 
   const selectedFilterByDate = useMemo(() => {
     switch (selectedFilter) {
@@ -303,7 +308,41 @@ const ProfileScreen = props => {
             </TouchableOpacity>
           )}
           <View style={[s.image, s.noImage, isDarkMode && s.noImageDark]}>
-            <UserIcon width={66} height={66} fill="#999999" />
+            {mode === 'view' ? (
+              <Image
+                width={90}
+                height={90}
+                style={{borderRadius: 100}}
+                source={{
+                  uri: user.img || image,
+                }}
+              />
+            ) : (
+              <TouchableOpacity
+                onPress={() => {
+                  ImagePicker.openPicker({
+                    width: 300,
+                    height: 400,
+                    cropping: true,
+                  }).then(pickedImage => {
+                    console.log(pickedImage);
+                    setImage(pickedImage.sourceURL);
+                  });
+                }}>
+                {image || user.img ? (
+                  <Image
+                    width={90}
+                    height={90}
+                    style={{borderRadius: 100}}
+                    source={{
+                      uri: image || user.img,
+                    }}
+                  />
+                ) : (
+                  <UserIcon width={66} height={66} fill="#999999" />
+                )}
+              </TouchableOpacity>
+            )}
           </View>
         </View>
         <View style={s.userDataWrapper}>
@@ -416,6 +455,11 @@ const ProfileScreen = props => {
         {mode === 'edit' && (
           <TouchableOpacity
             onPress={handleSubmit(async data => {
+              let url;
+              if (image) {
+                url = await uploadImage(image, user.uid);
+                setImage(null);
+              }
               if (data.password) {
                 await updatePassword(data.password);
               }
@@ -429,6 +473,7 @@ const ProfileScreen = props => {
                 await updateUser(user.uid, {
                   email: data.email,
                   name: data.name,
+                  img: url,
                 });
               }
               setMode('view');
