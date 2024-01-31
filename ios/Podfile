@@ -32,6 +32,8 @@ target 'bruapp' do
   flags = get_default_flags()
 
   use_frameworks! :linkage => :static
+  pod 'Firebase', :modular_headers => true
+  pod 'FirebaseCore', :modular_headers => true
   $RNFirebaseAsStaticFramework = true
 
   use_react_native!(

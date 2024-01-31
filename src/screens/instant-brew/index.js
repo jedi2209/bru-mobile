@@ -1,4 +1,10 @@
-import React, {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Wrapper from '@comp/Wrapper';
 import {useEffect, useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
@@ -14,6 +20,8 @@ import isEqual from 'lodash.isequal';
 import {getUserFx} from '../../core/store/profile';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
+import {usePressetList} from '../../hooks/usePressetList';
+import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
 
 const s = StyleSheet.create({
   container: {
@@ -53,30 +61,32 @@ const s = StyleSheet.create({
     borderColor: colors.green.mid,
   },
   teaAlarmWrapper: {marginTop: 30},
+  listContainerStyle: {gap: 10},
 });
 
 const InstantBrewScreen = props => {
   const theme = useStore($themeStore);
   const [modal, setModal] = useState(null);
   const navigation = useNavigation();
+  const teaAlarms = useStore($teaAlarmsStrore);
 
   useEffect(() => {
     getPressetsFx();
     getUserFx();
+    getTeaAlarmsFx();
     initThemeFx();
   }, []);
 
+  const {selected, setSelected, pressets} = usePressetList();
+
   const {
-    setSelected,
-    selected,
     setBrewingTime,
     setIsCleaning,
     setWaterAmount,
     brewingTime,
     waterAmount,
     isCleaning,
-    pressets,
-  } = useBrewingData();
+  } = useBrewingData(selected);
 
   return (
     <Wrapper {...props}>
@@ -84,9 +94,10 @@ const InstantBrewScreen = props => {
       <View style={s.container}>
         <PressetList
           style={s.list}
-          data={pressets}
           selected={selected}
           setSelected={setSelected}
+          data={pressets}
+          withInitData
         />
         <View style={s.innerContainer}>
           <BrewingData
@@ -169,7 +180,11 @@ const InstantBrewScreen = props => {
             </TouchableOpacity>
           </View>
           <View style={s.teaAlarmWrapper}>
-            <TeaAlarmInfo />
+            <FlatList
+              contentContainerStyle={s.listContainerStyle}
+              data={teaAlarms || []}
+              renderItem={({item}) => <TeaAlarmInfo {...item} />}
+            />
           </View>
         </View>
       </View>

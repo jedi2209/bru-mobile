@@ -1,19 +1,10 @@
 import dayjs from 'dayjs';
-import {useStore} from 'effector-react';
 import {useCallback, useEffect, useState} from 'react';
-import {$pressetsStore} from '../core/store/pressets';
 
-export const useBrewingData = () => {
+export const useBrewingData = selected => {
   const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
   const [waterAmount, setWaterAmount] = useState(0);
-  const [selected, setSelected] = useState(null);
   const [isCleaning, setIsCleaning] = useState(false);
-
-  const pressets = useStore($pressetsStore);
-
-  useEffect(() => {
-    setSelected(pressets[0]);
-  }, [pressets]);
 
   const setSelectedState = useCallback(() => {
     const selectedBrewingTime = {
@@ -48,10 +39,7 @@ export const useBrewingData = () => {
     setBrewingTime,
     waterAmount,
     setWaterAmount,
-    selected,
-    setSelected,
     isCleaning,
     setIsCleaning,
-    pressets,
   };
 };

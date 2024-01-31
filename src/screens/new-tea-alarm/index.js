@@ -14,6 +14,7 @@ import {$profileStore} from '../../core/store/profile';
 import {$teaAlarmStrore, getTeaAlarmByIdFx} from '../../core/store/teaAlarm';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
+import {usePressetList} from '../../hooks/usePressetList';
 
 const s = StyleSheet.create({
   screenLabel: {
@@ -159,17 +160,16 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
   const user = useStore($profileStore);
   const teaAlarm = useStore($teaAlarmStrore);
 
+  const {selected, setSelected, pressets} = usePressetList();
+
   const {
-    selected,
-    setSelected,
     setBrewingTime,
     setIsCleaning,
     setWaterAmount,
     brewingTime,
     waterAmount,
     isCleaning,
-    pressets,
-  } = useBrewingData();
+  } = useBrewingData(selected);
 
   useEffect(() => {
     if (id) {
@@ -179,7 +179,6 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
 
   useEffect(() => {
     if (teaAlarm) {
-      console.log(teaAlarm.prepare_by);
       setPrepareBy(teaAlarm.prepare_by);
       setSelected(teaAlarm.presset);
     }
@@ -245,9 +244,9 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         </Text>
         <PressetList
           style={s.list}
-          data={pressets}
           selected={selected}
           setSelected={setSelected}
+          data={pressets}
         />
         <BrewingData
           disabled

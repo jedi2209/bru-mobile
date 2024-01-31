@@ -26,6 +26,7 @@ import {
 } from '../../core/store/pressets';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
+import {usePressetList} from '../../hooks/usePressetList';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -156,17 +157,16 @@ const PresetsScreen = props => {
     getPressetsFx();
   }, []);
 
+  const {selected, setSelected, pressets} = usePressetList();
+
   const {
-    setSelected,
-    selected,
     setBrewingTime,
     setIsCleaning,
     setWaterAmount,
     brewingTime,
     waterAmount,
     isCleaning,
-    pressets,
-  } = useBrewingData();
+  } = useBrewingData(selected);
 
   useEffect(() => {
     if (selected) {
@@ -194,10 +194,10 @@ const PresetsScreen = props => {
       </View>
       <PressetList
         style={s.list}
-        data={pressets}
         type="pressets"
         setSelected={setSelected}
         selected={selected}
+        data={pressets}
       />
       <View style={s.shadow}>
         <LinearGradient
