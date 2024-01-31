@@ -49,19 +49,21 @@ const PressetList = ({
       data={memoizedPressets}
       horizontal
       showsHorizontalScrollIndicator={false}
-      renderItem={({item}) => (
-        <Pressable
-          onPress={() => {
-            setSelected(item);
-          }}>
-          <PressetItem
-            type={type}
-            title={item?.tea_type}
-            img={item?.tea_img}
-            selected={selected?.id === item.id}
-          />
-        </Pressable>
-      )}
+      renderItem={({item}) => {
+        return (
+          <Pressable
+            onPress={() => {
+              setSelected(item);
+            }}>
+            <PressetItem
+              type={type}
+              title={item?.tea_type}
+              img={item?.tea_img}
+              selected={selected?.id === item.id}
+            />
+          </Pressable>
+        );
+      }}
       keyExtractor={item => item.id}
     />
   );

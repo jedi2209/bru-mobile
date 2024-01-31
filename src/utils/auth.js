@@ -41,7 +41,6 @@ export const isSignedIn = async () => {
 
 export const logout = async () => {
   await auth().signOut();
-  setUser(null);
 };
 
 export const updatePassword = async password => {

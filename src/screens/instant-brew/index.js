@@ -182,11 +182,11 @@ const InstantBrewScreen = props => {
             </TouchableOpacity>
           </View>
           <View style={s.teaAlarmWrapper}>
-            <FlatList
+            {/* <FlatList
               contentContainerStyle={s.listContainerStyle}
               data={teaAlarms || []}
               renderItem={({item}) => <TeaAlarmInfo {...item} />}
-            />
+            /> */}
           </View>
         </View>
       </View>

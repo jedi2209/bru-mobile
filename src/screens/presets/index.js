@@ -27,6 +27,8 @@ import {
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
+import ImagePicker from 'react-native-image-crop-picker';
+import {uploadPressetImage} from '../../utils/db/pressets';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -89,7 +91,7 @@ const s = StyleSheet.create({
     paddingBottom: 2,
     marginBottom: 6,
   },
-  teaImage: {marginBottom: 10, width: 74, height: 68},
+  teaImage: {marginBottom: 10, width: 74, height: 68, borderRadius: 100},
   cleaningText: {
     color: colors.gray.grayDarkText,
     fontStyle: 'italic',
@@ -152,6 +154,7 @@ const PresetsScreen = props => {
   const [mode, setMode] = useState('list');
   const [modal, setModal] = useState(null);
   const [newTeaName, setNewTeaName] = useState('');
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     getPressetsFx();
@@ -257,17 +260,32 @@ const PresetsScreen = props => {
               </TouchableOpacity>
             )}
           </View>
-          {mode === 'create' ? (
-            <TouchableOpacity>
+          {mode !== 'list' ? (
+            <TouchableOpacity
+              onPress={() => {
+                ImagePicker.openPicker({
+                  width: 300,
+                  height: 400,
+                  cropping: true,
+                }).then(pickedImage => {
+                  setImage(pickedImage.sourceURL);
+                });
+              }}>
               <Image
-                resizeMode="contain"
+                resizeMode="cover"
                 style={s.teaImage}
-                source={require('../../../assets/teaImages/emptyPressetImage.png')}
+                source={
+                  image
+                    ? {
+                        uri: image,
+                      }
+                    : require('../../../assets/teaImages/emptyPressetImage.png')
+                }
               />
             </TouchableOpacity>
           ) : (
             <Image
-              resizeMode="contain"
+              resizeMode="cover"
               style={s.teaImage}
               source={
                 selected?.tea_img
@@ -354,7 +372,7 @@ const PresetsScreen = props => {
 
       {mode !== 'list' && (
         <TouchableOpacity
-          onPress={() => {
+          onPress={async () => {
             if (mode === 'create') {
               const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
               addPressetToStoreFx({
@@ -368,10 +386,11 @@ const PresetsScreen = props => {
               });
             } else if (mode === 'edit') {
               const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
+              const imgUrl = await uploadPressetImage(image, selected.id);
               updatePressetFx({
                 id: selected.id,
                 tea_type: newTeaName,
-                tea_img: '',
+                tea_img: imgUrl,
                 brewing_data: {
                   time,
                   waterAmount,

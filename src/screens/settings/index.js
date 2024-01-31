@@ -36,6 +36,7 @@ import {setSettingsModalOpen} from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
 import {logout} from '../../utils/auth';
+import {setUser} from '../../core/store/user';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -194,7 +195,12 @@ const SettingsScreen = props => {
 
       <CommonSettings />
 
-      <TouchableOpacity onPress={async () => logout()}>
+      <TouchableOpacity
+        onPress={async () => {
+          await logout();
+          await setUser(null);
+          navigation.navigate('Authorization');
+        }}>
         <Text>LOGOUT</Text>
       </TouchableOpacity>
 

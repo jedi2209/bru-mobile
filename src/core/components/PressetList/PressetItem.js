@@ -37,6 +37,7 @@ const s = StyleSheet.create({
   image: {
     width: 100,
     height: 100,
+    borderRadius: 100,
   },
   pressetScreenImage: {
     width: 74,
@@ -55,8 +56,8 @@ const s = StyleSheet.create({
 });
 
 const PressetItem = ({title, id, img, selected, type}) => {
+  console.log(img);
   const theme = useStore($themeStore);
-  console.log(img, 'imgimgimgimgimgimgimgimg');
   return (
     <View style={s.shadow}>
       <LinearGradient
@@ -78,7 +79,9 @@ const PressetItem = ({title, id, img, selected, type}) => {
           ]}>
           {img ? (
             <Image
-              resizeMode="contain"
+              width={100}
+              height={100}
+              resizeMode="cover"
               style={[s.image, type === 'pressets' && s.pressetScreenImage]}
               source={{
                 uri: img,
@@ -86,7 +89,8 @@ const PressetItem = ({title, id, img, selected, type}) => {
             />
           ) : (
             <Image
-              resizeMode="contain"
+              style={[s.image, type === 'pressets' && s.pressetScreenImage]}
+              resizeMode="cover"
               source={require('../../../../assets/teaImages/emptyPressetImage.png')}
             />
           )}

@@ -266,8 +266,6 @@ const ProfileScreen = props => {
     }
   }, [errors]);
 
-  console.log(user);
-
   const selectedFilterByDate = useMemo(() => {
     switch (selectedFilter) {
       case 'days':
@@ -325,7 +323,6 @@ const ProfileScreen = props => {
                     height: 400,
                     cropping: true,
                   }).then(pickedImage => {
-                    console.log(pickedImage);
                     setImage(pickedImage.sourceURL);
                   });
                 }}>

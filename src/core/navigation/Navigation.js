@@ -17,6 +17,8 @@ const Stack = createNativeStackNavigator();
 const NavMain = props => {
   const user = useStore($userStore);
 
+  console.log(user, 'useruseruser');
+
   return (
     <Stack.Navigator screenOptions={{header: CustomHeader}} {...props}>
       {user ? (
