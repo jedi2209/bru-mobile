@@ -6,7 +6,7 @@ import React, {
   View,
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
-import {useEffect, useState} from 'react';
+import {useCallback, useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
 import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
@@ -22,10 +22,12 @@ import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
 import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
+import {useFocusEffect} from '@react-navigation/native';
 
 const s = StyleSheet.create({
   container: {
     marginTop: 40,
+    marginBottom: 50,
   },
   list: {paddingLeft: 10, marginBottom: 30, paddingBottom: 10},
   innerContainer: {
@@ -70,12 +72,15 @@ const InstantBrewScreen = props => {
   const navigation = useNavigation();
   const teaAlarms = useStore($teaAlarmsStrore);
 
-  useEffect(() => {
-    getPressetsFx();
-    getUserFx();
-    getTeaAlarmsFx();
-    initThemeFx();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getPressetsFx();
+      getUserFx();
+      getTeaAlarmsFx();
+      initThemeFx();
+    }, []),
+    [],
+  );
 
   const {selected, setSelected, pressets} = usePressetList();
 
@@ -182,11 +187,11 @@ const InstantBrewScreen = props => {
             </TouchableOpacity>
           </View>
           <View style={s.teaAlarmWrapper}>
-            {/* <FlatList
+            <FlatList
               contentContainerStyle={s.listContainerStyle}
               data={teaAlarms || []}
               renderItem={({item}) => <TeaAlarmInfo {...item} />}
-            /> */}
+            />
           </View>
         </View>
       </View>

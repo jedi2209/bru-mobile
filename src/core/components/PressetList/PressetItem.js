@@ -56,7 +56,6 @@ const s = StyleSheet.create({
 });
 
 const PressetItem = ({title, id, img, selected, type}) => {
-  console.log(img);
   const theme = useStore($themeStore);
   return (
     <View style={s.shadow}>

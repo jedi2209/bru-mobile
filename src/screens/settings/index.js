@@ -193,8 +193,6 @@ const SettingsScreen = props => {
         </ButtonText>
       </Button>
 
-      <CommonSettings />
-
       <TouchableOpacity
         onPress={async () => {
           await logout();
@@ -203,6 +201,8 @@ const SettingsScreen = props => {
         }}>
         <Text>LOGOUT</Text>
       </TouchableOpacity>
+
+      <CommonSettings />
 
       {/* {get(deviceManager, 'device', null) ? (
         <>
@@ -364,7 +364,6 @@ const windowHeight = Dimensions.get('window').height;
 const s = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 14,
-    marginVertical: 30,
   },
   screenTitle: {
     color: colors.gray.grayDarkText,
@@ -374,6 +373,7 @@ const s = StyleSheet.create({
     lineHeight: 24,
     letterSpacing: 0.4,
     marginBottom: 20,
+    marginTop: 30,
   },
   darkTextMain: {
     color: colors.white,

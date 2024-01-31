@@ -69,39 +69,38 @@ const MainWrapper = props => {
         ],
       });
     };
-    const showTabBar = value => {
-      setHide(false);
-      animateTabBar(value);
-      props.navigation.setOptions({
-        tabBarStyle: [
-          tabBarStyle.default,
-          tabBarStyle[theme],
-          {transform: [{translateY: animValue}]},
-        ],
-      });
-    };
-    const scrollHandler = event => {
-      const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
-      const minScrollToHide = Dimensions.get('screen').height * 0.1;
+    // const showTabBar = value => {
+    //   setHide(false);
+    //   animateTabBar(value);
+    //   props.navigation.setOptions({
+    //     tabBarStyle: [
+    //       tabBarStyle.default,
+    //       tabBarStyle[theme],
+    //       {transform: [{translateY: animValue}]},
+    //     ],
+    //   });
+    // };
+    // const scrollHandler = event => {
+    //   const {layoutMeasurement, contentOffset, contentSize} = event.nativeEvent;
+    //   const minScrollToHide = Dimensions.get('screen').height * 0.1;
 
-      const currentOffset = Math.floor(contentOffset.y) + 100;
+    //   const currentOffset = Math.floor(contentOffset.y) + 100;
 
-      let direction = currentOffset > offset ? 'down' : 'up';
-      const isAtBottom =
-        layoutMeasurement.height + currentOffset >= contentSize.height + 100;
-      if (direction === 'down' && currentOffset > minScrollToHide) {
-        translateY.value = 0;
-        hideTabBar(100);
-      } else if (!isAtBottom && direction === 'up') {
-        translateY.value = 200;
-        showTabBar(0);
-      }
-      setOffset(currentOffset);
-    };
+    //   let direction = currentOffset > offset ? 'down' : 'up';
+    //   const isAtBottom =
+    //     layoutMeasurement.height + currentOffset >= contentSize.height + 100;
+    //   if (direction === 'down' && currentOffset > minScrollToHide) {
+    //     translateY.value = 0;
+    //     hideTabBar(100);
+    //   } else if (!isAtBottom && direction === 'up') {
+    //     translateY.value = 200;
+    //     showTabBar(0);
+    //   }
+    //   setOffset(currentOffset);
+    // };
     return (
       <Animated.View style={[styles.imageBackground]}>
         <Animated.ScrollView
-          onScroll={scrollHandler}
           contentContainerStyle={[
             styles.mainWrapper,
             props.additionalContentContainerStyle,

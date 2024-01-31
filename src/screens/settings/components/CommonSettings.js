@@ -7,6 +7,7 @@ import {basicStyles, colors} from '../../../core/const/style';
 import {Switch} from '@gluestack-ui/themed';
 
 const s = StyleSheet.create({
+  wrapper: {marginBottom: 50},
   darkTextMain: {
     color: colors.white,
   },
@@ -109,7 +110,7 @@ const CommonSettings = () => {
   const isDarkMode = theme === 'dark';
 
   return (
-    <View>
+    <View style={s.wrapper}>
       <View style={[s.filterStatus, s.bottomBorder]}>
         <View>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>

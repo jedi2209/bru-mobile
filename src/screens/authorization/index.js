@@ -23,6 +23,7 @@ import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
+import {setUser} from '../../core/store/user';
 
 const s = StyleSheet.create({
   container: {
@@ -273,6 +274,7 @@ const AuthorizationScreen = () => {
                     data.email,
                     data.password,
                   );
+                  setUser(currentUser);
                 }
               } catch (error) {
                 console.log(error);
