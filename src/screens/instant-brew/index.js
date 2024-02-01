@@ -79,7 +79,6 @@ const InstantBrewScreen = props => {
       getTeaAlarmsFx();
       initThemeFx();
     }, []),
-    [],
   );
 
   const {selected, setSelected, pressets} = usePressetList();

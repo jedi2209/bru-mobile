@@ -1,17 +1,7 @@
+import {useStore} from 'effector-react';
 import React, {useRef} from 'react';
 import {StyleSheet, View, Text, Animated} from 'react-native';
-
-const values = [
-  '',
-  {label: '150ml', value: 150},
-  {label: '200ml', value: 200},
-  {label: '250ml', value: 250},
-  {label: '300ml', value: 300},
-  {label: '400ml', value: 400},
-  {label: '450ml', value: 450},
-  {label: '500ml', value: 500},
-  '',
-];
+import {$profileStore} from '../../store/profile';
 
 const ITEM_HEIGHT = 50;
 const VISIBLE_ITEMS = 3;
@@ -47,6 +37,20 @@ const s = StyleSheet.create({
 });
 
 const WaterAmountPicker = ({setValue}) => {
+  const {units} = useStore($profileStore);
+  const values = [
+    '',
+    {label: units === 'metric' ? '150ml' : '5oz', value: 150},
+    {label: units === 'metric' ? '200ml' : '7oz', value: 200},
+    {label: units === 'metric' ? '250ml' : '8oz', value: 250},
+    {label: units === 'metric' ? '300ml' : '10oz', value: 300},
+    {label: units === 'metric' ? '350ml' : '12oz', value: 350},
+    {label: units === 'metric' ? '400ml' : '13oz', value: 400},
+    {label: units === 'metric' ? '450ml' : '15oz', value: 450},
+    {label: units === 'metric' ? '500ml' : '17oz', value: 500},
+    '',
+  ];
+
   const momentumScrollEnd = event => {
     const y = event.nativeEvent.contentOffset.y;
     const index = Math.round(y / ITEM_HEIGHT) + 1;
@@ -83,6 +87,7 @@ const WaterAmountPicker = ({setValue}) => {
         bounces={false}
         showsVerticalScrollIndicator={false}
         renderItem={renderItem}
+        onScrollEndDrag={momentumScrollEnd}
         onMomentumScrollEnd={momentumScrollEnd}
         scrollEventThrottle={16}
         onScroll={Animated.event(
@@ -95,7 +100,7 @@ const WaterAmountPicker = ({setValue}) => {
           index,
         })}
       />
-      <View style={[s.indicatorHolder, {top: ITEM_HEIGHT - 1}]}>
+      <View style={[s.indicatorHolder, {top: ITEM_HEIGHT}]}>
         <View style={[s.indicator]} />
         <View style={[s.indicator, {marginTop: ITEM_HEIGHT}]} />
       </View>

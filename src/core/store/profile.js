@@ -7,6 +7,9 @@ export const getUserFx = createEffect(async () => {
 
 export const setProfileUser = createEvent();
 
+export const updateProfileUser = createEvent();
+
 export const $profileStore = createStore({})
   .on(getUserFx.doneData, (_, user) => user)
-  .on(setProfileUser, (_, user) => user);
+  .on(setProfileUser, (_, user) => user)
+  .on(updateProfileUser, (state, data) => ({...state, ...data}));

@@ -10,6 +10,12 @@ import TemperatureIcon from '../icons/TemperatureIcon';
 import WaterIcon from '../icons/WaterIcon';
 import TeaAlarmInfoItem from './BrewingDataItem';
 import WaterAmountModal from '../WaterAmountModal';
+import {useStore} from 'effector-react';
+import {$profileStore} from '../../store/profile';
+import {
+  convertTemperature,
+  convertWaterAmount,
+} from '../../../helpers/convertUnits';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
@@ -70,6 +76,7 @@ const BrewingData = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
+  const {units} = useStore($profileStore);
 
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
@@ -127,7 +134,9 @@ const BrewingData = ({
           />
         }
         title="Water temperature"
-        value="90°"
+        value={`${units === 'metric' ? 90 : convertTemperature(90)}${
+          units === 'metric' ? '°C' : '°F'
+        }`}
       />
 
       <View style={s.divider} />
@@ -144,7 +153,9 @@ const BrewingData = ({
             />
           }
           title="Water amount"
-          value={`${waterAmount}ml`}
+          value={`${
+            units === 'metric' ? waterAmount : convertWaterAmount(waterAmount)
+          }${units === 'metric' ? 'ml' : 'oz'}`}
         />
       </TouchableOpacity>
       <WaterAmountModal

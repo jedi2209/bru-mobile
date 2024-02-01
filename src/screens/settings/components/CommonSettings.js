@@ -5,6 +5,8 @@ import {$themeStore, setThemeFx} from '../../../core/store/theme';
 import Collapsible from 'react-native-collapsible';
 import {basicStyles, colors} from '../../../core/const/style';
 import {Switch} from '@gluestack-ui/themed';
+import {updateUser} from '../../../utils/db/auth';
+import {$profileStore, updateProfileUser} from '../../../core/store/profile';
 
 const s = StyleSheet.create({
   wrapper: {marginBottom: 50},
@@ -101,13 +103,21 @@ const s = StyleSheet.create({
 });
 
 const CommonSettings = () => {
-  const [selected, setSelected] = useState('small');
-  const [autoRinse, setAutoRinse] = useState(false);
-  const [coldTea, setColdTea] = useState(false);
-  const [dispence, setDispence] = useState('tray');
-  const [units, setUnits] = useState('metric');
+  const user = useStore($profileStore);
+  const [autoRinse, setAutoRinse] = useState(user.autoRinse);
+  const [coldTea, setColdTea] = useState(user.coldTea);
+  const [amount, setAmount] = useState(user.amount || 'small');
+  const [dispence, setDispence] = useState(user.dispenceTo || 'cup');
+  const [units, setUnits] = useState(user.units || 'metric');
+  const [notifications, setNotifications] = useState(user.notifications);
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
+
+  const setSetting = async (cb, data) => {
+    cb();
+    updateProfileUser({...data});
+    await updateUser(user.uid, {...data});
+  };
 
   return (
     <View style={s.wrapper}>
@@ -139,7 +149,9 @@ const CommonSettings = () => {
         </View>
         <Switch
           value={coldTea}
-          onChange={() => setColdTea(prev => !prev)}
+          onChange={() =>
+            setSetting(() => setColdTea(prev => !prev), {coldTea: !coldTea})
+          }
           sx={{
             props: {
               trackColor: {
@@ -156,7 +168,11 @@ const CommonSettings = () => {
           </Text>
           <Switch
             value={autoRinse}
-            onChange={() => setAutoRinse(prev => !prev)}
+            onChange={async () =>
+              setSetting(() => setAutoRinse(prev => !prev), {
+                autoRinse: !autoRinse,
+              })
+            }
             sx={{
               props: {
                 trackColor: {
@@ -171,33 +187,45 @@ const CommonSettings = () => {
             <Text style={[s.unitTitle, s.darkTextMain]}>Water amount</Text>
             <View style={s.units}>
               <TouchableOpacity
-                onPress={() => setSelected('small')}
+                onPress={() =>
+                  setSetting(() => setAmount('small'), {
+                    amount: 'small',
+                  })
+                }
                 style={[
                   s.unit,
                   isDarkMode && s.darkUnit,
                   s.unitLeft,
-                  selected === 'small' && s.selected,
+                  amount === 'small' && s.selected,
                 ]}>
-                <Text style={[s.unitText, selected === 'small' && s.selected]}>
+                <Text style={[s.unitText, amount === 'small' && s.selected]}>
                   Small
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setSelected('medium')}
+                onPress={() =>
+                  setSetting(() => setAmount('medium'), {
+                    amount: 'medium',
+                  })
+                }
                 style={[
                   s.unit,
                   isDarkMode && s.darkUnit,
-                  selected === 'medium' && s.selected,
+                  amount === 'medium' && s.selected,
                 ]}>
                 <Text style={[s.unitText]}>Medium</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setSelected('large')}
+                onPress={() =>
+                  setSetting(() => setAmount('large'), {
+                    amount: 'large',
+                  })
+                }
                 style={[
                   s.unit,
                   isDarkMode && s.darkUnit,
                   s.unitRight,
-                  selected === 'large' && s.selected,
+                  amount === 'large' && s.selected,
                 ]}>
                 <Text style={s.unitText}>Large</Text>
               </TouchableOpacity>
@@ -207,7 +235,11 @@ const CommonSettings = () => {
             <Text style={[s.unitTitle, s.darkTextMain]}>Dispence to</Text>
             <View style={s.units}>
               <TouchableOpacity
-                onPress={() => setDispence('tray')}
+                onPress={() =>
+                  setSetting(() => setDispence('tray'), {
+                    dispenceTo: 'tray',
+                  })
+                }
                 style={[
                   s.unit,
                   isDarkMode && s.darkUnit,
@@ -217,7 +249,11 @@ const CommonSettings = () => {
                 <Text style={s.unitText}>Tray</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setDispence('cup')}
+                onPress={() =>
+                  setSetting(() => setDispence('cup'), {
+                    dispenceTo: 'cup',
+                  })
+                }
                 style={[
                   s.unit,
                   isDarkMode && s.darkUnit,
@@ -234,7 +270,11 @@ const CommonSettings = () => {
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>Units</Text>
         <View style={s.units}>
           <TouchableOpacity
-            onPress={() => setUnits('metric')}
+            onPress={() =>
+              setSetting(() => setUnits('metric'), {
+                units: 'metric',
+              })
+            }
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
@@ -244,7 +284,11 @@ const CommonSettings = () => {
             <Text style={s.unitText}>°C - ml</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setUnits('customary')}
+            onPress={() =>
+              setSetting(() => setUnits('customary'), {
+                units: 'customary',
+              })
+            }
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
@@ -260,6 +304,12 @@ const CommonSettings = () => {
           Notifications
         </Text>
         <Switch
+          value={notifications}
+          onChange={() =>
+            setSetting(() => setNotifications(prev => !prev), {
+              notifications: !notifications,
+            })
+          }
           sx={{
             props: {
               trackColor: {
