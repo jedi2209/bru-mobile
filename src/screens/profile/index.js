@@ -280,7 +280,7 @@ const ProfileScreen = props => {
         return [];
     }
   }, [selectedFilter]);
-
+  console.log(user);
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text
@@ -452,11 +452,6 @@ const ProfileScreen = props => {
         {mode === 'edit' && (
           <TouchableOpacity
             onPress={handleSubmit(async data => {
-              let url;
-              if (image) {
-                url = await uploadImage(image, user.uid);
-                setImage(null);
-              }
               if (data.password) {
                 await updatePassword(data.password);
               }
@@ -470,10 +465,16 @@ const ProfileScreen = props => {
                 await updateUser(user.uid, {
                   email: data.email,
                   name: data.name,
+                });
+              }
+              const url = await uploadImage(image, user.uid);
+              if (url) {
+                await updateUser(user.uid, {
                   img: url,
                 });
               }
               setMode('view');
+              setImage(null);
             })}
             style={s.saveButton}>
             <Text style={[basicStyles.backgroundButtonText, {width: 132}]}>

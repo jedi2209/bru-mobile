@@ -161,8 +161,8 @@ const SettingsScreen = props => {
         <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
           Connected machines
         </Text>
-        {[1, 2].map(item => {
-          return <BruMachine key={item} />;
+        {devices.map(item => {
+          return <BruMachine key={item} item={item} />;
         })}
       </View>
       <Button

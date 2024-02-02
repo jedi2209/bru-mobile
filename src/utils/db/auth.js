@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import {setProfileUser} from '../../core/store/profile';
+import {setProfileUser, updateProfileUser} from '../../core/store/profile';
 import storage from '@react-native-firebase/storage';
 
 export const usersCollection = firestore().collection('users');
@@ -28,7 +28,7 @@ export const createUser = async user => {
 export const updateUser = async (uid, userData) => {
   try {
     await usersCollection.doc(uid).update(userData);
-    setProfileUser({uid, ...userData});
+    updateProfileUser({uid, ...userData});
   } catch (error) {
     console.log(error);
   }

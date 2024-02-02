@@ -163,7 +163,7 @@
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
 				67471558B7865C506D62F5CB /* [CP] Embed Pods Frameworks */,
-				E6EF626DB423272E30BFAC1E /* [CP] Copy Pods Resources */,
+				14195B4C7B3E9ABC54797EA0 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -187,8 +187,8 @@
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				D81B2B7352C5471E973F5C09 /* Upload Debug Symbols to Sentry */,
 				B7CD956D0ACD31954DB89359 /* [CP] Embed Pods Frameworks */,
-				1207BBB8A43EBE87B25E8409 /* [CP] Copy Pods Resources */,
 				D26FDA14D5B7C59DB21BAE07 /* [CP-User] [RNFB] Core Configuration */,
+				358ECEC0F6460E9E1C080CA6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -272,7 +272,24 @@
 			shellPath = /bin/sh;
 			shellScript = "export SENTRY_PROPERTIES=sentry.properties\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output $DERIVED_FILE_DIR/main.jsbundle.map\"\nset -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT \\\"../node_modules/@sentry/cli/bin/sentry-cli react-native xcode $REACT_NATIVE_XCODE\\\"\"\n\n/bin/sh ../node_modules/@sentry/react-native/scripts/collect-modules.sh\n";
 		};
-		1207BBB8A43EBE87B25E8409 /* [CP] Copy Pods Resources */ = {
+		14195B4C7B3E9ABC54797EA0 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-bruapp-bruappTests/Pods-bruapp-bruappTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-bruapp-bruappTests/Pods-bruapp-bruappTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bruapp-bruappTests/Pods-bruapp-bruappTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		358ECEC0F6460E9E1C080CA6 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -394,23 +411,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\nexport SENTRY_PROPERTIES=sentry.properties\n[[ $SENTRY_INCLUDE_NATIVE_SOURCES == \"true\" ]] && INCLUDE_SOURCES_FLAG=\"--include-sources\" || INCLUDE_SOURCES_FLAG=\"\"\n../node_modules/@sentry/cli/bin/sentry-cli debug-files upload \"$INCLUDE_SOURCES_FLAG\" \"$DWARF_DSYM_FOLDER_PATH\"\n";
 		};
-		E6EF626DB423272E30BFAC1E /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bruapp-bruappTests/Pods-bruapp-bruappTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-bruapp-bruappTests/Pods-bruapp-bruappTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-bruapp-bruappTests/Pods-bruapp-bruappTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -520,9 +520,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 40;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = XXXX;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = bruapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BRU;
@@ -551,9 +552,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 40;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = XXXX;
 				INFOPLIST_FILE = bruapp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = BRU;
 				LD_RUNPATH_SEARCH_PATHS = (
