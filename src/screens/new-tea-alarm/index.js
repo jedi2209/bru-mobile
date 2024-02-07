@@ -166,9 +166,11 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
     setBrewingTime,
     setIsCleaning,
     setWaterAmount,
+    setTemperature,
     brewingTime,
     waterAmount,
     isCleaning,
+    temperature,
   } = useBrewingData(selected);
 
   useEffect(() => {
@@ -254,6 +256,8 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           setBrewingTime={setBrewingTime}
           waterAmount={waterAmount}
           setWaterAmount={setWaterAmount}
+          temperature={temperature}
+          setTemperature={setTemperature}
         />
         <View style={s.cleaning}>
           <Switch

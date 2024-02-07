@@ -166,9 +166,11 @@ const PresetsScreen = props => {
     setBrewingTime,
     setIsCleaning,
     setWaterAmount,
+    setTemperature,
     brewingTime,
     waterAmount,
     isCleaning,
+    temperature,
   } = useBrewingData(selected);
 
   useEffect(() => {
@@ -178,7 +180,7 @@ const PresetsScreen = props => {
       setNewTeaName('');
     }
   }, [selected]);
-
+  console.log(selected);
   return (
     <Wrapper style={s.wrapper} {...props}>
       <View style={s.titleContainer}>
@@ -275,9 +277,9 @@ const PresetsScreen = props => {
                 resizeMode="cover"
                 style={s.teaImage}
                 source={
-                  image
+                  selected.tea_img || image
                     ? {
-                        uri: image,
+                        uri: selected.tea_img ? selected.tea_img : image,
                       }
                     : require('../../../assets/teaImages/emptyPressetImage.png')
                 }
@@ -301,6 +303,8 @@ const PresetsScreen = props => {
             setWaterAmount={setWaterAmount}
             brewingTime={brewingTime}
             setBrewingTime={setBrewingTime}
+            temperature={temperature}
+            setTemperature={setTemperature}
             disabled={mode === 'list'}
             type="pressets"
           />
@@ -373,11 +377,16 @@ const PresetsScreen = props => {
       {mode !== 'list' && (
         <TouchableOpacity
           onPress={async () => {
+            let imgUrl;
+            if (image) {
+              imgUrl = await uploadPressetImage(image, selected.id);
+            }
+
             if (mode === 'create') {
               const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
               addPressetToStoreFx({
                 tea_type: newTeaName,
-                tea_img: '',
+                tea_img: imgUrl ? imgUrl : '',
                 brewing_data: {
                   time,
                   waterAmount,
@@ -386,11 +395,11 @@ const PresetsScreen = props => {
               });
             } else if (mode === 'edit') {
               const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
-              const imgUrl = await uploadPressetImage(image, selected.id);
+
               updatePressetFx({
                 id: selected.id,
                 tea_type: newTeaName,
-                tea_img: imgUrl,
+                tea_img: imgUrl ? imgUrl : selected.tea_img,
                 brewing_data: {
                   time,
                   waterAmount,

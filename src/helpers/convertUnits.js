@@ -3,6 +3,5 @@ export const convertTemperature = value => {
 };
 
 export const convertWaterAmount = value => {
-  console.log(value);
   return Math.round(value * 0.0338);
 };

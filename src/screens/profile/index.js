@@ -280,7 +280,7 @@ const ProfileScreen = props => {
         return [];
     }
   }, [selectedFilter]);
-  console.log(user);
+
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text
@@ -467,8 +467,8 @@ const ProfileScreen = props => {
                   name: data.name,
                 });
               }
-              const url = await uploadImage(image, user.uid);
-              if (url) {
+              if (image) {
+                const url = await uploadImage(image, user.uid);
                 await updateUser(user.uid, {
                   img: url,
                 });

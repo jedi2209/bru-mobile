@@ -16,6 +16,7 @@ import {
   convertTemperature,
   convertWaterAmount,
 } from '../../../helpers/convertUnits';
+import TemperaturePicker from '../TemperaturePicker';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
@@ -72,9 +73,12 @@ const BrewingData = ({
   setBrewingTime = () => {},
   waterAmount = 0,
   setWaterAmount = () => {},
+  temperature = 0,
+  setTemperature = () => {},
   disabled = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [temperatureIsOpened, setTemperatureIsOpened] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
   const {units} = useStore($profileStore);
 
@@ -124,19 +128,36 @@ const BrewingData = ({
         visible={isOpen}
       />
       <View style={s.divider} />
-      <TeaAlarmInfoItem
-        type={type}
-        Icon={
-          <TemperatureIcon
-            style={s.pressetIcon}
-            color={type === 'pressets' ? 'green' : 'yellow'}
-            fill={type === 'pressets' ? 'black' : colors.white}
-          />
-        }
-        title="Water temperature"
-        value={`${units === 'metric' ? 90 : convertTemperature(90)}${
-          units === 'metric' ? '°C' : '°F'
-        }`}
+      <TouchableOpacity
+        disabled={disabled}
+        onPress={() => setTemperatureIsOpened(prev => !prev)}>
+        <TeaAlarmInfoItem
+          type={type}
+          Icon={
+            <TemperatureIcon
+              style={s.pressetIcon}
+              color={type === 'pressets' ? 'green' : 'yellow'}
+              fill={type === 'pressets' ? 'black' : colors.white}
+            />
+          }
+          title="Water temperature"
+          value={
+            temperature === 0
+              ? 'Cold'
+              : `${
+                  units === 'metric'
+                    ? temperature
+                    : convertTemperature(temperature)
+                }${units === 'metric' ? '°C' : '°F'}`
+          }
+        />
+      </TouchableOpacity>
+      <TemperaturePicker
+        closeModal={() => {
+          setTemperatureIsOpened(false);
+        }}
+        setTemperature={setTemperature}
+        opened={temperatureIsOpened}
       />
 
       <View style={s.divider} />

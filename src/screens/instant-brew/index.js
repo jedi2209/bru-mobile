@@ -87,10 +87,14 @@ const InstantBrewScreen = props => {
     setBrewingTime,
     setIsCleaning,
     setWaterAmount,
+    setTemperature,
     brewingTime,
     waterAmount,
     isCleaning,
+    temperature,
   } = useBrewingData(selected);
+
+  console.log(temperature);
 
   const openConfiramtionModal = time => {
     setModal({
@@ -145,13 +149,28 @@ const InstantBrewScreen = props => {
             setWaterAmount={setWaterAmount}
             brewingTime={brewingTime}
             setBrewingTime={setBrewingTime}
+            temperature={temperature}
+            setTemperature={setTemperature}
           />
 
           <SplitCups cleaning={isCleaning} setCleaning={setIsCleaning} />
           <View style={s.buttons}>
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
                 const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
+                if (selected.id === 'new_presset') {
+                  await addPressetToStoreFx({
+                    brewing_data: {time, waterAmount},
+                    cleaning: isCleaning,
+                    tea_img: '',
+                    tea_type: selected.tea_type,
+                  });
+                  navigation.navigate('Brewing', {
+                    time: time,
+                  });
+                  return;
+                }
+
                 const isChanged = !isEqual(selected, {
                   brewing_data: {time, waterAmount},
                   cleaning: isCleaning,

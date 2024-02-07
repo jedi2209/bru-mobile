@@ -4,6 +4,7 @@ import {useCallback, useEffect, useState} from 'react';
 export const useBrewingData = selected => {
   const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
   const [waterAmount, setWaterAmount] = useState(0);
+  const [temperature, setTemperature] = useState(0);
   const [isCleaning, setIsCleaning] = useState(false);
 
   const setSelectedState = useCallback(() => {
@@ -17,12 +18,14 @@ export const useBrewingData = selected => {
     };
     setBrewingTime(selectedBrewingTime);
     setWaterAmount(selected.brewing_data.waterAmount);
+    setTemperature(selected.brewing_data.temperature);
     setIsCleaning(selected.cleaning);
   }, [selected]);
 
   const resetSelectedState = () => {
     setBrewingTime({minutes: '0', seconds: '0'});
     setWaterAmount(0);
+    setTemperature(0);
     setIsCleaning(false);
   };
 
@@ -41,5 +44,7 @@ export const useBrewingData = selected => {
     setWaterAmount,
     isCleaning,
     setIsCleaning,
+    temperature,
+    setTemperature,
   };
 };

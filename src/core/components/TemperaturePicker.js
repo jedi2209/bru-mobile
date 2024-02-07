@@ -11,7 +11,7 @@ import {colors} from '../const/style';
 import Picker from './Picker/Picker';
 import {useStore} from 'effector-react';
 import {$profileStore} from '../store/profile';
-import {waterPickerData} from '../const';
+import {temperaturePickerData} from '../const';
 
 const s = StyleSheet.create({
   modal: {
@@ -50,9 +50,9 @@ const s = StyleSheet.create({
   closeButton: {marginRight: 40},
 });
 
-const WaterAmountModal = ({opened, closeModal, setWaterAmount}) => {
+const TemperaturePicker = ({opened, closeModal, setTemperature}) => {
   const {units} = useStore($profileStore);
-  const values = useMemo(() => waterPickerData(units), [units]);
+  const values = useMemo(() => temperaturePickerData(units), [units]);
   const [selected, setSelected] = useState(values[0].value);
 
   useEffect(() => {
@@ -72,7 +72,7 @@ const WaterAmountModal = ({opened, closeModal, setWaterAmount}) => {
           <View style={s.modalOverlay} />
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
-          <Text style={s.title}>Water amount</Text>
+          <Text style={s.title}>Temperature</Text>
           <Picker data={values} setValue={setSelected} />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>
@@ -80,7 +80,7 @@ const WaterAmountModal = ({opened, closeModal, setWaterAmount}) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                setWaterAmount(selected);
+                setTemperature(selected);
                 closeModal();
               }}>
               <Text style={s.button}>Done</Text>
@@ -92,4 +92,4 @@ const WaterAmountModal = ({opened, closeModal, setWaterAmount}) => {
   );
 };
 
-export default WaterAmountModal;
+export default TemperaturePicker;

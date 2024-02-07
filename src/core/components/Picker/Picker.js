@@ -1,7 +1,5 @@
-import {useStore} from 'effector-react';
-import React, {useRef} from 'react';
+import React, {useEffect, useMemo, useRef} from 'react';
 import {StyleSheet, View, Text, Animated} from 'react-native';
-import {$profileStore} from '../../store/profile';
 
 const ITEM_HEIGHT = 50;
 const VISIBLE_ITEMS = 3;
@@ -36,25 +34,13 @@ const s = StyleSheet.create({
   },
 });
 
-const WaterAmountPicker = ({setValue}) => {
-  const {units} = useStore($profileStore);
-  const values = [
-    '',
-    {label: units === 'metric' ? '150ml' : '5oz', value: 150},
-    {label: units === 'metric' ? '200ml' : '7oz', value: 200},
-    {label: units === 'metric' ? '250ml' : '8oz', value: 250},
-    {label: units === 'metric' ? '300ml' : '10oz', value: 300},
-    {label: units === 'metric' ? '350ml' : '12oz', value: 350},
-    {label: units === 'metric' ? '400ml' : '13oz', value: 400},
-    {label: units === 'metric' ? '450ml' : '15oz', value: 450},
-    {label: units === 'metric' ? '500ml' : '17oz', value: 500},
-    '',
-  ];
+const Picker = ({setValue, data}) => {
+  const values = useMemo(() => ['', ...data, ''], [data]);
 
   const momentumScrollEnd = event => {
     const y = event.nativeEvent.contentOffset.y;
     const index = Math.round(y / ITEM_HEIGHT) + 1;
-    setValue(values[index]?.value);
+    setValue(values[index]?.value, 'value');
   };
 
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -108,4 +94,4 @@ const WaterAmountPicker = ({setValue}) => {
   );
 };
 
-export default WaterAmountPicker;
+export default Picker;
