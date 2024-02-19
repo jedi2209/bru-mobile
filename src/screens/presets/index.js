@@ -180,7 +180,7 @@ const PresetsScreen = props => {
       setNewTeaName('');
     }
   }, [selected]);
-  console.log(selected);
+
   return (
     <Wrapper style={s.wrapper} {...props}>
       <View style={s.titleContainer}>
@@ -277,7 +277,7 @@ const PresetsScreen = props => {
                 resizeMode="cover"
                 style={s.teaImage}
                 source={
-                  selected.tea_img || image
+                  selected?.tea_img || image
                     ? {
                         uri: selected.tea_img ? selected.tea_img : image,
                       }
@@ -390,6 +390,7 @@ const PresetsScreen = props => {
                 brewing_data: {
                   time,
                   waterAmount,
+                  temperature,
                 },
                 cleaning: isCleaning,
               });
@@ -403,6 +404,7 @@ const PresetsScreen = props => {
                 brewing_data: {
                   time,
                   waterAmount,
+                  temperature,
                 },
                 cleaning: isCleaning,
               });

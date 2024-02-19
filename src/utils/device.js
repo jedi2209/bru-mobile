@@ -585,6 +585,7 @@ export class Device {
       'removeBond => this.getBondedPeripherals() finish - value: ',
       res,
     );
+    this._disconnect();
     if (res && isAndroid) {
       BleManager.removeBond(device).catch(err => {
         console.error('BleManager.removeBond error', err);

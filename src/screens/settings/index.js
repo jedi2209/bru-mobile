@@ -6,6 +6,8 @@ import {
   Dimensions,
   Alert,
   TouchableOpacity,
+  Pressable,
+  FlatList,
 } from 'react-native';
 import {
   Button,
@@ -144,7 +146,8 @@ const SettingsScreen = props => {
       .removeBond()
       .then(res => {
         setLoading(false);
-        // console.info('onPress Unpair device', res);
+        resetDevice();
+        console.info('onPress Unpair device', res);
       })
       .catch(err => {
         setLoading(false);
@@ -204,7 +207,7 @@ const SettingsScreen = props => {
 
       <CommonSettings />
 
-      {/* {get(deviceManager, 'device', null) ? (
+      {get(deviceManager, 'device', null) ? (
         <>
           <Heading mb={16}>My BRU</Heading>
           <FlatList
@@ -270,7 +273,7 @@ const SettingsScreen = props => {
               }}>
               <Text style={s.buttonTextStyle}>{'Get Machine setup'}</Text>
             </Pressable>
-            <Pressable
+            {/* <Pressable
               style={[
                 s.buttonStyle,
                 {backgroundColor: isBrewing ? 'red' : colors.green.mid},
@@ -321,10 +324,10 @@ const SettingsScreen = props => {
                   });
               }}>
               <Text style={s.buttonTextStyle}>{'Get test device status'}</Text>
-            </Pressable>
+            </Pressable> */}
           </View>
         </>
-      ) : null} */}
+      ) : null}
       {/* <Text
         selectable={false}
         style={{

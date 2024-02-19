@@ -354,7 +354,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           size={'xl'}
           onPress={() => {
             navigation.navigate('NavBottom', {screen: 'Settings'});
-            RNRestart.restart();
+            // RNRestart.restart();
           }}>
           <Icon
             name="check-square-o"

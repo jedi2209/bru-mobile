@@ -94,8 +94,6 @@ const InstantBrewScreen = props => {
     temperature,
   } = useBrewingData(selected);
 
-  console.log(temperature);
-
   const openConfiramtionModal = time => {
     setModal({
       opened: true,
@@ -112,7 +110,7 @@ const InstantBrewScreen = props => {
       withDontShowAgain: true,
       onConfirm: () => {
         addPressetToStoreFx({
-          brewing_data: {time, waterAmount},
+          brewing_data: {time, waterAmount, temperature},
           cleaning: isCleaning,
           tea_img: selected.tea_img,
           tea_type: selected.tea_type,
@@ -160,7 +158,7 @@ const InstantBrewScreen = props => {
                 const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
                 if (selected.id === 'new_presset') {
                   await addPressetToStoreFx({
-                    brewing_data: {time, waterAmount},
+                    brewing_data: {time, waterAmount, temperature},
                     cleaning: isCleaning,
                     tea_img: '',
                     tea_type: selected.tea_type,
@@ -172,7 +170,7 @@ const InstantBrewScreen = props => {
                 }
 
                 const isChanged = !isEqual(selected, {
-                  brewing_data: {time, waterAmount},
+                  brewing_data: {time, waterAmount, temperature},
                   cleaning: isCleaning,
                   id: selected.id,
                   tea_img: selected.tea_img,
