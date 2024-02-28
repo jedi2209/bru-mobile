@@ -128,6 +128,5 @@ export const uploadPressetImage = async (uri, name) => {
   const url = await imageRef.getDownloadURL().catch(error => {
     throw error;
   });
-  console.log(url);
   return url;
 };

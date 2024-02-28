@@ -686,8 +686,7 @@ export class Device {
               serviceUUID,
               characteristicUUID,
               value,
-            ).then(async balbalb => {
-              console.log('balbalbbalbalbbalbalbbalbalb', balbalb);
+            ).then(async () => {
               console.info(
                 'writeValue => writeWithoutResponse written successfully',
               );
@@ -733,16 +732,15 @@ export class Device {
         return BleManager.retrieveServices(device)
           .then(async () => {
             try {
-              const data = await BleManager.write(
+              await BleManager.write(
                 device,
                 serviceUUID,
                 characteristicUUID,
                 value,
               );
-              console.log(data, 'data');
-              console.log(1);
+
               const services = await BleManager.retrieveServices(device);
-              console.log(2);
+
               if (services) {
                 const notificationStatus = await this.sendNotification(
                   device,
@@ -750,8 +748,6 @@ export class Device {
                   SOME,
                 );
               }
-              const bytes = services.advertising.manufacturerData.bytes;
-              console.log(bytes);
 
               return true;
             } catch (error) {
@@ -1122,15 +1118,24 @@ export const cancelBrewing = data => {
   return brewingData;
 };
 
-export const getCommand = (cmd = 0x40, data = [], len = 0) => {
-  const defaultData = new Uint8Array([0xff, len, cmd, 0]);
-  const command = [...defaultData, ...data];
-  console.log(parseInt(len, 16));
-  if (command.length <= parseInt(len, 16)) {
+export const getCommand = (
+  cmd = 0x40,
+  data = [],
+  len = 0,
+  isBrewing = false,
+) => {
+  const defaultData = new Uint8Array([0xff, len, cmd]);
+  const defaultDataNumbers = [...defaultData];
+  if (isBrewing) {
+    defaultDataNumbers.push(0);
+  }
+  const command = [...defaultDataNumbers, ...data];
+  if (command.length < parseInt(len, 16)) {
     while (command.length < len - 1) {
       command.push(0);
     }
   }
+  console.log(command);
 
   command.push(_calcChecksum(command, len));
   return command;

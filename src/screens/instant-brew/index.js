@@ -241,6 +241,7 @@ const InstantBrewScreen = props => {
                   0x40,
                   [temperature, brewingTime.value, waterAmount],
                   0x0f,
+                  true,
                 );
                 console.log(command);
                 console.log(bufferToHex(command));
@@ -259,7 +260,7 @@ const InstantBrewScreen = props => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={async () => {
-                const command = getCommand(0x42, [], 4);
+                const command = getCommand(0x42, [], 4, false);
                 console.log(command);
                 console.log(bufferToHex(command));
 

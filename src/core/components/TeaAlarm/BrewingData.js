@@ -83,9 +83,7 @@ const BrewingData = ({
   const [temperatureIsOpened, setTemperatureIsOpened] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
   const {units} = useStore($profileStore);
-  console.log(
-    temperaturePickerData(units).find(item => item.value === temperature),
-  );
+
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
       <TouchableOpacity disabled={disabled} onPress={() => setIsOpen(!isOpen)}>
