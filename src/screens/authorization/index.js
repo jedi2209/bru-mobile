@@ -24,6 +24,7 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import {setUser} from '../../core/store/user';
+import {addInitPressets} from '../../utils/db/pressets.js';
 
 const s = StyleSheet.create({
   container: {
@@ -268,6 +269,7 @@ const AuthorizationScreen = () => {
                     data.password,
                     data.name,
                   );
+                  await addInitPressets();
                   navigation.navigate('Instant Brew');
                 } else {
                   const currentUser = await signInWithEmailAndPassword(

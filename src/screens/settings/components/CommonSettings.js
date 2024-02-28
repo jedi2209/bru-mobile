@@ -1,5 +1,5 @@
 import {useStore} from 'effector-react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {$themeStore, setThemeFx} from '../../../core/store/theme';
 import Collapsible from 'react-native-collapsible';
@@ -118,6 +118,13 @@ const CommonSettings = () => {
     updateProfileUser({...data});
     await updateUser(user.uid, {...data});
   };
+
+  useEffect(() => {
+    setSetting(() => setUnits('metric'), {
+      units: 'metric',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={s.wrapper}>
@@ -285,15 +292,15 @@ const CommonSettings = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              setSetting(() => setUnits('customary'), {
-                units: 'customary',
+              setSetting(() => setUnits('imperial'), {
+                units: 'imperial',
               })
             }
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
               s.unitRight,
-              units === 'customary' && s.selected,
+              units === 'imperial' && s.selected,
             ]}>
             <Text style={s.unitText}>°F - oz</Text>
           </TouchableOpacity>

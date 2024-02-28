@@ -1,29 +1,23 @@
-import dayjs from 'dayjs';
 import {useCallback, useEffect, useState} from 'react';
 
 export const useBrewingData = selected => {
-  const [brewingTime, setBrewingTime] = useState({minutes: '0', seconds: '0'});
+  const [brewingTime, setBrewingTime] = useState({
+    label: '',
+    value: 0,
+    seconds: 0,
+  });
   const [waterAmount, setWaterAmount] = useState(0);
   const [temperature, setTemperature] = useState(0);
   const [isCleaning, setIsCleaning] = useState(false);
-
   const setSelectedState = useCallback(() => {
-    const selectedBrewingTime = {
-      minutes: `${dayjs
-        .duration(selected.brewing_data.time, 'seconds')
-        .format('mm')}`,
-      seconds: `${dayjs
-        .duration(selected.brewing_data.time, 'seconds')
-        .format('ss')}`,
-    };
-    setBrewingTime(selectedBrewingTime);
+    setBrewingTime(selected.brewing_data.time);
     setWaterAmount(selected.brewing_data.waterAmount);
     setTemperature(selected.brewing_data.temperature);
     setIsCleaning(selected.cleaning);
   }, [selected]);
 
   const resetSelectedState = () => {
-    setBrewingTime({minutes: '0', seconds: '0'});
+    setBrewingTime({label: '', value: 0, seconds: 0});
     setWaterAmount(0);
     setTemperature(0);
     setIsCleaning(false);

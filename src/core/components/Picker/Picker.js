@@ -34,13 +34,17 @@ const s = StyleSheet.create({
   },
 });
 
-const Picker = ({setValue, data}) => {
+const Picker = ({setValue, data, isTimePicker = false}) => {
   const values = useMemo(() => ['', ...data, ''], [data]);
 
   const momentumScrollEnd = event => {
     const y = event.nativeEvent.contentOffset.y;
     const index = Math.round(y / ITEM_HEIGHT) + 1;
-    setValue(values[index]?.value, 'value');
+    if (isTimePicker) {
+      setValue(values[index]);
+    } else {
+      setValue(values[index]?.value);
+    }
   };
 
   const scrollY = useRef(new Animated.Value(0)).current;

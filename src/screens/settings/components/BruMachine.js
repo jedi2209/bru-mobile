@@ -1,12 +1,15 @@
 import {View} from '@gluestack-ui/themed';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import PenIcon from '../../../core/components/icons/PenIcon';
 import {colors} from '../../../core/const/style';
 import TrashIconOutlined from '../../../core/components/icons/TrashIconOutlined';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../../core/store/theme';
 import {getFirmwareData} from '../../../utils/firmware';
+import {deviceManager} from '../../../utils/device.js';
+import {resetDevice} from '../../../core/store/device.js';
+import {get} from 'lodash';
 
 const s = StyleSheet.create({
   container: {
@@ -49,6 +52,18 @@ const s = StyleSheet.create({
   divider: {},
 });
 
+const _onPressUnpair = async () => {
+  await deviceManager
+    .removeBond()
+    .then(res => {
+      resetDevice();
+      console.info('onPress Unpair device', res);
+    })
+    .catch(err => {
+      console.error('onPress Unpair device', err);
+    });
+};
+
 const BruMachine = ({item}) => {
   const theme = useStore($themeStore);
   const [firmware, setFirmware] = useState('');
@@ -78,9 +93,29 @@ const BruMachine = ({item}) => {
           height={24}
           style={s.penIcon}
         />
-        <TrashIconOutlined
-          fill={isDarkMode ? colors.white : colors.green.mid}
-        />
+        <TouchableOpacity
+          onPress={() => {
+            Alert.alert(
+              'Are you sure?',
+              'After unpair device you should pair it again.',
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {
+                  text: 'Unpair',
+                  style: 'destructive',
+                  onPress: () =>
+                    _onPressUnpair(get(deviceManager, 'device.id', null)),
+                },
+              ],
+            );
+          }}>
+          <TrashIconOutlined
+            fill={isDarkMode ? colors.white : colors.green.mid}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -26,7 +26,7 @@ import {$deviceSettingsStore, resetDevice} from '@store/device';
 
 import Wrapper from '@comp/Wrapper';
 
-import {Device, deviceManager, sendDataCommand, sleep} from '@utils/device';
+import {Device, deviceManager, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors, basicStyles} from '../../core/const/style';
@@ -39,6 +39,7 @@ import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
 import {logout} from '../../utils/auth';
 import {setUser} from '../../core/store/user';
+import {sendDataCommand, startBrewing} from '../../utils/device.js';
 
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
@@ -66,9 +67,7 @@ const _renderItem = ({item, _onPressUpdate, _onPressUnpair}) => {
             onPress={_onPressUpdate}>
             <Icon name="cog-refresh" size={20} color="white" />
           </Button>
-          <Button
-            variant={'solid'}
-            action={'negative'}
+          <TouchableOpacity
             onPress={() => {
               Alert.alert(
                 'Are you sure?',
@@ -88,7 +87,7 @@ const _renderItem = ({item, _onPressUpdate, _onPressUnpair}) => {
               );
             }}>
             <Icon name="trash-can-outline" size={20} color="white" />
-          </Button>
+          </TouchableOpacity>
         </ButtonGroup>
       </HStack>
     </HStack>
@@ -164,9 +163,10 @@ const SettingsScreen = props => {
         <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
           Connected machines
         </Text>
-        {devices.map(item => {
-          return <BruMachine key={item} item={item} />;
-        })}
+        {devices &&
+          devices.map(item => {
+            return <BruMachine key={item} item={item} />;
+          })}
       </View>
       <Button
         size="lg"
@@ -176,17 +176,16 @@ const SettingsScreen = props => {
         <ButtonText style={s.buttonTextStyle}>Connect New Machine</ButtonText>
       </Button>
       <Button
-        onPress={() => setIsConfirmModalOpen(true)}
+        onPress={() => startBrewing()}
         size="lg"
         variant={'primary'}
         style={[
           s.buttonStyle,
           s.updateButton,
           isDarkMode && s.updateButtonDark,
-        ]}
-        // onPressIn={() => navigation.navigate('AddNewDeviceScreen')}
-      >
+        ]}>
         <ButtonText
+          onPress={_onPressUpdate}
           style={[
             s.buttonTextStyle,
             s.updateButtonText,
@@ -198,8 +197,8 @@ const SettingsScreen = props => {
 
       <TouchableOpacity
         onPress={async () => {
+          setUser(null);
           await logout();
-          await setUser(null);
           navigation.navigate('Authorization');
         }}>
         <Text>LOGOUT</Text>

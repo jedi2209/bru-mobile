@@ -17,6 +17,8 @@ import {
   convertWaterAmount,
 } from '../../../helpers/convertUnits';
 import TemperaturePicker from '../TemperaturePicker';
+import TimePickerModal from '../TimePicker.js';
+import {temperaturePickerData, waterPickerData} from '../../const/index.js';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
@@ -69,7 +71,7 @@ dayjs.extend(duration);
 
 const BrewingData = ({
   type,
-  brewingTime = {minutes: '0', seconds: '0'},
+  brewingTime = {label: '', value: 0},
   setBrewingTime = () => {},
   waterAmount = 0,
   setWaterAmount = () => {},
@@ -81,7 +83,9 @@ const BrewingData = ({
   const [temperatureIsOpened, setTemperatureIsOpened] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
   const {units} = useStore($profileStore);
-
+  console.log(
+    temperaturePickerData(units).find(item => item.value === temperature),
+  );
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
       <TouchableOpacity disabled={disabled} onPress={() => setIsOpen(!isOpen)}>
@@ -96,15 +100,16 @@ const BrewingData = ({
               height={24}
             />
           }
-          title="Brewing time"
-          value={`${dayjs
-            .duration(brewingTime.minutes, 'minutes')
-            .format('mm')}:${dayjs
-            .duration(brewingTime.seconds, 'seconds')
-            .format('ss')}`}
+          title="Brewing  time"
+          value={brewingTime.label}
         />
       </TouchableOpacity>
-      <TimerPickerModal
+      <TimePickerModal
+        opened={isOpen}
+        closeModal={() => setIsOpen(false)}
+        setTime={setBrewingTime}
+      />
+      {/* <TimerPickerModal
         modalTitle="Brewing time"
         styles={{
           modalTitle: s.timeModalTitle,
@@ -126,7 +131,7 @@ const BrewingData = ({
         }}
         setIsVisible={setIsOpen}
         visible={isOpen}
-      />
+      /> */}
       <View style={s.divider} />
       <TouchableOpacity
         disabled={disabled}
@@ -142,13 +147,9 @@ const BrewingData = ({
           }
           title="Water temperature"
           value={
-            temperature === 0
-              ? 'Cold'
-              : `${
-                  units === 'metric'
-                    ? temperature
-                    : convertTemperature(temperature)
-                }${units === 'metric' ? '°C' : '°F'}`
+            temperaturePickerData(units).find(
+              item => item.value === temperature,
+            )?.label || 'Cold'
           }
         />
       </TouchableOpacity>
@@ -174,9 +175,10 @@ const BrewingData = ({
             />
           }
           title="Water amount"
-          value={`${
-            units === 'metric' ? waterAmount : convertWaterAmount(waterAmount)
-          }${units === 'metric' ? 'ml' : 'oz'}`}
+          value={
+            waterPickerData(units).find(item => item.value === waterAmount)
+              ?.label || 0
+          }
         />
       </TouchableOpacity>
       <WaterAmountModal

@@ -223,10 +223,10 @@ export class Device {
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ];
       const requestGranted = await showPermissionInfo();
-      // console.info('requestGranted', requestGranted);
-      // if (!requestGranted) {
-      //   return false;
-      // }
+      console.info('requestGranted', requestGranted);
+      if (!requestGranted) {
+        return false;
+      }
       return PermissionsAndroid.requestMultiple(permissions).then(result => {
         if (!_checkPermissionsLocal(result)) {
           console.error(
@@ -686,7 +686,8 @@ export class Device {
               serviceUUID,
               characteristicUUID,
               value,
-            ).then(async () => {
+            ).then(async balbalb => {
+              console.log('balbalbbalbalbbalbalbbalbalb', balbalb);
               console.info(
                 'writeValue => writeWithoutResponse written successfully',
               );
@@ -727,21 +728,21 @@ export class Device {
     console.info('writeValueAndNotify preCheck', preCheck);
     return this._connect(device)
       .then(async connectRes => {
-        console.info('writeValueAndNotify => this._connect', connectRes);
+        console.log('writeValueAndNotify => this._connect', connectRes);
         // Success code
         return BleManager.retrieveServices(device)
           .then(async () => {
-            // console.log(
-            //   'writeValueAndNotify => this._connect => BleManager.retrieveServices.then',
-            // );
             try {
-              await BleManager.write(
+              const data = await BleManager.write(
                 device,
                 serviceUUID,
                 characteristicUUID,
                 value,
               );
+              console.log(data, 'data');
+              console.log(1);
               const services = await BleManager.retrieveServices(device);
+              console.log(2);
               if (services) {
                 const notificationStatus = await this.sendNotification(
                   device,
@@ -749,12 +750,12 @@ export class Device {
                   SOME,
                 );
               }
-              // console.log('retrieveServices', res);
-              // res.characteristics.map(el => {
-              //   console.log('\tservice ', el);
-              // });
+              const bytes = services.advertising.manufacturerData.bytes;
+              console.log(bytes);
+
               return true;
             } catch (error) {
+              console.log(error);
               let errorText = '';
               const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
               if (buffer) {
@@ -880,7 +881,8 @@ export class Device {
 
   _handleUpdateValueForCharacteristic = data => {
     const response = Buffer.from(data.value).toString('utf8');
-    console.info('[_handleUpdateValueForCharacteristic]', response);
+    console.log('[_handleUpdateValueForCharacteristic]', response);
+    return response;
   };
 
   _handleUpdateNotificationStateFor = data => {
@@ -1083,13 +1085,13 @@ const _showBluetoothAlert = () => {
   );
 };
 
-const sendDataCommand = (cmd, data = 0, len = 0) => {
+export const sendDataCommand = (cmd = 0x40, data = 0, len = 0) => {
   let sendBufferPlus = new Int8Array(4);
   if (data) {
     sendBufferPlus = new Uint8Array(5);
   }
   sendBufferPlus[0] = 0xff;
-  sendBufferPlus[1] = 4;
+  sendBufferPlus[1] = 0x04;
   sendBufferPlus[2] = cmd;
 
   if (data !== null) {
@@ -1104,17 +1106,49 @@ const sendDataCommand = (cmd, data = 0, len = 0) => {
   return sendBufferPlus;
 };
 
+export const startBrewing = data => {
+  const defaultData = new Uint8Array([0xff, 0x0f, 0x40]);
+  const brewingData = [...defaultData, ...[0, 0, 0, 0, 0, 0, 0]];
+  const len = 11;
+  brewingData.push(_calcChecksum(brewingData, len));
+  return brewingData;
+};
+
+export const cancelBrewing = data => {
+  const defaultData = new Uint8Array([0xff, 0x04, 0x42]);
+  const brewingData = [...defaultData];
+  const checkSum = _calcChecksum([0xff, 0x04, 0x42], 4);
+  brewingData.push(hexToDecimal(checkSum));
+  return brewingData;
+};
+
+export const getCommand = (cmd = 0x40, data = [], len = 0) => {
+  const defaultData = new Uint8Array([0xff, len, cmd, 0]);
+  const command = [...defaultData, ...data];
+  console.log(parseInt(len, 16));
+  if (command.length <= parseInt(len, 16)) {
+    while (command.length < len - 1) {
+      command.push(0);
+    }
+  }
+
+  command.push(_calcChecksum(command, len));
+  return command;
+};
+
 const _calcChecksum = (dat, len) => {
   let chksum = 0;
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < len - 1; i++) {
     chksum += dat[i];
   }
   chksum = 0 - chksum;
   chksum ^= 0x3a;
+  chksum = new Uint8Array([chksum])[0];
+  console.log(chksum);
   return chksum;
 };
 
-const bufferToHex = buffer => {
+export const bufferToHex = buffer => {
   var s = '',
     h = '0123456789ABCDEF';
   new Uint8Array(buffer).forEach(v => {
@@ -1122,6 +1156,10 @@ const bufferToHex = buffer => {
   });
   return s;
 };
+
+function hexToDecimal(hexString) {
+  return parseInt(hexString, 16);
+}
 
 export const sleep = (ms = defaultTimeout) => {
   return new Promise(resolve => setTimeout(resolve, ms));

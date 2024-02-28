@@ -29,6 +29,7 @@ import {get} from 'lodash';
 import {colors} from '@styleConst';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -47,16 +48,16 @@ const stepsContent = [
     text: "We need access to your phone's bluetooth to be able search and communicate with BRU.\r\n",
   },
   {
-    // 3 checkBluetooth => true
-    img: require('@assets/deviceImages/image-1.png'),
-    header: 'Activate bluetooth on BRU',
-    text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
-  },
-  {
-    // 4 request for bluetooth and local network access
+    // 3 request for bluetooth and local network access
     img: require('@assets/bluetooth_devices_near.png'),
     header: 'Bluetooth and Location access required',
     text: 'Bluetooth and Location permissions are required to find and control your nearby BRU device even when the app is not in use.\r\nWithout access things may not work as expected.',
+  },
+  {
+    // 4 checkBluetooth => true
+    img: require('@assets/deviceImages/image-1.png'),
+    header: 'Activate bluetooth on BRU',
+    text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
   },
   {
     // 5
@@ -181,17 +182,36 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
             action={'primary'}
             size={'xl'}
             onPress={async () => {
-              const bluetoothState =
-                await deviceManager._handleBluetoothState();
-              if (!deviceManager.bluetoothState) {
-                setStep(step + 1);
-                console.error(
-                  '_renderStep 1 => bluetoothState',
-                  bluetoothState,
+              if (Platform.OS === 'android') {
+                const firstPermition = await check(
+                  PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
                 );
+                const secondPermition = await check(
+                  PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+                );
+                const thirdPermition = await check(
+                  PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+                );
+                const permissions = [
+                  firstPermition,
+                  secondPermition,
+                  thirdPermition,
+                ];
+                if (!permissions.some(perm => perm !== 'granted')) {
+                  setStep(4);
+                } else {
+                  setStep(3);
+                }
               } else {
-                setStep(step + 2);
-                console.info('_renderStep 1 => bluetoothState', bluetoothState);
+                const result = await check(
+                  PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
+                );
+
+                if (result === 'granted') {
+                  setStep(4);
+                } else {
+                  setStep(3);
+                }
               }
             }}>
             <Icon
@@ -223,14 +243,16 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
             size={'xl'}
             onPress={() => {
               setStep(step - 1);
-              Linking.openSettings();
+              Platform.OS === 'ios'
+                ? Linking.openURL('App-Prefs:Bluetooth')
+                : Linking.sendIntent('android.settings.BLUETOOTH_SETTINGS');
             }}>
             <Icon name="gears" style={styles.buttonBottomIcon} size={24} />
             <ButtonText>Open settings</ButtonText>
           </Button>
         </>
       );
-    case 3:
+    case 4:
       return (
         <>
           <LottieView
@@ -256,7 +278,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           </Button>
         </>
       );
-    case 4:
+    case 3:
       return (
         <ButtonGroup style={styles.buttonBottom}>
           <Button
@@ -398,6 +420,49 @@ const AddNewDeviceScreen = props => {
   const [step, setStep] = useState(1);
   const [item, setItem] = useState(null);
   const [isloading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function setInitStep() {
+      try {
+        const status = await deviceManager._handleBluetoothState();
+        if (status !== 'granted') {
+          setStep(2);
+        }
+        if (Platform.OS === 'android') {
+          const firstPermition = await check(
+            PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+          );
+          const secondPermition = await check(
+            PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+          );
+          const thirdPermition = await check(
+            PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+          );
+          const permissions = [firstPermition, secondPermition, thirdPermition];
+          if (!permissions.some(item => item !== 'granted')) {
+            setStep(4);
+            return;
+          } else {
+            setStep(3);
+            return;
+          }
+        } else {
+          const result = await check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
+          console.log(result);
+          if (result === 'granted') {
+            setStep(4);
+            return;
+          } else {
+            setStep(3);
+            return;
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    setInitStep();
+  }, []);
 
   useEffect(() => {
     return () => {

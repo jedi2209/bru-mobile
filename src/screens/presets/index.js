@@ -90,6 +90,7 @@ const s = StyleSheet.create({
     borderBottomWidth: 2,
     paddingBottom: 2,
     marginBottom: 6,
+    color: colors.black,
   },
   teaImage: {marginBottom: 10, width: 74, height: 68, borderRadius: 100},
   cleaningText: {
@@ -383,26 +384,23 @@ const PresetsScreen = props => {
             }
 
             if (mode === 'create') {
-              const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
               addPressetToStoreFx({
                 tea_type: newTeaName,
                 tea_img: imgUrl ? imgUrl : '',
                 brewing_data: {
-                  time,
+                  time: brewingTime,
                   waterAmount,
                   temperature,
                 },
                 cleaning: isCleaning,
               });
             } else if (mode === 'edit') {
-              const time = +brewingTime.minutes * 60 + +brewingTime.seconds;
-
               updatePressetFx({
                 id: selected.id,
                 tea_type: newTeaName,
                 tea_img: imgUrl ? imgUrl : selected.tea_img,
                 brewing_data: {
-                  time,
+                  time: brewingTime,
                   waterAmount,
                   temperature,
                 },

@@ -31,6 +31,7 @@ export const $pressetsStore = createStore([])
   .on(addPressetToStoreFx.doneData, (store, presset) => [...store, presset])
   .on(updatePressetFx.doneData, (store, newPresset) =>
     store.map(presset => {
+      console.log(presset, newPresset);
       if (presset.id === newPresset.id) {
         return {...presset, ...newPresset};
       }
