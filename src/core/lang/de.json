@@ -5,5 +5,22 @@
     "Presets": "Voreinstellungen\r\n",
     "Help": "Hilfe\r\n",
     "Settings": "Einstellungen\r\n"
+  },
+  "BrewingData": {
+    "BrewingTime": "Brühdauer",
+    "WaterTemperature": "Wassertemperatur",
+    "WaterAmount": "Wassermenge"
+  },
+  "InstantBrewing": {
+    "BrewIt": "es brauen",
+    "Cancel": "kündigen",
+    "SplitCups": "Geteilte Becher",
+    "Cleaning": "Reinigung",
+    "ColdWaterDiffusion": "Kaltwasserdiffusion nicht angewendet"
+  },
+  "TeaAlarm": {
+    "Title": "Teealarm",
+    "NewTeaAlarm": "Neuen Alarm einstellen",
+    "PrepareTeaBy": ""
   }
 }

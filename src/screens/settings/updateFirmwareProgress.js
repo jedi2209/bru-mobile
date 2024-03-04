@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Alert} from 'react-native';
+import {View, StyleSheet, Alert, Platform} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {DFUEmitter} from 'react-native-nordic-dfu';
+import {DFUEmitter, NordicDFU} from 'react-native-nordic-dfu';
 import {
   VStack,
   Toast,
@@ -208,6 +208,8 @@ const UpdateFirmwareProgressScreen = props => {
     console.info('DFUEmitter.addListener');
     setUpdateStatus('rebooting');
     console.info('Rebooting...');
+    // C1:D5:7F:41:61:72
+
     const statusDFU = await deviceManager.startDFU(fileDownloaded);
     if (statusDFU) {
       console.info('statusDFU Success!', statusDFU);

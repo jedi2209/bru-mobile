@@ -59,6 +59,10 @@ export const fetchFirmwareMeta = async () => {
       $currentFirmwareStore.getState(),
       'meta.lastUpdated',
     );
+    console.log(
+      localFirmwareFileDate,
+      'localFirmwareFileDatelocalFirmwareFileDatelocalFirmwareFileDatelocalFirmwareFileDate',
+    );
     const remoteFirmwareFileDate = moment.utc(metadata.updated).unix();
     if (
       !localFirmwareFileDate ||

@@ -5,5 +5,22 @@
     "Presets": "Presets\r\n",
     "Help": "Help\r\n",
     "Settings": "Settings\r\n"
+  },
+  "BrewingData": {
+    "BrewingTime": "Brewing\ntime",
+    "WaterTemperature": "Water temperature",
+    "WaterAmount": "Water amount"
+  },
+  "InstantBrewing": {
+    "BrewIt": "Brew it",
+    "Cancel": "Cancel",
+    "SplitCups": "Split cups",
+    "Cleaning": "Cleaning",
+    "ColdWaterDiffusion": "Cold Water diffusion not applied"
+  },
+  "TeaAlarm": {
+    "Title": "Tea Alarm",
+    "NewTeaAlarm": "Set new alarm",
+    "PrepareTeaBy": ""
   }
 }

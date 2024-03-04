@@ -7,7 +7,7 @@ import TrashIconOutlined from '../../../core/components/icons/TrashIconOutlined'
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../../core/store/theme';
 import {getFirmwareData} from '../../../utils/firmware';
-import {deviceManager} from '../../../utils/device.js';
+import {deviceManager, getCommand} from '../../../utils/device.js';
 import {resetDevice} from '../../../core/store/device.js';
 import {get} from 'lodash';
 
@@ -87,12 +87,14 @@ const BruMachine = ({item}) => {
       </View>
       <View style={s.row}>
         <Text style={s.version}>{firmware.split(' ')[3]}</Text>
-        <PenIcon
-          fill={isDarkMode ? colors.white : colors.green.mid}
-          width={24}
-          height={24}
-          style={s.penIcon}
-        />
+        <TouchableOpacity onPress={() => {}}>
+          <PenIcon
+            fill={isDarkMode ? colors.white : colors.green.mid}
+            width={24}
+            height={24}
+            style={s.penIcon}
+          />
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
             Alert.alert(

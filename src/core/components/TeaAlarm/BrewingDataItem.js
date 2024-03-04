@@ -9,6 +9,12 @@ const s = StyleSheet.create({
     paddingBottom: 19,
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    flex: 1,
+  },
+  iconText: {
+    display: 'flex',
+    alignItems: 'center',
   },
   pressetIcon: {marginBottom: 7},
   pressetTitle: {
@@ -41,14 +47,16 @@ const s = StyleSheet.create({
 const TeaAlarmInfoItem = ({Icon, title, value, type}) => {
   return (
     <View style={s.pressetInfoItem}>
-      {Icon}
-      <Text
-        style={[
-          s.pressetTitle,
-          type === 'pressets' && s.pressetScreenTitleText,
-        ]}>
-        {title}
-      </Text>
+      <View style={s.iconText}>
+        {Icon}
+        <Text
+          style={[
+            s.pressetTitle,
+            type === 'pressets' && s.pressetScreenTitleText,
+          ]}>
+          {title}
+        </Text>
+      </View>
       <Text
         style={[
           s.pressetValue,

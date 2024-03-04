@@ -29,7 +29,6 @@ import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
 import {useFocusEffect} from '@react-navigation/native';
 import {
   bufferToHex,
-  cancelBrewing,
   deviceManager,
   getCommand,
   sleep,
@@ -37,6 +36,7 @@ import {
 } from '../../utils/device.js';
 import {updateUser} from '../../utils/db/auth.js';
 import {$userStore} from '../../core/store/user.js';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   container: {
@@ -89,6 +89,7 @@ const InstantBrewScreen = props => {
   const navigation = useNavigation();
   const teaAlarms = useStore($teaAlarmsStrore);
   const user = useStore($userStore);
+  const {t} = useTranslation();
 
   useFocusEffect(
     useCallback(() => {
@@ -256,7 +257,7 @@ const InstantBrewScreen = props => {
                   });
               }}
               style={s.brewButton}>
-              <Text style={s.buttonText}>Brew it</Text>
+              <Text style={s.buttonText}>{t('InstantBrewing.BrewIt')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={async () => {
@@ -283,7 +284,7 @@ const InstantBrewScreen = props => {
                     color: colors.green.mid,
                   },
                 ]}>
-                Cancel
+                {t('InstantBrewing.Cancel')}
               </Text>
             </TouchableOpacity>
           </View>

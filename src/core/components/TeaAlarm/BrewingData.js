@@ -19,6 +19,7 @@ import {
 import TemperaturePicker from '../TemperaturePicker';
 import TimePickerModal from '../TimePicker.js';
 import {temperaturePickerData, waterPickerData} from '../../const/index.js';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
@@ -83,6 +84,7 @@ const BrewingData = ({
   const [temperatureIsOpened, setTemperatureIsOpened] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
   const {units} = useStore($profileStore);
+  const {t} = useTranslation();
 
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
@@ -98,7 +100,7 @@ const BrewingData = ({
               height={24}
             />
           }
-          title="Brewing  time"
+          title={t('BrewingData.BrewingTime')}
           value={brewingTime.label}
         />
       </TouchableOpacity>
@@ -107,29 +109,6 @@ const BrewingData = ({
         closeModal={() => setIsOpen(false)}
         setTime={setBrewingTime}
       />
-      {/* <TimerPickerModal
-        modalTitle="Brewing time"
-        styles={{
-          modalTitle: s.timeModalTitle,
-          contentContainer: {width: 269},
-          cancelButton: s.cancelButton,
-          confirmButton: s.confirmButton,
-          buttonContainer: s.timeModalButtonsContainer,
-        }}
-        confirmButtonText="Done"
-        initialMinutes={brewingTime.minutes}
-        initialSeconds={brewingTime.seconds}
-        hideHours
-        minuteLabel={''}
-        secondLabel={''}
-        onConfirm={value => {
-          const {minutes, seconds} = value;
-          setBrewingTime({minutes, seconds});
-          setIsOpen(false);
-        }}
-        setIsVisible={setIsOpen}
-        visible={isOpen}
-      /> */}
       <View style={s.divider} />
       <TouchableOpacity
         disabled={disabled}
@@ -143,7 +122,7 @@ const BrewingData = ({
               fill={type === 'pressets' ? 'black' : colors.white}
             />
           }
-          title="Water temperature"
+          title={t('BrewingData.WaterTemperature')}
           value={
             temperaturePickerData(units).find(
               item => item.value === temperature,
@@ -172,7 +151,7 @@ const BrewingData = ({
               fill={type === 'pressets' ? 'black' : colors.white}
             />
           }
-          title="Water amount"
+          title={t('BrewingData.WaterAmount')}
           value={
             waterPickerData(units).find(item => item.value === waterAmount)
               ?.label || 0

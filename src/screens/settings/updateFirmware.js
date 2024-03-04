@@ -13,6 +13,7 @@ import {fetchFirmwareMeta, getTextFromFirmware} from '@utils/firmware';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
+import {deviceManager, getCommand} from '../../utils/device';
 
 const UpdateFirmwareScreen = props => {
   let devices = useStore($deviceSettingsStore);
@@ -137,11 +138,12 @@ const UpdateFirmwareScreen = props => {
                       text: 'Update',
                       isPreferred: true,
                       style: 'destructive',
-                      onPress: () =>
+                      onPress: async () => {
                         props.navigation.navigate(
                           'UpdateFirmwareProgressScreen',
                           {device, file},
-                        ),
+                        );
+                      },
                     },
                   ],
                 );

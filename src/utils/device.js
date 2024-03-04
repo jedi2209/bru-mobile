@@ -802,19 +802,15 @@ export class Device {
     let timerReboot = 4;
     let devices = null;
     if (isAndroid) {
+      const command = getCommand(0x27, [], 4);
       timerReboot = 5;
-      await this.repeatFunc(
-        'writeValue',
-        Buffer(sendDataCommand(deviceInfo.OTAMode)).toJSON().data,
-        2,
-      );
+      await this.repeatFunc('writeValueAndNotify', getCommand(0x27, [], 4), 2);
       console.info('\t\t\tAndroid waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
       devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);
     } else {
-      await this.writeValue(
-        Buffer(sendDataCommand(deviceInfo.OTAMode)).toJSON().data,
-      );
+      const command = getCommand(0x27, [], 4);
+      await deviceManager.writeValueAndNotify(command);
       console.info('\t\t\tiOS waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
       devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);
@@ -856,7 +852,7 @@ export class Device {
         return false;
       }
     } else {
-      return false;
+      return 'no devices found';
     }
   };
 
@@ -1100,22 +1096,6 @@ export const sendDataCommand = (cmd = 0x40, data = 0, len = 0) => {
   len = sendBufferPlus[1] - 1;
   sendBufferPlus[len] = _calcChecksum(sendBufferPlus, len);
   return sendBufferPlus;
-};
-
-export const startBrewing = data => {
-  const defaultData = new Uint8Array([0xff, 0x0f, 0x40]);
-  const brewingData = [...defaultData, ...[0, 0, 0, 0, 0, 0, 0]];
-  const len = 11;
-  brewingData.push(_calcChecksum(brewingData, len));
-  return brewingData;
-};
-
-export const cancelBrewing = data => {
-  const defaultData = new Uint8Array([0xff, 0x04, 0x42]);
-  const brewingData = [...defaultData];
-  const checkSum = _calcChecksum([0xff, 0x04, 0x42], 4);
-  brewingData.push(hexToDecimal(checkSum));
-  return brewingData;
 };
 
 export const getCommand = (
