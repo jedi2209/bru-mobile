@@ -1,13 +1,6 @@
 import {useStore} from 'effector-react';
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  Linking,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {$themeStore, setThemeFx} from '../../../core/store/theme';
 import Collapsible from 'react-native-collapsible';
 import {basicStyles, colors} from '../../../core/const/style';
@@ -17,6 +10,7 @@ import {$profileStore, updateProfileUser} from '../../../core/store/profile';
 import {setUser} from '../../../core/store/user';
 import {logout} from '../../../utils/auth';
 import {useNavigation} from '@react-navigation/native';
+import openLink from '../../../helpers/openLink';
 
 const s = StyleSheet.create({
   wrapper: {marginBottom: 50},
@@ -24,7 +18,7 @@ const s = StyleSheet.create({
     color: colors.white,
   },
   logoutText: {
-    color: colors.red,
+    color: '#f54c4c',
   },
   filterStatus: {
     ...basicStyles.rowBetween,
@@ -320,6 +314,7 @@ const CommonSettings = () => {
           </TouchableOpacity>
         </View>
       </View>
+
       {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           Notifications
@@ -369,15 +364,8 @@ const CommonSettings = () => {
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
         <TouchableOpacity
-          onPress={async () => {
-            const url = 'https://bru.shop/en';
-            const supported = await Linking.canOpenURL(url);
-
-            if (supported) {
-              await Linking.openURL(url);
-            } else {
-              Alert.alert(`Don't know how to open this URL: ${url}`);
-            }
+          onPress={() => {
+            openLink('https://bru.shop/en');
           }}>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
         </TouchableOpacity>

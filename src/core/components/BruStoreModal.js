@@ -2,6 +2,7 @@ import React from 'react';
 import {Alert, Linking, Modal, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {colors} from '../const/style';
+import openLink from '../../helpers/openLink';
 
 const s = StyleSheet.create({
   modal: {
@@ -66,28 +67,14 @@ const BruStoreModal = ({opened, closeModal}) => {
           <View style={s.buttonsContainer}>
             <TouchableOpacity
               onPress={async () => {
-                const url = 'https://bru.shop/en/collections/unsere-teesoerten';
-                const supported = await Linking.canOpenURL(url);
-
-                if (supported) {
-                  await Linking.openURL(url);
-                } else {
-                  Alert.alert(`Don't know how to open this URL: ${url}`);
-                }
+                openLink('https://bru.shop/en/collections/unsere-teesoerten');
               }}
               style={s.button}>
               <Text style={s.buttonText}>Tea Store</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={async () => {
-                const url = 'https://bru.shop/en/collections/zubehor';
-                const supported = await Linking.canOpenURL(url);
-
-                if (supported) {
-                  await Linking.openURL(url);
-                } else {
-                  Alert.alert(`Don't know how to open this URL: ${url}`);
-                }
+              onPress={() => {
+                openLink('https://bru.shop/en/collections/zubehor');
               }}
               style={s.button}>
               <Text style={s.buttonText}>Parts and Accessories</Text>
