@@ -108,6 +108,7 @@ const App = props => {
 
   useEffect(() => {
     pushUserData();
+
     setTimeout(() => {
       SplashScreen.hide();
     }, 550);

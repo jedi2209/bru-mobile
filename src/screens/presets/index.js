@@ -29,6 +29,12 @@ import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
+import {
+  bufferToHex,
+  deviceManager,
+  getCommand,
+  sleep,
+} from '../../utils/device';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -313,7 +319,27 @@ const PresetsScreen = props => {
             <Text style={s.cleaningText}>+ Cleaning</Text>
           )}
           {mode === 'list' && (
-            <TouchableOpacity style={s.brewButton}>
+            <TouchableOpacity
+              onPress={async () => {
+                const command = getCommand(
+                  0x40,
+                  [temperature, brewingTime.value, waterAmount],
+                  0x0f,
+                  true,
+                );
+                console.log(command);
+                console.log(bufferToHex(command));
+
+                await deviceManager
+                  .writeValueAndNotify(command)
+                  .then(async () => {
+                    await sleep(2000);
+                  })
+                  .catch(err => {
+                    console.error('Start Brewing error', err);
+                  });
+              }}
+              style={s.brewButton}>
               <Text style={s.buttonText}>Brew it</Text>
             </TouchableOpacity>
           )}
