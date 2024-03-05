@@ -32,7 +32,7 @@ import {uploadPressetImage} from '../../utils/db/pressets';
 import {
   bufferToHex,
   deviceManager,
-  getCommand,
+  getStartCommand,
   sleep,
 } from '../../utils/device';
 
@@ -321,11 +321,10 @@ const PresetsScreen = props => {
           {mode === 'list' && (
             <TouchableOpacity
               onPress={async () => {
-                const command = getCommand(
+                const command = getStartCommand(
                   0x40,
                   [temperature, brewingTime.value, waterAmount],
                   0x0f,
-                  true,
                 );
                 console.log(command);
                 console.log(bufferToHex(command));

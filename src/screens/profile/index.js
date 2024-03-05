@@ -483,7 +483,7 @@ const ProfileScreen = props => {
           </TouchableOpacity>
         )}
       </LinearGradient>
-      {mode === 'view' && (
+      {/* {mode === 'view' && (
         <>
           <Text style={[s.subtitle, isDarkMode && basicStyles.darkTextProfile]}>
             My statistics
@@ -540,11 +540,9 @@ const ProfileScreen = props => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={s.barStatistic}>
-              {/* <Text style={s.totalTea}>53242 litres</Text> */}
               {selectedFilterByDate.map(item => {
                 return (
                   <View>
-                    {/* {item ? <Text>{item}</Text> : null} */}
                     <View
                       key={item + new Date().getMilliseconds()}
                       style={[
@@ -616,7 +614,7 @@ const ProfileScreen = props => {
             <Text style={s.resetButtonText}>Reset My Stats</Text>
           </TouchableOpacity>
         </>
-      )}
+      )} */}
       <ConfirmationModal
         opened={!!modal}
         closeModal={() => setModal(null)}

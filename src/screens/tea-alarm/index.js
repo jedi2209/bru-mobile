@@ -68,6 +68,7 @@ const TeaAlarmScreen = props => {
           <Text style={s.addButtonText}>{t('TeaAlarm.NewTeaAlarm')}</Text>
         </TouchableOpacity>
         <FlatList
+          bounces={false}
           contentContainerStyle={s.listContainerStyle}
           data={teaAlarms || []}
           renderItem={({item}) => <TeaAlarmInfo {...item} />}

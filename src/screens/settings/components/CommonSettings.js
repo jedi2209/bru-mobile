@@ -1,17 +1,30 @@
 import {useStore} from 'effector-react';
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {$themeStore, setThemeFx} from '../../../core/store/theme';
 import Collapsible from 'react-native-collapsible';
 import {basicStyles, colors} from '../../../core/const/style';
 import {Switch} from '@gluestack-ui/themed';
 import {updateUser} from '../../../utils/db/auth';
 import {$profileStore, updateProfileUser} from '../../../core/store/profile';
+import {setUser} from '../../../core/store/user';
+import {logout} from '../../../utils/auth';
+import {useNavigation} from '@react-navigation/native';
 
 const s = StyleSheet.create({
   wrapper: {marginBottom: 50},
   darkTextMain: {
     color: colors.white,
+  },
+  logoutText: {
+    color: colors.red,
   },
   filterStatus: {
     ...basicStyles.rowBetween,
@@ -111,6 +124,7 @@ const CommonSettings = () => {
   const [units, setUnits] = useState(user.units || 'metric');
   const [notifications, setNotifications] = useState(user.notifications);
   const theme = useStore($themeStore);
+  const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
 
   const setSetting = async (cb, data) => {
@@ -128,7 +142,7 @@ const CommonSettings = () => {
 
   return (
     <View style={s.wrapper}>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <View>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>
             Filter Status
@@ -144,8 +158,8 @@ const CommonSettings = () => {
           </TouchableOpacity>
         </View>
         <Text style={[s.title, s.filterHealth]}>Health 85%</Text>
-      </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      </View> */}
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <View>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>Cold tea</Text>
           <Text style={s.subTitle}>
@@ -167,8 +181,8 @@ const CommonSettings = () => {
             },
           }}
         />
-      </View>
-      <View style={[s.bottomBorder, {}]}>
+      </View> */}
+      {/* <View style={[s.bottomBorder, {}]}>
         <View style={[s.filterStatus, s.autoRinseWrapper]}>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>
             Auto-rinse
@@ -272,7 +286,7 @@ const CommonSettings = () => {
             </View>
           </View>
         </Collapsible>
-      </View>
+      </View> */}
       <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>Units</Text>
         <View style={s.units}>
@@ -306,7 +320,7 @@ const CommonSettings = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           Notifications
         </Text>
@@ -325,7 +339,7 @@ const CommonSettings = () => {
             },
           }}
         />
-      </View>
+      </View> */}
       <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           App color theme
@@ -354,8 +368,28 @@ const CommonSettings = () => {
         </View>
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <TouchableOpacity onPress={() => {}}>
+        <TouchableOpacity
+          onPress={async () => {
+            const url = 'https://bru.shop/en';
+            const supported = await Linking.canOpenURL(url);
+
+            if (supported) {
+              await Linking.openURL(url);
+            } else {
+              Alert.alert(`Don't know how to open this URL: ${url}`);
+            }
+          }}>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <TouchableOpacity
+          onPress={async () => {
+            setUser(null);
+            await logout();
+            navigation.navigate('Authorization');
+          }}>
+          <Text style={[s.title, s.logoutText]}>Logout</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -9,7 +9,14 @@ import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
-import {deleteTeaAlarm, deleteTeaAlarmFx} from '../store/teaAlarms';
+import {deleteTeaAlarmFx} from '../store/teaAlarms';
+import PlayIcon from './icons/PlayIcon';
+import {
+  bufferToHex,
+  deviceManager,
+  setTeaAlarmCommand,
+  sleep,
+} from '../../utils/device';
 
 const s = StyleSheet.create({
   container: {
@@ -69,9 +76,11 @@ const s = StyleSheet.create({
   icons: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    height: 20,
   },
   penIcon: {
-    marginRight: 16,
+    marginHorizontal: 16,
   },
 });
 
@@ -122,6 +131,28 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
           </View>
         </View>
         <View style={s.icons}>
+          <TouchableOpacity
+            onPress={async () => {
+              const {temperature, time, waterAmount} = presset.brewing_data;
+              const command = setTeaAlarmCommand(
+                [temperature, time.value, waterAmount],
+                0x0f,
+                prepare_by.hours,
+                prepare_by.minutes,
+              );
+              console.log(command);
+              console.log(bufferToHex(command));
+              await deviceManager
+                .writeValueAndNotify(command)
+                .then(async () => {
+                  await sleep(2000);
+                })
+                .catch(err => {
+                  console.error('Start Brewing error', err);
+                });
+            }}>
+            <PlayIcon />
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('NewTeaAlarm', {id})}>
             <PenIcon style={s.penIcon} />

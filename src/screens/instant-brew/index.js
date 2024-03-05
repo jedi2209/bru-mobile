@@ -31,6 +31,7 @@ import {
   bufferToHex,
   deviceManager,
   getCommand,
+  getStartCommand,
   sleep,
   startBrewing,
 } from '../../utils/device.js';
@@ -52,6 +53,7 @@ const s = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginTop: 30,
   },
   brewButton: {
     ...basicStyles.backgroundButton,
@@ -189,7 +191,7 @@ const InstantBrewScreen = props => {
             setTemperature={setTemperature}
           />
 
-          <SplitCups cleaning={isCleaning} setCleaning={setIsCleaning} />
+          {/* <SplitCups cleaning={isCleaning} setCleaning={setIsCleaning} /> */}
           <View style={s.buttons}>
             <TouchableOpacity
               onPress={async () => {
@@ -238,11 +240,10 @@ const InstantBrewScreen = props => {
                 //   });
                 // }
                 console.log(selected);
-                const command = getCommand(
+                const command = getStartCommand(
                   0x40,
                   [temperature, brewingTime.value, waterAmount],
                   0x0f,
-                  true,
                 );
                 console.log(command);
                 console.log(bufferToHex(command));

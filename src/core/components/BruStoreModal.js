@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, StyleSheet, Text, View} from 'react-native';
+import {Alert, Linking, Modal, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {colors} from '../const/style';
 
@@ -64,10 +64,32 @@ const BruStoreModal = ({opened, closeModal}) => {
         <View style={s.modalContainer}>
           <Text style={s.title}>BRÜ Store</Text>
           <View style={s.buttonsContainer}>
-            <TouchableOpacity style={s.button}>
+            <TouchableOpacity
+              onPress={async () => {
+                const url = 'https://bru.shop/en/collections/unsere-teesoerten';
+                const supported = await Linking.canOpenURL(url);
+
+                if (supported) {
+                  await Linking.openURL(url);
+                } else {
+                  Alert.alert(`Don't know how to open this URL: ${url}`);
+                }
+              }}
+              style={s.button}>
               <Text style={s.buttonText}>Tea Store</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={s.button}>
+            <TouchableOpacity
+              onPress={async () => {
+                const url = 'https://bru.shop/en/collections/zubehor';
+                const supported = await Linking.canOpenURL(url);
+
+                if (supported) {
+                  await Linking.openURL(url);
+                } else {
+                  Alert.alert(`Don't know how to open this URL: ${url}`);
+                }
+              }}
+              style={s.button}>
               <Text style={s.buttonText}>Parts and Accessories</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={closeModal} style={s.button}>
