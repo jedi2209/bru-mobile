@@ -197,7 +197,14 @@ const PresetsScreen = props => {
         {mode === 'list' && (
           <TouchableOpacity
             onPress={() => {
-              setSelected(null);
+              setSelected({
+                brewing_data: {
+                  time: {label: '0m 10s', value: 0, seconds: 10},
+                  waterAmount: 0,
+                  temperature: 0,
+                },
+                cleaning: false,
+              });
               setMode('create');
             }}>
             <PlusCircle style={s.plusIcon} />

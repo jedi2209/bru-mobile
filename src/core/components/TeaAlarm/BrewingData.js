@@ -18,7 +18,11 @@ import {
 } from '../../../helpers/convertUnits';
 import TemperaturePicker from '../TemperaturePicker';
 import TimePickerModal from '../TimePicker.js';
-import {temperaturePickerData, waterPickerData} from '../../const/index.js';
+import {
+  temperaturePickerData,
+  timePickerData,
+  waterPickerData,
+} from '../../const/index.js';
 import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
@@ -101,7 +105,10 @@ const BrewingData = ({
             />
           }
           title={t('BrewingData.BrewingTime')}
-          value={brewingTime.label}
+          value={
+            timePickerData(units).find(item => item.value === brewingTime.value)
+              ?.label || '0m 10s'
+          }
         />
       </TouchableOpacity>
       <TimePickerModal

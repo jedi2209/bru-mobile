@@ -7,7 +7,6 @@ import {
   ButtonText,
   ButtonSpinner,
   ButtonGroup,
-  ButtonIcon,
   Text,
   Image,
   Heading,
@@ -285,8 +284,14 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
             variant={'solid'}
             action={'primary'}
             size={'xl'}
-            onPress={() => {
-              setStep(step + 1);
+            onPress={async () => {
+              const permissionGranted =
+                await deviceManager._handlePermissions();
+              if (permissionGranted) {
+                setStep(prev => prev + 1);
+              } else {
+                navigation.goBack();
+              }
             }}>
             <Icon
               name="check-square-o"

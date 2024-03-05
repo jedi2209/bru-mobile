@@ -1,6 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Text, View, StyleSheet, Dimensions} from 'react-native';
-import {Button, ButtonText} from '@gluestack-ui/themed';
+import {
+  Button,
+  ButtonText,
+  Toast,
+  ToastTitle,
+  VStack,
+  useToast,
+} from '@gluestack-ui/themed';
 
 import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
@@ -84,6 +91,7 @@ const SettingsScreen = props => {
   const settingsStore = useStore($deviceSettingsStore);
   const notificationModalOpened = settingsStore.isOpenModal;
   const {navigation} = props;
+  const toast = useToast();
 
   useEffect(() => {
     setLoading(true);
@@ -123,7 +131,7 @@ const SettingsScreen = props => {
         Settings
       </Text>
       <View>
-        {devices.lenght && (
+        {devices.lenght ? (
           <>
             <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
               Connected machines
@@ -132,7 +140,7 @@ const SettingsScreen = props => {
               return <BruMachine key={item} item={item} />;
             })}
           </>
-        )}
+        ) : null}
       </View>
       <Button
         size="lg"
@@ -142,7 +150,32 @@ const SettingsScreen = props => {
         <ButtonText style={s.buttonTextStyle}>Connect New Machine</ButtonText>
       </Button>
       <Button
-        onPress={_onPressUpdate}
+        onPress={() => {
+          if (!devices.lenght) {
+            toast.show({
+              placement: 'top',
+              duration: 5000,
+              render: () => {
+                return (
+                  <Toast
+                    id={'noPermissionsToast'}
+                    action="error"
+                    variant="accent">
+                    <VStack space="lg">
+                      <ToastTitle fontSize={'$md'}>
+                        To update the firmware, you need to connect to the
+                        device
+                      </ToastTitle>
+                    </VStack>
+                  </Toast>
+                );
+              },
+              onCloseComplete: () => {},
+            });
+            return;
+          }
+          _onPressUpdate();
+        }}
         size="lg"
         variant={'primary'}
         style={[

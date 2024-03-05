@@ -219,12 +219,12 @@ const s = StyleSheet.create({
   },
 });
 
-const chartDaysData = [
-  0, 1, 2, 3, 4, 5, 6, 2, 3, 5, 5, 3, 9, 3, 1, 5, 7, 4, 0, 9, 8, 3, 4, 2, 6, 0,
-];
-const chartWeeksData = [14, 10, 8, 2];
-const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
-const chartYearsData = [365, 363, 200, 100, 150];
+// const chartDaysData = [
+//   0, 1, 2, 3, 4, 5, 6, 2, 3, 5, 5, 3, 9, 3, 1, 5, 7, 4, 0, 9, 8, 3, 4, 2, 6, 0,
+// ];
+// const chartWeeksData = [14, 10, 8, 2];
+// const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
+// const chartYearsData = [365, 363, 200, 100, 150];
 
 const schema = yup
   .object({
@@ -266,20 +266,20 @@ const ProfileScreen = props => {
     }
   }, [errors]);
 
-  const selectedFilterByDate = useMemo(() => {
-    switch (selectedFilter) {
-      case 'days':
-        return chartDaysData;
-      case 'weeks':
-        return chartWeeksData;
-      case 'months':
-        return chartMonthsData;
-      case 'years':
-        return chartYearsData;
-      default:
-        return [];
-    }
-  }, [selectedFilter]);
+  // const selectedFilterByDate = useMemo(() => {
+  //   switch (selectedFilter) {
+  //     case 'days':
+  //       return chartDaysData;
+  //     case 'weeks':
+  //       return chartWeeksData;
+  //     case 'months':
+  //       return chartMonthsData;
+  //     case 'years':
+  //       return chartYearsData;
+  //     default:
+  //       return [];
+  //   }
+  // }, [selectedFilter]);
 
   return (
     <Wrapper style={s.wrapper} {...props}>

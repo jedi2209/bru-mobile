@@ -31,8 +31,8 @@ const initPressets = [
   },
   {
     brewing_data: {
-      time: {label: '8m 30s', value: 50, seconds: 510},
-      waterAmount: 250,
+      time: {label: '0m 10s', value: 0, seconds: 10},
+      waterAmount: 0,
       temperature: 2,
     },
     cleaning: false,
