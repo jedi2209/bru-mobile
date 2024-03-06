@@ -1,5 +1,5 @@
 import React from 'react';
-import {Alert, Linking, Modal, StyleSheet, Text, View} from 'react-native';
+import {Modal, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {colors} from '../const/style';
 import openLink from '../../helpers/openLink';

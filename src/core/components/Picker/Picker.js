@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef} from 'react';
+import React, {useMemo, useRef} from 'react';
 import {StyleSheet, View, Text, Animated} from 'react-native';
 
 const ITEM_HEIGHT = 50;

@@ -1,8 +1,5 @@
 import React, {useState} from 'react';
-
-import {TimerPickerModal} from 'react-native-timer-picker';
 import dayjs from 'dayjs';
-
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../const/style';
 import TeaAlarmIcon from '../icons/TeaAlarmIcon';
@@ -12,10 +9,6 @@ import TeaAlarmInfoItem from './BrewingDataItem';
 import WaterAmountModal from '../WaterAmountModal';
 import {useStore} from 'effector-react';
 import {$profileStore} from '../../store/profile';
-import {
-  convertTemperature,
-  convertWaterAmount,
-} from '../../../helpers/convertUnits';
 import TemperaturePicker from '../TemperaturePicker';
 import TimePickerModal from '../TimePicker.js';
 import {

@@ -289,8 +289,6 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
                 await deviceManager._handlePermissions();
               if (permissionGranted) {
                 setStep(prev => prev + 1);
-              } else {
-                navigation.goBack();
               }
             }}>
             <Icon
@@ -360,19 +358,29 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
         });
     case 8:
       return (
-        <Button
-          style={styles.buttonBottom}
-          size={'xl'}
-          onPress={() => {
-            setStep(step - 1);
-          }}>
-          <Icon
-            name="check-square-o"
-            style={styles.buttonBottomIcon}
-            size={24}
-          />
-          <ButtonText>Ready to connect!</ButtonText>
-        </Button>
+        <>
+          <Button
+            style={styles.buttonBottom}
+            size={'xl'}
+            onPress={() => {
+              setStep(step - 1);
+            }}>
+            <Icon
+              name="check-square-o"
+              style={styles.buttonBottomIcon}
+              size={24}
+            />
+            <ButtonText>Ready to connect!</ButtonText>
+          </Button>
+          <Button
+            style={styles.buttonBottom}
+            size={'xl'}
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <ButtonText>Go Back</ButtonText>
+          </Button>
+        </>
       );
     case 9:
       return (

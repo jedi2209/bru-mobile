@@ -124,14 +124,14 @@ const SettingsScreen = props => {
   const _onPressUpdate = () => {
     navigation.navigate('UpdateFirmwareScreen', {device: deviceManager.device});
   };
-
+  console.log(devices.lenght);
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
         Settings
       </Text>
       <View>
-        {devices.lenght ? (
+        {devices.length !== 0 ? (
           <>
             <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
               Connected machines

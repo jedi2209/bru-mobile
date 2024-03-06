@@ -12,7 +12,7 @@ import {setDevice} from '@store/device';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {get} from 'lodash';
 import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
-import {DEVICE_MANAGER_CONFIG} from '@const';
+import {DEVICE_MANAGER_CONFIG} from '../core/const/index';
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
@@ -350,6 +350,10 @@ export class Device {
     if (itemID) {
       return this.peripherals.get(itemID);
     }
+    console.log(
+      this.peripherals,
+      'peripheralsperipheralsperipheralsperipherals',
+    );
     return Array.from(this.peripherals.values());
   };
 

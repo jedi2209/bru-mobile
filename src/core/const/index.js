@@ -72,19 +72,18 @@ export const waterPickerData = units => [
 
 export const temperaturePickerData = units => [
   {label: units === 'metric' ? 'Cold' : 'Cold', value: 0},
-  {label: units === 'metric' ? '40°C' : '104°F', value: 1},
-  {label: units === 'metric' ? '45°C' : '113°F', value: 2},
-  {label: units === 'metric' ? '50°C' : '122°F', value: 3},
-  {label: units === 'metric' ? '55°C' : '131°F', value: 4},
-  {label: units === 'metric' ? '60°C' : '140°F', value: 5},
-  {label: units === 'metric' ? '65°C' : '149°F', value: 6},
-  {label: units === 'metric' ? '70°C' : '158°F', value: 7},
-  {label: units === 'metric' ? '75°C' : '167°F', value: 8},
-  {label: units === 'metric' ? '80°C' : '176°F', value: 9},
-  {label: units === 'metric' ? '85°C' : '185°F', value: 10},
-  {label: units === 'metric' ? '90°C' : '194°F', value: 11},
-  {label: units === 'metric' ? '95°C' : '203°F', value: 12},
-  {label: units === 'metric' ? '100°C' : '212°F', value: 13},
+  {label: units === 'metric' ? '45°C' : '104°F', value: 1},
+  {label: units === 'metric' ? '50°C' : '122°F', value: 2},
+  {label: units === 'metric' ? '55°C' : '131°F', value: 3},
+  {label: units === 'metric' ? '60°C' : '140°F', value: 4},
+  {label: units === 'metric' ? '65°C' : '149°F', value: 5},
+  {label: units === 'metric' ? '70°C' : '158°F', value: 6},
+  {label: units === 'metric' ? '75°C' : '167°F', value: 7},
+  {label: units === 'metric' ? '80°C' : '176°F', value: 8},
+  {label: units === 'metric' ? '85°C' : '185°F', value: 9},
+  {label: units === 'metric' ? '90°C' : '194°F', value: 10},
+  {label: units === 'metric' ? '95°C' : '203°F', value: 11},
+  {label: units === 'metric' ? '100°C' : '212°F', value: 12},
 ];
 
 export const timePickerData = () => {
