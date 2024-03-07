@@ -42,6 +42,11 @@ import {$userStore} from '../../core/store/user.js';
 import {useTranslation} from 'react-i18next';
 import {$deviceSettingsStore} from '../../core/store/device';
 import {get} from 'lodash';
+import {
+  $currentDeviceFirmwareStore,
+  setDeviceFirmware,
+} from '../../core/store/deviceFirmware';
+import {getFirmwareData} from '../../utils/firmware';
 
 const s = StyleSheet.create({
   container: {
@@ -98,6 +103,7 @@ const InstantBrewScreen = props => {
   const user = useStore($userStore);
   const {t} = useTranslation();
   const [animationButton] = useState(new Animated.Value(0));
+  const deviceFirmware = useStore($currentDeviceFirmwareStore);
 
   const onPressStartButton = useCallback(() => {
     Animated.timing(animationButton, {
@@ -143,8 +149,7 @@ const InstantBrewScreen = props => {
 
   const startBrewing = async (temp = 0, time = 0, water = 0) => {
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
-    console.log(command);
-    console.log(bufferToHex(command));
+
     await deviceManager
       .writeValueAndNotify(command)
       .then(async () => {
@@ -243,8 +248,6 @@ const InstantBrewScreen = props => {
 
                 if (selected.id === 'instant_brew') {
                   const command = getCommand(0x40, [], 0x0f);
-                  console.log(command);
-                  console.log(bufferToHex(command));
 
                   await deviceManager
                     .writeValueAndNotify(command)
@@ -264,7 +267,7 @@ const InstantBrewScreen = props => {
                   tea_img: selected.tea_img,
                   tea_type: selected.tea_type,
                 });
-                console.log(isChanged);
+
                 if (isChanged) {
                   openConfiramtionModal(brewingTime);
                 } else {
@@ -289,7 +292,7 @@ const InstantBrewScreen = props => {
             <TouchableOpacity
               onPress={async () => {
                 const command = getCommand(0x42, [], 4, false);
-                console.log(bufferToHex(command));
+
                 await deviceManager
                   .writeValueAndNotify(command)
                   .then(async () => {

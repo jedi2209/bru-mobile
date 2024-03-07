@@ -7,8 +7,8 @@ import TrashIconOutlined from '../../../core/components/icons/TrashIconOutlined'
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../../core/store/theme';
 import {getFirmwareData} from '../../../utils/firmware';
-import {deviceManager, getCommand} from '../../../utils/device.js';
-import {resetDevice} from '../../../core/store/device.js';
+import {deviceManager} from '../../../utils/device.js';
+import {clearDeviceStorage, resetDevice} from '../../../core/store/device.js';
 import {get} from 'lodash';
 
 const s = StyleSheet.create({
@@ -56,7 +56,7 @@ const _onPressUnpair = async () => {
   await deviceManager
     .removeBond()
     .then(res => {
-      resetDevice();
+      clearDeviceStorage();
       console.info('onPress Unpair device', res);
     })
     .catch(err => {
@@ -72,7 +72,9 @@ const BruMachine = ({item}) => {
   useEffect(() => {
     async function fetch() {
       const data = await getFirmwareData();
-      setFirmware(data[0].description.en);
+      setFirmware(
+        data.find(firmwareData => firmwareData.available).description.en,
+      );
     }
     fetch();
   }, []);
@@ -86,7 +88,7 @@ const BruMachine = ({item}) => {
         </Text>
       </View>
       <View style={s.row}>
-        <Text style={s.version}>{firmware.split(' ')[3]}</Text>
+        <Text style={s.version}>{firmware}</Text>
         <TouchableOpacity onPress={() => {}}>
           <PenIcon
             fill={isDarkMode ? colors.white : colors.green.mid}

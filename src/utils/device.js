@@ -13,6 +13,7 @@ import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {get} from 'lodash';
 import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
 import {DEVICE_MANAGER_CONFIG} from '../core/const/index';
+import {resetDevice} from '../core/store/device';
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
@@ -316,9 +317,13 @@ export class Device {
     this.device = device;
     if (device?.id) {
       this.setCurrentDeviceID(device.id);
+    } else {
+      this.setCurrentDeviceID('');
     }
     if (device?.name) {
       this.setCurrentDeviceName(device.name);
+    } else {
+      this.setCurrentDeviceName('');
     }
   };
 
@@ -602,6 +607,7 @@ export class Device {
     console.info('removeBond => setDevice finish, this.clearDevice start');
     this.clearDevice();
     console.info('removeBond => this.clearDevice finish');
+    resetDevice();
     return true;
   };
 
@@ -919,35 +925,62 @@ export class Device {
     this._addOrUpdatePeripheral(peripheral.id, peripheral);
   };
 
-  _readDataFromBleDevice = async (deviceID, characteristic) => {
+  _readDataFromBleDevice = async characteristic => {
+    const deviceID = this.deviceUUID;
     const preCheck = await this._checkManager();
     if (!preCheck) {
       console.error('_readDataFromBleDevice preCheck', preCheck);
       return false;
     }
-    return BleManager.retrieveServices(deviceID) // запрашиваем сначала все сервисы, заодно подключаясь к устройству
-      .then(async () => {
-        // затем начинаем читать
-        return BleManager.read(
-          deviceID, // ID of the peripheral
-          deviceInfo[characteristic].service, // В нашем случае 180A
-          deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
-        )
-          .then(data => {
-            const buffer = Buffer.from(data); // Buffer - это https://www.npmjs.com/package/buffer
-            if (buffer) {
-              return buffer.toString('utf8'); // ответ переводим просто в строку
-            }
-            return false;
-          })
-          .catch(err => {
-            console.error('BleManager.read', err);
-            return false;
-          });
-      })
-      .catch(err => {
-        console.error('BleManager.retrieveServices', err);
-      });
+    return this._connect(deviceID).then(async () => {
+      // Success code
+      return BleManager.retrieveServices(deviceID)
+        .then(async () => {
+          return BleManager.read(
+            deviceID, // ID of the peripheral
+            deviceInfo[characteristic].service, // В нашем случае 180A
+            deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
+          )
+            .then(data => {
+              const buffer = Buffer.from(data); // Buffer - это https://www.npmjs.com/package/buffer
+              if (buffer) {
+                return buffer.toString('utf8'); // ответ переводим просто в строку
+              }
+              return false;
+            })
+            .catch(err => {
+              console.error('BleManager.read', err);
+              return false;
+            });
+        })
+        .catch(error => {
+          // Failure code
+          console.error('readData => BleManager.retrieveServices', error);
+        });
+    });
+    // return BleManager.retrieveServices(deviceID) // запрашиваем сначала все сервисы, заодно подключаясь к устройству
+    //   .then(async () => {
+    //     // затем начинаем читать
+    //     return BleManager.read(
+    //       deviceID, // ID of the peripheral
+    //       deviceInfo[characteristic].service, // В нашем случае 180A
+    //       deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
+    //     )
+    //       .then(data => {
+    //         const buffer = Buffer.from(data); // Buffer - это https://www.npmjs.com/package/buffer
+    //         if (buffer) {
+    //           return buffer.toString('utf8'); // ответ переводим просто в строку
+    //         }
+    //         return false;
+    //       })
+    //       .catch(err => {
+    //         console.error('BleManager.read', err);
+    //         return false;
+    //       });
+    //   })
+    //   .catch(err => {
+    //     console.error('BleManager.retrieveServices', err);
+    //   });
   };
 
   repeatFunc = async (func, params = null, times = 3, delay = 500) => {
@@ -1110,7 +1143,6 @@ export const getCommand = (cmd = 0x40, data = [], len = 0) => {
       command.push(0);
     }
   }
-  console.log(command);
 
   command.push(_calcChecksum(command, len));
   return command;
@@ -1137,7 +1169,6 @@ export const setTeaAlarmCommand = (
 ) => {
   const defaultData = new Uint8Array([0xff, len, 0x40, 2]);
   let command = [...defaultData, ...data];
-  console.log(len);
   if (command.length < len - 2) {
     while (command.length < len - 4) {
       command.push(0);
@@ -1169,10 +1200,6 @@ export const bufferToHex = buffer => {
   });
   return s;
 };
-
-function hexToDecimal(hexString) {
-  return parseInt(hexString, 16);
-}
 
 export const sleep = (ms = defaultTimeout) => {
   return new Promise(resolve => setTimeout(resolve, ms));

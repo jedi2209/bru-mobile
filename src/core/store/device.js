@@ -67,6 +67,16 @@ fetchDevice.doneData.watch(result => {
   initDevice(result);
 });
 
+export const clearDeviceStorage = createEffect({
+  async handler() {
+    await AsyncStorage.setItem('device', '');
+  },
+});
+
+clearDeviceStorage.doneData.watch(() => {
+  initDevice();
+});
+
 export const updateDevice = createEffect({
   async handler(device) {
     try {

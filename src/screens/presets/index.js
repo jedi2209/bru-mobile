@@ -333,8 +333,6 @@ const PresetsScreen = props => {
                   [temperature, brewingTime.value, waterAmount],
                   0x0f,
                 );
-                console.log(command);
-                console.log(bufferToHex(command));
 
                 await deviceManager
                   .writeValueAndNotify(command)

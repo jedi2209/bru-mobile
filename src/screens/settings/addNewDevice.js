@@ -29,6 +29,9 @@ import {colors} from '@styleConst';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import {$deviceSettingsStore} from '../../core/store/device';
+import {$currentFirmwareStore} from '../../core/store/firmware';
+import {getFirmwareData} from '../../utils/firmware';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -433,6 +436,15 @@ const AddNewDeviceScreen = props => {
   const [step, setStep] = useState(1);
   const [item, setItem] = useState(null);
   const [isloading, setLoading] = useState(false);
+  let devices = useStore($deviceSettingsStore);
+  let device = {};
+  if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
+    device = devices[0];
+  }
+  if (!get(device, 'id', false) && get(props, 'route.params.device', false)) {
+    device = props.route.params.device;
+  }
+  const firmware = useStore($currentFirmwareStore);
 
   useEffect(() => {
     async function setInitStep() {
@@ -461,7 +473,6 @@ const AddNewDeviceScreen = props => {
           }
         } else {
           const result = await check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
-          console.log(result);
           if (result === 'granted') {
             setStep(4);
             return;
@@ -482,6 +493,38 @@ const AddNewDeviceScreen = props => {
       setStep(1);
     };
   }, []);
+
+  useEffect(() => {
+    async function getDeviceFirmware() {
+      try {
+        const deviceFirmwareVersion =
+          await deviceManager._readDataFromBleDevice('firmwareRevision');
+        const data = await getFirmwareData();
+        const availableFirmware = data.find(
+          firmwareData => firmwareData.available,
+        );
+        const file = availableFirmware.file;
+        if (!deviceFirmwareVersion) {
+          console.error("Can't get device firmware");
+        }
+        if (!availableFirmware) {
+          console.error('Something wrong at our server');
+        }
+
+        if (availableFirmware.name !== deviceFirmwareVersion) {
+          props.navigation.navigate('UpdateFirmwareProgressScreen', {
+            device,
+            file,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (step === 9) {
+      getDeviceFirmware();
+    }
+  }, [device, firmware, props.navigation, step]);
 
   return (
     <Wrapper

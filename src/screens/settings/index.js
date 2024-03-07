@@ -12,8 +12,6 @@ import {
 import {useStore} from 'effector-react';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {$deviceSettingsStore, resetDevice} from '@store/device';
-
 import Wrapper from '@comp/Wrapper';
 
 import {deviceManager} from '@utils/device';
@@ -24,7 +22,10 @@ import BruMachine from './components/BruMachine';
 
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import NotificationModal from '../../core/components/NotificationModal';
-import {setSettingsModalOpen} from '../../core/store/device';
+import {
+  $deviceSettingsStore,
+  setSettingsModalOpen,
+} from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
 
@@ -124,7 +125,7 @@ const SettingsScreen = props => {
   const _onPressUpdate = () => {
     navigation.navigate('UpdateFirmwareScreen', {device: deviceManager.device});
   };
-  console.log(devices.lenght);
+
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
@@ -151,7 +152,7 @@ const SettingsScreen = props => {
       </Button>
       <Button
         onPress={() => {
-          if (!devices.lenght) {
+          if (!devices.length) {
             toast.show({
               placement: 'top',
               duration: 5000,

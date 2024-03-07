@@ -140,8 +140,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
                 prepare_by.hours,
                 prepare_by.minutes,
               );
-              console.log(command);
-              console.log(bufferToHex(command));
+
               await deviceManager
                 .writeValueAndNotify(command)
                 .then(async () => {
