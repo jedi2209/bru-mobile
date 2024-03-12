@@ -29,12 +29,7 @@ import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
-import {
-  bufferToHex,
-  deviceManager,
-  getStartCommand,
-  sleep,
-} from '../../utils/device';
+import {deviceManager, getStartCommand, sleep} from '../../utils/device';
 
 const s = StyleSheet.create({
   titleContainer: {

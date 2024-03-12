@@ -11,12 +11,7 @@ import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
 import {deleteTeaAlarmFx} from '../store/teaAlarms';
 import PlayIcon from './icons/PlayIcon';
-import {
-  bufferToHex,
-  deviceManager,
-  setTeaAlarmCommand,
-  sleep,
-} from '../../utils/device';
+import {deviceManager, setTeaAlarmCommand, sleep} from '../../utils/device';
 
 const s = StyleSheet.create({
   container: {

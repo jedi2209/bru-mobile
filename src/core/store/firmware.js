@@ -1,5 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createStore, createEvent, createEffect, forward} from 'effector';
+import {createStore, createEvent} from 'effector';
 
 const storeName = 'firmware';
 

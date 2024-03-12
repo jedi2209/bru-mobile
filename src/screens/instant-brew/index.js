@@ -31,7 +31,6 @@ import {usePressetList} from '../../hooks/usePressetList';
 import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
 import {useFocusEffect} from '@react-navigation/native';
 import {
-  bufferToHex,
   deviceManager,
   getCommand,
   getStartCommand,
@@ -42,11 +41,7 @@ import {$userStore} from '../../core/store/user.js';
 import {useTranslation} from 'react-i18next';
 import {$deviceSettingsStore} from '../../core/store/device';
 import {get} from 'lodash';
-import {
-  $currentDeviceFirmwareStore,
-  setDeviceFirmware,
-} from '../../core/store/deviceFirmware';
-import {getFirmwareData} from '../../utils/firmware';
+import {$currentDeviceFirmwareStore} from '../../core/store/deviceFirmware';
 
 const s = StyleSheet.create({
   container: {
@@ -92,6 +87,14 @@ const s = StyleSheet.create({
   },
   teaAlarmWrapper: {marginTop: 30},
   listContainerStyle: {gap: 10},
+  animatedButton: {
+    position: 'absolute',
+    left: 0,
+    top: 0,
+    bottom: 0,
+    right: 0,
+    borderRadius: 90,
+  },
 });
 
 const InstantBrewScreen = props => {
@@ -103,6 +106,7 @@ const InstantBrewScreen = props => {
   const user = useStore($userStore);
   const {t} = useTranslation();
   const [animationButton] = useState(new Animated.Value(0));
+  const [animationCancelButton] = useState(new Animated.Value(0));
   const deviceFirmware = useStore($currentDeviceFirmwareStore);
 
   const onPressStartButton = useCallback(() => {
@@ -115,9 +119,24 @@ const InstantBrewScreen = props => {
     });
   }, [animationButton]);
 
+  const onPressCancelButton = useCallback(() => {
+    Animated.timing(animationCancelButton, {
+      toValue: 1,
+      duration: 600,
+      useNativeDriver: false,
+    }).start(() => {
+      animationCancelButton.setValue(0);
+    });
+  }, [animationCancelButton]);
+
   const backgroundColor = animationButton.interpolate({
     inputRange: [0, 1],
     outputRange: [colors.green.mid, '#A7CA56'],
+  });
+
+  const cancelBackgroundColor = animationCancelButton.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgba(42, 42, 42, 0.40)', '#fc2323'],
   });
 
   useFocusEffect(
@@ -275,22 +294,20 @@ const InstantBrewScreen = props => {
                 }
               }}
               delayLongPress={500}
-              onPress={async () => {}}
               style={s.brewButton}>
               <Animated.View
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  right: 0,
-                  backgroundColor,
-                }}
+                style={[
+                  s.animatedButton,
+                  {
+                    backgroundColor,
+                  },
+                ]}
               />
               <Text style={s.buttonText}>{t('InstantBrewing.BrewIt')}</Text>
             </Pressable>
-            <TouchableOpacity
-              onPress={async () => {
+            <Pressable
+              delayLongPress={500}
+              onLongPress={async () => {
                 const command = getCommand(0x42, [], 4, false);
 
                 await deviceManager
@@ -302,19 +319,24 @@ const InstantBrewScreen = props => {
                     console.error('Start Brewing error', err);
                   });
               }}
-              style={
-                theme === 'light' ? s.dispenseButtonLight : s.dispenseButton
-              }>
+              onPressIn={onPressCancelButton}
+              style={s.dispenseButton}>
+              <Animated.View
+                style={[
+                  s.animatedButton,
+                  {backgroundColor: cancelBackgroundColor},
+                ]}
+              />
               <Text
                 style={[
                   s.buttonText,
                   theme === 'light' && {
-                    color: colors.green.mid,
+                    color: colors.white,
                   },
                 ]}>
                 {t('InstantBrewing.Cancel')}
               </Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
           <View style={s.teaAlarmWrapper}>
             <FlatList

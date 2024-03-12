@@ -8,7 +8,7 @@ const initPressets = [
   {
     brewing_data: {
       time: {label: '51m', value: 100, seconds: 3060},
-      waterAmount: 250,
+      waterAmount: 1,
       temperature: 4,
     },
     cleaning: false,
@@ -20,7 +20,7 @@ const initPressets = [
   {
     brewing_data: {
       time: {label: '52m', value: 101, seconds: 3120},
-      waterAmount: 250,
+      waterAmount: 2,
       temperature: 3,
     },
     cleaning: false,
