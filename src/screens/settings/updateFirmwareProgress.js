@@ -47,6 +47,7 @@ const UpdateFirmwareProgressScreen = props => {
   useEffect(() => {
     if (device && !updateStatus) {
       deviceManager.setCurrentDevice(device);
+      console.log('start');
       _updateFirmware(file);
     }
     return () => {
@@ -79,10 +80,9 @@ const UpdateFirmwareProgressScreen = props => {
                 action="success"
                 variant="accent">
                 <VStack space="lg">
-                  <ToastTitle>✅ Update is complete!</ToastTitle>
+                  <ToastTitle>Update is failed!</ToastTitle>
                   <ToastDescription>
-                    Update is complete. Please wait a few seconds for BRU to
-                    reboot.
+                    Please provide access to the Bluetooth!
                   </ToastDescription>
                 </VStack>
               </Toast>
@@ -209,7 +209,7 @@ const UpdateFirmwareProgressScreen = props => {
     setUpdateStatus('rebooting');
     console.info('Rebooting...');
     // C1:D5:7F:41:61:72
-
+    console.log('start dfu');
     const statusDFU = await deviceManager.startDFU(fileDownloaded);
     if (statusDFU) {
       console.info('statusDFU Success!', statusDFU);

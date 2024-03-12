@@ -812,15 +812,13 @@ export class Device {
     let timerReboot = 4;
     let devices = null;
     if (isAndroid) {
-      const command = getCommand(0x27, [], 4);
       timerReboot = 5;
-      await this.repeatFunc('writeValueAndNotify', getCommand(0x27, [], 4), 2);
+      deviceManager.writeValueAndNotify(getCommand(0x27, [], 4));
       console.info('\t\t\tAndroid waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
       devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);
     } else {
-      const command = getCommand(0x27, [], 4);
-      await deviceManager.writeValueAndNotify(command);
+      deviceManager.writeValueAndNotify(getCommand(0x27, [], 4));
       console.info('\t\t\tiOS waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
       devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);

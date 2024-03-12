@@ -367,7 +367,7 @@ const PresetsScreen = props => {
         </>
       ) : (
         <View style={s.switchWrapper}>
-          <View style={s.switchContainer}>
+          {/* <View style={s.switchContainer}>
             <Switch
               sx={{
                 props: {
@@ -396,7 +396,7 @@ const PresetsScreen = props => {
             <Text style={[s.switchText, isDarkMode && basicStyles.darkText]}>
               Cleaning
             </Text>
-          </View>
+          </View> */}
         </View>
       )}
 

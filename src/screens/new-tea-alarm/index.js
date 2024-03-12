@@ -259,7 +259,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           temperature={temperature}
           setTemperature={setTemperature}
         />
-        <View style={s.cleaning}>
+        {/* <View style={s.cleaning}>
           <Switch
             value={isCleaning}
             onChange={() => setIsCleaning(prev => !prev)}
@@ -290,7 +290,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
             ]}>
             Cleaning
           </Text>
-        </View>
+        </View> */}
         <View style={s.buttons}>
           {id ? (
             <TouchableOpacity style={[s.button, s.deleteButton]}>

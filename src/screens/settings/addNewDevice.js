@@ -90,6 +90,12 @@ const stepsContent = [
     header: 'Success!',
     text: 'Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app',
   },
+  {
+    // 10
+    img: require('@assets/deviceImages/image-2.png'),
+    header: 'We need to update your BRU firmware!',
+    text: '',
+  },
 ];
 
 const _pairDevice = async itemID => {
@@ -144,7 +150,7 @@ const _pairDevice = async itemID => {
   return false;
 };
 
-const _renderStep = ({step, setStep, item, setItem, navigation}) => {
+const _renderStep = ({step, setStep, item, setItem, navigation, device}) => {
   const [isLoadingLocal, setIsLoadingLocal] = useState(false);
   if (isLoadingLocal) {
     return (
@@ -390,9 +396,27 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
         <Button
           style={styles.buttonBottom}
           size={'xl'}
-          onPress={() => {
-            navigation.navigate('NavBottom', {screen: 'Settings'});
-            // RNRestart.restart();
+          onPress={async () => {
+            const deviceFirmwareVersion =
+              await deviceManager._readDataFromBleDevice('firmwareRevision');
+            const data = await getFirmwareData();
+            const availableFirmware = data.find(
+              firmwareData => firmwareData.available,
+            );
+            const file = availableFirmware.file;
+            if (!deviceFirmwareVersion) {
+              console.error("Can't get device firmware");
+              return;
+            }
+            if (!availableFirmware) {
+              console.error('Something wrong at our server');
+              return;
+            }
+            if (availableFirmware.name !== deviceFirmwareVersion) {
+              setStep(10);
+            } else {
+              navigation.navigate('NavBottom', {screen: 'Settings'});
+            }
           }}>
           <Icon
             name="check-square-o"
@@ -402,12 +426,53 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           <ButtonText>Great!</ButtonText>
         </Button>
       );
+    case 10:
+      return (
+        <Button
+          style={styles.buttonBottom}
+          size={'xl'}
+          onPress={async () => {
+            try {
+              const deviceFirmwareVersion =
+                await deviceManager._readDataFromBleDevice('firmwareRevision');
+              const data = await getFirmwareData();
+              const availableFirmware = data.find(
+                firmwareData => firmwareData.available,
+              );
+              const file = availableFirmware.file;
+
+              navigation.navigate('UpdateFirmwareProgressScreen', {
+                device,
+                file,
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          }}>
+          <Icon
+            name="check-square-o"
+            style={styles.buttonBottomIcon}
+            size={24}
+          />
+          <ButtonText>OK</ButtonText>
+        </Button>
+      );
   }
 };
 
 const IntroBlock = props => {
   const {step, setStep, item, setItem, navigation} = props;
   const theme = useStore($themeStore);
+  let devices = useStore($deviceSettingsStore);
+  let device = {};
+  if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
+    device = devices[0];
+  }
+  if (!get(device, 'id', false) && get(props, 'route.params.device', false)) {
+    device = props.route.params.device;
+  }
+  const firmware = useStore($currentFirmwareStore);
+
   return (
     <View style={{flex: 1}}>
       {get(stepsContent[step], 'img', null) ? (
@@ -420,13 +485,13 @@ const IntroBlock = props => {
         />
       ) : null}
       <View style={{flex: 1, paddingHorizontal: 30, paddingBottom: 30}}>
-        <Heading size="md" mt="$2" mb="$6">
+        <Heading size="md" mt="$9" mb="$6">
           {get(stepsContent[step], 'header', '')}
         </Heading>
         {get(stepsContent[step], 'header', null) ? (
           <Text>{get(stepsContent[step], 'text', '')}</Text>
         ) : null}
-        {_renderStep({step, setStep, item, setItem, navigation})}
+        {_renderStep({step, setStep, item, setItem, navigation, device})}
       </View>
     </View>
   );
@@ -436,15 +501,6 @@ const AddNewDeviceScreen = props => {
   const [step, setStep] = useState(1);
   const [item, setItem] = useState(null);
   const [isloading, setLoading] = useState(false);
-  let devices = useStore($deviceSettingsStore);
-  let device = {};
-  if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
-    device = devices[0];
-  }
-  if (!get(device, 'id', false) && get(props, 'route.params.device', false)) {
-    device = props.route.params.device;
-  }
-  const firmware = useStore($currentFirmwareStore);
 
   useEffect(() => {
     async function setInitStep() {
@@ -493,38 +549,6 @@ const AddNewDeviceScreen = props => {
       setStep(1);
     };
   }, []);
-
-  useEffect(() => {
-    async function getDeviceFirmware() {
-      try {
-        const deviceFirmwareVersion =
-          await deviceManager._readDataFromBleDevice('firmwareRevision');
-        const data = await getFirmwareData();
-        const availableFirmware = data.find(
-          firmwareData => firmwareData.available,
-        );
-        const file = availableFirmware.file;
-        if (!deviceFirmwareVersion) {
-          console.error("Can't get device firmware");
-        }
-        if (!availableFirmware) {
-          console.error('Something wrong at our server');
-        }
-
-        if (availableFirmware.name !== deviceFirmwareVersion) {
-          props.navigation.navigate('UpdateFirmwareProgressScreen', {
-            device,
-            file,
-          });
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    if (step === 9) {
-      getDeviceFirmware();
-    }
-  }, [device, firmware, props.navigation, step]);
 
   return (
     <Wrapper

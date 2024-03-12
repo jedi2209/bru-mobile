@@ -1,4 +1,5 @@
 import React, {
+  Image,
   Platform,
   StyleSheet,
   Text,
@@ -22,6 +23,7 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingVertical: 30,
   },
   nameIconWrapper: {
     display: 'flex',
@@ -51,8 +53,8 @@ const Header = () => {
   return (
     <View style={s.header}>
       <View style={s.nameIconWrapper}>
-        <Text style={s.deviceName}>BRU in kitchen</Text>
-        <HeaderIcon />
+        {/* <Text style={s.deviceName}>BRU in kitchen</Text> */}
+        {/* <HeaderIcon /> */}
       </View>
       <View style={s.iconsWrapper}>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
