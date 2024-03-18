@@ -34,7 +34,7 @@ const s = StyleSheet.create({
   },
 });
 
-const Picker = ({setValue, data, isTimePicker = false}) => {
+const Picker = ({setValue, data, isTimePicker = false, initIndex = 0}) => {
   const values = useMemo(() => ['', ...data, ''], [data]);
 
   const momentumScrollEnd = event => {
@@ -75,6 +75,7 @@ const Picker = ({setValue, data, isTimePicker = false}) => {
         snapToInterval={ITEM_HEIGHT}
         data={values}
         bounces={false}
+        initialScrollIndex={initIndex}
         showsVerticalScrollIndicator={false}
         renderItem={renderItem}
         onScrollEndDrag={momentumScrollEnd}

@@ -399,9 +399,10 @@ const _renderStep = ({step, setStep, item, setItem, navigation, device}) => {
           onPress={async () => {
             const deviceFirmwareVersion =
               await deviceManager._readDataFromBleDevice('firmwareRevision');
+            console.log(deviceFirmwareVersion, deviceFirmwareVersion);
             const data = await getFirmwareData();
             const availableFirmware = data.find(
-              firmwareData => firmwareData.available,
+              firmwareData => firmwareData.testAvailable,
             );
             const file = availableFirmware.file;
             if (!deviceFirmwareVersion) {
@@ -412,6 +413,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation, device}) => {
               console.error('Something wrong at our server');
               return;
             }
+            console.log(availableFirmware, deviceFirmwareVersion);
             if (availableFirmware.name !== deviceFirmwareVersion) {
               setStep(10);
             } else {
@@ -437,7 +439,7 @@ const _renderStep = ({step, setStep, item, setItem, navigation, device}) => {
                 await deviceManager._readDataFromBleDevice('firmwareRevision');
               const data = await getFirmwareData();
               const availableFirmware = data.find(
-                firmwareData => firmwareData.available,
+                firmwareData => firmwareData.testAvailable,
               );
               const file = availableFirmware.file;
 

@@ -9,7 +9,7 @@ import React, {
   View,
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
 import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
@@ -42,6 +42,7 @@ import {useTranslation} from 'react-i18next';
 import {$deviceSettingsStore} from '../../core/store/device';
 import {get} from 'lodash';
 import {$currentDeviceFirmwareStore} from '../../core/store/deviceFirmware';
+import {Toast, ToastTitle, VStack, useToast} from '@gluestack-ui/themed';
 
 const s = StyleSheet.create({
   container: {
@@ -109,6 +110,40 @@ const InstantBrewScreen = props => {
   const [animationCancelButton] = useState(new Animated.Value(0));
   const deviceFirmware = useStore($currentDeviceFirmwareStore);
 
+  const toast = useToast();
+
+  const showCommandSendToast = error => {
+    if (!error) {
+      toast.show({
+        placement: 'top',
+        duration: 5000,
+        render: () => {
+          return (
+            <Toast id={'dfuSuccessToast'} action="success" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>Command to the machine send!</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+      return;
+    }
+    toast.show({
+      placement: 'top',
+      duration: 5000,
+      render: () => {
+        return (
+          <Toast action="error" variant="accent">
+            <VStack space="lg">
+              <ToastTitle>Can't send command to the machine!</ToastTitle>
+            </VStack>
+          </Toast>
+        );
+      },
+    });
+  };
+
   const onPressStartButton = useCallback(() => {
     Animated.timing(animationButton, {
       toValue: 1,
@@ -172,9 +207,11 @@ const InstantBrewScreen = props => {
     await deviceManager
       .writeValueAndNotify(command)
       .then(async () => {
+        showCommandSendToast();
         await sleep(2000);
       })
       .catch(err => {
+        showCommandSendToast(true);
         console.error('Start Brewing error', err);
       });
   };
@@ -212,7 +249,8 @@ const InstantBrewScreen = props => {
           tea_type: selected.tea_type,
         });
         setModal(null);
-        startBrewing(temperature, brewingTime.value, waterAmount);
+
+        showCommandSendToast();
       },
       closeModal: async () => {
         startBrewing(temperature, brewingTime.value, waterAmount);
@@ -272,9 +310,11 @@ const InstantBrewScreen = props => {
                     .writeValueAndNotify(command)
                     .then(async () => {
                       await sleep(2000);
+                      showCommandSendToast();
                     })
                     .catch(err => {
                       console.error('Start Brewing error', err);
+                      showCommandSendToast(true);
                     });
                   return;
                 }
@@ -316,6 +356,7 @@ const InstantBrewScreen = props => {
                     await sleep(2000);
                   })
                   .catch(err => {
+                    showCommandSendToast(true);
                     console.error('Start Brewing error', err);
                   });
               }}

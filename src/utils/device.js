@@ -602,6 +602,7 @@ export class Device {
       // console.info('removeBond await this.getBondedPeripherals => res + isAndroid', res, isAndroid);
     }
     this.device.isCurrent = false;
+    console.log('adasdadasdasd');
     console.info('removeBond => setDevice start - device: ', this.device);
     setDevice(this.device);
     console.info('removeBond => setDevice finish, this.clearDevice start');
@@ -732,7 +733,7 @@ export class Device {
     const preCheck = await this._checkManager();
     if (!preCheck) {
       console.error('writeValueAndNotify preCheck', preCheck);
-      return false;
+      throw new Error('preCheck false');
     }
     console.info('writeValueAndNotify preCheck', preCheck);
     return this._connect(device)

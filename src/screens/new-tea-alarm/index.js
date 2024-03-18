@@ -38,7 +38,6 @@ const s = StyleSheet.create({
   },
   prepareWrapper: {
     display: 'flex',
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingBottom: 12,
@@ -53,9 +52,13 @@ const s = StyleSheet.create({
   timeWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
   },
   timeText: {
     color: colors.green.mid,
+    fontSize: 30,
+    marginTop: 10,
+    lineHeight: 30,
   },
   darkTime: {
     color: colors.white,
@@ -191,7 +194,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
       <Text style={[s.screenLabel, isDarkMode && s.darkText]}>Tea Alarm</Text>
       <View style={s.prepareWrapper}>
         <Text style={[s.subTitle, s.prepareText, isDarkMode && s.darkText]}>
-          Prepare tea by
+          Start tea preparation at
         </Text>
         <TouchableOpacity
           onPress={() => setIsTimeModalOpen(true)}
@@ -199,9 +202,9 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
           <Text
             style={[s.subTitle, s.timeText, isDarkMode && s.darkTime]}>{`${dayjs
             .duration(prepareBy.hours, 'hours')
-            .format('HH[h]')} ${dayjs
+            .format('HH')}:${dayjs
             .duration(prepareBy.minutes, 'minutes')
-            .format('mm[m]')}`}</Text>
+            .format('mm')}`}</Text>
           <ArrowIcon
             style={[
               isTimeModalOpen ? {} : s.arrowIcon,

@@ -105,6 +105,9 @@ const BrewingData = ({
         />
       </TouchableOpacity>
       <TimePickerModal
+        initIndex={timePickerData(units).findIndex(
+          item => item.value === brewingTime.value,
+        )}
         opened={isOpen}
         closeModal={() => setIsOpen(false)}
         setTime={setBrewingTime}
@@ -136,6 +139,9 @@ const BrewingData = ({
         }}
         setTemperature={setTemperature}
         opened={temperatureIsOpened}
+        initIndex={temperaturePickerData(units).findIndex(
+          item => item.value === temperature,
+        )}
       />
 
       <View style={s.divider} />
@@ -159,6 +165,9 @@ const BrewingData = ({
         />
       </TouchableOpacity>
       <WaterAmountModal
+        initIndex={waterPickerData(units).findIndex(
+          item => item.value === waterAmount,
+        )}
         closeModal={() => {
           setWaterAmountIsOpen(false);
         }}

@@ -3,6 +3,7 @@
     {
       "id": "220906",
       "available": false,
+      "testAvailable": false,
       "name": "Current Default Firmware 22.09.06",
       "description": {
         "en": "Current Default Firmware 22.09.06",
@@ -12,7 +13,8 @@
     },
     {
       "id": "231007",
-      "available": true,
+      "available": false,
+      "testAvailable": true,
       "name": "040324-1",
       "description": {
         "en": "040324",
@@ -21,8 +23,20 @@
       "file": "040324-1.zip"
     },
     {
+      "id": "231008",
+      "available": true,
+      "testAvailable": false,
+      "name": "BRUMP_M2_271223",
+      "description": {
+        "en": "The latest version",
+        "de": "Die neueste Version"
+      },
+      "file": "BRUMP_M2_271223.zip"
+    },
+    {
       "id": "230904",
       "available": false,
+      "testAvailable": false,
       "name": {
         "en": "EN BRU Firmware 23.09.04",
         "de": "DE BRU Firmware 23.09.04"
@@ -100,6 +114,7 @@
       "id": "3.4.3",
       "available2": ["BRU-1234567890", "BRU-0987654321"],
       "available": false,
+      "testAvailable": false,
       "name": {
         "en": "EN BRU Firmware 3.4.3",
         "de": "DE BRU Firmware 3.4.3"
@@ -152,6 +167,7 @@
     {
       "id": "230717",
       "available": false,
+      "testAvailable": false,
       "name": "ALL TEST BLE debug 23.07.17",
       "description": {
         "en": "EN DISABLED Pairing & Secure connections. This update contains the latest firmware for BRU.\n\nSecond text about update. Text can be **Bold** or heading.\n\n# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6. Or you can use *Italic* text.\n\nYou can use [links](https://www.google.com/).",

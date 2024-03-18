@@ -73,7 +73,7 @@ const BruMachine = ({item}) => {
     async function fetch() {
       const data = await getFirmwareData();
       setFirmware(
-        data.find(firmwareData => firmwareData.available).description.en,
+        data.find(firmwareData => firmwareData.testAvailable).description.en,
       );
     }
     fetch();
@@ -88,7 +88,6 @@ const BruMachine = ({item}) => {
         </Text>
       </View>
       <View style={s.row}>
-        <Text style={s.version}>{firmware}</Text>
         <TouchableOpacity onPress={() => {}}>
           <PenIcon
             fill={isDarkMode ? colors.white : colors.green.mid}

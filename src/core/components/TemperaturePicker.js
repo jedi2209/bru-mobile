@@ -50,7 +50,12 @@ const s = StyleSheet.create({
   closeButton: {marginRight: 40},
 });
 
-const TemperaturePicker = ({opened, closeModal, setTemperature}) => {
+const TemperaturePicker = ({
+  opened,
+  closeModal,
+  setTemperature,
+  initIndex = 0,
+}) => {
   const {units} = useStore($profileStore);
   const values = useMemo(() => temperaturePickerData(units), [units]);
   const [selected, setSelected] = useState(values[0].value);
@@ -73,7 +78,7 @@ const TemperaturePicker = ({opened, closeModal, setTemperature}) => {
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
           <Text style={s.title}>Temperature</Text>
-          <Picker data={values} setValue={setSelected} />
+          <Picker initIndex={initIndex} data={values} setValue={setSelected} />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>
               <Text style={s.button}>Cancel</Text>

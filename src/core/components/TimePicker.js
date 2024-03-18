@@ -50,10 +50,10 @@ const s = StyleSheet.create({
   closeButton: {marginRight: 40},
 });
 
-const TimePickerModal = ({opened, closeModal, setTime}) => {
+const TimePickerModal = ({opened, closeModal, setTime, initIndex = 0}) => {
   const {units} = useStore($profileStore);
   const values = useMemo(() => timePickerData(units), [units]);
-  const [selected, setSelected] = useState(values[0]);
+  const [selected, setSelected] = useState();
 
   useEffect(() => {
     setSelected(values[0]);
@@ -73,7 +73,12 @@ const TimePickerModal = ({opened, closeModal, setTime}) => {
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
           <Text style={s.title}>Water amount</Text>
-          <Picker data={values} setValue={setSelected} isTimePicker={true} />
+          <Picker
+            data={values}
+            setValue={setSelected}
+            isTimePicker={true}
+            initIndex={initIndex}
+          />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>
               <Text style={s.button}>Cancel</Text>
