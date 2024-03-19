@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createStore, createEvent, createEffect, forward} from 'effector';
 
-import {LANGUAGE} from '@const';
 import i18n from '../lang/index';
+import {LANGUAGE} from '../const/index';
 
 const storeName = 'appLang';
 

@@ -28,6 +28,8 @@ import {
 } from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
+import {useTranslation} from 'react-i18next';
+import {$langSettingsStore} from '../../core/store/lang';
 
 // import {DEVICE_MANAGER_CONFIG} from '@const';
 // const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
@@ -93,6 +95,7 @@ const SettingsScreen = props => {
   const notificationModalOpened = settingsStore.isOpenModal;
   const {navigation} = props;
   const toast = useToast();
+  const {t} = useTranslation();
 
   useEffect(() => {
     setLoading(true);
@@ -129,13 +132,13 @@ const SettingsScreen = props => {
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
-        Settings
+        {t('Settings.Title')}
       </Text>
       <View>
         {devices.length !== 0 ? (
           <>
             <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
-              Connected machines
+              {t('Settings.ConnectedMachines')}
             </Text>
             {devices.map(item => {
               return <BruMachine key={item} item={item} />;
@@ -148,7 +151,9 @@ const SettingsScreen = props => {
         variant={'primary'}
         style={[s.buttonStyle]}
         onPressIn={() => navigation.navigate('AddNewDeviceScreen')}>
-        <ButtonText style={s.buttonTextStyle}>Connect New Machine</ButtonText>
+        <ButtonText style={s.buttonTextStyle}>
+          {t('Settings.ConnectNewMachine')}
+        </ButtonText>
       </Button>
       <Button
         onPress={() => {
@@ -164,8 +169,7 @@ const SettingsScreen = props => {
                     variant="accent">
                     <VStack space="lg">
                       <ToastTitle fontSize={'$md'}>
-                        To update the firmware, you need to connect to the
-                        device
+                        {t('Settings.BluetoothConnectionError')}
                       </ToastTitle>
                     </VStack>
                   </Toast>
@@ -190,7 +194,7 @@ const SettingsScreen = props => {
             s.updateButtonText,
             isDarkMode && s.darkTextMain,
           ]}>
-          Update BRÜ firmware
+          {t('Settings.UpdateFirmware')}
         </ButtonText>
       </Button>
 

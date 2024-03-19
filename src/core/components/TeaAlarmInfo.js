@@ -12,6 +12,7 @@ import {$themeStore} from '../store/theme';
 import {deleteTeaAlarmFx} from '../store/teaAlarms';
 import PlayIcon from './icons/PlayIcon';
 import {deviceManager, setTeaAlarmCommand, sleep} from '../../utils/device';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   container: {
@@ -81,6 +82,7 @@ const s = StyleSheet.create({
 
 const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
   const theme = useStore($themeStore);
+  const {t} = useTranslation();
   const navigation = useNavigation();
 
   return (
@@ -101,7 +103,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
         <View>
           <Text
             style={[s.teaAlarmText, theme === 'dark' && basicStyles.darkText]}>
-            Tea alarm set for{' '}
+            {t('TeaAlarm.TeaAlarmSet')}{' '}
             {prepare_by
               ? `${dayjs
                   .duration(prepare_by.hours, 'hours')
@@ -117,7 +119,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
                 s.by,
                 theme === 'dark' && basicStyles.darkText,
               ]}>
-              by {by || 'John Denver'}
+              {t('TeaAlarm.By')} {by || 'John Denver'}
             </Text>
             <Text
               style={[s.teaInfoText, theme === 'dark' && basicStyles.darkText]}>

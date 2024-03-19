@@ -11,6 +11,8 @@ import {setUser} from '../../../core/store/user';
 import {logout} from '../../../utils/auth';
 import {useNavigation} from '@react-navigation/native';
 import openLink from '../../../helpers/openLink';
+import {useTranslation} from 'react-i18next';
+import {$langSettingsStore, setLanguage} from '../../../core/store/lang';
 
 const s = StyleSheet.create({
   wrapper: {marginBottom: 50},
@@ -117,9 +119,12 @@ const CommonSettings = () => {
   const [dispence, setDispence] = useState(user.dispenceTo || 'cup');
   const [units, setUnits] = useState(user.units || 'metric');
   const [notifications, setNotifications] = useState(user.notifications);
+  const language = useStore($langSettingsStore);
+  const [currLanguage, setCurrLanguage] = useState(language);
   const theme = useStore($themeStore);
   const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
+  const {t} = useTranslation();
 
   const setSetting = async (cb, data) => {
     cb();
@@ -282,7 +287,9 @@ const CommonSettings = () => {
         </Collapsible>
       </View> */}
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, isDarkMode && s.darkTextMain]}>Units</Text>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+          {t('Settings.Units')}
+        </Text>
         <View style={s.units}>
           <TouchableOpacity
             onPress={() =>
@@ -337,7 +344,7 @@ const CommonSettings = () => {
       </View> */}
       <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
-          App color theme
+          {t('Settings.AppColorTheme')}
         </Text>
         <View style={s.units}>
           <TouchableOpacity
@@ -348,7 +355,7 @@ const CommonSettings = () => {
               s.unitLeft,
               isDarkMode && s.selected,
             ]}>
-            <Text style={s.unitText}>Dark</Text>
+            <Text style={s.unitText}>{t('Settings.Dark')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setThemeFx('light')}
@@ -358,7 +365,7 @@ const CommonSettings = () => {
               s.unitRight,
               !isDarkMode && s.selected,
             ]}>
-            <Text style={s.unitText}>Light</Text>
+            <Text style={s.unitText}>{t('Settings.Light')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -367,8 +374,43 @@ const CommonSettings = () => {
           onPress={() => {
             openLink('https://bru.shop/en');
           }}>
-          <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
+          <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+            {t('Settings.About')}
+          </Text>
         </TouchableOpacity>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+          {t('Settings.ChangeLanguage')}
+        </Text>
+        <View style={s.units}>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrLanguage('en');
+              setLanguage('en');
+            }}
+            style={[
+              s.unit,
+              isDarkMode && s.darkUnit,
+              s.unitLeft,
+              currLanguage === 'en' && s.selected,
+            ]}>
+            <Text style={s.unitText}>EN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrLanguage('de');
+              setLanguage('de');
+            }}
+            style={[
+              s.unit,
+              isDarkMode && s.darkUnit,
+              s.unitRight,
+              currLanguage === 'de' && s.selected,
+            ]}>
+            <Text style={s.unitText}>DE</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
         <TouchableOpacity
@@ -377,7 +419,7 @@ const CommonSettings = () => {
             await logout();
             navigation.navigate('Authorization');
           }}>
-          <Text style={[s.title, s.logoutText]}>Logout</Text>
+          <Text style={[s.title, s.logoutText]}>{t('Settings.Logout')}</Text>
         </TouchableOpacity>
       </View>
     </View>

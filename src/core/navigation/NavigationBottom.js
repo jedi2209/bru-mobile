@@ -108,7 +108,7 @@ export const NavigationBottom = props => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Help"
         component={HelpScreen}
         initialParams={{
@@ -125,7 +125,7 @@ export const NavigationBottom = props => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}

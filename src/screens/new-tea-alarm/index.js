@@ -15,6 +15,8 @@ import {$teaAlarmStrore, getTeaAlarmByIdFx} from '../../core/store/teaAlarm';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
+import {useTranslation} from 'react-i18next';
+import {$langSettingsStore} from '../../core/store/lang';
 
 const s = StyleSheet.create({
   screenLabel: {
@@ -148,6 +150,7 @@ const s = StyleSheet.create({
     textTransform: 'uppercase',
     textAlign: 'center',
   },
+  buttonTextDe: {fontSize: 10},
 });
 
 const duration = require('dayjs/plugin/duration');
@@ -162,6 +165,8 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
   const {id} = route.params;
   const user = useStore($profileStore);
   const teaAlarm = useStore($teaAlarmStrore);
+  const {t} = useTranslation();
+  const currLang = useStore($langSettingsStore);
 
   const {selected, setSelected, pressets} = usePressetList();
 
@@ -191,10 +196,12 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
 
   return (
     <Wrapper route={route} navigation={navigation} {...props}>
-      <Text style={[s.screenLabel, isDarkMode && s.darkText]}>Tea Alarm</Text>
+      <Text style={[s.screenLabel, isDarkMode && s.darkText]}>
+        {t('TeaAlarm.Title')}
+      </Text>
       <View style={s.prepareWrapper}>
         <Text style={[s.subTitle, s.prepareText, isDarkMode && s.darkText]}>
-          Start tea preparation at
+          {t('TeaAlarm.PrepareTeaBy')}
         </Text>
         <TouchableOpacity
           onPress={() => setIsTimeModalOpen(true)}
@@ -245,7 +252,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
       </View>
       <View style={s.innerContainer}>
         <Text style={[s.subTitle, s.selectPresset, isDarkMode && s.darkText]}>
-          Select preset
+          {t('TeaAlarm.SelectPresset')}
         </Text>
         <PressetList
           style={s.list}
@@ -297,7 +304,7 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         <View style={s.buttons}>
           {id ? (
             <TouchableOpacity style={[s.button, s.deleteButton]}>
-              <Text style={s.buttonText}>Delete</Text>
+              <Text style={s.buttonText}>{t('TeaAlarm.Delete')}</Text>
             </TouchableOpacity>
           ) : null}
           <TouchableOpacity
@@ -320,7 +327,9 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
               navigation.navigate('TeaAlarm');
             }}
             style={[s.button, s.saveButton]}>
-            <Text style={s.buttonText}>Save tea alarm</Text>
+            <Text style={[s.buttonText, currLang === 'de' && s.buttonTextDe]}>
+              {t('TeaAlarm.SaveTeaAlarm')}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>

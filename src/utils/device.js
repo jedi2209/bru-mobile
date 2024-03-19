@@ -14,6 +14,7 @@ import {get} from 'lodash';
 import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
 import {DEVICE_MANAGER_CONFIG} from '../core/const/index';
 import {resetDevice} from '../core/store/device';
+import Toast from 'react-native-toast-message';
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
@@ -749,7 +750,10 @@ export class Device {
                 characteristicUUID,
                 value,
               );
-
+              // Toast.show({
+              //   text1: 'Command sent to the machine',
+              //   type: 'success',
+              // });
               const services = await BleManager.retrieveServices(device);
 
               if (services) {

@@ -30,6 +30,8 @@ import {usePressetList} from '../../hooks/usePressetList';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
 import {deviceManager, getStartCommand, sleep} from '../../utils/device';
+import {useTranslation} from 'react-i18next';
+import {$langSettingsStore} from '../../core/store/lang';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -108,6 +110,12 @@ const s = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 90,
   },
+  cancelButton: {
+    backgroundColor: colors.red,
+    paddingHorizontal: 57,
+    paddingVertical: 15,
+    borderRadius: 90,
+  },
   buttonText: {
     color: colors.white,
     fontSize: 12,
@@ -117,6 +125,7 @@ const s = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'center',
   },
+  buttonTextDe: {fontSize: 10, letterSpacing: 0},
   resetButton: {
     color: '#9D9D9D',
     textAlign: 'right',
@@ -145,6 +154,10 @@ const s = StyleSheet.create({
     width: 164,
     alignSelf: 'center',
   },
+  saveButtonDe: {
+    width: 185,
+    paddingHorizontal: 5,
+  },
   modalPressetName: {
     color: colors.green.mid,
   },
@@ -157,6 +170,8 @@ const PresetsScreen = props => {
   const [modal, setModal] = useState(null);
   const [newTeaName, setNewTeaName] = useState('');
   const [image, setImage] = useState(null);
+  const {t} = useTranslation();
+  const currLang = useStore($langSettingsStore);
 
   useEffect(() => {
     getPressetsFx();
@@ -187,7 +202,7 @@ const PresetsScreen = props => {
     <Wrapper style={s.wrapper} {...props}>
       <View style={s.titleContainer}>
         <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
-          Presets
+          {t('Presets.Title')}
         </Text>
         {mode === 'list' && (
           <TouchableOpacity
@@ -344,7 +359,7 @@ const PresetsScreen = props => {
           )}
         </LinearGradient>
       </View>
-      {mode === 'list' ? (
+      {/* {mode === 'list' ? (
         <>
           {pressets.length ? (
             <TouchableOpacity
@@ -367,7 +382,7 @@ const PresetsScreen = props => {
         </>
       ) : (
         <View style={s.switchWrapper}>
-          {/* <View style={s.switchContainer}>
+          <View style={s.switchContainer}>
             <Switch
               sx={{
                 props: {
@@ -396,48 +411,70 @@ const PresetsScreen = props => {
             <Text style={[s.switchText, isDarkMode && basicStyles.darkText]}>
               Cleaning
             </Text>
-          </View> */}
+          </View>
         </View>
-      )}
+      )} */}
 
-      {mode !== 'list' && (
-        <TouchableOpacity
-          onPress={async () => {
-            let imgUrl;
-            if (image) {
-              imgUrl = await uploadPressetImage(image, selected.id);
-            }
+      <View
+        style={[
+          {
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 15,
+            justifyContent: 'space-between',
+          },
+        ]}>
+        {mode !== 'list' && (
+          <TouchableOpacity
+            onPress={async () => {
+              let imgUrl;
+              if (image) {
+                imgUrl = await uploadPressetImage(image, selected.id);
+              }
 
-            if (mode === 'create') {
-              addPressetToStoreFx({
-                tea_type: newTeaName,
-                tea_img: imgUrl ? imgUrl : '',
-                brewing_data: {
-                  time: brewingTime,
-                  waterAmount,
-                  temperature,
-                },
-                cleaning: isCleaning,
-              });
-            } else if (mode === 'edit') {
-              updatePressetFx({
-                id: selected.id,
-                tea_type: newTeaName,
-                tea_img: imgUrl ? imgUrl : selected.tea_img,
-                brewing_data: {
-                  time: brewingTime,
-                  waterAmount,
-                  temperature,
-                },
-                cleaning: isCleaning,
-              });
-            }
-            setMode('list');
-          }}
-          style={s.saveButton}>
-          <Text style={s.buttonText}>Save Preset</Text>
-        </TouchableOpacity>
-      )}
+              if (mode === 'create') {
+                addPressetToStoreFx({
+                  tea_type: newTeaName,
+                  tea_img: imgUrl ? imgUrl : '',
+                  brewing_data: {
+                    time: brewingTime,
+                    waterAmount,
+                    temperature,
+                  },
+                  cleaning: isCleaning,
+                });
+              } else if (mode === 'edit') {
+                updatePressetFx({
+                  id: selected.id,
+                  tea_type: newTeaName,
+                  tea_img: imgUrl ? imgUrl : selected.tea_img,
+                  brewing_data: {
+                    time: brewingTime,
+                    waterAmount,
+                    temperature,
+                  },
+                  cleaning: isCleaning,
+                });
+              }
+              setMode('list');
+            }}
+            style={[s.saveButton, currLang === 'de' && s.saveButtonDe]}>
+            <Text style={[s.buttonText, currLang === 'de' && s.buttonTextDe]}>
+              {t('Presets.SavePreset')}
+            </Text>
+          </TouchableOpacity>
+        )}
+        {mode !== 'list' ? (
+          <TouchableOpacity
+            onPress={() => {
+              setMode('list');
+              getPressetsFx();
+            }}
+            style={s.cancelButton}>
+            <Text style={s.buttonText}>{t('Presets.Cancel')}</Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
       {modal ? <ConfirmationModal {...modal} /> : null}
     </Wrapper>
   );

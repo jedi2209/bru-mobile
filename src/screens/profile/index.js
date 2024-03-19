@@ -27,6 +27,7 @@ import Toast from 'react-native-toast-message';
 import {$themeStore} from '../../core/store/theme';
 import {scaleValue} from '../../helpers/scaleValue';
 import ImagePicker from 'react-native-image-crop-picker';
+import {useTranslation} from 'react-i18next';
 
 const maxBarHeight = 80;
 
@@ -249,6 +250,7 @@ const ProfileScreen = props => {
   const [modal, setModal] = useState(null);
   const [selectedFilter, setselectedFilter] = useState('days');
   const [image, setImage] = useState(null);
+  const {t} = useTranslation();
 
   const isDarkMode = theme === 'dark';
 
@@ -288,7 +290,7 @@ const ProfileScreen = props => {
           basicStyles.screenTitle,
           isDarkMode && basicStyles.darkTextProfile,
         ]}>
-        Profile
+        {t('Profile.Title')}
       </Text>
       <LinearGradient
         style={s.gradientBg}
@@ -351,7 +353,7 @@ const ProfileScreen = props => {
                   s.label,
                   isDarkMode && basicStyles.darkTextProfile,
                 ]}>
-                Name
+                {t('Profile.Name')}
               </Text>
               <Text
                 style={[
@@ -364,7 +366,7 @@ const ProfileScreen = props => {
             </View>
           ) : (
             <Input
-              placeholder="Please enter your name"
+              placeholder={t('Profile.PleaseEnterName')}
               label="Name"
               control={control}
               name="name"
@@ -381,7 +383,7 @@ const ProfileScreen = props => {
                   s.label,
                   isDarkMode && basicStyles.darkTextProfile,
                 ]}>
-                Email
+                {t('Profile.Email')}
               </Text>
               <Text
                 style={[
@@ -391,7 +393,7 @@ const ProfileScreen = props => {
                 ]}>
                 {user.email}
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   setModal({
                     confirmationText:
@@ -402,11 +404,11 @@ const ProfileScreen = props => {
                 }
                 style={s.userDataButton}>
                 <Text style={s.validateButton}>Validate</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           ) : (
             <Input
-              placeholder="Please enter your email"
+              placeholder={t('Profile.PleaseEnterEmail')}
               label="Email"
               control={control}
               name="email"
@@ -439,8 +441,8 @@ const ProfileScreen = props => {
             //   </TouchableOpacity>
             // </View>
             <Input
-              placeholder="Please enter your password"
-              label="Password"
+              placeholder={t('Profile.PleaseEnterPassword')}
+              label={t('Profile.Password')}
               secure
               withIcon
               name="password"
@@ -478,7 +480,7 @@ const ProfileScreen = props => {
             })}
             style={s.saveButton}>
             <Text style={[basicStyles.backgroundButtonText, {width: 132}]}>
-              Save
+              {t('Profile.Save')}
             </Text>
           </TouchableOpacity>
         )}

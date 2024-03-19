@@ -13,7 +13,7 @@
   },
   "InstantBrewing": {
     "BrewIt": "es brauen",
-    "Cancel": "kündigen",
+    "Cancel": "Abbrechen",
     "SplitCups": "Geteilte Becher",
     "Cleaning": "Reinigung",
     "ColdWaterDiffusion": "Kaltwasserdiffusion nicht angewendet"
@@ -21,6 +21,46 @@
   "TeaAlarm": {
     "Title": "Teealarm",
     "NewTeaAlarm": "Neuen Alarm einstellen",
-    "PrepareTeaBy": ""
+    "PrepareTeaBy": "Beginn der Teezubereitung um",
+    "SelectPresset": "Voreinstellung wählen",
+    "SaveTeaAlarm": "Teealarm speichern",
+    "Delete": "Löschen",
+    "TeaAlarmSet": "Tee-Wecker eingestellt für",
+    "By": "von"
+  },
+  "Presets": {
+    "Title": "Voreinstellungen",
+    "SavePreset": "Voreinstellung speichern",
+    "Cancel": "Abbrechen"
+  },
+  "Settings": {
+    "Title": "Einstellungen",
+    "Units": "Einheiten",
+    "AppColorTheme": "App-Farbthema",
+    "About": "Über",
+    "Logout": "Abmeldung",
+    "ConnectNewMachine": "Neue Maschine anschließen",
+    "UpdateFirmware": "BRÜ-Firmware aktualisieren",
+    "ConnectedMachines": "Vernetzte Maschinen",
+    "Dark": "Dunkelheit",
+    "Light": "Licht",
+    "BluetoothConnectionError": "Um die Firmware zu aktualisieren, müssen Sie eine Verbindung mit dem Gerät herstellen",
+    "ChangeLanguage": "Sprache ändern"
+  },
+  "StoreModal": {
+    "Title": "BRÜ Store",
+    "TeaStore": "Teeladen",
+    "PartsAndAccessories": "Teile und Zubehör",
+    "Back": "Zurück"
+  },
+  "Profile": {
+    "Title": "Profil",
+    "Name": "Name",
+    "Email": "Email",
+    "Password": "Passwort",
+    "PleaseEnterName": "Bitte geben Sie Ihren Namen ein",
+    "PleaseEnterEmail": "Bitte geben Sie Ihre E-Mail ein",
+    "PleaseEnterPassword": "Bitte geben Sie Ihr Passwort ein",
+    "Save": "Speichern"
   }
 }
