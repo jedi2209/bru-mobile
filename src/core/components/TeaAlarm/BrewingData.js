@@ -1,8 +1,5 @@
 import React, {useState} from 'react';
-
-import {TimerPickerModal} from 'react-native-timer-picker';
 import dayjs from 'dayjs';
-
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../const/style';
 import TeaAlarmIcon from '../icons/TeaAlarmIcon';
@@ -12,11 +9,14 @@ import TeaAlarmInfoItem from './BrewingDataItem';
 import WaterAmountModal from '../WaterAmountModal';
 import {useStore} from 'effector-react';
 import {$profileStore} from '../../store/profile';
-import {
-  convertTemperature,
-  convertWaterAmount,
-} from '../../../helpers/convertUnits';
 import TemperaturePicker from '../TemperaturePicker';
+import TimePickerModal from '../TimePicker.js';
+import {
+  temperaturePickerData,
+  timePickerData,
+  waterPickerData,
+} from '../../const/index.js';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
@@ -69,7 +69,7 @@ dayjs.extend(duration);
 
 const BrewingData = ({
   type,
-  brewingTime = {minutes: '0', seconds: '0'},
+  brewingTime = {label: '', value: 0},
   setBrewingTime = () => {},
   waterAmount = 0,
   setWaterAmount = () => {},
@@ -81,6 +81,7 @@ const BrewingData = ({
   const [temperatureIsOpened, setTemperatureIsOpened] = useState(false);
   const [waterAmountIsOpen, setWaterAmountIsOpen] = useState(false);
   const {units} = useStore($profileStore);
+  const {t} = useTranslation();
 
   return (
     <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
@@ -96,36 +97,20 @@ const BrewingData = ({
               height={24}
             />
           }
-          title="Brewing time"
-          value={`${dayjs
-            .duration(brewingTime.minutes, 'minutes')
-            .format('mm')}:${dayjs
-            .duration(brewingTime.seconds, 'seconds')
-            .format('ss')}`}
+          title={t('BrewingData.BrewingTime')}
+          value={
+            timePickerData(units).find(item => item.value === brewingTime.value)
+              ?.label || '0m 10s'
+          }
         />
       </TouchableOpacity>
-      <TimerPickerModal
-        modalTitle="Brewing time"
-        styles={{
-          modalTitle: s.timeModalTitle,
-          contentContainer: {width: 269},
-          cancelButton: s.cancelButton,
-          confirmButton: s.confirmButton,
-          buttonContainer: s.timeModalButtonsContainer,
-        }}
-        confirmButtonText="Done"
-        initialMinutes={brewingTime.minutes}
-        initialSeconds={brewingTime.seconds}
-        hideHours
-        minuteLabel={''}
-        secondLabel={''}
-        onConfirm={value => {
-          const {minutes, seconds} = value;
-          setBrewingTime({minutes, seconds});
-          setIsOpen(false);
-        }}
-        setIsVisible={setIsOpen}
-        visible={isOpen}
+      <TimePickerModal
+        initIndex={timePickerData(units).findIndex(
+          item => item.value === brewingTime.value,
+        )}
+        opened={isOpen}
+        closeModal={() => setIsOpen(false)}
+        setTime={setBrewingTime}
       />
       <View style={s.divider} />
       <TouchableOpacity
@@ -140,15 +125,11 @@ const BrewingData = ({
               fill={type === 'pressets' ? 'black' : colors.white}
             />
           }
-          title="Water temperature"
+          title={t('BrewingData.WaterTemperature')}
           value={
-            temperature === 0
-              ? 'Cold'
-              : `${
-                  units === 'metric'
-                    ? temperature
-                    : convertTemperature(temperature)
-                }${units === 'metric' ? '°C' : '°F'}`
+            temperaturePickerData(units).find(
+              item => item.value === temperature,
+            )?.label || 'Cold'
           }
         />
       </TouchableOpacity>
@@ -158,6 +139,9 @@ const BrewingData = ({
         }}
         setTemperature={setTemperature}
         opened={temperatureIsOpened}
+        initIndex={temperaturePickerData(units).findIndex(
+          item => item.value === temperature,
+        )}
       />
 
       <View style={s.divider} />
@@ -173,13 +157,17 @@ const BrewingData = ({
               fill={type === 'pressets' ? 'black' : colors.white}
             />
           }
-          title="Water amount"
-          value={`${
-            units === 'metric' ? waterAmount : convertWaterAmount(waterAmount)
-          }${units === 'metric' ? 'ml' : 'oz'}`}
+          title={t('BrewingData.WaterAmount')}
+          value={
+            waterPickerData(units).find(item => item.value === waterAmount)
+              ?.label || 0
+          }
         />
       </TouchableOpacity>
       <WaterAmountModal
+        initIndex={waterPickerData(units).findIndex(
+          item => item.value === waterAmount,
+        )}
         closeModal={() => {
           setWaterAmountIsOpen(false);
         }}

@@ -1,5 +1,5 @@
 import {useStore} from 'effector-react';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {$themeStore, setThemeFx} from '../../../core/store/theme';
 import Collapsible from 'react-native-collapsible';
@@ -7,11 +7,20 @@ import {basicStyles, colors} from '../../../core/const/style';
 import {Switch} from '@gluestack-ui/themed';
 import {updateUser} from '../../../utils/db/auth';
 import {$profileStore, updateProfileUser} from '../../../core/store/profile';
+import {setUser} from '../../../core/store/user';
+import {logout} from '../../../utils/auth';
+import {useNavigation} from '@react-navigation/native';
+import openLink from '../../../helpers/openLink';
+import {useTranslation} from 'react-i18next';
+import {$langSettingsStore, setLanguage} from '../../../core/store/lang';
 
 const s = StyleSheet.create({
   wrapper: {marginBottom: 50},
   darkTextMain: {
     color: colors.white,
+  },
+  logoutText: {
+    color: '#f54c4c',
   },
   filterStatus: {
     ...basicStyles.rowBetween,
@@ -110,8 +119,12 @@ const CommonSettings = () => {
   const [dispence, setDispence] = useState(user.dispenceTo || 'cup');
   const [units, setUnits] = useState(user.units || 'metric');
   const [notifications, setNotifications] = useState(user.notifications);
+  const language = useStore($langSettingsStore);
+  const [currLanguage, setCurrLanguage] = useState(language);
   const theme = useStore($themeStore);
+  const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
+  const {t} = useTranslation();
 
   const setSetting = async (cb, data) => {
     cb();
@@ -119,9 +132,16 @@ const CommonSettings = () => {
     await updateUser(user.uid, {...data});
   };
 
+  useEffect(() => {
+    setSetting(() => setUnits('metric'), {
+      units: 'metric',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <View style={s.wrapper}>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <View>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>
             Filter Status
@@ -137,8 +157,8 @@ const CommonSettings = () => {
           </TouchableOpacity>
         </View>
         <Text style={[s.title, s.filterHealth]}>Health 85%</Text>
-      </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      </View> */}
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <View>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>Cold tea</Text>
           <Text style={s.subTitle}>
@@ -160,8 +180,8 @@ const CommonSettings = () => {
             },
           }}
         />
-      </View>
-      <View style={[s.bottomBorder, {}]}>
+      </View> */}
+      {/* <View style={[s.bottomBorder, {}]}>
         <View style={[s.filterStatus, s.autoRinseWrapper]}>
           <Text style={[s.title, isDarkMode && s.darkTextMain]}>
             Auto-rinse
@@ -265,9 +285,11 @@ const CommonSettings = () => {
             </View>
           </View>
         </Collapsible>
-      </View>
+      </View> */}
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <Text style={[s.title, isDarkMode && s.darkTextMain]}>Units</Text>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+          {t('Settings.Units')}
+        </Text>
         <View style={s.units}>
           <TouchableOpacity
             onPress={() =>
@@ -285,21 +307,22 @@ const CommonSettings = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() =>
-              setSetting(() => setUnits('customary'), {
-                units: 'customary',
+              setSetting(() => setUnits('imperial'), {
+                units: 'imperial',
               })
             }
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
               s.unitRight,
-              units === 'customary' && s.selected,
+              units === 'imperial' && s.selected,
             ]}>
             <Text style={s.unitText}>°F - oz</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           Notifications
         </Text>
@@ -318,10 +341,10 @@ const CommonSettings = () => {
             },
           }}
         />
-      </View>
+      </View> */}
       <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
-          App color theme
+          {t('Settings.AppColorTheme')}
         </Text>
         <View style={s.units}>
           <TouchableOpacity
@@ -332,7 +355,7 @@ const CommonSettings = () => {
               s.unitLeft,
               isDarkMode && s.selected,
             ]}>
-            <Text style={s.unitText}>Dark</Text>
+            <Text style={s.unitText}>{t('Settings.Dark')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => setThemeFx('light')}
@@ -342,13 +365,61 @@ const CommonSettings = () => {
               s.unitRight,
               !isDarkMode && s.selected,
             ]}>
-            <Text style={s.unitText}>Light</Text>
+            <Text style={s.unitText}>{t('Settings.Light')}</Text>
           </TouchableOpacity>
         </View>
       </View>
       <View style={[s.filterStatus, s.bottomBorder]}>
-        <TouchableOpacity onPress={() => {}}>
-          <Text style={[s.title, isDarkMode && s.darkTextMain]}>About</Text>
+        <TouchableOpacity
+          onPress={() => {
+            openLink('https://bru.shop/en');
+          }}>
+          <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+            {t('Settings.About')}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <Text style={[s.title, isDarkMode && s.darkTextMain]}>
+          {t('Settings.ChangeLanguage')}
+        </Text>
+        <View style={s.units}>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrLanguage('en');
+              setLanguage('en');
+            }}
+            style={[
+              s.unit,
+              isDarkMode && s.darkUnit,
+              s.unitLeft,
+              currLanguage === 'en' && s.selected,
+            ]}>
+            <Text style={s.unitText}>EN</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              setCurrLanguage('de');
+              setLanguage('de');
+            }}
+            style={[
+              s.unit,
+              isDarkMode && s.darkUnit,
+              s.unitRight,
+              currLanguage === 'de' && s.selected,
+            ]}>
+            <Text style={s.unitText}>DE</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View style={[s.filterStatus, s.bottomBorder]}>
+        <TouchableOpacity
+          onPress={async () => {
+            setUser(null);
+            await logout();
+            navigation.navigate('Authorization');
+          }}>
+          <Text style={[s.title, s.logoutText]}>{t('Settings.Logout')}</Text>
         </TouchableOpacity>
       </View>
     </View>

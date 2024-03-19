@@ -67,13 +67,14 @@ const UpdateFirmwareScreen = props => {
       }
       {...props}>
       {get(firmware, 'data', []).map(item => {
-        const {id: itemID, description, available} = item;
-        if (!available) {
+        const {id: itemID, description, available, testAvailable} = item;
+
+        if (!testAvailable) {
           return;
         }
         const file = get(item.file, lang, get(item.file, 'en', item.file));
         const name = get(item.name, lang, get(item.name, 'en', item.name));
-
+        console.log(name, 'firmwareNAME');
         const descriptionBase = getTextFromFirmware(description, 'base', lang);
         const descriptionBugFix = getTextFromFirmware(
           description,
@@ -137,11 +138,12 @@ const UpdateFirmwareScreen = props => {
                       text: 'Update',
                       isPreferred: true,
                       style: 'destructive',
-                      onPress: () =>
+                      onPress: async () => {
                         props.navigation.navigate(
                           'UpdateFirmwareProgressScreen',
                           {device, file},
-                        ),
+                        );
+                      },
                     },
                   ],
                 );

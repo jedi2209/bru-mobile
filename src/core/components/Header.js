@@ -1,33 +1,28 @@
 import React, {
   Platform,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {colors, fonts} from '../const/style';
-import HeaderIcon from './icons/HeaderIcon';
 import UserIcon from './icons/UserIcon';
 import CartIcon from './icons/CartIcon';
 import {useNavigation} from '@react-navigation/native';
 import {useState} from 'react';
 import BruStoreModal from './BruStoreModal';
+import Logo from './icons/Logo';
 
 const s = StyleSheet.create({
   header: {
     backgroundColor: colors.green.header,
-    paddingTop: Platform.OS === 'ios' ? 54 : 20,
+    paddingTop: Platform.OS === 'ios' ? 60 : 20,
     paddingHorizontal: 18,
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
-  nameIconWrapper: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  nameIconWrapper: {},
   deviceName: {
     fontFamily: fonts.defaultFamily,
     color: colors.black,
@@ -38,6 +33,9 @@ const s = StyleSheet.create({
   iconsWrapper: {
     display: 'flex',
     flexDirection: 'row',
+    position: 'absolute',
+    top: '100%',
+    right: 20,
   },
   userIcon: {
     marginRight: 24,
@@ -51,8 +49,7 @@ const Header = () => {
   return (
     <View style={s.header}>
       <View style={s.nameIconWrapper}>
-        <Text style={s.deviceName}>BRU in kitchen</Text>
-        <HeaderIcon />
+        <Logo />
       </View>
       <View style={s.iconsWrapper}>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>

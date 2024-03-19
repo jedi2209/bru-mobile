@@ -25,57 +25,6 @@ import {$themeStore} from '../store/theme';
 const iconSize = 24;
 
 const Tab = createBottomTabNavigator();
-const StackTeaAlarm = createStackNavigator();
-const StackPressets = createStackNavigator();
-
-// const SettingsStackView = (props, {navigation, route}) => {
-//   const currLang = useStore($langSettingsStore);
-//   return (
-//     <StackSettings.Navigator initialRouteName="SettingsScreen">
-//       <StackSettings.Screen
-//         name="SettingsScreen"
-//         component={SettingsScreen}
-//         initialParams={{
-//           scroll: true,
-//         }}
-//         options={{
-//           headerShown: true,
-//           header: Header,
-//         }}
-//       />
-//     </StackSettings.Navigator>
-//   );
-// };
-
-const TeaAlarmStackView = ({navigation, route}) => {
-  return (
-    <StackTeaAlarm.Navigator
-      screenOptions={{headerShown: false}}
-      initialRouteName="TeaAlarmScreen">
-      <StackTeaAlarm.Screen
-        name="TeaAlarm"
-        options={{
-          headerShown: false,
-        }}
-        component={TeaAlarmScreen}
-        initialParams={{
-          scroll: true,
-        }}
-      />
-      <StackTeaAlarm.Screen
-        name="NewTeaAlarm"
-        options={{
-          headerShown: false,
-        }}
-        component={NewTeaAlarmScreen}
-        initialParams={{
-          scroll: true,
-          tabBarStyle: {display: 'none'},
-        }}
-      />
-    </StackTeaAlarm.Navigator>
-  );
-};
 
 // const PressetsStackView = ({navigation, route}) => {
 //   return (
@@ -126,11 +75,9 @@ export const NavigationBottom = props => {
         }}
       />
       <Tab.Screen
-        name="Tea Alarm"
-        component={TeaAlarmStackView}
-        initialParams={{
-          scroll: true,
-        }}
+        name="TeaAlarm"
+        component={TeaAlarmScreen}
+        initialParams={{scroll: true}}
         options={{
           headerShown: false,
           tabBarIcon: ({focused}) => (
@@ -161,7 +108,7 @@ export const NavigationBottom = props => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Help"
         component={HelpScreen}
         initialParams={{
@@ -178,7 +125,7 @@ export const NavigationBottom = props => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Settings"
         component={SettingsScreen}
@@ -198,6 +145,17 @@ export const NavigationBottom = props => {
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
+        initialParams={{scroll: true}}
+        options={{
+          headerShown: false,
+          tabBarItemStyle: {
+            display: 'none',
+          },
+        }}
+      />
+      <Tab.Screen
+        name="NewTeaAlarm"
+        component={NewTeaAlarmScreen}
         initialParams={{scroll: true}}
         options={{
           headerShown: false,

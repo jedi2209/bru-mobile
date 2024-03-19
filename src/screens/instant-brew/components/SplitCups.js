@@ -10,6 +10,7 @@ import PlusIcon from '../../../core/components/icons/PlusIcon';
 import {Switch} from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../../core/store/theme';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   container: {
@@ -126,6 +127,7 @@ const SplitCups = ({cleaning, setCleaning}) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [splitedCups, setSplitedCups] = useState(0);
   const theme = useStore($themeStore);
+  const {t} = useTranslation();
 
   return (
     <View style={s.container}>
@@ -139,7 +141,8 @@ const SplitCups = ({cleaning, setCleaning}) => {
               s.splitCupButtonText,
               theme === 'light' && {color: colors.green.mid},
             ]}>
-            Split cups {splitedCups > 0 && `(${splitedCups})`}
+            {t('InstantBrewing.SplitCups')}{' '}
+            {splitedCups > 0 && `(${splitedCups})`}
           </Text>
           <ArrowIcon style={isCollapsed && s.arrowIcon} />
         </TouchableOpacity>
@@ -171,7 +174,7 @@ const SplitCups = ({cleaning, setCleaning}) => {
               s.cleaningText,
               theme === 'light' && {color: colors.gray.grayDarkText},
             ]}>
-            Cleaning
+            {t('InstantBrewing.Cleaning')}
           </Text>
         </View>
       </View>
@@ -187,14 +190,14 @@ const SplitCups = ({cleaning, setCleaning}) => {
                 s.collapsibleTitle,
                 theme === 'light' && {color: colors.gray.grayDarkText},
               ]}>
-              Split cups:
+              {t('InstantBrewing.SplitCups')}:
             </Text>
             <Text
               style={[
                 s.collapsibleSubTitle,
                 theme === 'light' && {color: colors.gray.grayDarkText},
               ]}>
-              *Cold Water difusion not applied
+              *{t('InstantBrewing.ColdWaterDiffusion')}
             </Text>
           </View>
           <View style={s.counterButtons}>

@@ -9,7 +9,10 @@ import {useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
-import {deleteTeaAlarm, deleteTeaAlarmFx} from '../store/teaAlarms';
+import {deleteTeaAlarmFx} from '../store/teaAlarms';
+import PlayIcon from './icons/PlayIcon';
+import {deviceManager, setTeaAlarmCommand, sleep} from '../../utils/device';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   container: {
@@ -69,14 +72,17 @@ const s = StyleSheet.create({
   icons: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
+    height: 20,
   },
   penIcon: {
-    marginRight: 16,
+    marginHorizontal: 16,
   },
 });
 
 const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
   const theme = useStore($themeStore);
+  const {t} = useTranslation();
   const navigation = useNavigation();
 
   return (
@@ -97,7 +103,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
         <View>
           <Text
             style={[s.teaAlarmText, theme === 'dark' && basicStyles.darkText]}>
-            Tea alarm set for{' '}
+            {t('TeaAlarm.TeaAlarmSet')}{' '}
             {prepare_by
               ? `${dayjs
                   .duration(prepare_by.hours, 'hours')
@@ -113,7 +119,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
                 s.by,
                 theme === 'dark' && basicStyles.darkText,
               ]}>
-              by {by || 'John Denver'}
+              {t('TeaAlarm.By')} {by || 'John Denver'}
             </Text>
             <Text
               style={[s.teaInfoText, theme === 'dark' && basicStyles.darkText]}>
@@ -122,6 +128,27 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
           </View>
         </View>
         <View style={s.icons}>
+          <TouchableOpacity
+            onPress={async () => {
+              const {temperature, time, waterAmount} = presset.brewing_data;
+              const command = setTeaAlarmCommand(
+                [temperature, time.value, waterAmount],
+                0x0f,
+                prepare_by.hours,
+                prepare_by.minutes,
+              );
+
+              await deviceManager
+                .writeValueAndNotify(command)
+                .then(async () => {
+                  await sleep(2000);
+                })
+                .catch(err => {
+                  console.error('Start Brewing error', err);
+                });
+            }}>
+            <PlayIcon />
+          </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('NewTeaAlarm', {id})}>
             <PenIcon style={s.penIcon} />

@@ -3,9 +3,9 @@ import {$currentFirmwareStore, setFirmware} from '@store/firmware';
 import {$langSettingsStore} from '@store/lang';
 import RNFS, {exists, downloadFile as fsDownloadFile} from 'react-native-fs';
 
-import {FIREBASE_SETTINGS} from '@const';
 import moment from 'moment';
 import {get} from 'lodash';
+import {FIREBASE_SETTINGS} from '../core/const/index';
 
 const filePath = storage().ref(FIREBASE_SETTINGS.storage.firmware.rules.path);
 const currLang = $langSettingsStore.getState();
@@ -59,6 +59,7 @@ export const fetchFirmwareMeta = async () => {
       $currentFirmwareStore.getState(),
       'meta.lastUpdated',
     );
+
     const remoteFirmwareFileDate = moment.utc(metadata.updated).unix();
     if (
       !localFirmwareFileDate ||

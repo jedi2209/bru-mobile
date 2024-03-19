@@ -16,7 +16,7 @@ const PressetList = ({
       return [
         {
           brewing_data: {
-            time: 0,
+            time: {label: '0m 10s', value: 0, seconds: 10},
             waterAmount: 0,
           },
           cleaning: false,

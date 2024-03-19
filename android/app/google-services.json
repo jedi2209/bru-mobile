@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "XXXX-ljskaetehmt0bkc34e1o4hg982aukuve.apps.googleusercontent.com",
+          "client_id": "XXXX-1gv3sfldka30qfkjt92f22n4sq742d83.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "shop.bru.bruapp",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "7d91890a770bf5731ae65e6dda9a9803cbc114c2"
+          }
+        },
+        {
+          "client_id": "XXXX-kmp8d77794lavhatfivt6262qla2pom9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "shop.bru.bruapp",
+            "certificate_hash": "b5aae8927af5a9df8c76a15ad6bed0cadfbcdc57"
           }
         },
         {

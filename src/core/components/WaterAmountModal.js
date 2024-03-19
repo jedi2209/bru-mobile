@@ -50,7 +50,7 @@ const s = StyleSheet.create({
   closeButton: {marginRight: 40},
 });
 
-const WaterAmountModal = ({opened, closeModal, setWaterAmount}) => {
+const WaterAmountModal = ({opened, closeModal, setWaterAmount, initIndex}) => {
   const {units} = useStore($profileStore);
   const values = useMemo(() => waterPickerData(units), [units]);
   const [selected, setSelected] = useState(values[0].value);
@@ -73,7 +73,7 @@ const WaterAmountModal = ({opened, closeModal, setWaterAmount}) => {
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
           <Text style={s.title}>Water amount</Text>
-          <Picker data={values} setValue={setSelected} />
+          <Picker initIndex={initIndex} data={values} setValue={setSelected} />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>
               <Text style={s.button}>Cancel</Text>

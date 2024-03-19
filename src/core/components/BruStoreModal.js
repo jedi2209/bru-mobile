@@ -2,6 +2,8 @@ import React from 'react';
 import {Modal, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
 import {colors} from '../const/style';
+import openLink from '../../helpers/openLink';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   modal: {
@@ -49,6 +51,7 @@ const s = StyleSheet.create({
 });
 
 const BruStoreModal = ({opened, closeModal}) => {
+  const {t} = useTranslation();
   return (
     <Modal
       transparent={true}
@@ -62,16 +65,26 @@ const BruStoreModal = ({opened, closeModal}) => {
           <View style={s.modalOverlay} />
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
-          <Text style={s.title}>BRÜ Store</Text>
+          <Text style={s.title}>{t('StoreModal.Title')}</Text>
           <View style={s.buttonsContainer}>
-            <TouchableOpacity style={s.button}>
-              <Text style={s.buttonText}>Tea Store</Text>
+            <TouchableOpacity
+              onPress={async () => {
+                openLink('https://bru.shop/en/collections/unsere-teesoerten');
+              }}
+              style={s.button}>
+              <Text style={s.buttonText}>{t('StoreModal.TeaStore')}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={s.button}>
-              <Text style={s.buttonText}>Parts and Accessories</Text>
+            <TouchableOpacity
+              onPress={() => {
+                openLink('https://bru.shop/en/collections/zubehor');
+              }}
+              style={s.button}>
+              <Text style={s.buttonText}>
+                {t('StoreModal.PartsAndAccessories')}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={closeModal} style={s.button}>
-              <Text style={s.buttonText}>Back</Text>
+              <Text style={s.buttonText}>{t('StoreModal.Back')}</Text>
             </TouchableOpacity>
           </View>
         </View>

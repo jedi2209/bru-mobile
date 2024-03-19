@@ -3,16 +3,12 @@ import {Text, View, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {Button} from '@gluestack-ui/themed';
 import LottieView from 'lottie-react-native';
 
-import {Device, deviceManager, sleep} from '@utils/device';
-// import {Device, sleep} from '@utils/device';
+import {deviceManager, sleep} from '@utils/device';
 
 import {get} from 'lodash';
 import {colors} from '@styleConst';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
-// import {DEVICE_MANAGER_CONFIG} from '@const';
-
-// const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
 
 const DeviceScanner = props => {
   const {onItemPress, autoScan} = props;
@@ -61,42 +57,31 @@ const DeviceScanner = props => {
       : colors.gray.inactive;
     return (
       <TouchableOpacity key={'bru' + item.id} onPress={() => onItemPress(item)}>
-        <View
-          style={{
-            backgroundColor: color,
-            borderRadius: 5,
-            paddingVertical: 5,
-            marginHorizontal: 10,
-            paddingHorizontal: 10,
-          }}>
+        <View style={[styles.itemContainer, {backgroundColor: color}]}>
           <Text
-            style={{
-              fontSize: 18,
-              textTransform: 'capitalize',
-              color: isDarkMode ? colors.white : colors.black,
-            }}>
+            style={[
+              styles.itemName,
+              {
+                color: isDarkMode ? colors.white : colors.black,
+              },
+            ]}>
             {item.name}
             {item.connecting && ' - Connecting...'}
           </Text>
           <View
-            style={{
-              backgroundColor: color,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            {/* <Text
-              style={{
-                fontSize: 14,
-                color: isDarkMode ? colors.white : colors.black,
-              }}>
-              RSSI: {item.rssi}
-            </Text> */}
+            style={[
+              styles.itemIdWrapper,
+              {
+                backgroundColor: color,
+              },
+            ]}>
             <Text
-              style={{
-                fontSize: 14,
-                color: isDarkMode ? colors.white : colors.black,
-              }}>
+              style={[
+                styles.itemIdText,
+                {
+                  color: isDarkMode ? colors.white : colors.black,
+                },
+              ]}>
               ID: {item.id}
             </Text>
           </View>
@@ -123,15 +108,14 @@ const DeviceScanner = props => {
   return (
     <>
       {get(peripherals, 'length') ? (
-        <View style={{marginBottom: 24}}>
+        <View style={styles.nearbydDevicesContainer}>
           <Text
-            style={{
-              fontSize: 16,
-              marginLeft: 10,
-              marginVertical: 5,
-              marginBottom: 20,
-              color: isDarkMode ? colors.white : colors.black,
-            }}>
+            style={[
+              styles.nearbydDevicesText,
+              {
+                color: isDarkMode ? colors.white : colors.black,
+              },
+            ]}>
             Nearby devices:
           </Text>
           {peripherals.map(item => {
@@ -162,6 +146,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'uppercase',
   },
+  nearbydDevicesText: {
+    fontSize: 16,
+    marginLeft: 10,
+    marginVertical: 5,
+    marginBottom: 20,
+  },
+  nearbydDevicesContainer: {marginBottom: 24},
+  itemContainer: {
+    borderRadius: 5,
+    paddingVertical: 5,
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
+  },
+  itemName: {fontSize: 18, textTransform: 'capitalize'},
+  itemIdWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  itemIdText: {fontSize: 14},
 });
 
 DeviceScanner.defaultProps = {

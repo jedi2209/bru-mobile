@@ -12,7 +12,9 @@ import {setDevice} from '@store/device';
 import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
 import {get} from 'lodash';
 import {NordicDFU, DFUEmitter} from 'react-native-nordic-dfu';
-import {DEVICE_MANAGER_CONFIG} from '@const';
+import {DEVICE_MANAGER_CONFIG} from '../core/const/index';
+import {resetDevice} from '../core/store/device';
+import Toast from 'react-native-toast-message';
 const Buffer = require('buffer/').Buffer; // note: the trailing slash is important!
 
 const BleManagerModule = NativeModules.BleManager;
@@ -222,7 +224,7 @@ export class Device {
         PermissionsAndroid.PERMISSIONS.BLUETOOTH_CONNECT,
         PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       ];
-      const requestGranted = await showPermissionInfo();
+      // const requestGranted = await showPermissionInfo();
       // console.info('requestGranted', requestGranted);
       // if (!requestGranted) {
       //   return false;
@@ -316,9 +318,13 @@ export class Device {
     this.device = device;
     if (device?.id) {
       this.setCurrentDeviceID(device.id);
+    } else {
+      this.setCurrentDeviceID('');
     }
     if (device?.name) {
       this.setCurrentDeviceName(device.name);
+    } else {
+      this.setCurrentDeviceName('');
     }
   };
 
@@ -350,6 +356,10 @@ export class Device {
     if (itemID) {
       return this.peripherals.get(itemID);
     }
+    console.log(
+      this.peripherals,
+      'peripheralsperipheralsperipheralsperipherals',
+    );
     return Array.from(this.peripherals.values());
   };
 
@@ -585,6 +595,7 @@ export class Device {
       'removeBond => this.getBondedPeripherals() finish - value: ',
       res,
     );
+    this._disconnect();
     if (res && isAndroid) {
       BleManager.removeBond(device).catch(err => {
         console.error('BleManager.removeBond error', err);
@@ -592,11 +603,13 @@ export class Device {
       // console.info('removeBond await this.getBondedPeripherals => res + isAndroid', res, isAndroid);
     }
     this.device.isCurrent = false;
+    console.log('adasdadasdasd');
     console.info('removeBond => setDevice start - device: ', this.device);
     setDevice(this.device);
     console.info('removeBond => setDevice finish, this.clearDevice start');
     this.clearDevice();
     console.info('removeBond => this.clearDevice finish');
+    resetDevice();
     return true;
   };
 
@@ -721,18 +734,15 @@ export class Device {
     const preCheck = await this._checkManager();
     if (!preCheck) {
       console.error('writeValueAndNotify preCheck', preCheck);
-      return false;
+      throw new Error('preCheck false');
     }
     console.info('writeValueAndNotify preCheck', preCheck);
     return this._connect(device)
       .then(async connectRes => {
-        console.info('writeValueAndNotify => this._connect', connectRes);
+        console.log('writeValueAndNotify => this._connect', connectRes);
         // Success code
         return BleManager.retrieveServices(device)
           .then(async () => {
-            // console.log(
-            //   'writeValueAndNotify => this._connect => BleManager.retrieveServices.then',
-            // );
             try {
               await BleManager.write(
                 device,
@@ -740,7 +750,12 @@ export class Device {
                 characteristicUUID,
                 value,
               );
+              // Toast.show({
+              //   text1: 'Command sent to the machine',
+              //   type: 'success',
+              // });
               const services = await BleManager.retrieveServices(device);
+
               if (services) {
                 const notificationStatus = await this.sendNotification(
                   device,
@@ -748,12 +763,10 @@ export class Device {
                   SOME,
                 );
               }
-              // console.log('retrieveServices', res);
-              // res.characteristics.map(el => {
-              //   console.log('\tservice ', el);
-              // });
+
               return true;
             } catch (error) {
+              console.log(error);
               let errorText = '';
               const buffer = Buffer.from(error); // Buffer - это https://www.npmjs.com/package/buffer
               if (buffer) {
@@ -805,18 +818,12 @@ export class Device {
     let devices = null;
     if (isAndroid) {
       timerReboot = 5;
-      await this.repeatFunc(
-        'writeValue',
-        Buffer(sendDataCommand(deviceInfo.OTAMode)).toJSON().data,
-        2,
-      );
+      deviceManager.writeValueAndNotify(getCommand(0x27, [], 4));
       console.info('\t\t\tAndroid waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
       devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);
     } else {
-      await this.writeValue(
-        Buffer(sendDataCommand(deviceInfo.OTAMode)).toJSON().data,
-      );
+      deviceManager.writeValueAndNotify(getCommand(0x27, [], 4));
       console.info('\t\t\tiOS waiting for ' + timerReboot + ' seconds...');
       await sleep(timerReboot * defaultTimeout);
       devices = await this.repeatFunc('searchBleDevices', 'BRU_U', 3);
@@ -858,7 +865,7 @@ export class Device {
         return false;
       }
     } else {
-      return false;
+      return 'no devices found';
     }
   };
 
@@ -879,7 +886,8 @@ export class Device {
 
   _handleUpdateValueForCharacteristic = data => {
     const response = Buffer.from(data.value).toString('utf8');
-    console.info('[_handleUpdateValueForCharacteristic]', response);
+    console.log('[_handleUpdateValueForCharacteristic]', response);
+    return response;
   };
 
   _handleUpdateNotificationStateFor = data => {
@@ -920,35 +928,62 @@ export class Device {
     this._addOrUpdatePeripheral(peripheral.id, peripheral);
   };
 
-  _readDataFromBleDevice = async (deviceID, characteristic) => {
+  _readDataFromBleDevice = async characteristic => {
+    const deviceID = this.deviceUUID;
     const preCheck = await this._checkManager();
     if (!preCheck) {
       console.error('_readDataFromBleDevice preCheck', preCheck);
       return false;
     }
-    return BleManager.retrieveServices(deviceID) // запрашиваем сначала все сервисы, заодно подключаясь к устройству
-      .then(async () => {
-        // затем начинаем читать
-        return BleManager.read(
-          deviceID, // ID of the peripheral
-          deviceInfo[characteristic].service, // В нашем случае 180A
-          deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
-        )
-          .then(data => {
-            const buffer = Buffer.from(data); // Buffer - это https://www.npmjs.com/package/buffer
-            if (buffer) {
-              return buffer.toString('utf8'); // ответ переводим просто в строку
-            }
-            return false;
-          })
-          .catch(err => {
-            console.error('BleManager.read', err);
-            return false;
-          });
-      })
-      .catch(err => {
-        console.error('BleManager.retrieveServices', err);
-      });
+    return this._connect(deviceID).then(async () => {
+      // Success code
+      return BleManager.retrieveServices(deviceID)
+        .then(async () => {
+          return BleManager.read(
+            deviceID, // ID of the peripheral
+            deviceInfo[characteristic].service, // В нашем случае 180A
+            deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
+          )
+            .then(data => {
+              const buffer = Buffer.from(data); // Buffer - это https://www.npmjs.com/package/buffer
+              if (buffer) {
+                return buffer.toString('utf8'); // ответ переводим просто в строку
+              }
+              return false;
+            })
+            .catch(err => {
+              console.error('BleManager.read', err);
+              return false;
+            });
+        })
+        .catch(error => {
+          // Failure code
+          console.error('readData => BleManager.retrieveServices', error);
+        });
+    });
+    // return BleManager.retrieveServices(deviceID) // запрашиваем сначала все сервисы, заодно подключаясь к устройству
+    //   .then(async () => {
+    //     // затем начинаем читать
+    //     return BleManager.read(
+    //       deviceID, // ID of the peripheral
+    //       deviceInfo[characteristic].service, // В нашем случае 180A
+    //       deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
+    //     )
+    //       .then(data => {
+    //         const buffer = Buffer.from(data); // Buffer - это https://www.npmjs.com/package/buffer
+    //         if (buffer) {
+    //           return buffer.toString('utf8'); // ответ переводим просто в строку
+    //         }
+    //         return false;
+    //       })
+    //       .catch(err => {
+    //         console.error('BleManager.read', err);
+    //         return false;
+    //       });
+    //   })
+    //   .catch(err => {
+    //     console.error('BleManager.retrieveServices', err);
+    //   });
   };
 
   repeatFunc = async (func, params = null, times = 3, delay = 500) => {
@@ -1082,13 +1117,13 @@ const _showBluetoothAlert = () => {
   );
 };
 
-const sendDataCommand = (cmd, data = 0, len = 0) => {
+export const sendDataCommand = (cmd = 0x40, data = 0, len = 0) => {
   let sendBufferPlus = new Int8Array(4);
   if (data) {
     sendBufferPlus = new Uint8Array(5);
   }
   sendBufferPlus[0] = 0xff;
-  sendBufferPlus[1] = 4;
+  sendBufferPlus[1] = 0x04;
   sendBufferPlus[2] = cmd;
 
   if (data !== null) {
@@ -1103,17 +1138,64 @@ const sendDataCommand = (cmd, data = 0, len = 0) => {
   return sendBufferPlus;
 };
 
+export const getCommand = (cmd = 0x40, data = [], len = 0) => {
+  const defaultData = new Uint8Array([0xff, len, cmd]);
+  const command = [...defaultData, ...data];
+  if (command.length < parseInt(len, 16)) {
+    while (command.length < len - 1) {
+      command.push(0);
+    }
+  }
+
+  command.push(_calcChecksum(command, len));
+  return command;
+};
+
+export const getStartCommand = (cmd = 0x40, data = [], len = 0) => {
+  const defaultData = new Uint8Array([0xff, len, cmd, 0]);
+  const command = [...defaultData, ...data];
+  if (command.length < len) {
+    while (command.length < len - 1) {
+      command.push(0);
+    }
+  }
+
+  command.push(_calcChecksum(command, len));
+  return command;
+};
+
+export const setTeaAlarmCommand = (
+  data = [],
+  len = 0,
+  hour = 0,
+  minute = 0,
+) => {
+  const defaultData = new Uint8Array([0xff, len, 0x40, 2]);
+  let command = [...defaultData, ...data];
+  if (command.length < len - 2) {
+    while (command.length < len - 4) {
+      command.push(0);
+    }
+  }
+  command = [...command, hour, minute];
+  command.push(0);
+
+  command.push(_calcChecksum(command, len));
+  return command;
+};
+
 const _calcChecksum = (dat, len) => {
   let chksum = 0;
-  for (let i = 0; i < len; i++) {
+  for (let i = 0; i < len - 1; i++) {
     chksum += dat[i];
   }
   chksum = 0 - chksum;
   chksum ^= 0x3a;
+  chksum = new Uint8Array([chksum])[0];
   return chksum;
 };
 
-const bufferToHex = buffer => {
+export const bufferToHex = buffer => {
   var s = '',
     h = '0123456789ABCDEF';
   new Uint8Array(buffer).forEach(v => {

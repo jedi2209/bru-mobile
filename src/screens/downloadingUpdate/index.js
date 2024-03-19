@@ -1,9 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import HeaderIcon from '../../core/components/icons/HeaderIcon';
 import {basicStyles, colors} from '../../core/const/style';
 import * as Progress from 'react-native-progress';
 import {setSettingsModalOpen} from '../../core/store/device';
+import {ProgressFilledTrack} from '../../../config/theme/ProgressFilledTrack';
+import {DFUEmitter} from 'react-native-nordic-dfu';
+import {ToastTitle, useToast} from '@gluestack-ui/themed';
+import {Toast} from '../../../config/theme/Toast';
+import {VStack} from '../../../config/theme/VStack';
+import {ToastDescription} from '../../../config/theme/ToastDescription';
 
 const s = StyleSheet.create({
   container: {
@@ -49,6 +55,51 @@ const s = StyleSheet.create({
 
 const UpdateScreen = props => {
   const {navigation} = props;
+  const [progress, setProgress] = useState(0);
+  const [isDownloading, setDownloading] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState(false);
+  const toast = useToast();
+
+  DFUEmitter.addListener(
+    'DFUProgress',
+    ({percent, currentPart, partsTotal, avgSpeed, speed}) => {
+      setProgress(percent);
+    },
+  );
+  DFUEmitter.addListener('DFUStateChanged', ({state}) => {
+    console.info('DFU State inside:', state);
+    switch (state) {
+      case 'DFU_PROCESS_STARTING':
+        console.info('DFUEmitter listener => DFU_PROCESS_STARTING');
+        setUpdateStatus('Updating firmware...');
+        break;
+      case 'DEVICE_DISCONNECTING':
+        console.info('DFUEmitter listener => DEVICE_DISCONNECTING');
+        toast.show({
+          placement: 'top',
+          duration: 5000,
+          render: () => {
+            return (
+              <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+                <VStack space="lg">
+                  <ToastTitle>
+                    Update firmware was canceled due to device disconnection!
+                  </ToastTitle>
+                  <ToastDescription>Update is not complete!</ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+          onCloseComplete: () => {
+            setUpdateStatus('finish');
+          },
+        });
+        setUpdateStatus('finish');
+        setProgress(0);
+        break;
+    }
+  });
+
   return (
     <View style={s.container} {...props}>
       <View style={s.wrapper}>
@@ -57,15 +108,9 @@ const UpdateScreen = props => {
         </View>
         <View>
           <Text style={s.downloading}>Downloading BRU firmware</Text>
-          <Progress.Bar
-            style={{alignSelf: 'center'}}
-            width={260}
-            height={4}
-            color={colors.green.mid}
-            progress={0.5}
-            borderColor="transparent"
-            unfilledColor="rgba(113, 136, 58, 0.3)"
-          />
+          <Progress value={progress} size="md">
+            <ProgressFilledTrack bg="$primary500" />
+          </Progress>
           <Text style={s.warning}>
             Please do not disconnect your BRU machine from power until the
             firmware updated.

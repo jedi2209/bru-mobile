@@ -3,13 +3,13 @@ import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
 export const pressetsCollection = firestore().collection('pressets');
-const uid = auth().currentUser.uid;
 
 const initPressets = [
   {
     brewing_data: {
-      time: 150,
-      waterAmount: 250,
+      time: {label: '51m', value: 100, seconds: 3060},
+      waterAmount: 1,
+      temperature: 4,
     },
     cleaning: false,
     id: 'green_tea',
@@ -19,8 +19,9 @@ const initPressets = [
   },
   {
     brewing_data: {
-      time: 270,
-      waterAmount: 250,
+      time: {label: '52m', value: 101, seconds: 3120},
+      waterAmount: 2,
+      temperature: 3,
     },
     cleaning: false,
     id: 'black_tea',
@@ -30,8 +31,9 @@ const initPressets = [
   },
   {
     brewing_data: {
-      time: 210,
-      waterAmount: 250,
+      time: {label: '0m 10s', value: 0, seconds: 10},
+      waterAmount: 0,
+      temperature: 2,
     },
     cleaning: false,
     id: 'puer_tea',
@@ -43,6 +45,7 @@ const initPressets = [
 
 export const addInitPressets = async () => {
   try {
+    const uid = auth().currentUser.uid;
     initPressets.forEach(async presset => {
       const newPresset = await pressetsCollection
         .doc(uid)
@@ -66,6 +69,7 @@ export const addInitPressets = async () => {
 
 export const getUserPressets = async () => {
   try {
+    const uid = auth().currentUser.uid;
     const pressets = await pressetsCollection
       .doc(uid)
       .collection('pressets')
@@ -84,6 +88,7 @@ export const getUserPressets = async () => {
 
 export const addPresset = async presset => {
   try {
+    const uid = auth().currentUser.uid;
     const newPresset = await pressetsCollection
       .doc(uid)
       .collection('pressets')
@@ -97,6 +102,7 @@ export const addPresset = async presset => {
 
 export const updatePresset = async newPresset => {
   try {
+    const uid = auth().currentUser.uid;
     await pressetsCollection
       .doc(uid)
       .collection('pressets')
@@ -110,6 +116,7 @@ export const updatePresset = async newPresset => {
 };
 
 export const deletePresset = async id => {
+  const uid = auth().currentUser.uid;
   await pressetsCollection.doc(uid).collection('pressets').doc(id).delete();
 };
 
@@ -121,6 +128,5 @@ export const uploadPressetImage = async (uri, name) => {
   const url = await imageRef.getDownloadURL().catch(error => {
     throw error;
   });
-  console.log(url);
   return url;
 };

@@ -5,5 +5,62 @@
     "Presets": "Presets\r\n",
     "Help": "Help\r\n",
     "Settings": "Settings\r\n"
+  },
+  "BrewingData": {
+    "BrewingTime": "Brewing\ntime",
+    "WaterTemperature": "Water temperature",
+    "WaterAmount": "Water amount"
+  },
+  "InstantBrewing": {
+    "BrewIt": "Brew it",
+    "Cancel": "Cancel",
+    "SplitCups": "Split cups",
+    "Cleaning": "Cleaning",
+    "ColdWaterDiffusion": "Cold Water diffusion not applied"
+  },
+  "TeaAlarm": {
+    "Title": "Tea Alarm",
+    "NewTeaAlarm": "Set new alarm",
+    "PrepareTeaBy": "Start tea preparation at",
+    "SelectPresset": "Select preset",
+    "SaveTeaAlarm": "Save tea alarm",
+    "Delete": "Delete",
+    "TeaAlarmSet": "Tea alarm set for",
+    "By": "by"
+  },
+  "Presets": {
+    "Title": "Presets",
+    "SavePreset": "Save preset",
+    "Cancel": "Cancel"
+  },
+  "Settings": {
+    "Title": "Settings",
+    "Units": "Units",
+    "AppColorTheme": "App color theme",
+    "About": "About",
+    "Logout": "Logout",
+    "ConnectNewMachine": "Connect New Machine",
+    "UpdateFirmware": "Update BRÜ firmware",
+    "ConnectedMachines": "Connected machines",
+    "Dark": "Dark",
+    "Light": "Light",
+    "BluetoothConnectionError": "To update the firmware, you need to connect to the device",
+    "ChangeLanguage": "Change Language"
+  },
+  "StoreModal": {
+    "Title": "BRÜ Store",
+    "TeaStore": "Tea Store",
+    "PartsAndAccessories": "Parts and Accessories",
+    "Back": "Back"
+  },
+  "Profile": {
+    "Title": "Profile",
+    "Name": "Name",
+    "Email": "Email",
+    "Password": "Password",
+    "PleaseEnterName": "Please enter your name",
+    "PleaseEnterEmail": "Please enter your email",
+    "PleaseEnterPassword": "Please enter your password",
+    "Save": "Save"
   }
 }

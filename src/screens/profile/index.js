@@ -27,6 +27,7 @@ import Toast from 'react-native-toast-message';
 import {$themeStore} from '../../core/store/theme';
 import {scaleValue} from '../../helpers/scaleValue';
 import ImagePicker from 'react-native-image-crop-picker';
+import {useTranslation} from 'react-i18next';
 
 const maxBarHeight = 80;
 
@@ -219,12 +220,12 @@ const s = StyleSheet.create({
   },
 });
 
-const chartDaysData = [
-  0, 1, 2, 3, 4, 5, 6, 2, 3, 5, 5, 3, 9, 3, 1, 5, 7, 4, 0, 9, 8, 3, 4, 2, 6, 0,
-];
-const chartWeeksData = [14, 10, 8, 2];
-const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
-const chartYearsData = [365, 363, 200, 100, 150];
+// const chartDaysData = [
+//   0, 1, 2, 3, 4, 5, 6, 2, 3, 5, 5, 3, 9, 3, 1, 5, 7, 4, 0, 9, 8, 3, 4, 2, 6, 0,
+// ];
+// const chartWeeksData = [14, 10, 8, 2];
+// const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
+// const chartYearsData = [365, 363, 200, 100, 150];
 
 const schema = yup
   .object({
@@ -249,6 +250,7 @@ const ProfileScreen = props => {
   const [modal, setModal] = useState(null);
   const [selectedFilter, setselectedFilter] = useState('days');
   const [image, setImage] = useState(null);
+  const {t} = useTranslation();
 
   const isDarkMode = theme === 'dark';
 
@@ -266,20 +268,20 @@ const ProfileScreen = props => {
     }
   }, [errors]);
 
-  const selectedFilterByDate = useMemo(() => {
-    switch (selectedFilter) {
-      case 'days':
-        return chartDaysData;
-      case 'weeks':
-        return chartWeeksData;
-      case 'months':
-        return chartMonthsData;
-      case 'years':
-        return chartYearsData;
-      default:
-        return [];
-    }
-  }, [selectedFilter]);
+  // const selectedFilterByDate = useMemo(() => {
+  //   switch (selectedFilter) {
+  //     case 'days':
+  //       return chartDaysData;
+  //     case 'weeks':
+  //       return chartWeeksData;
+  //     case 'months':
+  //       return chartMonthsData;
+  //     case 'years':
+  //       return chartYearsData;
+  //     default:
+  //       return [];
+  //   }
+  // }, [selectedFilter]);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -288,7 +290,7 @@ const ProfileScreen = props => {
           basicStyles.screenTitle,
           isDarkMode && basicStyles.darkTextProfile,
         ]}>
-        Profile
+        {t('Profile.Title')}
       </Text>
       <LinearGradient
         style={s.gradientBg}
@@ -351,7 +353,7 @@ const ProfileScreen = props => {
                   s.label,
                   isDarkMode && basicStyles.darkTextProfile,
                 ]}>
-                Name
+                {t('Profile.Name')}
               </Text>
               <Text
                 style={[
@@ -364,7 +366,7 @@ const ProfileScreen = props => {
             </View>
           ) : (
             <Input
-              placeholder="Please enter your name"
+              placeholder={t('Profile.PleaseEnterName')}
               label="Name"
               control={control}
               name="name"
@@ -381,7 +383,7 @@ const ProfileScreen = props => {
                   s.label,
                   isDarkMode && basicStyles.darkTextProfile,
                 ]}>
-                Email
+                {t('Profile.Email')}
               </Text>
               <Text
                 style={[
@@ -391,7 +393,7 @@ const ProfileScreen = props => {
                 ]}>
                 {user.email}
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() =>
                   setModal({
                     confirmationText:
@@ -402,11 +404,11 @@ const ProfileScreen = props => {
                 }
                 style={s.userDataButton}>
                 <Text style={s.validateButton}>Validate</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
           ) : (
             <Input
-              placeholder="Please enter your email"
+              placeholder={t('Profile.PleaseEnterEmail')}
               label="Email"
               control={control}
               name="email"
@@ -439,8 +441,8 @@ const ProfileScreen = props => {
             //   </TouchableOpacity>
             // </View>
             <Input
-              placeholder="Please enter your password"
-              label="Password"
+              placeholder={t('Profile.PleaseEnterPassword')}
+              label={t('Profile.Password')}
               secure
               withIcon
               name="password"
@@ -478,12 +480,12 @@ const ProfileScreen = props => {
             })}
             style={s.saveButton}>
             <Text style={[basicStyles.backgroundButtonText, {width: 132}]}>
-              Save
+              {t('Profile.Save')}
             </Text>
           </TouchableOpacity>
         )}
       </LinearGradient>
-      {mode === 'view' && (
+      {/* {mode === 'view' && (
         <>
           <Text style={[s.subtitle, isDarkMode && basicStyles.darkTextProfile]}>
             My statistics
@@ -540,11 +542,9 @@ const ProfileScreen = props => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={s.barStatistic}>
-              {/* <Text style={s.totalTea}>53242 litres</Text> */}
               {selectedFilterByDate.map(item => {
                 return (
                   <View>
-                    {/* {item ? <Text>{item}</Text> : null} */}
                     <View
                       key={item + new Date().getMilliseconds()}
                       style={[
@@ -616,7 +616,7 @@ const ProfileScreen = props => {
             <Text style={s.resetButtonText}>Reset My Stats</Text>
           </TouchableOpacity>
         </>
-      )}
+      )} */}
       <ConfirmationModal
         opened={!!modal}
         closeModal={() => setModal(null)}

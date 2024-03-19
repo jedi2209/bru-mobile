@@ -1,10 +1,10 @@
 import React, {View, Text, StyleSheet} from 'react-native';
 import SVG, {Path, Circle} from 'react-native-svg';
-import {translate} from '@core/lang';
 import {$langSettingsStore} from '@store/lang';
 import {useStore} from 'effector-react';
 
 import {colors, fonts} from '@styleConst';
+import {useTranslation} from 'react-i18next';
 
 const styles = StyleSheet.create({
   tabBarItem: {
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
       fontSize: 8,
     },
     de: {
-      fontSize: 7.5,
+      fontSize: 7,
     },
   },
 });
@@ -141,6 +141,8 @@ const TabBarIcon = ({
   iconName = null,
 }) => {
   const currLang = useStore($langSettingsStore);
+  const {t} = useTranslation();
+
   return (
     <View style={styles.tabBarItem}>
       <View style={styles.tabBarItemIcon}>
@@ -152,7 +154,7 @@ const TabBarIcon = ({
           styles.labelText[currLang],
           {color: focused ? colors.white : colors.gray.inactive},
         ]}>
-        {translate(title)}
+        {t(title)}
       </Text>
     </View>
   );

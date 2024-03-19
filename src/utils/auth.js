@@ -2,7 +2,6 @@ import auth from '@react-native-firebase/auth';
 import {setUser} from '../core/store/user';
 import {createUser} from './db/auth';
 import Toast from 'react-native-toast-message';
-import {addInitPressets} from './db/pressets';
 
 export const signUpWithEmailAndPassword = async (email, password, name) => {
   try {
@@ -10,7 +9,6 @@ export const signUpWithEmailAndPassword = async (email, password, name) => {
     if (user) {
       const newUser = await createUser({...user.user, name});
       setUser(newUser);
-      await addInitPressets();
     }
   } catch (error) {
     if (error.code === 'auth/email-already-in-use') {
@@ -45,7 +43,11 @@ export const logout = async () => {
 
 export const updatePassword = async password => {
   const user = auth().currentUser;
-  await user.updatePassword(password);
+  try {
+    await user.updatePassword(password);
+  } catch (error) {
+    console.log(error.code);
+  }
 };
 
 export const updateEmail = async email => {

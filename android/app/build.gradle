@@ -117,6 +117,9 @@ android {
     }
     buildTypes {
         debug {
+        FirebasePerformance {
+            instrumentationEnabled false
+        }
             signingConfig signingConfigs.debug
         }
         release {

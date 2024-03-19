@@ -7,7 +7,6 @@ import {
   ButtonText,
   ButtonSpinner,
   ButtonGroup,
-  ButtonIcon,
   Text,
   Image,
   Heading,
@@ -29,6 +28,10 @@ import {get} from 'lodash';
 import {colors} from '@styleConst';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
+import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import {$deviceSettingsStore} from '../../core/store/device';
+import {$currentFirmwareStore} from '../../core/store/firmware';
+import {getFirmwareData} from '../../utils/firmware';
 
 const isAndroid = Platform.OS === 'android';
 
@@ -47,16 +50,16 @@ const stepsContent = [
     text: "We need access to your phone's bluetooth to be able search and communicate with BRU.\r\n",
   },
   {
-    // 3 checkBluetooth => true
-    img: require('@assets/deviceImages/image-1.png'),
-    header: 'Activate bluetooth on BRU',
-    text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
-  },
-  {
-    // 4 request for bluetooth and local network access
+    // 3 request for bluetooth and local network access
     img: require('@assets/bluetooth_devices_near.png'),
     header: 'Bluetooth and Location access required',
     text: 'Bluetooth and Location permissions are required to find and control your nearby BRU device even when the app is not in use.\r\nWithout access things may not work as expected.',
+  },
+  {
+    // 4 checkBluetooth => true
+    img: require('@assets/deviceImages/image-1.png'),
+    header: 'Activate bluetooth on BRU',
+    text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
   },
   {
     // 5
@@ -86,6 +89,12 @@ const stepsContent = [
     img: require('@assets/deviceImages/image-2.png'),
     header: 'Success!',
     text: 'Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app',
+  },
+  {
+    // 10
+    img: require('@assets/deviceImages/image-2.png'),
+    header: 'We need to update your BRU firmware!',
+    text: '',
   },
 ];
 
@@ -141,7 +150,7 @@ const _pairDevice = async itemID => {
   return false;
 };
 
-const _renderStep = ({step, setStep, item, setItem, navigation}) => {
+const _renderStep = ({step, setStep, item, setItem, navigation, device}) => {
   const [isLoadingLocal, setIsLoadingLocal] = useState(false);
   if (isLoadingLocal) {
     return (
@@ -181,17 +190,36 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
             action={'primary'}
             size={'xl'}
             onPress={async () => {
-              const bluetoothState =
-                await deviceManager._handleBluetoothState();
-              if (!deviceManager.bluetoothState) {
-                setStep(step + 1);
-                console.error(
-                  '_renderStep 1 => bluetoothState',
-                  bluetoothState,
+              if (Platform.OS === 'android') {
+                const firstPermition = await check(
+                  PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
                 );
+                const secondPermition = await check(
+                  PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+                );
+                const thirdPermition = await check(
+                  PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+                );
+                const permissions = [
+                  firstPermition,
+                  secondPermition,
+                  thirdPermition,
+                ];
+                if (!permissions.some(perm => perm !== 'granted')) {
+                  setStep(4);
+                } else {
+                  setStep(3);
+                }
               } else {
-                setStep(step + 2);
-                console.info('_renderStep 1 => bluetoothState', bluetoothState);
+                const result = await check(
+                  PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL,
+                );
+
+                if (result === 'granted') {
+                  setStep(4);
+                } else {
+                  setStep(3);
+                }
               }
             }}>
             <Icon
@@ -223,14 +251,16 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
             size={'xl'}
             onPress={() => {
               setStep(step - 1);
-              Linking.openSettings();
+              Platform.OS === 'ios'
+                ? Linking.openURL('App-Prefs:Bluetooth')
+                : Linking.sendIntent('android.settings.BLUETOOTH_SETTINGS');
             }}>
             <Icon name="gears" style={styles.buttonBottomIcon} size={24} />
             <ButtonText>Open settings</ButtonText>
           </Button>
         </>
       );
-    case 3:
+    case 4:
       return (
         <>
           <LottieView
@@ -256,15 +286,19 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           </Button>
         </>
       );
-    case 4:
+    case 3:
       return (
         <ButtonGroup style={styles.buttonBottom}>
           <Button
             variant={'solid'}
             action={'primary'}
             size={'xl'}
-            onPress={() => {
-              setStep(step + 1);
+            onPress={async () => {
+              const permissionGranted =
+                await deviceManager._handlePermissions();
+              if (permissionGranted) {
+                setStep(prev => prev + 1);
+              }
             }}>
             <Icon
               name="check-square-o"
@@ -333,28 +367,58 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
         });
     case 8:
       return (
-        <Button
-          style={styles.buttonBottom}
-          size={'xl'}
-          onPress={() => {
-            setStep(step - 1);
-          }}>
-          <Icon
-            name="check-square-o"
-            style={styles.buttonBottomIcon}
-            size={24}
-          />
-          <ButtonText>Ready to connect!</ButtonText>
-        </Button>
+        <>
+          <Button
+            style={styles.buttonBottom}
+            size={'xl'}
+            onPress={() => {
+              setStep(step - 1);
+            }}>
+            <Icon
+              name="check-square-o"
+              style={styles.buttonBottomIcon}
+              size={24}
+            />
+            <ButtonText>Ready to connect!</ButtonText>
+          </Button>
+          <Button
+            style={styles.buttonBottom}
+            size={'xl'}
+            onPress={() => {
+              navigation.goBack();
+            }}>
+            <ButtonText>Go Back</ButtonText>
+          </Button>
+        </>
       );
     case 9:
       return (
         <Button
           style={styles.buttonBottom}
           size={'xl'}
-          onPress={() => {
-            navigation.navigate('NavBottom', {screen: 'Settings'});
-            RNRestart.restart();
+          onPress={async () => {
+            const deviceFirmwareVersion =
+              await deviceManager._readDataFromBleDevice('firmwareRevision');
+            console.log(deviceFirmwareVersion, deviceFirmwareVersion);
+            const data = await getFirmwareData();
+            const availableFirmware = data.find(
+              firmwareData => firmwareData.testAvailable,
+            );
+            const file = availableFirmware.file;
+            if (!deviceFirmwareVersion) {
+              console.error("Can't get device firmware");
+              return;
+            }
+            if (!availableFirmware) {
+              console.error('Something wrong at our server');
+              return;
+            }
+            console.log(availableFirmware, deviceFirmwareVersion);
+            if (availableFirmware.name !== deviceFirmwareVersion) {
+              setStep(10);
+            } else {
+              navigation.navigate('NavBottom', {screen: 'Settings'});
+            }
           }}>
           <Icon
             name="check-square-o"
@@ -364,12 +428,53 @@ const _renderStep = ({step, setStep, item, setItem, navigation}) => {
           <ButtonText>Great!</ButtonText>
         </Button>
       );
+    case 10:
+      return (
+        <Button
+          style={styles.buttonBottom}
+          size={'xl'}
+          onPress={async () => {
+            try {
+              const deviceFirmwareVersion =
+                await deviceManager._readDataFromBleDevice('firmwareRevision');
+              const data = await getFirmwareData();
+              const availableFirmware = data.find(
+                firmwareData => firmwareData.testAvailable,
+              );
+              const file = availableFirmware.file;
+
+              navigation.navigate('UpdateFirmwareProgressScreen', {
+                device,
+                file,
+              });
+            } catch (error) {
+              console.log(error);
+            }
+          }}>
+          <Icon
+            name="check-square-o"
+            style={styles.buttonBottomIcon}
+            size={24}
+          />
+          <ButtonText>OK</ButtonText>
+        </Button>
+      );
   }
 };
 
 const IntroBlock = props => {
   const {step, setStep, item, setItem, navigation} = props;
   const theme = useStore($themeStore);
+  let devices = useStore($deviceSettingsStore);
+  let device = {};
+  if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
+    device = devices[0];
+  }
+  if (!get(device, 'id', false) && get(props, 'route.params.device', false)) {
+    device = props.route.params.device;
+  }
+  const firmware = useStore($currentFirmwareStore);
+
   return (
     <View style={{flex: 1}}>
       {get(stepsContent[step], 'img', null) ? (
@@ -382,13 +487,13 @@ const IntroBlock = props => {
         />
       ) : null}
       <View style={{flex: 1, paddingHorizontal: 30, paddingBottom: 30}}>
-        <Heading size="md" mt="$2" mb="$6">
+        <Heading size="md" mt="$9" mb="$6">
           {get(stepsContent[step], 'header', '')}
         </Heading>
         {get(stepsContent[step], 'header', null) ? (
           <Text>{get(stepsContent[step], 'text', '')}</Text>
         ) : null}
-        {_renderStep({step, setStep, item, setItem, navigation})}
+        {_renderStep({step, setStep, item, setItem, navigation, device})}
       </View>
     </View>
   );
@@ -398,6 +503,48 @@ const AddNewDeviceScreen = props => {
   const [step, setStep] = useState(1);
   const [item, setItem] = useState(null);
   const [isloading, setLoading] = useState(false);
+
+  useEffect(() => {
+    async function setInitStep() {
+      try {
+        const status = await deviceManager._handleBluetoothState();
+        if (status !== 'granted') {
+          setStep(2);
+        }
+        if (Platform.OS === 'android') {
+          const firstPermition = await check(
+            PERMISSIONS.ANDROID.BLUETOOTH_SCAN,
+          );
+          const secondPermition = await check(
+            PERMISSIONS.ANDROID.BLUETOOTH_CONNECT,
+          );
+          const thirdPermition = await check(
+            PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+          );
+          const permissions = [firstPermition, secondPermition, thirdPermition];
+          if (!permissions.some(item => item !== 'granted')) {
+            setStep(4);
+            return;
+          } else {
+            setStep(3);
+            return;
+          }
+        } else {
+          const result = await check(PERMISSIONS.IOS.BLUETOOTH_PERIPHERAL);
+          if (result === 'granted') {
+            setStep(4);
+            return;
+          } else {
+            setStep(3);
+            return;
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    setInitStep();
+  }, []);
 
   useEffect(() => {
     return () => {

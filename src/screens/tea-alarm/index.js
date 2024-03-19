@@ -8,6 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 import {useStore} from 'effector-react';
 import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
 import {$themeStore} from '../../core/store/theme';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -47,6 +48,7 @@ const s = StyleSheet.create({
 const TeaAlarmScreen = props => {
   const theme = useStore($themeStore);
   const navigate = useNavigation();
+  const {t} = useTranslation();
 
   useEffect(() => {
     getTeaAlarmsFx();
@@ -58,14 +60,15 @@ const TeaAlarmScreen = props => {
     <Wrapper style={s.wrapper} {...props}>
       <View>
         <Text style={[s.screenLabel, theme === 'dark' && s.darkScreenLabel]}>
-          Tea Alarm
+          {t('TeaAlarm.Title')}
         </Text>
         <TouchableOpacity
           onPress={() => navigate.navigate('NewTeaAlarm')}
           style={s.addButton}>
-          <Text style={s.addButtonText}>Set new alarm</Text>
+          <Text style={s.addButtonText}>{t('TeaAlarm.NewTeaAlarm')}</Text>
         </TouchableOpacity>
         <FlatList
+          bounces={false}
           contentContainerStyle={s.listContainerStyle}
           data={teaAlarms || []}
           renderItem={({item}) => <TeaAlarmInfo {...item} />}
