@@ -26,7 +26,7 @@ export const FIREBASE_SETTINGS = {
 };
 
 export const SENTRY_SETTINGS = {
-  dsn: 'https://81e7ded58f57472f84bdb5686bbd0fe7@o76005.ingest.sentry.io/4505266371231744',
+  dsn: 'https://XXXX@o4506937998049280.ingest.us.sentry.io/4506937999556608',
 };
 
 export const ONESIGNAL_SETTINGS = {
