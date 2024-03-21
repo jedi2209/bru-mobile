@@ -13,6 +13,7 @@ import {deleteTeaAlarmFx} from '../store/teaAlarms';
 import PlayIcon from './icons/PlayIcon';
 import {deviceManager, setTeaAlarmCommand, sleep} from '../../utils/device';
 import {useTranslation} from 'react-i18next';
+import {$langSettingsStore} from '../store/lang';
 
 const s = StyleSheet.create({
   container: {
@@ -39,7 +40,6 @@ const s = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 16,
   },
   infoContainer: {
     flex: 1,
@@ -75,19 +75,17 @@ const s = StyleSheet.create({
     alignItems: 'center',
     height: 20,
   },
-  penIcon: {
-    marginHorizontal: 16,
-  },
 });
 
 const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
   const theme = useStore($themeStore);
   const {t} = useTranslation();
   const navigation = useNavigation();
+  const lang = useStore($langSettingsStore);
 
   return (
     <View style={[s.container, theme === 'dark' && s.darkContainer]}>
-      <View style={s.iconContainer}>
+      <View style={[s.iconContainer]}>
         <TeaAlarmIcon
           width={24}
           heigth={24}
@@ -102,15 +100,15 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
       <View style={s.infoContainer}>
         <View>
           <Text
-            style={[s.teaAlarmText, theme === 'dark' && basicStyles.darkText]}>
+            style={[
+              s.teaAlarmText,
+              theme === 'dark' && basicStyles.darkText,
+              lang === 'de' && {fontSize: 12.5},
+            ]}>
             {t('TeaAlarm.TeaAlarmSet')}{' '}
-            {prepare_by
-              ? `${dayjs
-                  .duration(prepare_by.hours, 'hours')
-                  .format('HH')}:${dayjs
-                  .duration(prepare_by.minutes, 'minutes')
-                  .format('mm')}`
-              : '1:00 AM'}
+            {`${dayjs.duration(prepare_by.hours, 'hours').format('HH')}:${dayjs
+              .duration(prepare_by.minutes, 'minutes')
+              .format('mm')}`}
           </Text>
           <View style={s.teaInfo}>
             <Text
@@ -119,11 +117,11 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
                 s.by,
                 theme === 'dark' && basicStyles.darkText,
               ]}>
-              {t('TeaAlarm.By')} {by || 'John Denver'}
+              {t('TeaAlarm.By')} {by}
             </Text>
             <Text
               style={[s.teaInfoText, theme === 'dark' && basicStyles.darkText]}>
-              {presset?.tea_type || 'Black Tea #1'}
+              {presset?.tea_type}
             </Text>
           </View>
         </View>
@@ -151,7 +149,8 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => navigation.navigate('NewTeaAlarm', {id})}>
-            <PenIcon style={s.penIcon} />
+            {/* eslint-disable-next-line react-native/no-inline-styles */}
+            <PenIcon style={{marginHorizontal: lang === 'de' ? 10 : 16}} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {

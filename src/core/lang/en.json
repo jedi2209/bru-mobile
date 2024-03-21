@@ -16,7 +16,12 @@
     "Cancel": "Cancel",
     "SplitCups": "Split cups",
     "Cleaning": "Cleaning",
-    "ColdWaterDiffusion": "Cold Water diffusion not applied"
+    "ColdWaterDiffusion": "Cold Water diffusion not applied",
+    "ConfirmationModalTitle": "Do you want to save this configutation as a new preset?",
+    "Later": "Later",
+    "YouWillBeAble": "You will be able to create new presets later in",
+    "page": "page",
+    "DontShowAgain": "Don't show me again"
   },
   "TeaAlarm": {
     "Title": "Tea Alarm",

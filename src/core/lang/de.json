@@ -16,7 +16,12 @@
     "Cancel": "Abbrechen",
     "SplitCups": "Geteilte Becher",
     "Cleaning": "Reinigung",
-    "ColdWaterDiffusion": "Kaltwasserdiffusion nicht angewendet"
+    "ColdWaterDiffusion": "Kaltwasserdiffusion nicht angewendet",
+    "ConfirmationModalTitle": "Möchten Sie diese Konfiguration als neue Voreinstellung speichern?",
+    "Later": "Später",
+    "YouWillBeAble": "Sie können neue Voreinstellungen später in",
+    "page": "seite",
+    "DontShowAgain": "Nicht mehr zeigen"
   },
   "TeaAlarm": {
     "Title": "Teealarm",

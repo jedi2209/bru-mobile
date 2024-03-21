@@ -34,7 +34,7 @@ const s = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     position: 'absolute',
-    top: '100%',
+    top: Platform.OS === 'ios' ? '100%' : '50%',
     right: 20,
   },
   userIcon: {

@@ -1,11 +1,10 @@
 import React, {
+  Alert,
   Animated,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
-  Touchable,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
@@ -41,8 +40,8 @@ import {$userStore} from '../../core/store/user.js';
 import {useTranslation} from 'react-i18next';
 import {$deviceSettingsStore} from '../../core/store/device';
 import {get} from 'lodash';
-import {$currentDeviceFirmwareStore} from '../../core/store/deviceFirmware';
 import {Toast, ToastTitle, VStack, useToast} from '@gluestack-ui/themed';
+import {bufferToHex} from '../../utils/device.js';
 
 const s = StyleSheet.create({
   container: {
@@ -108,7 +107,6 @@ const InstantBrewScreen = props => {
   const {t} = useTranslation();
   const [animationButton] = useState(new Animated.Value(0));
   const [animationCancelButton] = useState(new Animated.Value(0));
-  const deviceFirmware = useStore($currentDeviceFirmwareStore);
 
   const toast = useToast();
 
@@ -203,8 +201,9 @@ const InstantBrewScreen = props => {
 
   const startBrewing = async (temp = 0, time = 0, water = 0) => {
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
-
-    await deviceManager
+    console.log(bufferToHex(command));
+    Alert.alert('Command sent');
+    deviceManager
       .writeValueAndNotify(command)
       .then(async () => {
         showCommandSendToast();
@@ -231,15 +230,16 @@ const InstantBrewScreen = props => {
     setModal({
       opened: true,
       withCancelButton: true,
-      cancelButtonText: 'Later',
-      modalTitle: 'Do you want to save this configutation as a new preset?',
+      cancelButtonText: t('InstantBrewing.Later'),
+      modalTitle: t('InstantBrewing.ConfirmationModalTitle'),
       confirmationText: (
         <Text>
-          You will be able to create new presets later in{' '}
-          <Text style={{color: colors.green.mid}}>Presets</Text> page.
+          {t('InstantBrewing.YouWillBeAble')}{' '}
+          <Text style={{color: colors.green.mid}}>{t('Presets.Title')}</Text>{' '}
+          {t('InstantBrewing.page')}.
         </Text>
       ),
-      confirmationButtonText: 'Save preset',
+      confirmationButtonText: t('Presets.SavePreset'),
       withDontShowAgain: true,
       onConfirm: async () => {
         addPressetToStoreFx({
@@ -256,7 +256,7 @@ const InstantBrewScreen = props => {
         startBrewing(temperature, brewingTime.value, waterAmount);
         setModal(null);
       },
-      dontShowAgainText: "Don't show me again",
+      dontShowAgainText: t('InstantBrewing.DontShowAgain'),
     });
   };
 
@@ -349,7 +349,7 @@ const InstantBrewScreen = props => {
               delayLongPress={500}
               onLongPress={async () => {
                 const command = getCommand(0x42, [], 4, false);
-
+                console.log(bufferToHex(command));
                 await deviceManager
                   .writeValueAndNotify(command)
                   .then(async () => {
@@ -357,7 +357,7 @@ const InstantBrewScreen = props => {
                   })
                   .catch(err => {
                     showCommandSendToast(true);
-                    console.error('Start Brewing error', err);
+                    throw console.error('Start Brewing error', err);
                   });
               }}
               onPressIn={onPressCancelButton}
