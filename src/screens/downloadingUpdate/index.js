@@ -3,7 +3,7 @@ import {Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import HeaderIcon from '../../core/components/icons/HeaderIcon';
 import {basicStyles, colors} from '../../core/const/style';
 import * as Progress from 'react-native-progress';
-import {setSettingsModalOpen} from '../../core/store/device';
+
 import {ProgressFilledTrack} from '../../../config/theme/ProgressFilledTrack';
 import {DFUEmitter} from 'react-native-nordic-dfu';
 import {ToastTitle, useToast} from '@gluestack-ui/themed';
@@ -118,7 +118,6 @@ const UpdateScreen = props => {
         </View>
         <TouchableOpacity
           onPress={() => {
-            setSettingsModalOpen(true);
             navigation.navigate('Settings', {
               screen: 'Settings',
               params: {previous_screen: 'DownloadingUpdate'},

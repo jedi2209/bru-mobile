@@ -28,7 +28,7 @@ import {get} from 'lodash';
 import {colors} from '@styleConst';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
-import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
+import {check, PERMISSIONS} from 'react-native-permissions';
 import {$deviceSettingsStore} from '../../core/store/device';
 import {$currentFirmwareStore} from '../../core/store/firmware';
 import {getFirmwareData} from '../../utils/firmware';

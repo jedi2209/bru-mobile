@@ -5,7 +5,6 @@ import {
   NavigationBottom as NavBottom,
   headerTitle,
 } from '@nav/NavigationBottom';
-import AddNewDeviceScreen from '@screens/settings/addNewDevice';
 import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
 import UpdateFirmwareProgressScreen from '@screens/settings/updateFirmwareProgress';
 import {default as CustomHeader} from '../components/Header';
@@ -13,6 +12,7 @@ import UpdateScreen from '../../screens/downloadingUpdate';
 import AuthorizationScreen from '../../screens/authorization';
 import {useStore} from 'effector-react';
 import {$userStore} from '../store/user';
+import ConnectDeviceScreen from '../../screens/settings/ConnectDevice';
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
   const user = useStore($userStore);
@@ -28,7 +28,7 @@ const NavMain = props => {
           />
           <Stack.Screen
             name="AddNewDeviceScreen"
-            component={AddNewDeviceScreen}
+            component={ConnectDeviceScreen}
             initialParams={{
               scroll: true,
             }}

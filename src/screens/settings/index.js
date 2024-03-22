@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import {
   Button,
@@ -22,14 +22,12 @@ import BruMachine from './components/BruMachine';
 
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import NotificationModal from '../../core/components/NotificationModal';
-import {
-  $deviceSettingsStore,
-  setSettingsModalOpen,
-} from '../../core/store/device';
+import {$deviceSettingsStore} from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
 import {useTranslation} from 'react-i18next';
 import {$langSettingsStore} from '../../core/store/lang';
+import useBle from '../../hooks/useBlePlx';
 
 // import {DEVICE_MANAGER_CONFIG} from '@const';
 // const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
@@ -96,22 +94,14 @@ const SettingsScreen = props => {
   const {navigation} = props;
   const toast = useToast();
   const {t} = useTranslation();
-
-  useEffect(() => {
-    setLoading(true);
-    if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
-      deviceManager.setCurrentDevice(devices[0]);
-    }
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
-    return () => {
-      // console.debug('[app] main component unmounting. Removing listeners...');
-      // if (typeof deviceManager !== 'undefined') {
-      //   deviceManager.destructor();
-      // }
-    };
-  }, [devices]);
+  const {
+    allDevices,
+    connectedDevice,
+    cancelCommand,
+    connectToDevice,
+    scanForPeripherals,
+    requestBluetoothPermission,
+  } = useBle();
 
   if (isLoading) {
     return (
@@ -128,21 +118,19 @@ const SettingsScreen = props => {
   const _onPressUpdate = () => {
     navigation.navigate('UpdateFirmwareScreen', {device: deviceManager.device});
   };
-
+  console.log(connectedDevice);
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
         {t('Settings.Title')}
       </Text>
       <View>
-        {devices.length !== 0 ? (
+        {connectedDevice ? (
           <>
             <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
               {t('Settings.ConnectedMachines')}
             </Text>
-            {devices.map(item => {
-              return <BruMachine key={item} item={item} />;
-            })}
+            <BruMachine item={connectedDevice} />
           </>
         ) : null}
       </View>
@@ -215,7 +203,7 @@ const SettingsScreen = props => {
       />
       <NotificationModal
         opened={notificationModalOpened}
-        closeModal={() => setSettingsModalOpen(false)}
+        closeModal={() => {}}
         modalTitle="Firmware successfully updated to ver. 12.423.4"
       />
     </Wrapper>

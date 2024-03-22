@@ -8,8 +8,9 @@ import {useStore} from 'effector-react';
 import {$themeStore} from '../../../core/store/theme';
 import {getFirmwareData} from '../../../utils/firmware';
 import {deviceManager} from '../../../utils/device.js';
-import {clearDeviceStorage, resetDevice} from '../../../core/store/device.js';
+import {clearDeviceStorage} from '../../../core/store/device.js';
 import {get} from 'lodash';
+import useBle from '../../../hooks/useBlePlx';
 
 const s = StyleSheet.create({
   container: {
@@ -52,22 +53,11 @@ const s = StyleSheet.create({
   divider: {},
 });
 
-const _onPressUnpair = async () => {
-  await deviceManager
-    .removeBond()
-    .then(res => {
-      clearDeviceStorage();
-      console.info('onPress Unpair device', res);
-    })
-    .catch(err => {
-      console.error('onPress Unpair device', err);
-    });
-};
-
 const BruMachine = ({item}) => {
   const theme = useStore($themeStore);
   const [firmware, setFirmware] = useState('');
   const isDarkMode = theme === 'dark';
+  const {disconnectFromDevice} = useBle();
 
   useEffect(() => {
     async function fetch() {
@@ -109,8 +99,9 @@ const BruMachine = ({item}) => {
                 {
                   text: 'Unpair',
                   style: 'destructive',
-                  onPress: () =>
-                    _onPressUnpair(get(deviceManager, 'device.id', null)),
+                  onPress: async () => {
+                    await disconnectFromDevice();
+                  },
                 },
               ],
             );

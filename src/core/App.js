@@ -1,8 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {Platform, LogBox} from 'react-native';
 
-import BleManager from 'react-native-ble-manager';
-
 import {NavigationContainer} from '@react-navigation/native';
 import NavMain from '@nav/Navigation';
 
@@ -115,10 +113,10 @@ const App = props => {
     // _appCheckInit();
     analyticsLog('app_init', {os: Platform.OS, version: Platform.Version});
     fetchFirmwareMeta();
-    BleManager.start({showAlert: false}).then(() => {
-      // Success code
-      console.info('#####\t\tBleManager.start => module initialized');
-    });
+    // BleManager.start({showAlert: false}).then(() => {
+    //   // Success code
+    //   console.info('#####\t\tBleManager.start => module initialized');
+    // });
   }, []);
 
   return (
