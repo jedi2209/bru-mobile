@@ -1088,8 +1088,8 @@ PODS:
   - leveldb-library (1.22.4)
   - libevent (2.1.12)
   - lottie-ios (4.4.1)
-  - lottie-react-native (6.6.0):
-    - lottie-ios (~> 4.4.0)
+  - lottie-react-native (6.7.0):
+    - lottie-ios (~> 4.4.1)
     - React-Core
   - MultiplatformBleAdapter (0.2.0)
   - nanopb (2.30909.1):
@@ -1413,11 +1413,11 @@ PODS:
     - React-Core
   - react-native-restart (0.0.27):
     - React-Core
-  - react-native-safe-area-context (4.8.2):
+  - react-native-safe-area-context (4.9.0):
     - React-Core
   - react-native-splash-screen (3.3.0):
     - React-Core
-  - react-native-webview (13.6.4):
+  - react-native-webview (13.8.2):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - React-NativeModulesApple (0.72.6):
@@ -1535,56 +1535,56 @@ PODS:
   - RecaptchaInterop (100.0.0)
   - RNBluetoothStateManager (1.3.5):
     - React-Core
-  - RNCAsyncStorage (1.21.0):
+  - RNCAsyncStorage (1.23.1):
     - React-Core
-  - RNCPicker (2.6.1):
+  - RNCPicker (2.7.0):
     - React-Core
-  - RNDateTimePicker (7.6.2):
+  - RNDateTimePicker (7.6.3):
     - React-Core
-  - RNDeviceInfo (10.12.0):
+  - RNDeviceInfo (10.13.1):
     - React-Core
-  - RNFBAnalytics (18.8.0):
+  - RNFBAnalytics (18.9.0):
     - Firebase/Analytics (= 10.20.0)
     - React-Core
     - RNFBApp
-  - RNFBApp (18.8.0):
+  - RNFBApp (18.9.0):
     - Firebase/CoreOnly (= 10.20.0)
     - React-Core
-  - RNFBAppCheck (18.8.0):
+  - RNFBAppCheck (18.9.0):
     - Firebase/AppCheck (= 10.20.0)
     - React-Core
     - RNFBApp
-  - RNFBAuth (18.8.0):
+  - RNFBAuth (18.9.0):
     - Firebase/Auth (= 10.20.0)
     - React-Core
     - RNFBApp
-  - RNFBDatabase (18.8.0):
+  - RNFBDatabase (18.9.0):
     - Firebase/Database (= 10.20.0)
     - React-Core
     - RNFBApp
-  - RNFBFirestore (18.8.0):
+  - RNFBFirestore (18.9.0):
     - Firebase/Firestore (= 10.20.0)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - React-Core
     - RNFBApp
-  - RNFBStorage (18.8.0):
+  - RNFBStorage (18.9.0):
     - Firebase/Storage (= 10.20.0)
     - React-Core
     - RNFBApp
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.14.1):
+  - RNGestureHandler (2.15.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
   - RNGoogleSignin (11.0.0):
     - GoogleSignIn (~> 7.0)
     - React-Core
-  - RNImageCropPicker (0.40.2):
+  - RNImageCropPicker (0.40.3):
     - React-Core
     - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.40.2)
+    - RNImageCropPicker/QBImagePickerController (= 0.40.3)
     - TOCropViewController
-  - RNImageCropPicker/QBImagePickerController (0.40.2):
+  - RNImageCropPicker/QBImagePickerController (0.40.3):
     - React-Core
     - React-RCTImage
     - TOCropViewController
@@ -1592,26 +1592,26 @@ PODS:
     - React-Core
   - RNPermissions (3.10.1):
     - React-Core
-  - RNReanimated (3.6.2):
+  - RNReanimated (3.8.1):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - ReactCommon/turbomodule/core
   - RNScreens (3.29.0):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNSentry (5.17.0):
+  - RNSentry (5.20.0):
     - hermes-engine
     - React-Core
     - React-hermes
-    - Sentry/HybridSDK (= 8.17.1)
+    - Sentry/HybridSDK (= 8.21.0)
   - RNSVG (13.14.0):
     - React-Core
   - RNVectorIcons (10.0.3):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - Sentry/HybridSDK (8.17.1):
-    - SentryPrivate (= 8.17.1)
-  - SentryPrivate (8.17.1)
+  - Sentry/HybridSDK (8.21.0):
+    - SentryPrivate (= 8.21.0)
+  - SentryPrivate (8.21.0)
   - SocketRocket (0.6.1)
   - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
@@ -1930,7 +1930,7 @@ SPEC CHECKSUMS:
   leveldb-library: 06a69cc7582d64b29424a63e085e683cc188230a
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
   lottie-ios: e047b1d2e6239b787cc5e9755b988869cf190494
-  lottie-react-native: 00ac19344296ae018260aabd14d6b36dd816b0e2
+  lottie-react-native: e3205322282d72e23efb3bff3287d0bd16fb1b01
   MultiplatformBleAdapter: b1fddd0d499b96b607e00f0faa8e60648343dc1d
   nanopb: d4d75c12cd1316f4a64e3c6963f879ecd4b5e0d5
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
@@ -1955,9 +1955,9 @@ SPEC CHECKSUMS:
   react-native-netinfo: 48c5f79a84fbc3ba1d28a8b0d04adeda72885fa8
   react-native-nordic-dfu: aaf362b8afaeba5d911f3d84b7f140ec5f64cbc1
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
-  react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
+  react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
-  react-native-webview: 121397a02eb58554c24d0c3e26acf676ff6a87d2
+  react-native-webview: c2b9aafef750cc1b6c3cac6357352cb77b214682
   React-NativeModulesApple: 1802a680a4cd891d2ab97780771bcb2ff11fdc0b
   React-perflogger: e3596db7e753f51766bceadc061936ef1472edc3
   React-RCTActionSheet: 17ab132c748b4471012abbcdcf5befe860660485
@@ -1978,30 +1978,30 @@ SPEC CHECKSUMS:
   ReactNativeLocalization: fb171138cdc80d5d0d4f20243d2fc82c2b3cc48f
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   RNBluetoothStateManager: 724f2c76b04e0a2b840dfd7305b68f614bc01c81
-  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
-  RNCPicker: b18aaf30df596e9b1738e7c1f9ee55402a229dca
-  RNDateTimePicker: fc2e4f2795877d45e84d85659bebe627eba5c931
-  RNDeviceInfo: db5c64a060e66e5db3102d041ebe3ef307a85120
-  RNFBAnalytics: 991772a4cd8c90de9a5eec33ef24dbba6e028c5b
-  RNFBApp: a4f5b074984cf612e4c97d68b42be690c59e2638
-  RNFBAppCheck: 6eec0ff0d6be7a2425e62017ceb89887f6f833df
-  RNFBAuth: bd014d486a51b5414b642dd155763c5873a2b3e4
-  RNFBDatabase: b075843423e2f03b19a8b77c3a861223868ccbeb
-  RNFBFirestore: 2ed2073fc9c4d8951f267d1cbadc3b384e948141
-  RNFBStorage: 4d29b7d52745f914fd52d450187265a579579973
+  RNCAsyncStorage: 826b603ae9c0f88b5ac4e956801f755109fa4d5c
+  RNCPicker: b840eb7fb541abe95e6f0a2ef12ac0a4404ac92d
+  RNDateTimePicker: 7b38b71bcd7c4cfa1cb95f2dff9a4f1faed2dced
+  RNDeviceInfo: 4f9c7cfd6b9db1b05eb919620a001cf35b536423
+  RNFBAnalytics: ec290267aac57446c10b491293373ac86357f575
+  RNFBApp: 9b25191f7a5e72c185b7e43fffb0d906869c4659
+  RNFBAppCheck: 6d0dfc762c54c909116d3748cbeacba883047ff5
+  RNFBAuth: 95acca18353778903885b2b25c25ddb81c050fed
+  RNFBDatabase: 6b50caffbfcc0a45b5d4529b3ed748908fd702d2
+  RNFBFirestore: be3b76650231721bad4e9b28bf3a09a3ce62f8bb
+  RNFBStorage: ebf84836d1e919f1fd3fa8d53178e47ca35f186b
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: 16090ce1d186c348fb0595e03442843fa3b91565
+  RNGestureHandler: 6a0bca5c5b2fb62211e9a75d5f4ed877817c4412
   RNGoogleSignin: fc408799f1990a12497a32f64280c0fe353ffcc1
-  RNImageCropPicker: d9616a0cb9b72e8551ff94a7a5021fbd29050aa5
+  RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNLocalize: 4222a3756cdbe2dc9a5bdf445765a4d2572107cb
   RNPermissions: c4bcc8899cc03f5fab761813116d36e505259a5a
-  RNReanimated: 6cbeb21f7def739dd4eabc2bae634a2ff2539802
+  RNReanimated: 87c5d25efb8f4b122e16e992b6f1bfbb2a9bbab3
   RNScreens: 1c2444658fbb696a094272d946708167b1f63409
-  RNSentry: ed42b1443bef1fec1fc9273b5193a79b0cab1a01
+  RNSentry: 5381e9284aec59a546e4a7d40e33ad0839b99c1e
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   RNVectorIcons: 6731bd488db95f4197433b30d81d03dc228b367e
-  Sentry: d9f99f9cc13777c5d938650c1e1c85047bb4f0d1
-  SentryPrivate: 839b1e58addf58624087a80b2628e543193fa8ef
+  Sentry: ebc12276bd17613a114ab359074096b6b3725203
+  SentryPrivate: d651efb234cf385ec9a1cdd3eff94b5e78a0e0fe
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603

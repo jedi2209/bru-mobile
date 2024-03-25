@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, View, StyleSheet, Dimensions} from 'react-native';
 import {
   Button,
@@ -16,7 +16,6 @@ import Wrapper from '@comp/Wrapper';
 
 import {deviceManager} from '@utils/device';
 
-import {get} from 'lodash';
 import {colors, basicStyles} from '../../core/const/style';
 import BruMachine from './components/BruMachine';
 
@@ -28,6 +27,8 @@ import CommonSettings from './components/CommonSettings';
 import {useTranslation} from 'react-i18next';
 import {$langSettingsStore} from '../../core/store/lang';
 import useBle from '../../hooks/useBlePlx';
+import {getFileURL, getFirmwareData} from '../../utils/firmware';
+import {$connectedDevice} from '../../core/store/connectedDevice';
 
 // import {DEVICE_MANAGER_CONFIG} from '@const';
 // const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
@@ -94,14 +95,44 @@ const SettingsScreen = props => {
   const {navigation} = props;
   const toast = useToast();
   const {t} = useTranslation();
+  const currentDevice = useStore($connectedDevice);
+  const [filePath, setFilePath] = useState('');
+  const [fileName, setFileName] = useState('');
   const {
-    allDevices,
-    connectedDevice,
+    readValue,
     cancelCommand,
     connectToDevice,
     scanForPeripherals,
     requestBluetoothPermission,
   } = useBle();
+
+  useEffect(() => {
+    async function getFirmware() {
+      const currentFirmware = await readValue('firmwareRevision');
+      console.log(currentFirmware);
+      const data = await getFirmwareData();
+      const availableFirmware = data.find(
+        firmwareData => firmwareData.testAvailable,
+      );
+      if (!currentFirmware) {
+        return;
+      }
+      if (!availableFirmware) {
+        return;
+      }
+
+      const file = await getFileURL('firmware/' + availableFirmware.file);
+      setFilePath(file);
+      setFileName(availableFirmware.name);
+      // setFileName(availableFirmware)
+      if (availableFirmware.name !== currentFirmware) {
+        console.log('Need update');
+        setIsConfirmModalOpen(true);
+      }
+    }
+    getFirmware();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (
@@ -116,21 +147,25 @@ const SettingsScreen = props => {
   }
 
   const _onPressUpdate = () => {
-    navigation.navigate('UpdateFirmwareScreen', {device: deviceManager.device});
+    navigation.navigate('UpdateFirmwareScreen', {
+      device: deviceManager.device,
+      fileName,
+      filePath,
+    });
   };
-  console.log(connectedDevice);
+
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
         {t('Settings.Title')}
       </Text>
       <View>
-        {connectedDevice ? (
+        {currentDevice ? (
           <>
             <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
               {t('Settings.ConnectedMachines')}
             </Text>
-            <BruMachine item={connectedDevice} />
+            <BruMachine item={currentDevice} />
           </>
         ) : null}
       </View>
@@ -145,7 +180,7 @@ const SettingsScreen = props => {
       </Button>
       <Button
         onPress={() => {
-          if (!devices.length) {
+          if (!currentDevice) {
             toast.show({
               placement: 'top',
               duration: 5000,
@@ -190,7 +225,7 @@ const SettingsScreen = props => {
 
       <ConfirmationModal
         onConfirm={() => {
-          navigation.navigate('DownloadingUpdate');
+          navigation.navigate('UpdateFirmwareScreen', {file: filePath});
           setIsConfirmModalOpen(false);
         }}
         opened={isConfirmModalOpen}

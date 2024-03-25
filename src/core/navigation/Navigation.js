@@ -5,7 +5,7 @@ import {
   NavigationBottom as NavBottom,
   headerTitle,
 } from '@nav/NavigationBottom';
-import UpdateFirmwareScreen from '@screens/settings/updateFirmware';
+
 import UpdateFirmwareProgressScreen from '@screens/settings/updateFirmwareProgress';
 import {default as CustomHeader} from '../components/Header';
 import UpdateScreen from '../../screens/downloadingUpdate';
@@ -13,6 +13,7 @@ import AuthorizationScreen from '../../screens/authorization';
 import {useStore} from 'effector-react';
 import {$userStore} from '../store/user';
 import ConnectDeviceScreen from '../../screens/settings/ConnectDevice';
+import {UpdateFirmwareScreen} from '../../screens/settings/UpdateFirmwareScreen';
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
   const user = useStore($userStore);

@@ -8,6 +8,7 @@ import {
 } from '../core/store/connectedDevice';
 import {useStore} from 'effector-react';
 import base64 from 'react-native-base64';
+import {DFUEmitter, NordicDFU} from 'react-native-nordic-dfu';
 const Buffer = require('buffer/').Buffer;
 
 const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
@@ -60,17 +61,14 @@ const deviceInfo = {
   OTAMode: 0x27,
 };
 
+const isAndroid = Platform.OS === 'android';
+
 const useBle = () => {
   const manager = useMemo(() => new BleManager(), []);
 
   const [allDevices, setAllDevices] = useState([]);
-  const [connectedDevice, setConnectedDevice] = useState(null);
   const [deviceDFU, setDeviceDFU] = useState(null);
   const current = useStore($connectedDevice);
-
-  useEffect(() => {
-    setConnectedDevice(current);
-  }, [current]);
 
   const requestBluetoothPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -136,19 +134,6 @@ const useBle = () => {
     });
   };
 
-  const scanDFU = () => {
-    manager.startDeviceScan(null, null, (error, device) => {
-      if (error) {
-        console.log(error);
-      }
-      if (device && device.name === 'BRU_U') {
-        setDeviceDFU(device);
-        manager.stopDeviceScan();
-        return device;
-      }
-    });
-  };
-
   const connectToDevice = async device => {
     try {
       const deviceConnection = await manager.connectToDevice(device.id);
@@ -161,81 +146,73 @@ const useBle = () => {
   };
 
   const disconnectFromDevice = async () => {
-    if (connectedDevice) {
-      try {
-        // await connectToDevice(connectedDevice);
-        manager.cancelDeviceConnection(connectedDevice.id);
-        await resetDevice();
-      } catch (error) {
-        console.log(error.reason);
+    try {
+      const isConnected = await manager.isDeviceConnected(current.id);
+      if (!isConnected) {
+        await connectToDevice(current);
       }
+      manager.cancelDeviceConnection(current.id);
+      await resetDevice();
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const writeValueWithResponse = async command => {
-    console.log(current);
-
-    if (!connectedDevice) {
-      console.log('No connected device');
-      return;
-    }
     try {
-      // await connectToDevice(connectedDevice);
-      const encoded = new Buffer(command).toString('base64');
-      await manager.writeCharacteristicWithResponseForDevice(
-        connectedDevice.id,
-        mainUUID,
-        writeUUID,
-        encoded,
-      );
-    } catch (error) {
-      console.log(error);
+      const isConnected = await manager.isDeviceConnected(current.id);
+      console.log(isConnected);
+      if (!isConnected) {
+        await connectToDevice(current);
+      }
       try {
-        await connectToDevice(connectedDevice);
+        // await connectToDevice(connectedDevice);
         const encoded = new Buffer(command).toString('base64');
         await manager.writeCharacteristicWithResponseForDevice(
-          connectedDevice.id,
+          current.id,
           mainUUID,
           writeUUID,
           encoded,
         );
-      } catch (err) {
-        console.log(err);
+      } catch (error) {
+        console.log(error, 'write');
       }
+    } catch (error) {
+      console.log(error, 'write not connected');
     }
   };
 
   const readValue = async characteristic => {
-    if (!connectedDevice) {
-      console.log('No connected device');
-      return;
-    }
     try {
-      await connectToDevice(connectedDevice);
+      const isConnected = await manager.isDeviceConnected(current.id);
+      if (!isConnected) {
+        await connectToDevice(current);
+      }
+
       const data = await manager.readCharacteristicForDevice(
-        connectedDevice.id,
+        current.id,
         deviceInfo[characteristic].service, // В нашем случае 180A
         deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
       );
 
       return base64.decode(data.value);
     } catch (error) {
-      console.log(error);
+      console.log(error, 'read error');
     }
   };
 
   const cancelCommand = async () => {
-    console.log(connectedDevice.id);
-    if (!connectedDevice) {
+    console.log(current.id);
+    if (!current) {
       console.log('No connected device');
       return;
     }
     try {
-      await connectToDevice(connectedDevice);
+      await connectToDevice(current);
       const command = [255, 4, 66, 129];
       const encoded = new Buffer(command).toString('base64');
       const res = await manager.writeCharacteristicWithResponseForDevice(
-        connectedDevice.id,
+        current.id,
         mainUUID,
         writeUUID,
         encoded,
@@ -250,13 +227,51 @@ const useBle = () => {
     setAllDevices([]);
   };
 
+  const scanDFU = () => {
+    manager.startDeviceScan(null, null, (error, device) => {
+      if (error) {
+        console.log(error);
+      }
+      if (device && device.name === 'BRU_U') {
+        setDeviceDFU(device);
+        manager.stopDeviceScan();
+        return device;
+      }
+    });
+  };
+
+  const connectToDFU = async device => {
+    try {
+      const deviceConnection = await manager.connectToDevice(device.id);
+      await deviceConnection.discoverAllServicesAndCharacteristics();
+      manager.stopDeviceScan();
+    } catch (error) {
+      console.log(error.reason);
+    }
+  };
+
+  const startDFU = async fileDownloaded => {
+    let connectedParams = {
+      filePath: isAndroid ? fileDownloaded : 'file://' + fileDownloaded,
+      alternativeAdvertisingNameEnabled: false,
+      deviceAddress: deviceDFU.id,
+      retries: 3,
+    };
+    const res = await NordicDFU.startDFU(connectedParams);
+    DFUEmitter.removeAllListeners('DFUStateChanged');
+    DFUEmitter.removeAllListeners('DFUProgress');
+    return res;
+  };
+
   return {
     manager,
+    deviceDFU,
     allDevices,
-    connectedDevice,
     scanDFU,
+    startDFU,
     readValue,
     clearScans,
+    connectToDFU,
     cancelCommand,
     connectToDevice,
     scanForPeripherals,
