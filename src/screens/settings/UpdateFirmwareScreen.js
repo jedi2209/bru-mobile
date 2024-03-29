@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
 import {useStore} from 'effector-react';
 import {$connectedDevice} from '../../core/store/connectedDevice';
@@ -16,18 +16,49 @@ import {Alert, StyleSheet, Text, View} from 'react-native';
 import {downloadFile, getFileURL, getFirmwareData} from '../../utils/firmware';
 import {DFUEmitter} from 'react-native-nordic-dfu';
 import {getCommand} from '../../utils/commands';
+import {useFocusEffect} from '@react-navigation/native';
+import {sleep} from '../../utils/device';
+
+const _renderProgressBar = value => {
+  return (
+    <Progress value={value} size="md">
+      <ProgressFilledTrack bg="$primary500" />
+    </Progress>
+  );
+};
+
+const getStatus = status => {
+  switch (status) {
+    case 'start':
+      return 'Downloading BRU firmware';
+    case 'final':
+      return 'We succesfully update your firmware';
+    case 'error':
+      return 'Some error occured during firmware instalation please try again later';
+    case 'updating':
+      return 'Updating firmware...';
+    default:
+      break;
+  }
+};
 
 export const UpdateFirmwareScreen = props => {
   const {fileName, filePath} = props.route.params;
   const [progress, setProgress] = useState(0);
   const [isDownloading, setDownloading] = useState(false);
-  const [updateStatus, setUpdateStatus] = useState(false);
+  const [updateStatus, setUpdateStatus] = useState('start');
   const [needUpdate, setNeedUpdate] = useState(false);
 
   const currentDevice = useStore($connectedDevice);
   const toast = useToast();
-  const {writeValueWithResponse, deviceDFU, scanDFU, connectToDFU, startDFU} =
-    useBle();
+  const {
+    scanDFU,
+    startDFU,
+    connectToDFU,
+    setDeviceDFU,
+    writeValueWithResponse,
+    deviceDFU,
+  } = useBle();
 
   useEffect(() => {
     async function start() {
@@ -52,10 +83,26 @@ export const UpdateFirmwareScreen = props => {
 
   const updateFirmware = async () => {
     try {
+      let file;
+      let nameOfFile;
+      if (!filePath || !fileName) {
+        const data = await getFirmwareData();
+        const availableFirmware = data.find(
+          firmwareData => firmwareData.testAvailable,
+        );
+        file = await getFileURL('firmware/' + availableFirmware.file);
+        nameOfFile = availableFirmware.file;
+      }
       await connectToDFU(deviceDFU);
-      const fileDownloaded = await downloadFile(filePath, fileName);
+      console.log(filePath, 'filePath');
+      console.log(fileName, 'fileName');
+      const fileDownloaded = await downloadFile(
+        filePath || file,
+        fileName || nameOfFile,
+      );
+      console.log(fileDownloaded);
       if (!fileDownloaded) {
-        console.log('No file downloaded');
+        Alert.alert("Can't download file");
         return;
       }
       DFUEmitter.addListener(
@@ -72,30 +119,6 @@ export const UpdateFirmwareScreen = props => {
             setUpdateStatus('updating');
             break;
           case 'DEVICE_DISCONNECTING':
-            console.info('DFUEmitter listener => DEVICE_DISCONNECTING');
-            toast.show({
-              placement: 'top',
-              duration: 5000,
-              render: () => {
-                return (
-                  <Toast
-                    id={'dfuSuccessToast'}
-                    action="success"
-                    variant="accent">
-                    <VStack space="lg">
-                      <ToastTitle>✅ Update is complete!</ToastTitle>
-                      <ToastDescription>
-                        Update is complete. Please wait a few seconds for BRU to
-                        reboot.
-                      </ToastDescription>
-                    </VStack>
-                  </Toast>
-                );
-              },
-              onCloseComplete: () => {
-                setUpdateStatus('finish');
-              },
-            });
             setUpdateStatus('finish');
             setProgress(0);
             break;
@@ -106,26 +129,45 @@ export const UpdateFirmwareScreen = props => {
         console.info('statusDFU Success!', statusDFU);
         setUpdateStatus('finish');
         setProgress(0);
+        sleep(1000);
+        toast.show({
+          placement: 'top',
+          duration: 3000,
+          render: () => {
+            return (
+              <Toast id={'dfuSuccessToast'} action="success" variant="accent">
+                <VStack space="lg">
+                  <ToastTitle>✅ Update is complete!</ToastTitle>
+                  <ToastDescription>
+                    Update is complete. Please wait a few seconds for BRU to
+                    reboot.
+                  </ToastDescription>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+        setDeviceDFU(null);
       } else {
         console.error('statusDFU error', statusDFU);
         setUpdateStatus('error');
         setProgress(0);
       }
+      props.navigation.navigate('Settings');
     } catch (error) {
-      console.log(error);
+      console.log(error, 'DFU ERROR UPDATESCREEN');
+      Alert.alert(error.message);
     }
   };
 
   return (
     <Wrapper {...props} style={s.wrapper}>
       <View style={s.container}>
-        <Text style={s.mainText}>Downloading BRU firmware</Text>
-        <Progress value={parseInt(progress, 10)} size="md">
-          <ProgressFilledTrack bg="$" />
-        </Progress>
+        <Text style={s.mainText}>{getStatus(updateStatus)}</Text>
+        {_renderProgressBar(parseInt(progress, 10))}
         <Text style={s.secondaryText}>
           Please do not disconnect your BRU machine from power until the
-          firmware updated. {progress}
+          firmware updated.
         </Text>
       </View>
     </Wrapper>

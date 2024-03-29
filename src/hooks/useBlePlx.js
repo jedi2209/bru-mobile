@@ -1,4 +1,4 @@
-import {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {BleManager} from 'react-native-ble-plx';
 import {
@@ -9,6 +9,13 @@ import {
 import {useStore} from 'effector-react';
 import base64 from 'react-native-base64';
 import {DFUEmitter, NordicDFU} from 'react-native-nordic-dfu';
+import {
+  Toast,
+  ToastDescription,
+  ToastTitle,
+  useToast,
+  VStack,
+} from '@gluestack-ui/themed';
 const Buffer = require('buffer/').Buffer;
 
 const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
@@ -63,12 +70,12 @@ const deviceInfo = {
 
 const isAndroid = Platform.OS === 'android';
 
+const manager = new BleManager();
 const useBle = () => {
-  const manager = useMemo(() => new BleManager(), []);
-
   const [allDevices, setAllDevices] = useState([]);
   const [deviceDFU, setDeviceDFU] = useState(null);
   const current = useStore($connectedDevice);
+  const toast = useToast();
 
   const requestBluetoothPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -107,8 +114,6 @@ const useBle = () => {
       }
     }
 
-    this.showErrorToast('Permission have not been granted');
-
     return false;
   };
 
@@ -141,7 +146,7 @@ const useBle = () => {
       await deviceConnection.discoverAllServicesAndCharacteristics();
       manager.stopDeviceScan();
     } catch (error) {
-      console.log(error.reason);
+      console.log(error);
     }
   };
 
@@ -151,33 +156,72 @@ const useBle = () => {
       if (!isConnected) {
         await connectToDevice(current);
       }
-      manager.cancelDeviceConnection(current.id);
+      await manager.cancelDeviceConnection(current.id);
+      // manager.destroy();
       await resetDevice();
     } catch (error) {
-      console.log(error);
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: () => {
+          return (
+            <Toast action="error" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>{error.message}</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     }
   };
 
   const writeValueWithResponse = async command => {
     try {
+      if (!current) {
+        throw new Error('Please connect to device before sending command');
+      }
+      console.log(current.id);
       const isConnected = await manager.isDeviceConnected(current.id);
       console.log(isConnected);
       if (!isConnected) {
         await connectToDevice(current);
       }
-      try {
-        // await connectToDevice(connectedDevice);
-        const encoded = new Buffer(command).toString('base64');
-        await manager.writeCharacteristicWithResponseForDevice(
-          current.id,
-          mainUUID,
-          writeUUID,
-          encoded,
-        );
-      } catch (error) {
-        console.log(error, 'write');
-      }
+
+      const encoded = new Buffer(command).toString('base64');
+      await manager.writeCharacteristicWithResponseForDevice(
+        current.id,
+        mainUUID,
+        writeUUID,
+        encoded,
+      );
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: () => {
+          return (
+            <Toast id={'dfuSuccessToast'} action="success" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>✅ Command send</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     } catch (error) {
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: () => {
+          return (
+            <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>{error.message}</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
       console.log(error, 'write not connected');
     }
   };
@@ -246,7 +290,7 @@ const useBle = () => {
       await deviceConnection.discoverAllServicesAndCharacteristics();
       manager.stopDeviceScan();
     } catch (error) {
-      console.log(error.reason);
+      console.log(error);
     }
   };
 
@@ -263,6 +307,49 @@ const useBle = () => {
     return res;
   };
 
+  const checkConnection = async () => {
+    if (!current || !current?.id) {
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: () => {
+          return (
+            <Toast action="info" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>Not current</ToastTitle>
+                <ToastDescription>
+                  {JSON.stringify(current)}
+                  {current?.id}
+                </ToastDescription>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
+      return false;
+    }
+    const isConnected = await manager.isDeviceConnected(current.id);
+    // toast.show({
+    //   placement: 'top',
+    //   duration: 3000,
+    //   render: () => {
+    //     return (
+    //       <Toast action="error" variant="accent">
+    //         <VStack space="lg">
+    //           <ToastTitle>isConnected {isConnected}</ToastTitle>
+    //         </VStack>
+    //       </Toast>
+    //     );
+    //   },
+    // });
+    console.log(isConnected);
+    return isConnected;
+  };
+
+  const stopDeviceScan = () => {
+    manager.stopDeviceScan();
+  };
+
   return {
     manager,
     deviceDFU,
@@ -271,8 +358,11 @@ const useBle = () => {
     startDFU,
     readValue,
     clearScans,
+    setDeviceDFU,
     connectToDFU,
     cancelCommand,
+    stopDeviceScan,
+    checkConnection,
     connectToDevice,
     scanForPeripherals,
     writeValueWithResponse,

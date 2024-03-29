@@ -14,7 +14,7 @@
     {
       "id": "231007",
       "available": false,
-      "testAvailable": true,
+      "testAvailable": false,
       "name": "040324-1",
       "description": {
         "en": "040324",
@@ -25,7 +25,7 @@
     {
       "id": "231008",
       "available": true,
-      "testAvailable": false,
+      "testAvailable": true,
       "name": "BRUMP_M2_271223",
       "description": {
         "en": "The latest version",

@@ -75,8 +75,8 @@ const StepItem = ({step, setStep, navigation}) => {
     connectToDevice,
     requestBluetoothPermission,
     scanForPeripherals,
+    stopDeviceScan,
     allDevices,
-    manager,
   } = useBle();
   const [isScanning, setIsScanning] = useState(false);
 
@@ -170,6 +170,7 @@ const StepItem = ({step, setStep, navigation}) => {
               />
             ) : null}
             <Button
+              disabled={isScanning}
               style={styles.buttonBottom}
               variant={'solid'}
               action={'primary'}
@@ -183,9 +184,15 @@ const StepItem = ({step, setStep, navigation}) => {
                 }
                 setTimeout(() => {
                   if (!allDevices.length) {
-                    setIsScanning(false);
-                    manager.stopDeviceScan();
-                    console.log('No devices found');
+                    stopDeviceScan();
+                    scanForPeripherals();
+                    setTimeout(() => {
+                      if (!allDevices.length) {
+                        setIsScanning(false);
+                        stopDeviceScan();
+                        console.log('No devices found');
+                      }
+                    }, 10000);
                   }
                 }, 10000);
               }}>
@@ -257,24 +264,27 @@ const StepItem = ({step, setStep, navigation}) => {
 const ConnectDeviceScreen = props => {
   const [step, setStep] = useState(1);
   const {requestBluetoothPermission, clearScans} = useBle();
-  console.log(props);
+
   useEffect(() => {
     clearScans();
+    initStep();
     async function initStep() {
       const bluetoothStatus = await BluetoothStateManager.getState();
       const isEnabled = bluetoothStatus === 'PoweredOn';
+      console.log(isEnabled, 'isEnabledisEnabledisEnabled');
       if (!isEnabled) {
         setStep(1);
         return;
       }
+      setStep(3);
       const isPermitted = await requestBluetoothPermission();
+      console.log(isPermitted, 'isPermittedisPermittedisPermitted');
       if (!isPermitted) {
-        setStep(3);
         return;
       }
       setStep(4);
     }
-    initStep();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

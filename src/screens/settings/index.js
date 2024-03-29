@@ -101,6 +101,7 @@ const SettingsScreen = props => {
   const {
     readValue,
     cancelCommand,
+    checkConnection,
     connectToDevice,
     scanForPeripherals,
     requestBluetoothPermission,
@@ -114,6 +115,7 @@ const SettingsScreen = props => {
       const availableFirmware = data.find(
         firmwareData => firmwareData.testAvailable,
       );
+
       if (!currentFirmware) {
         return;
       }
@@ -123,7 +125,7 @@ const SettingsScreen = props => {
 
       const file = await getFileURL('firmware/' + availableFirmware.file);
       setFilePath(file);
-      setFileName(availableFirmware.name);
+      setFileName(availableFirmware.file);
       // setFileName(availableFirmware)
       if (availableFirmware.name !== currentFirmware) {
         console.log('Need update');
@@ -179,30 +181,39 @@ const SettingsScreen = props => {
         </ButtonText>
       </Button>
       <Button
-        onPress={() => {
-          if (!currentDevice) {
-            toast.show({
-              placement: 'top',
-              duration: 5000,
-              render: () => {
-                return (
-                  <Toast
-                    id={'noPermissionsToast'}
-                    action="error"
-                    variant="accent">
-                    <VStack space="lg">
-                      <ToastTitle fontSize={'$md'}>
-                        {t('Settings.BluetoothConnectionError')}
-                      </ToastTitle>
-                    </VStack>
-                  </Toast>
-                );
-              },
-              onCloseComplete: () => {},
-            });
-            return;
+        onPress={async () => {
+          const isConnected = await checkConnection();
+          console.log(isConnected);
+          if (!isConnected) {
+            try {
+              await connectToDevice(currentDevice.id);
+              _onPressUpdate();
+              t;
+            } catch (error) {
+              toast.show({
+                placement: 'top',
+                duration: 5000,
+                render: () => {
+                  return (
+                    <Toast
+                      id={'noPermissionsToast'}
+                      action="error"
+                      variant="accent">
+                      <VStack space="lg">
+                        <ToastTitle fontSize={'$md'}>
+                          {t('Settings.BluetoothConnectionError')}
+                        </ToastTitle>
+                      </VStack>
+                    </Toast>
+                  );
+                },
+                onCloseComplete: () => {},
+              });
+              return;
+            }
+          } else {
+            _onPressUpdate();
           }
-          _onPressUpdate();
         }}
         size="lg"
         variant={'primary'}

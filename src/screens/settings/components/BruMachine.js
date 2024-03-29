@@ -99,9 +99,7 @@ const BruMachine = ({item}) => {
                 {
                   text: 'Unpair',
                   style: 'destructive',
-                  onPress: async () => {
-                    await disconnectFromDevice();
-                  },
+                  onPress: disconnectFromDevice,
                 },
               ],
             );

@@ -12,7 +12,7 @@ export const setDevice = createEffect(async device => {
   return device;
 });
 export const resetDevice = createEffect(async () => {
-  await AsyncStorage.setItem(storeName, null);
+  await AsyncStorage.removeItem(storeName);
 });
 
 export const $connectedDevice = createStore(null)

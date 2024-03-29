@@ -11,9 +11,11 @@ import {useStore} from 'effector-react';
 import {$themeStore} from '../store/theme';
 import {deleteTeaAlarmFx} from '../store/teaAlarms';
 import PlayIcon from './icons/PlayIcon';
-import {deviceManager, setTeaAlarmCommand, sleep} from '../../utils/device';
+
 import {useTranslation} from 'react-i18next';
 import {$langSettingsStore} from '../store/lang';
+import useBle from '../../hooks/useBlePlx';
+import {setTeaAlarmCommand} from '../../utils/commands';
 
 const s = StyleSheet.create({
   container: {
@@ -82,6 +84,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
   const {t} = useTranslation();
   const navigation = useNavigation();
   const lang = useStore($langSettingsStore);
+  const {writeValueWithResponse} = useBle();
 
   return (
     <View style={[s.container, theme === 'dark' && s.darkContainer]}>
@@ -135,15 +138,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
                 prepare_by.hours,
                 prepare_by.minutes,
               );
-
-              await deviceManager
-                .writeValueAndNotify(command)
-                .then(async () => {
-                  await sleep(2000);
-                })
-                .catch(err => {
-                  console.error('Start Brewing error', err);
-                });
+              await writeValueWithResponse(command);
             }}>
             <PlayIcon />
           </TouchableOpacity>
