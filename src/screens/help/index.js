@@ -1,4 +1,5 @@
 import React, {
+  Linking,
   StyleSheet,
   Text,
   TextInput,
@@ -10,12 +11,13 @@ import {basicStyles, colors} from '../../core/const/style';
 import Collapsible from 'react-native-collapsible';
 import {useState} from 'react';
 import DownArrowIcon from '../../core/components/icons/DownArrowIcon';
-import PlayIcon from '../../core/components/icons/PlayIcon';
+// import PlayIcon from '../../core/components/icons/PlayIcon';
 import LinearGradient from 'react-native-linear-gradient';
 import NotificationModal from '../../core/components/NotificationModal';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import {useTranslation} from 'react-i18next';
+import qs from 'qs';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -88,6 +90,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 15,
     height: 150,
     paddingTop: 15,
+    color: 'black',
   },
   attachPhoto: {
     position: 'absolute',
@@ -112,6 +115,7 @@ const HelpScreen = props => {
   const [collapsed, setCollapsed] = useState(0);
   const [modalOpened, setModalOpened] = useState(false);
   const {t} = useTranslation();
+  const [message, setMessage] = useState('');
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -223,13 +227,18 @@ const HelpScreen = props => {
               placeholder={t('Help.contactPlaceholder')}
               multiline={true}
               numberOfLines={10}
+              onChangeText={text => setMessage(text)}
             />
             {/* <TouchableOpacity>
               <Text style={s.attachPhoto}>Attach photo</Text>
             </TouchableOpacity> */}
           </View>
           <View style={basicStyles.rowBetween}>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setCollapsed(0);
+                setMessage('');
+              }}>
               <Text
                 style={[
                   basicStyles.textButton,
@@ -239,7 +248,13 @@ const HelpScreen = props => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setModalOpened(true)}
+              onPress={() => {
+                const query = qs.stringify({
+                  subject: 'Need help',
+                  body: message,
+                });
+                Linking.openURL(`mailto:bk@bru-tea.com?${query}`);
+              }}
               style={s.button}>
               <Text style={basicStyles.backgroundButtonText}>
                 {t('Help.send')}

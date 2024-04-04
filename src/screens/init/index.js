@@ -6,12 +6,17 @@ import {Text} from 'react-native';
 import Logo from '../../core/components/icons/Logo';
 import {anonymousSignIn} from '../../utils/auth';
 import {addInitPressets} from '../../utils/db/pressets';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const InitializeScreen = () => {
   useEffect(() => {
     async function signIn() {
       await anonymousSignIn();
-      await addInitPressets();
+      const isInitDone = AsyncStorage.getItem('isInitDone');
+      if (!isInitDone) {
+        await addInitPressets();
+      }
+      await AsyncStorage.setItem('isInitDone', true);
     }
     signIn();
   }, []);

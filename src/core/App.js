@@ -111,7 +111,7 @@ const App = props => {
     setTimeout(() => {
       SplashScreen.hide();
     }, 550);
-    _appCheckInit();
+    // _appCheckInit();
     analyticsLog('app_init', {os: Platform.OS, version: Platform.Version});
     fetchFirmwareMeta();
   }, []);

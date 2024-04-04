@@ -74,7 +74,7 @@ export const NavigationBottom = props => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="TeaAlarm"
         component={TeaAlarmScreen}
         initialParams={{scroll: true}}
@@ -89,7 +89,7 @@ export const NavigationBottom = props => {
             />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Presets"
         component={PresetsScreen}
@@ -153,7 +153,7 @@ export const NavigationBottom = props => {
           },
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="NewTeaAlarm"
         component={NewTeaAlarmScreen}
         initialParams={{scroll: true}}
@@ -163,7 +163,7 @@ export const NavigationBottom = props => {
             display: 'none',
           },
         }}
-      />
+      /> */}
       <Tab.Screen
         name="Brewing"
         component={BrewingScreen}

@@ -27,6 +27,8 @@ const getStatus = status => {
   switch (status) {
     case 'start':
       return 'Downloading BRU firmware';
+    case 'connecting':
+      return 'Connecting to the device';
     case 'final':
       return 'We succesfully update your firmware';
     case 'error':
@@ -42,6 +44,7 @@ export const UpdateFirmwareScreen = props => {
   const {fileName, filePath} = props.route.params;
   const [progress, setProgress] = useState(0);
   const [updateStatus, setUpdateStatus] = useState('start');
+  const [downloadedFile, setDownloadedFile] = useState(null);
 
   const toast = useToast();
   const {
@@ -55,8 +58,26 @@ export const UpdateFirmwareScreen = props => {
 
   useEffect(() => {
     async function start() {
+      let file;
+      let nameOfFile;
+      if (!filePath || !fileName) {
+        const data = await getFirmwareData();
+        const availableFirmware = data.find(
+          firmwareData => firmwareData.testAvailable,
+        );
+        file = await getFileURL('firmware/' + availableFirmware.file);
+        nameOfFile = availableFirmware.file;
+      }
+      console.log('downloading file');
+      const fileDownloaded = await downloadFile(
+        filePath || file,
+        fileName || nameOfFile,
+      );
+      console.log('downloaded file');
+      setDownloadedFile(fileDownloaded);
       const command = getCommand(0x27, [], 4);
       await writeValueWithResponse(command);
+      setUpdateStatus('connecting');
       scanDFU();
     }
     start();
@@ -76,24 +97,9 @@ export const UpdateFirmwareScreen = props => {
 
   const updateFirmware = async () => {
     try {
-      let file;
-      let nameOfFile;
-      if (!filePath || !fileName) {
-        const data = await getFirmwareData();
-        const availableFirmware = data.find(
-          firmwareData => firmwareData.testAvailable,
-        );
-        file = await getFileURL('firmware/' + availableFirmware.file);
-        nameOfFile = availableFirmware.file;
-      }
       await connectToDFU(deviceDFU);
 
-      const fileDownloaded = await downloadFile(
-        filePath || file,
-        fileName || nameOfFile,
-      );
-
-      if (!fileDownloaded) {
+      if (!downloadedFile) {
         Alert.alert("Can't download file");
         return;
       }
@@ -116,7 +122,7 @@ export const UpdateFirmwareScreen = props => {
             break;
         }
       });
-      const statusDFU = await startDFU(fileDownloaded);
+      const statusDFU = await startDFU(downloadedFile);
       if (statusDFU) {
         console.info('statusDFU Success!', statusDFU);
         setUpdateStatus('finish');
