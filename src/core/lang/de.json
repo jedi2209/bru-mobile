@@ -21,7 +21,11 @@
     "Later": "Später",
     "YouWillBeAble": "Sie können neue Voreinstellungen später in",
     "page": "seite",
-    "DontShowAgain": "Nicht mehr zeigen"
+    "DontShowAgain": "Nicht mehr zeigen",
+    "No": "Nein",
+    "Yes": "Ja",
+    "NoDeviceDesc": "Es ist kein Gerät angeschlossen, möchten Sie eine Verbindung herstellen?",
+    "NoDeviceTitle": "Kein angeschlossenes Gerät"
   },
   "TeaAlarm": {
     "Title": "Teealarm",
@@ -50,7 +54,11 @@
     "Dark": "Dunkelheit",
     "Light": "Licht",
     "BluetoothConnectionError": "Um die Firmware zu aktualisieren, müssen Sie eine Verbindung mit dem Gerät herstellen",
-    "ChangeLanguage": "Sprache ändern"
+    "ChangeLanguage": "Sprache ändern",
+    "No": "Nein",
+    "Confirm": "Bestätigen Sie",
+    "FirmwareUpdate": "Aktualisierung der Firmware",
+    "BruAppWillDownload": "Die BRU-App wird die neueste Firmware auf Ihr BRU-Gerät herunterladen und installieren. Bitte stellen Sie sicher, dass Sie mit Wi-Fi verbunden sind, um zusätzliche Kosten zu vermeiden."
   },
   "StoreModal": {
     "Title": "BRÜ Store",
@@ -67,5 +75,78 @@
     "PleaseEnterEmail": "Bitte geben Sie Ihre E-Mail ein",
     "PleaseEnterPassword": "Bitte geben Sie Ihr Passwort ein",
     "Save": "Speichern"
+  },
+  "Toast": {
+    "success": {
+      "sendCommand": "✅ Befehl senden!",
+      "connection": "✅ Erfolgreich mit dem Gerät verbunden"
+    },
+    "error": {
+      "sendCommand": "❌ Beim Senden des Befehls ist etwas passiert. Bitte versuchen Sie es erneut!",
+      "connection": "❌ Beim Senden des Befehls ist etwas passiert. Bitte versuchen Sie es erneut!",
+      "disconnect": "❌ Beim Senden des Befehls ist etwas passiert. Bitte versuchen Sie es erneut!",
+      "read": "❌ Beim Senden des Befehls ist etwas passiert. Bitte versuchen Sie es erneut!",
+      "pleaseConnect": "Bitte verbinden Sie sich mit dem Gerät, bevor Sie den Befehl senden",
+      "noConnectedDevice": "Es ist kein Gerät angeschlossen. Bitte stellen Sie eine Verbindung zum Gerät her und versuchen Sie es erneut."
+    }
+  },
+  "Connection": {
+    "step1": {
+      "header": "Aktivieren Sie Bluetooth auf Ihrem Handy",
+      "text": "Diese APP benötigt Zugang zu Bluetooth, um mit der BRU suchen und kommunizieren zu können."
+    },
+    "step2": {
+      "header": "Ooops...",
+      "text": "Wir benötigen Zugriff auf das Bluetooth Ihres Telefons, um mit BRU suchen und kommunizieren zu können.\r\n"
+    },
+    "step3": {
+      "header": "Bluetooth und Standortzugriff erforderlich",
+      "text": "Bluetooth und Standortberechtigungen sind erforderlich, um Ihr BRU-Gerät in der Nähe zu finden und zu steuern, auch wenn die App nicht verwendet wird.\r\nOhne Zugriff funktionieren die Dinge möglicherweise nicht wie erwartet."
+    },
+    "step4": {
+      "header": "Aktivieren Sie Bluetooth auf der BRU",
+      "text": "Bitte aktivieren Sie Bluetooth auf dem BRU-Gerät.\r\n\r\nUm dies zu tun, gehen Sie zu Machine Setup => 'Bluetooth' -> 'On'"
+    },
+    "step5": {
+      "header": "Suche nach BRU Machine"
+    },
+    "step6": {
+      "header": "Bereit zum Pairing",
+      "text": "Cool! Wir haben Ihr BRU-Gerät gefunden!\r\n\r\nBitte aktivieren Sie den Pairing-Modus auf dem BRU-Gerät.\r\nUm dies zu tun, gehen Sie zu Geräteeinstellungen => 'Neues Gerät koppeln'.\r\n\r\nNach diesem Schritt müssen Sie auf dem Display des BRU-Geräts 'Warten auf Verbindung' sehen."
+    },
+    "step7": {
+      "header": "Ich versuche, eine Verbindung herzustellen...",
+      "text": "Wir versuchen nun, eine Verbindung zu Ihrem BRU-Rechner herzustellen.\r\n\r\nBitte warten Sie ein paar Sekunden."
+    },
+    "step8": {
+      "header": "Ooops...",
+      "text": "Bitte überprüfen Sie Ihr BRU-Gerät. Sie müssen den Pairing-Modus auf dem BRU-Gerät aktivieren.\r\nUm dies zu tun, gehen Sie zu Machine Setup => 'Pair New Device'.\r\n\r\nNach diesem Schritt müssen Sie 'Waiting for connection' auf dem BRU-Gerätedisplay sehen."
+    },
+    "step9": {
+      "header": "Erfolgreich!",
+      "text": "Ihr BRU-Gerät ist erfolgreich mit Ihrem Telefon gekoppelt.\r\n\r\n Jetzt können Sie alle Funktionen der BRU-App nutzen"
+    },
+    "step10": {
+      "header": "Wir müssen Ihre BRU-Firmware aktualisieren!",
+      "text": ""
+    },
+    "grantPermission": "Erteilung von Genehmigungen",
+    "openSettings": "Einstellungen öffnen",
+    "Done": "Erledigt",
+    "Scan": "Scannen",
+    "connectToDevice": "Mit Gerät verbinden",
+    "Greate": "Großartig",
+    "update": "Aktualisieren Sie die Firmware!",
+    "goBack": "Zurück zu den Einstellungen"
+  },
+  "Help": {
+    "title": "Hilfe",
+    "contactSupport": "Kontakt zum Support",
+    "contactDesc": "Bitte teilen Sie dem BRU-Support die Problemdetails mit. Wir werden Sie so schnell wie möglich unterstützen.",
+    "issueDesc": "Problem Beschreibung",
+    "contactPlaceholder": "Geben Sie hier Ihre Nachricht ein",
+    "cancel": "Abbrechen",
+    "send": "Senden Sie",
+    "modalSuccess": "Die Anfrage wurde abgeschickt. Wir werden Sie so bald wie möglich kontaktieren."
   }
 }

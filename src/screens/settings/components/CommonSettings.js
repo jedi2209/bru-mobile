@@ -2,14 +2,14 @@ import {useStore} from 'effector-react';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {$themeStore, setThemeFx} from '../../../core/store/theme';
-import Collapsible from 'react-native-collapsible';
+// import Collapsible from 'react-native-collapsible';
 import {basicStyles, colors} from '../../../core/const/style';
-import {Switch} from '@gluestack-ui/themed';
+// import {Switch} from '@gluestack-ui/themed';
 import {updateUser} from '../../../utils/db/auth';
 import {$profileStore, updateProfileUser} from '../../../core/store/profile';
-import {setUser} from '../../../core/store/user';
-import {logout} from '../../../utils/auth';
-import {useNavigation} from '@react-navigation/native';
+// import {setUser} from '../../../core/store/user';
+// import {logout} from '../../../utils/auth';
+// import {useNavigation} from '@react-navigation/native';
 import openLink from '../../../helpers/openLink';
 import {useTranslation} from 'react-i18next';
 import {$langSettingsStore, setLanguage} from '../../../core/store/lang';
@@ -113,16 +113,16 @@ const s = StyleSheet.create({
 
 const CommonSettings = () => {
   const user = useStore($profileStore);
-  const [autoRinse, setAutoRinse] = useState(user.autoRinse);
-  const [coldTea, setColdTea] = useState(user.coldTea);
-  const [amount, setAmount] = useState(user.amount || 'small');
-  const [dispence, setDispence] = useState(user.dispenceTo || 'cup');
+  // const [autoRinse, setAutoRinse] = useState(user.autoRinse);
+  // const [coldTea, setColdTea] = useState(user.coldTea);
+  // const [amount, setAmount] = useState(user.amount || 'small');
+  // const [dispence, setDispence] = useState(user.dispenceTo || 'cup');
   const [units, setUnits] = useState(user.units || 'metric');
-  const [notifications, setNotifications] = useState(user.notifications);
+  // const [notifications, setNotifications] = useState(user.notifications);
   const language = useStore($langSettingsStore);
   const [currLanguage, setCurrLanguage] = useState(language);
   const theme = useStore($themeStore);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
   const {t} = useTranslation();
 
@@ -386,33 +386,33 @@ const CommonSettings = () => {
         <View style={s.units}>
           <TouchableOpacity
             onPress={() => {
-              setCurrLanguage('en');
-              setLanguage('en');
+              setCurrLanguage('en_US');
+              setLanguage('en_US');
             }}
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
               s.unitLeft,
-              currLanguage === 'en' && s.selected,
+              currLanguage === 'en_US' && s.selected,
             ]}>
             <Text style={s.unitText}>EN</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              setCurrLanguage('de');
-              setLanguage('de');
+              setCurrLanguage('de_US');
+              setLanguage('de_US');
             }}
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
               s.unitRight,
-              currLanguage === 'de' && s.selected,
+              currLanguage === 'de_US' && s.selected,
             ]}>
             <Text style={s.unitText}>DE</Text>
           </TouchableOpacity>
         </View>
       </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <TouchableOpacity
           onPress={async () => {
             setUser(null);
@@ -421,7 +421,7 @@ const CommonSettings = () => {
           }}>
           <Text style={[s.title, s.logoutText]}>{t('Settings.Logout')}</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 };

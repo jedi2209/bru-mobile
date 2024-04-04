@@ -21,7 +21,11 @@
     "Later": "Later",
     "YouWillBeAble": "You will be able to create new presets later in",
     "page": "page",
-    "DontShowAgain": "Don't show me again"
+    "DontShowAgain": "Don't show me again",
+    "No": "No",
+    "Yes": "Yes",
+    "NoDeviceDesc": "There is no connected device, do you wish to connect?",
+    "NoDeviceTitle": "No connected device"
   },
   "TeaAlarm": {
     "Title": "Tea Alarm",
@@ -50,7 +54,12 @@
     "Dark": "Dark",
     "Light": "Light",
     "BluetoothConnectionError": "To update the firmware, you need to connect to the device",
-    "ChangeLanguage": "Change Language"
+    "ChangeLanguage": "Change Language",
+    "No": "No",
+    "Confirm": "Confirm",
+    "FirmwareUpdate": "Firmware update",
+    "BruAppWillDownload": "The BRU app will download and install the latest firmware to your BRU machine. Please make sure you are connected to Wi Fi to avoid additional charges.",
+    "Done": "Done"
   },
   "StoreModal": {
     "Title": "BRÜ Store",
@@ -67,5 +76,78 @@
     "PleaseEnterEmail": "Please enter your email",
     "PleaseEnterPassword": "Please enter your password",
     "Save": "Save"
+  },
+  "Toast": {
+    "success": {
+      "sendCommand": "✅ Command send!",
+      "connection": "✅ Sucessfully connected to the device"
+    },
+    "error": {
+      "sendCommand": "❌ Something happened while sending command. Please try again later!",
+      "connection": "❌ Something happened while connecting to device. Please try again later!",
+      "disconnect": "❌ Something happened while disconnecting from device. Please try again!",
+      "read": "❌ Something happened while reading data from device. Please try again later!",
+      "pleaseConnect": "Please connect to device before sending command",
+      "noConnectedDevice": "There is no connected devices. Please connect to device and try again."
+    }
+  },
+  "Connection": {
+    "step1": {
+      "header": "Activate bluetooth on your phone",
+      "text": "This APP need access to bluetooth to be able search and communicate with BRU."
+    },
+    "step2": {
+      "header": "Ooops...",
+      "text": "We need access to your phone's bluetooth to be able search and communicate with BRU.\r\n"
+    },
+    "step3": {
+      "header": "Bluetooth and Location access required",
+      "text": "Bluetooth and Location permissions are required to find and control your nearby BRU device even when the app is not in use.\r\nWithout access things may not work as expected."
+    },
+    "step4": {
+      "header": "Activate bluetooth on BRU",
+      "text": "Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => 'Bluetooth' -> 'On'"
+    },
+    "step5": {
+      "header": "Search for BRU Machine"
+    },
+    "step6": {
+      "header": "Ready for pairing",
+      "text": "Cool! We found your BRU Machine!\r\n\r\nPlease activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => 'Pair New Device'.\r\n\r\nAfter this step you must see 'Waiting for connection' on BRU device display."
+    },
+    "step7": {
+      "header": "Trying to connect...",
+      "text": "Now we are trying to connect to your BRU Machine.\r\n\r\nPlease wait a few seconds."
+    },
+    "step8": {
+      "header": "Ooops...",
+      "text": "Please check your BRU Machine. You need to activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => 'Pair New Device'.\r\n\r\nAfter this step you must see 'Waiting for connection' on BRU device display."
+    },
+    "step9": {
+      "header": "Success!",
+      "text": "Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app"
+    },
+    "step10": {
+      "header": "We need to update your BRU firmware!",
+      "text": ""
+    },
+    "grantPermission": "Grant permissions",
+    "openSettings": "Open settings",
+    "Done": "Done",
+    "Scan": "Scan",
+    "connectToDevice": "Connect to device",
+    "Greate": "Greate",
+    "update": "Update firmware!",
+    "goBack": "Back to settings"
+  },
+  "Help": {
+    "title": "Help",
+    "contactSupport": "Contact support",
+    "contactDesc": "Please provide the issue details to the BRU Support. We will assist you as soon as possible.",
+    "issueDesc": "Issue Description",
+    "contactPlaceholder": "Enter your message here",
+    "cancel": "Cancel",
+    "send": "Send",
+    "modalSuccess": "The request has been sent. We will contact you as soon as possible."
   }
 }

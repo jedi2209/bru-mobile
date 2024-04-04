@@ -8,6 +8,7 @@ import {
 
 export const getPressetsFx = createEffect(async () => {
   const pressets = await getUserPressets();
+
   return pressets.sort((a, b) => a.tea_type.localeCompare(b.tea_type));
 });
 

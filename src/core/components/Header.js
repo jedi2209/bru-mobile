@@ -52,9 +52,9 @@ const Header = () => {
         <Logo />
       </View>
       <View style={s.iconsWrapper}>
-        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <UserIcon style={s.userIcon} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity onPress={() => setIsOpened(true)}>
           <CartIcon />
         </TouchableOpacity>

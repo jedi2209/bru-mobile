@@ -354,7 +354,7 @@ const PresetsScreen = props => {
                   });
               }}
               style={s.brewButton}>
-              <Text style={s.buttonText}>Brew it</Text>
+              <Text style={s.buttonText}>{t('InstantBrewing.BrewIt')}</Text>
             </TouchableOpacity>
           )}
         </LinearGradient>
@@ -458,8 +458,9 @@ const PresetsScreen = props => {
               }
               setMode('list');
             }}
-            style={[s.saveButton, currLang === 'de' && s.saveButtonDe]}>
-            <Text style={[s.buttonText, currLang === 'de' && s.buttonTextDe]}>
+            style={[s.saveButton, currLang === 'de_US' && s.saveButtonDe]}>
+            <Text
+              style={[s.buttonText, currLang === 'de_US' && s.buttonTextDe]}>
               {t('Presets.SavePreset')}
             </Text>
           </TouchableOpacity>

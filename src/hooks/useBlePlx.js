@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {BleManager} from 'react-native-ble-plx';
 import {
@@ -9,17 +9,12 @@ import {
 import {useStore} from 'effector-react';
 import base64 from 'react-native-base64';
 import {DFUEmitter, NordicDFU} from 'react-native-nordic-dfu';
-import {
-  Toast,
-  ToastDescription,
-  ToastTitle,
-  useToast,
-  VStack,
-} from '@gluestack-ui/themed';
+import {Toast, ToastTitle, useToast, VStack} from '@gluestack-ui/themed';
+import {useTranslation} from 'react-i18next';
 const Buffer = require('buffer/').Buffer;
 
 const mainUUID = 'aae28f00-71b5-42a1-8c3c-f9cf6ac969d0';
-const readUUID = 'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0';
+// const readUUID = 'aae28f01-71b5-42a1-8c3c-f9cf6ac969d0';
 const writeUUID = 'aae28f02-71b5-42a1-8c3c-f9cf6ac969d0';
 
 const deviceInfo = {
@@ -76,6 +71,7 @@ const useBle = () => {
   const [deviceDFU, setDeviceDFU] = useState(null);
   const current = useStore($connectedDevice);
   const toast = useToast();
+  const {t} = useTranslation();
 
   const requestBluetoothPermission = async () => {
     if (Platform.OS === 'ios') {
@@ -146,28 +142,40 @@ const useBle = () => {
       await deviceConnection.discoverAllServicesAndCharacteristics();
       manager.stopDeviceScan();
     } catch (error) {
-      console.log(error);
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: () => {
+          return (
+            <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>{t('Toast.error.connection')}</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     }
   };
 
   const disconnectFromDevice = async () => {
     try {
-      const isConnected = await manager.isDeviceConnected(current.id);
+      const deviceId = current.id;
+      await resetDevice();
+      const isConnected = await manager.isDeviceConnected(deviceId);
       if (!isConnected) {
         await connectToDevice(current);
       }
-      await manager.cancelDeviceConnection(current.id);
-      // manager.destroy();
-      await resetDevice();
+      await manager.cancelDeviceConnection(deviceId);
     } catch (error) {
       toast.show({
         placement: 'top',
         duration: 3000,
         render: () => {
           return (
-            <Toast action="error" variant="accent">
+            <Toast id={'dfuSuccessToast'} action="error" variant="accent">
               <VStack space="lg">
-                <ToastTitle>{error.message}</ToastTitle>
+                <ToastTitle>{t('Toast.error.disconnect')}</ToastTitle>
               </VStack>
             </Toast>
           );
@@ -179,11 +187,9 @@ const useBle = () => {
   const writeValueWithResponse = async command => {
     try {
       if (!current) {
-        throw new Error('Please connect to device before sending command');
+        throw new Error(t('Toast.error.pleaseConnect'));
       }
-      console.log(current.id);
       const isConnected = await manager.isDeviceConnected(current.id);
-      console.log(isConnected);
       if (!isConnected) {
         await connectToDevice(current);
       }
@@ -202,7 +208,7 @@ const useBle = () => {
           return (
             <Toast id={'dfuSuccessToast'} action="success" variant="accent">
               <VStack space="lg">
-                <ToastTitle>✅ Command send</ToastTitle>
+                <ToastTitle>{t('Toast.success.sendCommand')}</ToastTitle>
               </VStack>
             </Toast>
           );
@@ -216,21 +222,20 @@ const useBle = () => {
           return (
             <Toast id={'dfuSuccessToast'} action="error" variant="accent">
               <VStack space="lg">
-                <ToastTitle>{error.message}</ToastTitle>
+                <ToastTitle>{t('Toast.error.sendCommand')}</ToastTitle>
               </VStack>
             </Toast>
           );
         },
       });
-      console.log(error, 'write not connected');
     }
   };
 
   const readValue = async characteristic => {
+    const isConnected = await manager.isDeviceConnected(current.id);
     try {
-      const isConnected = await manager.isDeviceConnected(current.id);
       if (!isConnected) {
-        await connectToDevice(current);
+        connectToDevice(current);
       }
 
       const data = await manager.readCharacteristicForDevice(
@@ -239,31 +244,53 @@ const useBle = () => {
         deviceInfo[characteristic].characteristic, // 2A26 для firmwareRevision
       );
 
-      return base64.decode(data.value);
+      const value = await base64.decode(data.value);
+      return value;
     } catch (error) {
-      console.log(error, 'read error');
+      // toast.show({
+      //   placement: 'top',
+      //   duration: 3000,
+      //   render: () => {
+      //     return (
+      //       <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+      //         <VStack space="lg">
+      //           <ToastTitle>{t('Toast.error.read')}</ToastTitle>
+      //         </VStack>
+      //       </Toast>
+      //     );
+      //   },
+      // });
     }
   };
 
   const cancelCommand = async () => {
-    console.log(current.id);
     if (!current) {
-      console.log('No connected device');
       return;
     }
     try {
       await connectToDevice(current);
       const command = [255, 4, 66, 129];
       const encoded = new Buffer(command).toString('base64');
-      const res = await manager.writeCharacteristicWithResponseForDevice(
+      await manager.writeCharacteristicWithResponseForDevice(
         current.id,
         mainUUID,
         writeUUID,
         encoded,
       );
-      console.log(res);
     } catch (error) {
-      console.log(error);
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: () => {
+          return (
+            <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>{t('Toast.error.sendCommand')}</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     }
   };
 
@@ -290,7 +317,19 @@ const useBle = () => {
       await deviceConnection.discoverAllServicesAndCharacteristics();
       manager.stopDeviceScan();
     } catch (error) {
-      console.log(error);
+      toast.show({
+        placement: 'top',
+        duration: 3000,
+        render: () => {
+          return (
+            <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+              <VStack space="lg">
+                <ToastTitle>{t('Toast.error.connection')}</ToastTitle>
+              </VStack>
+            </Toast>
+          );
+        },
+      });
     }
   };
 
@@ -316,11 +355,7 @@ const useBle = () => {
           return (
             <Toast action="info" variant="accent">
               <VStack space="lg">
-                <ToastTitle>Not current</ToastTitle>
-                <ToastDescription>
-                  {JSON.stringify(current)}
-                  {current?.id}
-                </ToastDescription>
+                <ToastTitle>{t('Toast.error.noConnectedDevice')}</ToastTitle>
               </VStack>
             </Toast>
           );
@@ -329,20 +364,6 @@ const useBle = () => {
       return false;
     }
     const isConnected = await manager.isDeviceConnected(current.id);
-    // toast.show({
-    //   placement: 'top',
-    //   duration: 3000,
-    //   render: () => {
-    //     return (
-    //       <Toast action="error" variant="accent">
-    //         <VStack space="lg">
-    //           <ToastTitle>isConnected {isConnected}</ToastTitle>
-    //         </VStack>
-    //       </Toast>
-    //     );
-    //   },
-    // });
-    console.log(isConnected);
     return isConnected;
   };
 

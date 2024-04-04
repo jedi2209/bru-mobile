@@ -47,7 +47,7 @@ const UpdateFirmwareProgressScreen = props => {
   useEffect(() => {
     if (device && !updateStatus) {
       deviceManager.setCurrentDevice(device);
-      console.log('start');
+
       _updateFirmware(file);
     }
     return () => {
@@ -64,11 +64,9 @@ const UpdateFirmwareProgressScreen = props => {
     setDownloading(true);
     setUpdateStatus('start');
     const checkPermissions = await deviceManager._checkManager();
-    // console.log('checkPermissions', checkPermissions);
     if (!checkPermissions) {
       await sleep(5000);
       const checkPermissionsSecond = await deviceManager._checkManager();
-      // console.log('checkPermissionsSecond', checkPermissions);
       if (!checkPermissionsSecond) {
         toast.show({
           placement: 'top',
@@ -209,7 +207,7 @@ const UpdateFirmwareProgressScreen = props => {
     setUpdateStatus('rebooting');
     console.info('Rebooting...');
     // C1:D5:7F:41:61:72
-    console.log('start dfu');
+
     const statusDFU = await deviceManager.startDFU(fileDownloaded);
     if (statusDFU) {
       console.info('statusDFU Success!', statusDFU);

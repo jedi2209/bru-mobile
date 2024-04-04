@@ -12,9 +12,7 @@ const currLang = $langSettingsStore.getState();
 
 export const downloadFile = async (url, fileName) => {
   const dir = RNFS.DocumentDirectoryPath;
-  console.log(dir);
   const localFile = `${dir}/${fileName}`;
-  console.log(localFile);
   //Define path to store file along with the extension
   const headers = {
     Accept: 'application/octet-stream',
@@ -89,7 +87,7 @@ export const getFirmwareData = async () => {
           }
         });
       })
-      .catch(err => console.error);
+      .catch(err => console.error(err));
   });
 };
 

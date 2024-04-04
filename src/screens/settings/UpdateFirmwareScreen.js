@@ -1,7 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
-import {useStore} from 'effector-react';
-import {$connectedDevice} from '../../core/store/connectedDevice';
 import {
   Progress,
   ProgressFilledTrack,
@@ -16,7 +14,6 @@ import {Alert, StyleSheet, Text, View} from 'react-native';
 import {downloadFile, getFileURL, getFirmwareData} from '../../utils/firmware';
 import {DFUEmitter} from 'react-native-nordic-dfu';
 import {getCommand} from '../../utils/commands';
-import {useFocusEffect} from '@react-navigation/native';
 import {sleep} from '../../utils/device';
 
 const _renderProgressBar = value => {
@@ -45,11 +42,8 @@ const getStatus = status => {
 export const UpdateFirmwareScreen = props => {
   const {fileName, filePath} = props.route.params;
   const [progress, setProgress] = useState(0);
-  const [isDownloading, setDownloading] = useState(false);
   const [updateStatus, setUpdateStatus] = useState('start');
-  const [needUpdate, setNeedUpdate] = useState(false);
 
-  const currentDevice = useStore($connectedDevice);
   const toast = useToast();
   const {
     scanDFU,
@@ -94,13 +88,12 @@ export const UpdateFirmwareScreen = props => {
         nameOfFile = availableFirmware.file;
       }
       await connectToDFU(deviceDFU);
-      console.log(filePath, 'filePath');
-      console.log(fileName, 'fileName');
+
       const fileDownloaded = await downloadFile(
         filePath || file,
         fileName || nameOfFile,
       );
-      console.log(fileDownloaded);
+
       if (!fileDownloaded) {
         Alert.alert("Can't download file");
         return;

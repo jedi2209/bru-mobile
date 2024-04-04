@@ -46,6 +46,7 @@ const initPressets = [
 export const addInitPressets = async () => {
   try {
     const uid = auth().currentUser.uid;
+
     initPressets.forEach(async presset => {
       const newPresset = await pressetsCollection
         .doc(uid)
@@ -64,12 +65,15 @@ export const addInitPressets = async () => {
         .doc(newPresset.id)
         .update({...newPressetData.data(), id: newPresset.id});
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error, 'addInitPressets error');
+  }
 };
 
 export const getUserPressets = async () => {
   try {
     const uid = auth().currentUser.uid;
+
     const pressets = await pressetsCollection
       .doc(uid)
       .collection('pressets')
@@ -82,7 +86,7 @@ export const getUserPressets = async () => {
       };
     });
   } catch (error) {
-    console.log(error);
+    console.log(error, 'error getUserPresset');
   }
 };
 

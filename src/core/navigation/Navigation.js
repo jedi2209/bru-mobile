@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {
@@ -9,11 +9,13 @@ import {
 import UpdateFirmwareProgressScreen from '@screens/settings/updateFirmwareProgress';
 import {default as CustomHeader} from '../components/Header';
 import UpdateScreen from '../../screens/downloadingUpdate';
-import AuthorizationScreen from '../../screens/authorization';
+// import AuthorizationScreen from '../../screens/authorization';
 import {useStore} from 'effector-react';
 import {$userStore} from '../store/user';
 import ConnectDeviceScreen from '../../screens/settings/ConnectDevice';
 import {UpdateFirmwareScreen} from '../../screens/settings/UpdateFirmwareScreen';
+import InitializeScreen from '../../screens/init/index';
+
 const Stack = createNativeStackNavigator();
 const NavMain = props => {
   const user = useStore($userStore);
@@ -82,7 +84,7 @@ const NavMain = props => {
         <>
           <Stack.Screen
             name="Authorization"
-            component={AuthorizationScreen}
+            component={InitializeScreen}
             options={{
               headerBackVisible: false,
               headerShown: false,

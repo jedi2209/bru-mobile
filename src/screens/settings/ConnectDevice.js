@@ -1,77 +1,94 @@
 import React, {useEffect, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
 import {Linking, Platform, StyleSheet, Text, View} from 'react-native';
-import {Image, Button, ButtonText, Heading} from '@gluestack-ui/themed';
+import {
+  Image,
+  Button,
+  ButtonText,
+  Heading,
+  useToast,
+  Toast,
+  VStack,
+  ToastTitle,
+} from '@gluestack-ui/themed';
 import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 import LottieView from 'lottie-react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import useBle from '../../hooks/useBlePlx';
-
-const stepsContent = [
-  null,
-  {
-    // 1 checkBluetooth
-    img: require('@assets/deviceImages/image-1.png'),
-    header: 'Activate bluetooth on your phone',
-    text: 'This APP need access to bluetooth to be able search and communicate with BRU.',
-  },
-  {
-    // 2 checkBluetooth => false
-    img: require('@assets/deviceImages/image-2.png'),
-    header: 'Ooops...',
-    text: "We need access to your phone's bluetooth to be able search and communicate with BRU.\r\n",
-  },
-  {
-    // 3 request for bluetooth and local network access
-    img: require('@assets/bluetooth_devices_near.png'),
-    header: 'Bluetooth and Location access required',
-    text: 'Bluetooth and Location permissions are required to find and control your nearby BRU device even when the app is not in use.\r\nWithout access things may not work as expected.',
-  },
-  {
-    // 4 checkBluetooth => true
-    img: require('@assets/deviceImages/image-1.png'),
-    header: 'Activate bluetooth on BRU',
-    text: 'Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => "Bluetooth" -> "On"',
-  },
-  {
-    // 5
-    img: require('@assets/deviceImages/image-1.png'),
-    header: 'Search for BRU Machine',
-  },
-  {
-    // 6
-    img: require('@assets/deviceImages/image-2.png'),
-    header: 'Ready for pairing',
-    text: 'Cool! We found your BRU Machine!\r\n\r\nPlease activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
-  },
-  {
-    // 7
-    img: require('@assets/deviceImages/image-2.png'),
-    header: 'Trying to connect...',
-    text: 'Now we are trying to connect to your BRU Machine.\r\n\r\nPlease wait a few seconds.',
-  },
-  {
-    // 8
-    img: require('@assets/deviceImages/image-1.png'),
-    header: 'Ooops...',
-    text: 'Please check your BRU Machine. You need to activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => "Pair New Device".\r\n\r\nAfter this step you must see "Waiting for connection" on BRU device display.',
-  },
-  {
-    // 9
-    img: require('@assets/deviceImages/image-2.png'),
-    header: 'Success!',
-    text: 'Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app',
-  },
-  {
-    // 10
-    img: require('@assets/deviceImages/image-2.png'),
-    header: 'We need to update your BRU firmware!',
-    text: '',
-  },
-];
+import {getFileURL, getFirmwareData} from '../../utils/firmware';
+import {useTranslation} from 'react-i18next';
 
 const StepItem = ({step, setStep, navigation}) => {
+  const [filePath, setFilePath] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [currentFirmware, setCurrentFirmware] = useState('');
+  const toast = useToast();
+  const {t} = useTranslation();
+  const stepsContent = [
+    null,
+    {
+      // 1 checkBluetooth
+      img: require('@assets/deviceImages/image-1.png'),
+      header: t('Connection.step1.header'),
+      text: t('Connection.step1.text'),
+    },
+    {
+      // 2 checkBluetooth => false
+      img: require('@assets/deviceImages/image-2.png'),
+      header: t('Connection.step2.header'),
+      text: t('Connection.step2.text'),
+    },
+    {
+      // 3 request for bluetooth and local network access
+      img: require('@assets/bluetooth_devices_near.png'),
+      header: t('Connection.step3.header'),
+      text: t('Connection.step3.text'),
+    },
+    {
+      // 4 checkBluetooth => true
+      img: require('@assets/deviceImages/image-1.png'),
+      header: t('Connection.step4.header'),
+      text: t('Connection.step4.text'),
+    },
+    {
+      // 5
+      img: require('@assets/deviceImages/image-1.png'),
+      header: t('Connection.step5.header'),
+    },
+    {
+      // 6
+      img: require('@assets/deviceImages/image-2.png'),
+      header: t('Connection.step6.header'),
+      text: t('Connection.step6.text'),
+    },
+    {
+      // 7
+      img: require('@assets/deviceImages/image-2.png'),
+      header: t('Connection.step7.header'),
+      text: t('Connection.step7.text'),
+    },
+    {
+      // 8
+      img: require('@assets/deviceImages/image-1.png'),
+      header: t('Connection.step8.header'),
+      text: t('Connection.step8.text'),
+    },
+    {
+      // 9
+      img: require('@assets/deviceImages/image-2.png'),
+      header: t('Connection.step9.header'),
+      text: t('Connection.step9.text'),
+    },
+    {
+      // 10
+      img: require('@assets/deviceImages/image-2.png'),
+      header: t('Connection.step10.header'),
+      text: '',
+    },
+  ];
+
   const {
+    readValue,
     connectToDevice,
     requestBluetoothPermission,
     scanForPeripherals,
@@ -115,7 +132,9 @@ const StepItem = ({step, setStep, navigation}) => {
                   : Linking.sendIntent('android.settings.BLUETOOTH_SETTINGS');
               }}>
               <Icon name="gears" style={styles.buttonBottomIcon} size={24} />
-              <ButtonText color="white">Open settings</ButtonText>
+              <ButtonText fontSize={12} color="white">
+                {t('Connection.openSettings')}
+              </ButtonText>
             </Button>
           </>
         );
@@ -137,7 +156,7 @@ const StepItem = ({step, setStep, navigation}) => {
               style={styles.buttonBottomIcon}
               size={24}
             />
-            <ButtonText>Grant permissions</ButtonText>
+            <ButtonText>{t('Connection.grantPermission')}</ButtonText>
           </Button>
         );
       case 4:
@@ -155,7 +174,7 @@ const StepItem = ({step, setStep, navigation}) => {
               style={styles.buttonBottomIcon}
               size={24}
             />
-            <ButtonText>Done</ButtonText>
+            <ButtonText>{t('Connection.Done')}</ButtonText>
           </Button>
         );
       case 5:
@@ -190,13 +209,12 @@ const StepItem = ({step, setStep, navigation}) => {
                       if (!allDevices.length) {
                         setIsScanning(false);
                         stopDeviceScan();
-                        console.log('No devices found');
                       }
                     }, 10000);
                   }
                 }, 10000);
               }}>
-              <ButtonText>Scan</ButtonText>
+              <ButtonText>{t('Connection.Scan')}</ButtonText>
             </Button>
           </>
         );
@@ -210,13 +228,31 @@ const StepItem = ({step, setStep, navigation}) => {
             onPress={async () => {
               try {
                 await connectToDevice(allDevices[0]);
+                toast.show({
+                  placement: 'top',
+                  duration: 3000,
+                  render: () => {
+                    return (
+                      <Toast
+                        id={'dfuSuccessToast'}
+                        action="success"
+                        variant="accent">
+                        <VStack space="lg">
+                          <ToastTitle>
+                            {t('Toast.success.connection')}
+                          </ToastTitle>
+                        </VStack>
+                      </Toast>
+                    );
+                  },
+                });
                 setStep(9);
               } catch (error) {
                 console.log(error);
                 setStep(8);
               }
             }}>
-            <ButtonText>Connect to device</ButtonText>
+            <ButtonText>{t('Connection.connectToDevice')}</ButtonText>
           </Button>
         );
       case 9:
@@ -227,9 +263,48 @@ const StepItem = ({step, setStep, navigation}) => {
             action={'primary'}
             size={'xl'}
             onPress={async () => {
-              navigation.navigate('Settings');
+              const current = await readValue('firmwareRevision');
+              setCurrentFirmware(current);
+              const data = await getFirmwareData();
+              const availableFirmware = data.find(
+                firmwareData => firmwareData.testAvailable,
+              );
+
+              if (!current) {
+                return;
+              }
+              if (!availableFirmware) {
+                return;
+              }
+
+              const file = await getFileURL(
+                'firmware/' + availableFirmware.file,
+              );
+              setFilePath(file);
+              setFileName(availableFirmware.file);
+              if (availableFirmware.name === current) {
+                navigation.navigate('Settings');
+              } else {
+                setStep(10);
+              }
             }}>
-            <ButtonText>Great</ButtonText>
+            <ButtonText>{t('Connection.Greate')}</ButtonText>
+          </Button>
+        );
+      case 10:
+        return (
+          <Button
+            style={styles.buttonBottom}
+            variant={'solid'}
+            action={'primary'}
+            size={'xl'}
+            onPress={async () => {
+              navigation.navigate('UpdateFirmwareScreen', {
+                fileName,
+                filePath,
+              });
+            }}>
+            <ButtonText>{t('Connection.update')}</ButtonText>
           </Button>
         );
       default:
@@ -256,7 +331,19 @@ const StepItem = ({step, setStep, navigation}) => {
           <Text style={styles.textColor}>{stepsContent[step].text}</Text>
         ) : null}
       </View>
-      <View style={styles.buttonContainer}>{renderButton()}</View>
+      <View style={styles.buttonContainer}>
+        {renderButton()}
+        <Button
+          style={styles.goBackButton}
+          variant={'solid'}
+          action={'primary'}
+          size={'xl'}
+          onPress={async () => {
+            navigation.navigate('Settings');
+          }}>
+          <ButtonText>{t('Connection.goBack')}</ButtonText>
+        </Button>
+      </View>
     </>
   );
 };
@@ -271,14 +358,12 @@ const ConnectDeviceScreen = props => {
     async function initStep() {
       const bluetoothStatus = await BluetoothStateManager.getState();
       const isEnabled = bluetoothStatus === 'PoweredOn';
-      console.log(isEnabled, 'isEnabledisEnabledisEnabled');
       if (!isEnabled) {
         setStep(1);
         return;
       }
       setStep(3);
       const isPermitted = await requestBluetoothPermission();
-      console.log(isPermitted, 'isPermittedisPermittedisPermitted');
       if (!isPermitted) {
         return;
       }
@@ -308,7 +393,8 @@ const styles = StyleSheet.create({
   },
   buttonBottomIcon: {color: 'white'},
   textColor: {color: 'white'},
-  buttonContainer: {paddingHorizontal: 30},
+  buttonContainer: {paddingHorizontal: 30, gap: 15},
+  goBackButton: {},
 });
 
 export default ConnectDeviceScreen;

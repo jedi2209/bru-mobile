@@ -3,12 +3,20 @@ import {createStore, createEvent, createEffect, forward} from 'effector';
 
 import i18n from '../lang/index';
 import {LANGUAGE} from '../const/index';
+import {NativeModules, Platform} from 'react-native';
+import {hasTranslation} from '../../helpers/hasTranslation';
 
 const storeName = 'appLang';
 
 export const setLanguage = createEvent();
 export const initLanguage = createEvent();
 const reset = createEvent();
+
+const deviceLanguage =
+  Platform.OS === 'ios'
+    ? NativeModules.SettingsManager.settings.AppleLocale ||
+      NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
+    : NativeModules.I18nManager.localeIdentifier;
 
 export const $langSettingsStore = createStore(LANGUAGE.default.code, {
   name: storeName,
@@ -22,9 +30,13 @@ export const $langSettingsStore = createStore(LANGUAGE.default.code, {
 
 const fetchLang = createEffect({
   async handler() {
-    const value = await AsyncStorage.getItem(storeName);
-    i18n.changeLanguage(value ? value : LANGUAGE.default.code);
-    return value ? value : LANGUAGE.default.code;
+    if (hasTranslation(deviceLanguage)) {
+      i18n.changeLanguage(deviceLanguage);
+      return deviceLanguage;
+    } else {
+      i18n.changeLanguage('en_US');
+      return 'en_US';
+    }
   },
 });
 

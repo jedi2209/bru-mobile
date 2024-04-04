@@ -21,7 +21,6 @@ const s = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignContent: 'space-between',
-    // justifyContent: 'space-between',
     height: Dimensions.get('window').height - 280,
   },
   progress: {
@@ -177,8 +176,10 @@ const BrewingScreen = props => {
             }
             valueSuffixStyle={[
               phase === 3 && s.valueSuffixStyleLastPhase,
+              // eslint-disable-next-line react-native/no-inline-styles
               {display: 'flex'},
             ]}
+            // eslint-disable-next-line react-native/no-inline-styles
             progressValueStyle={{
               display: 'none',
             }}

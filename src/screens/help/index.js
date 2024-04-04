@@ -15,6 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import NotificationModal from '../../core/components/NotificationModal';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -110,13 +111,14 @@ const HelpScreen = props => {
   const isDarkMode = theme === 'dark';
   const [collapsed, setCollapsed] = useState(0);
   const [modalOpened, setModalOpened] = useState(false);
+  const {t} = useTranslation();
 
   return (
     <Wrapper style={s.wrapper} {...props}>
       <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
-        Help
+        {t('Help.title')}
       </Text>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => setCollapsed(prev => (prev === 1 ? 0 : 1))}>
         <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
           <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
@@ -189,12 +191,12 @@ const HelpScreen = props => {
             style={[s.arrowIcon, collapsed === 2 && s.arrowIconActive]}
           />
         </View>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <TouchableOpacity
         onPress={() => setCollapsed(prev => (prev === 3 ? 0 : 3))}>
         <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
           <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
-            Contact support
+            {t('Help.contactSupport')}
           </Text>
           <DownArrowIcon
             fill={isDarkMode ? colors.white : colors.green.mid}
@@ -211,21 +213,20 @@ const HelpScreen = props => {
               : [colors.white, colors.white]
           }>
           <Text style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
-            Please provide the issue details to the BRU Support. We will assist
-            you as soon as possible.
+            {t('Help.contactDesc')}
           </Text>
-          <Text style={s.textareaLabel}>Issue Description</Text>
+          <Text style={s.textareaLabel}>{t('Help.issueDesc')}</Text>
           <View style={s.textareaWrapper}>
             <TextInput
               placeholderTextColor={colors.gray.grayDarkText}
               style={s.textarea}
-              placeholder="Enter your message here"
+              placeholder={t('Help.contactPlaceholder')}
               multiline={true}
               numberOfLines={10}
             />
-            <TouchableOpacity>
+            {/* <TouchableOpacity>
               <Text style={s.attachPhoto}>Attach photo</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View style={basicStyles.rowBetween}>
             <TouchableOpacity>
@@ -234,13 +235,15 @@ const HelpScreen = props => {
                   basicStyles.textButton,
                   isDarkMode && basicStyles.darkText,
                 ]}>
-                Cancel
+                {t('Help.cancel')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setModalOpened(true)}
               style={s.button}>
-              <Text style={basicStyles.backgroundButtonText}>Send</Text>
+              <Text style={basicStyles.backgroundButtonText}>
+                {t('Help.send')}
+              </Text>
             </TouchableOpacity>
           </View>
         </LinearGradient>
@@ -248,7 +251,7 @@ const HelpScreen = props => {
       <NotificationModal
         opened={modalOpened}
         closeModal={() => setModalOpened(false)}
-        modalTitle="The request has been sent. We will contact you as soon as possible."
+        modalTitle={t('Help.modalSuccess')}
       />
     </Wrapper>
   );

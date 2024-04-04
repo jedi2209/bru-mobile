@@ -4,14 +4,14 @@ import en from './en.json';
 import de from './de.json';
 
 export const languageResources = {
-  en: {translation: en},
-  de: {translation: de},
+  en_US: {translation: en},
+  de_US: {translation: de},
 };
 
 i18n.use(initReactI18next).init({
   compatibilityJSON: 'v3',
   lng: 'en',
-  fallbackLng: 'en',
+  fallbackLng: 'en_US',
   resources: languageResources,
 });
 

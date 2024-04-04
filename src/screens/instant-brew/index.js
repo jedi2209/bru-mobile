@@ -1,16 +1,16 @@
 import React, {
-  Alert,
   Animated,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
+  Vibration,
   View,
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
 import {useCallback, useEffect, useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
-import SplitCups from './components/SplitCups';
+// import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
@@ -19,7 +19,7 @@ import {$themeStore, initThemeFx} from '../../core/store/theme';
 import {addPressetToStoreFx, getPressetsFx} from '../../core/store/pressets';
 import isEqual from 'lodash.isequal';
 import {
-  $profileStore,
+  // $profileStore,
   getUserFx,
   updateProfileUser,
 } from '../../core/store/profile';
@@ -28,14 +28,9 @@ import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
 import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
 import {useFocusEffect} from '@react-navigation/native';
-import {deviceManager, sleep} from '../../utils/device.js';
 import {updateUser} from '../../utils/db/auth.js';
 import {$userStore} from '../../core/store/user.js';
 import {useTranslation} from 'react-i18next';
-import {$deviceSettingsStore} from '../../core/store/device';
-import {get} from 'lodash';
-import {Toast, ToastTitle, VStack, useToast} from '@gluestack-ui/themed';
-import {bufferToHex} from '../../utils/device.js';
 import {getCommand, getStartCommand} from '../../utils/commands';
 import useBle from '../../hooks/useBlePlx';
 import {$connectedDevice, initDevice} from '../../core/store/connectedDevice';
@@ -95,7 +90,6 @@ const s = StyleSheet.create({
 });
 
 const InstantBrewScreen = props => {
-  const devices = useStore($deviceSettingsStore);
   const theme = useStore($themeStore);
   const [modal, setModal] = useState(null);
   const teaAlarms = useStore($teaAlarmsStrore);
@@ -104,40 +98,7 @@ const InstantBrewScreen = props => {
   const [animationButton] = useState(new Animated.Value(0));
   const [animationCancelButton] = useState(new Animated.Value(0));
   const {writeValueWithResponse} = useBle();
-
-  const toast = useToast();
-
-  const showCommandSendToast = error => {
-    if (!error) {
-      toast.show({
-        placement: 'top',
-        duration: 5000,
-        render: () => {
-          return (
-            <Toast id={'dfuSuccessToast'} action="success" variant="accent">
-              <VStack space="lg">
-                <ToastTitle>Command to the machine send!</ToastTitle>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
-      return;
-    }
-    toast.show({
-      placement: 'top',
-      duration: 5000,
-      render: () => {
-        return (
-          <Toast action="error" variant="accent">
-            <VStack space="lg">
-              <ToastTitle>Can't send command to the machine!</ToastTitle>
-            </VStack>
-          </Toast>
-        );
-      },
-    });
-  };
+  const currentDevice = useStore($connectedDevice);
 
   const onPressStartButton = useCallback(() => {
     Animated.timing(animationButton, {
@@ -171,19 +132,26 @@ const InstantBrewScreen = props => {
 
   useFocusEffect(
     useCallback(() => {
-      getPressetsFx();
-      getUserFx();
-      getTeaAlarmsFx();
-      initThemeFx();
-      initDevice();
+      async function init() {
+        await getUserFx();
+        getPressetsFx();
+        getTeaAlarmsFx();
+        initThemeFx();
+        initDevice();
+      }
+      init();
     }, []),
   );
 
   useEffect(() => {
-    if (get(devices, 'length') === 1 && get(devices, '0.isCurrent', false)) {
-      deviceManager.setCurrentDevice(devices[0]);
+    if (!currentDevice) {
+      openIsConnectedModal();
+    } else {
+      setModal(null);
     }
-  }, [devices]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentDevice]);
 
   useEffect(() => {
     async function defaultUserSettings() {
@@ -204,7 +172,7 @@ const InstantBrewScreen = props => {
 
   const {
     setBrewingTime,
-    setIsCleaning,
+    // setIsCleaning,
     setWaterAmount,
     setTemperature,
     brewingTime,
@@ -236,11 +204,29 @@ const InstantBrewScreen = props => {
           tea_type: selected.tea_type,
         });
         setModal(null);
-
-        showCommandSendToast();
       },
       closeModal: async () => {
         startBrewing(temperature, brewingTime.value, waterAmount);
+        setModal(null);
+      },
+      dontShowAgainText: t('InstantBrewing.DontShowAgain'),
+    });
+  };
+
+  const openIsConnectedModal = () => {
+    setModal({
+      opened: true,
+      withCancelButton: true,
+      cancelButtonText: t('InstantBrewing.No'),
+      modalTitle: t('InstantBrewing.NoDeviceTitle'),
+      confirmationText: <Text>{t('InstantBrewing.NoDeviceDesc')} </Text>,
+      confirmationButtonText: t('InstantBrewing.Yes'),
+      withDontShowAgain: true,
+      onConfirm: async () => {
+        props.navigation.navigate('AddNewDeviceScreen');
+        setModal(null);
+      },
+      closeModal: async () => {
         setModal(null);
       },
       dontShowAgainText: t('InstantBrewing.DontShowAgain'),
@@ -273,6 +259,7 @@ const InstantBrewScreen = props => {
             <Pressable
               onPressIn={onPressStartButton}
               onLongPress={async () => {
+                Vibration.vibrate(100);
                 if (selected.id === 'new_presset') {
                   await addPressetToStoreFx({
                     brewing_data: {
@@ -293,16 +280,7 @@ const InstantBrewScreen = props => {
                 if (selected.id === 'instant_brew') {
                   const command = getCommand(0x40, [], 0x0f);
 
-                  await deviceManager
-                    .writeValueAndNotify(command)
-                    .then(async () => {
-                      await sleep(2000);
-                      showCommandSendToast();
-                    })
-                    .catch(err => {
-                      console.error('Start Brewing error', err);
-                      showCommandSendToast(true);
-                    });
+                  await writeValueWithResponse(command);
                   return;
                 }
 
@@ -319,6 +297,7 @@ const InstantBrewScreen = props => {
                 } else {
                   startBrewing(temperature, brewingTime.value, waterAmount);
                 }
+                Vibration.vibrate(100);
               }}
               delayLongPress={500}
               style={s.brewButton}>
@@ -335,9 +314,9 @@ const InstantBrewScreen = props => {
             <Pressable
               delayLongPress={500}
               onLongPress={async () => {
+                Vibration.vibrate(100);
                 const command = getCommand(0x42, [], 4, false);
-                console.log(command);
-                writeValueWithResponse(command);
+                await writeValueWithResponse(command);
               }}
               onPressIn={onPressCancelButton}
               style={s.dispenseButton}>

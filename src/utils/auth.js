@@ -31,6 +31,14 @@ export const signInWithGoogle = async () => {
   // GoogleSignin.configure({webClientId: '',});
 };
 
+export const anonymousSignIn = async () => {
+  const user = await auth().signInAnonymously();
+  if (user) {
+    await createUser(null, user.user.uid);
+    setUser(user);
+  }
+};
+
 export const isSignedIn = async () => {
   auth().onAuthStateChanged(user => {
     setUser(user);

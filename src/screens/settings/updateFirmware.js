@@ -74,7 +74,7 @@ const UpdateFirmwareScreen = props => {
         }
         const file = get(item.file, lang, get(item.file, 'en', item.file));
         const name = get(item.name, lang, get(item.name, 'en', item.name));
-        console.log(name, 'firmwareNAME');
+
         const descriptionBase = getTextFromFirmware(description, 'base', lang);
         const descriptionBugFix = getTextFromFirmware(
           description,

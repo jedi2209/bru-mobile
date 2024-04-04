@@ -10,11 +10,8 @@ import {
 } from '@gluestack-ui/themed';
 
 import {useStore} from 'effector-react';
-import {ActivityIndicator} from 'react-native-paper';
 
 import Wrapper from '@comp/Wrapper';
-
-import {deviceManager} from '@utils/device';
 
 import {colors, basicStyles} from '../../core/const/style';
 import BruMachine from './components/BruMachine';
@@ -25,7 +22,7 @@ import {$deviceSettingsStore} from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
 import {useTranslation} from 'react-i18next';
-import {$langSettingsStore} from '../../core/store/lang';
+// import {$langSettingsStore} from '../../core/store/lang';
 import useBle from '../../hooks/useBlePlx';
 import {getFileURL, getFirmwareData} from '../../utils/firmware';
 import {$connectedDevice} from '../../core/store/connectedDevice';
@@ -84,9 +81,6 @@ import {$connectedDevice} from '../../core/store/connectedDevice';
 // resetDevice();
 
 const SettingsScreen = props => {
-  const devices = useStore($deviceSettingsStore);
-
-  const [isLoading, setLoading] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
@@ -100,17 +94,16 @@ const SettingsScreen = props => {
   const [fileName, setFileName] = useState('');
   const {
     readValue,
-    cancelCommand,
     checkConnection,
     connectToDevice,
-    scanForPeripherals,
     requestBluetoothPermission,
   } = useBle();
 
   useEffect(() => {
+    requestBluetoothPermission();
     async function getFirmware() {
       const currentFirmware = await readValue('firmwareRevision');
-      console.log(currentFirmware);
+
       const data = await getFirmwareData();
       const availableFirmware = data.find(
         firmwareData => firmwareData.testAvailable,
@@ -126,9 +119,7 @@ const SettingsScreen = props => {
       const file = await getFileURL('firmware/' + availableFirmware.file);
       setFilePath(file);
       setFileName(availableFirmware.file);
-      // setFileName(availableFirmware)
       if (availableFirmware.name !== currentFirmware) {
-        console.log('Need update');
         setIsConfirmModalOpen(true);
       }
     }
@@ -136,21 +127,8 @@ const SettingsScreen = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading) {
-    return (
-      <Wrapper {...props}>
-        <ActivityIndicator
-          size="large"
-          color="white"
-          style={{marginTop: '20%'}}
-        />
-      </Wrapper>
-    );
-  }
-
   const _onPressUpdate = () => {
     navigation.navigate('UpdateFirmwareScreen', {
-      device: deviceManager.device,
       fileName,
       filePath,
     });
@@ -183,7 +161,6 @@ const SettingsScreen = props => {
       <Button
         onPress={async () => {
           const isConnected = await checkConnection();
-          console.log(isConnected);
           if (!isConnected) {
             try {
               await connectToDevice(currentDevice.id);
@@ -242,10 +219,10 @@ const SettingsScreen = props => {
         opened={isConfirmModalOpen}
         closeModal={() => setIsConfirmModalOpen(false)}
         withCancelButton
-        cancelButtonText="No"
-        confirmationButtonText="Confirm"
-        modalTitle="Firmware update"
-        confirmationText="The BRU app will download and install the latest firmware to your BRU machine. Please make sure you are connected to Wi Fi to avoid additional charges."
+        cancelButtonText={t('Settings.No')}
+        confirmationButtonText={t('Settings.Confirm')}
+        modalTitle={t('Settings.FirmwareUpdate')}
+        confirmationText={t('Settings.BruAppWillDownload')}
       />
       <NotificationModal
         opened={notificationModalOpened}

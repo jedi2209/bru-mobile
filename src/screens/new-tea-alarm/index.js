@@ -327,7 +327,8 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
               navigation.navigate('TeaAlarm');
             }}
             style={[s.button, s.saveButton]}>
-            <Text style={[s.buttonText, currLang === 'de' && s.buttonTextDe]}>
+            <Text
+              style={[s.buttonText, currLang === 'de_US' && s.buttonTextDe]}>
               {t('TeaAlarm.SaveTeaAlarm')}
             </Text>
           </TouchableOpacity>

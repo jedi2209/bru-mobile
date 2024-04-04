@@ -106,7 +106,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
             style={[
               s.teaAlarmText,
               theme === 'dark' && basicStyles.darkText,
-              lang === 'de' && {fontSize: 12.5},
+              lang === 'de_US' && {fontSize: 12.5},
             ]}>
             {t('TeaAlarm.TeaAlarmSet')}{' '}
             {`${dayjs.duration(prepare_by.hours, 'hours').format('HH')}:${dayjs
@@ -145,7 +145,7 @@ const TeaAlarmInfo = ({id, prepare_by, by, presset}) => {
           <TouchableOpacity
             onPress={() => navigation.navigate('NewTeaAlarm', {id})}>
             {/* eslint-disable-next-line react-native/no-inline-styles */}
-            <PenIcon style={{marginHorizontal: lang === 'de' ? 10 : 16}} />
+            <PenIcon style={{marginHorizontal: lang === 'de_US' ? 10 : 16}} />
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
