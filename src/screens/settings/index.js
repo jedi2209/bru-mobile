@@ -22,63 +22,9 @@ import {$deviceSettingsStore} from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
 import {useTranslation} from 'react-i18next';
-// import {$langSettingsStore} from '../../core/store/lang';
 import useBle from '../../hooks/useBlePlx';
 import {getFileURL, getFirmwareData} from '../../utils/firmware';
 import {$connectedDevice} from '../../core/store/connectedDevice';
-
-// import {DEVICE_MANAGER_CONFIG} from '@const';
-// const deviceManager = new Device(DEVICE_MANAGER_CONFIG);
-
-// const _renderItem = ({item, _onPressUpdate, _onPressUnpair}) => {
-//   return (
-//     <HStack key={item?.id} justifyContent={'space-between'}>
-//       <Text
-//         style={{
-//           color: 'white',
-//           backgroundColor: 'green',
-//           padding: 10,
-//           alignSelf: 'center',
-//           borderRadius: 5,
-//         }}>
-//         {item?.name}
-//       </Text>
-//       <HStack>
-//         <ButtonGroup space={'xl'}>
-//           <Button
-//             variant={'solid'}
-//             action={'secondary'}
-//             onPress={_onPressUpdate}>
-//             <Icon name="cog-refresh" size={20} color="white" />
-//           </Button>
-//           <TouchableOpacity
-//             onPress={() => {
-//               Alert.alert(
-//                 'Are you sure?',
-//                 'After unpair device you should pair it again.',
-//                 [
-//                   {
-//                     text: 'Cancel',
-//                     style: 'cancel',
-//                   },
-//                   {
-//                     text: 'Unpair',
-//                     style: 'destructive',
-//                     onPress: () =>
-//                       _onPressUnpair(get(deviceManager, 'device.id', null)),
-//                   },
-//                 ],
-//               );
-//             }}>
-//             <Icon name="trash-can-outline" size={20} color="white" />
-//           </TouchableOpacity>
-//         </ButtonGroup>
-//       </HStack>
-//     </HStack>
-//   );
-// };
-
-// resetDevice();
 
 const SettingsScreen = props => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);

@@ -13,8 +13,7 @@ import useBle from '../../hooks/useBlePlx';
 import {Alert, StyleSheet, Text, View} from 'react-native';
 import {downloadFile, getFileURL, getFirmwareData} from '../../utils/firmware';
 import {DFUEmitter} from 'react-native-nordic-dfu';
-import {getCommand} from '../../utils/commands';
-import {sleep} from '../../utils/device';
+import {getCommand, sleep} from '../../utils/commands';
 
 const _renderProgressBar = value => {
   return (

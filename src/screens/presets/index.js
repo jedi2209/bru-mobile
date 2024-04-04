@@ -14,7 +14,7 @@ import TrashIconOutlined from '../../core/components/icons/TrashIconOutlined';
 import PenIcon from '../../core/components/icons/PenIcon';
 import {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import {Switch} from '@gluestack-ui/themed';
+// import {Switch} from '@gluestack-ui/themed';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
@@ -29,9 +29,10 @@ import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
-import {deviceManager, getStartCommand, sleep} from '../../utils/device';
 import {useTranslation} from 'react-i18next';
 import {$langSettingsStore} from '../../core/store/lang';
+import useBle from '../../hooks/useBlePlx';
+import {getStartCommand} from '../../utils/commands';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -161,6 +162,12 @@ const s = StyleSheet.create({
   modalPressetName: {
     color: colors.green.mid,
   },
+  buttonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    justifyContent: 'space-between',
+  },
 });
 
 const PresetsScreen = props => {
@@ -181,7 +188,7 @@ const PresetsScreen = props => {
 
   const {
     setBrewingTime,
-    setIsCleaning,
+    // setIsCleaning,
     setWaterAmount,
     setTemperature,
     brewingTime,
@@ -189,6 +196,8 @@ const PresetsScreen = props => {
     isCleaning,
     temperature,
   } = useBrewingData(selected);
+
+  const {writeValueWithResponse} = useBle();
 
   useEffect(() => {
     if (selected) {
@@ -343,15 +352,7 @@ const PresetsScreen = props => {
                   [temperature, brewingTime.value, waterAmount],
                   0x0f,
                 );
-
-                await deviceManager
-                  .writeValueAndNotify(command)
-                  .then(async () => {
-                    await sleep(2000);
-                  })
-                  .catch(err => {
-                    console.error('Start Brewing error', err);
-                  });
+                await writeValueWithResponse(command);
               }}
               style={s.brewButton}>
               <Text style={s.buttonText}>{t('InstantBrewing.BrewIt')}</Text>
@@ -415,15 +416,7 @@ const PresetsScreen = props => {
         </View>
       )} */}
 
-      <View
-        style={[
-          {
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: 15,
-            justifyContent: 'space-between',
-          },
-        ]}>
+      <View style={s.buttonContainer}>
         {mode !== 'list' && (
           <TouchableOpacity
             onPress={async () => {

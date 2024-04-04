@@ -6,7 +6,6 @@ import {
   headerTitle,
 } from '@nav/NavigationBottom';
 
-import UpdateFirmwareProgressScreen from '@screens/settings/updateFirmwareProgress';
 import {default as CustomHeader} from '../components/Header';
 import UpdateScreen from '../../screens/downloadingUpdate';
 // import AuthorizationScreen from '../../screens/authorization';
@@ -50,19 +49,6 @@ const NavMain = props => {
             }}
             options={{
               headerBackTitle: 'Back',
-              headerShown: false,
-              headerTitleAlign: 'center',
-              headerTitle,
-            }}
-          />
-          <Stack.Screen
-            name="UpdateFirmwareProgressScreen"
-            component={UpdateFirmwareProgressScreen}
-            initialParams={{
-              scroll: false,
-            }}
-            options={{
-              headerBackVisible: false,
               headerShown: false,
               headerTitleAlign: 'center',
               headerTitle,

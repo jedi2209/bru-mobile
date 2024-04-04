@@ -1,3 +1,5 @@
+const defaultTimeout = 1000;
+
 export const getCommand = (cmd = 0x40, data = [], len = 0) => {
   const defaultData = new Uint8Array([0xff, len, cmd]);
   const command = [...defaultData, ...data];
@@ -50,6 +52,7 @@ const _calcChecksum = (dat, len) => {
     chksum += dat[i];
   }
   chksum = 0 - chksum;
+  // eslint-disable-next-line no-bitwise
   chksum ^= 0x3a;
   chksum = new Uint8Array([chksum])[0];
   return chksum;
@@ -59,7 +62,12 @@ export const bufferToHex = buffer => {
   var s = '',
     h = '0123456789ABCDEF';
   new Uint8Array(buffer).forEach(v => {
+    // eslint-disable-next-line no-bitwise
     s += h[v >> 4] + h[v & 15];
   });
   return s;
+};
+
+export const sleep = (ms = defaultTimeout) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
 };

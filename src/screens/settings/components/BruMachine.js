@@ -67,18 +67,14 @@ const BruMachine = ({item}) => {
   const [newDevice, setNewDevice] = useState('');
 
   useEffect(() => {
-    async function fetch() {
-      setDeviceName(user.deviceName || item.name);
-    }
-    fetch();
+    setDeviceName(user.deviceName || item.name);
   }, [item.name, user.deviceName]);
 
   useEffect(() => {
     setNewDevice(deviceName);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEdit]);
+  }, [deviceName, isEdit]);
 
-  const changeDeviceName = newDeviceNameName => {
+  const changeDeviceName = () => {
     updateUser(user.uid, {deviceName: newDevice});
   };
 

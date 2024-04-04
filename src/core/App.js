@@ -23,6 +23,7 @@ import {$themeStore} from './store/theme';
 import {useStore} from 'effector-react';
 import {isSignedIn} from '../utils/auth';
 import Toast from 'react-native-toast-message';
+import {firebase} from '@react-native-firebase/firestore';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -63,38 +64,38 @@ if (__DEV__) {
 
 Sentry.init(sentryParams);
 
-// const _appCheckInit = async () => {
-//   const connectionStatus = await isInternet();
-//   if (!connectionStatus) {
-//     return false;
-//   }
-//   if (Platform.OS === 'android') {
-//     const rnfbProvider = firebase
-//       .appCheck()
-//       .newReactNativeFirebaseAppCheckProvider();
-//     rnfbProvider.configure(FIREBASE_SETTINGS.appCheck);
-//     try {
-//       firebase
-//         .appCheck()
-//         .initializeAppCheck({
-//           provider: rnfbProvider,
-//           isTokenAutoRefreshEnabled: true,
-//         })
-//         .then(async () => {
-//           try {
-//             const {token} = await firebase.appCheck().getToken(true);
-//             if (token.length > 0) {
-//               console.log('AppCheck verification passed');
-//             }
-//           } catch (error) {
-//             console.log('AppCheck verification failed', error);
-//           }
-//         });
-//     } catch (error) {
-//       console.error('AppCheck verification failed');
-//     }
-//   }
-// };
+const _appCheckInit = async () => {
+  const connectionStatus = await isInternet();
+  if (!connectionStatus) {
+    return false;
+  }
+  if (Platform.OS === 'android') {
+    const rnfbProvider = firebase
+      .appCheck()
+      .newReactNativeFirebaseAppCheckProvider();
+    rnfbProvider.configure(FIREBASE_SETTINGS.appCheck);
+    try {
+      firebase
+        .appCheck()
+        .initializeAppCheck({
+          provider: rnfbProvider,
+          isTokenAutoRefreshEnabled: true,
+        })
+        .then(async () => {
+          try {
+            const {token} = await firebase.appCheck().getToken(true);
+            if (token.length > 0) {
+              console.log('AppCheck verification passed');
+            }
+          } catch (error) {
+            console.log('AppCheck verification failed', error);
+          }
+        });
+    } catch (error) {
+      console.error('AppCheck verification failed');
+    }
+  }
+};
 
 const App = props => {
   const routeNameRef = useRef();
@@ -110,13 +111,9 @@ const App = props => {
     setTimeout(() => {
       SplashScreen.hide();
     }, 550);
-    // _appCheckInit();
+    _appCheckInit();
     analyticsLog('app_init', {os: Platform.OS, version: Platform.Version});
     fetchFirmwareMeta();
-    // BleManager.start({showAlert: false}).then(() => {
-    //   // Success code
-    //   console.info('#####\t\tBleManager.start => module initialized');
-    // });
   }, []);
 
   return (

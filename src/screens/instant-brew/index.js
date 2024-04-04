@@ -167,6 +167,7 @@ const InstantBrewScreen = props => {
 
   const startBrewing = async (temp = 0, time = 0, water = 0) => {
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
+    console.log(command);
     writeValueWithResponse(command);
   };
 
