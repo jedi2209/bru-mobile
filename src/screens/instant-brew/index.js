@@ -23,6 +23,7 @@ import {
   getUserFx,
   updateProfileUser,
 } from '../../core/store/profile';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
 import {usePressetList} from '../../hooks/usePressetList';
@@ -137,21 +138,30 @@ const InstantBrewScreen = props => {
         getPressetsFx();
         getTeaAlarmsFx();
         initThemeFx();
-        initDevice();
+        await initDevice();
       }
       init();
     }, []),
   );
 
   useEffect(() => {
-    if (!currentDevice) {
-      openIsConnectedModal();
-    } else {
-      setModal(null);
+    async function getDevice() {
+      const device = await AsyncStorage.getItem('previos');
+      if (!device) {
+        openIsConnectedModal();
+      }
     }
+    getDevice();
+    // setTimeout(() => {
+    //   if (!currentDevice) {
+    //     openIsConnectedModal();
+    //   } else {
+    //     setModal(null);
+    //   }
+    // }, 3000);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentDevice]);
+  }, []);
 
   useEffect(() => {
     async function defaultUserSettings() {

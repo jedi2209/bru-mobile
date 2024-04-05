@@ -12,11 +12,15 @@ const InitializeScreen = () => {
   useEffect(() => {
     async function signIn() {
       await anonymousSignIn();
-      const isInitDone = AsyncStorage.getItem('isInitDone');
+      console.log('INITINITINITINIT');
+      const isInitDone = JSON.parse(await AsyncStorage.getItem('isInitDone'));
       if (!isInitDone) {
         await addInitPressets();
       }
-      await AsyncStorage.setItem('isInitDone', true);
+      await AsyncStorage.setItem(
+        'isInitDone',
+        JSON.stringify({isInitDone: true}),
+      );
     }
     signIn();
   }, []);

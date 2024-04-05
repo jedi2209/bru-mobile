@@ -5,7 +5,11 @@ const storeName = 'previos';
 
 export const initDevice = createEffect(async () => {
   const device = await AsyncStorage.getItem(storeName);
-  return JSON.parse(device);
+  if (device) {
+    return JSON.parse(device);
+  } else {
+    return device;
+  }
 });
 export const setDevice = createEffect(async device => {
   await AsyncStorage.setItem(storeName, JSON.stringify(device));
