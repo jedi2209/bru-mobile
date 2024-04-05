@@ -12,7 +12,6 @@ const InitializeScreen = () => {
   useEffect(() => {
     async function signIn() {
       await anonymousSignIn();
-      console.log('INITINITINITINIT');
       const isInitDone = JSON.parse(await AsyncStorage.getItem('isInitDone'));
       if (!isInitDone) {
         await addInitPressets();
