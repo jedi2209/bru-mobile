@@ -53,10 +53,14 @@ const s = StyleSheet.create({
     marginTop: 30,
   },
   brewButton: {
-    ...basicStyles.backgroundButton,
+    backgroundColor: 'rgba(42, 42, 42, 0.40)',
+    paddingVertical: 15,
+    borderRadius: 90,
     paddingHorizontal: 57,
     position: 'relative',
     overflow: 'hidden',
+    borderColor: 'rgba(113, 136, 58, 1)',
+    borderWidth: 1,
   },
   buttonText: {
     ...basicStyles.backgroundButtonText,
@@ -123,7 +127,7 @@ const InstantBrewScreen = props => {
 
   const backgroundColor = animationButton.interpolate({
     inputRange: [0, 1],
-    outputRange: [colors.green.mid, '#A7CA56'],
+    outputRange: ['rgba(42, 42, 42, 0.40)', colors.green.mid],
   });
 
   const cancelBackgroundColor = animationCancelButton.interpolate({
@@ -269,6 +273,7 @@ const InstantBrewScreen = props => {
           <View style={s.buttons}>
             <Pressable
               onPressIn={onPressStartButton}
+              onPressOut={() => animationButton.stopAnimation()}
               onLongPress={async () => {
                 Vibration.vibrate(100);
                 if (selected.id === 'new_presset') {
@@ -329,6 +334,7 @@ const InstantBrewScreen = props => {
                 const command = getCommand(0x42, [], 4, false);
                 await writeValueWithResponse(command);
               }}
+              onPressOut={() => animationCancelButton.stopAnimation()}
               onPressIn={onPressCancelButton}
               style={s.dispenseButton}>
               <Animated.View

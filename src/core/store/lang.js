@@ -17,7 +17,7 @@ const deviceLanguage =
     ? NativeModules.SettingsManager.settings.AppleLocale ||
       NativeModules.SettingsManager.settings.AppleLanguages[0] //iOS 13
     : NativeModules.I18nManager.localeIdentifier;
-
+console.log(deviceLanguage);
 export const $langSettingsStore = createStore(LANGUAGE.default.code, {
   name: storeName,
 })
@@ -30,6 +30,7 @@ export const $langSettingsStore = createStore(LANGUAGE.default.code, {
 
 const fetchLang = createEffect({
   async handler() {
+    console.log(hasTranslation(deviceLanguage));
     if (hasTranslation(deviceLanguage)) {
       i18n.changeLanguage(deviceLanguage);
       return deviceLanguage;

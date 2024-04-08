@@ -344,7 +344,7 @@ const PresetsScreen = props => {
           {mode === 'list' && isCleaning && (
             <Text style={s.cleaningText}>+ Cleaning</Text>
           )}
-          {mode === 'list' && (
+          {/* {mode === 'list' && (
             <TouchableOpacity
               onPress={async () => {
                 const command = getStartCommand(
@@ -357,7 +357,7 @@ const PresetsScreen = props => {
               style={s.brewButton}>
               <Text style={s.buttonText}>{t('InstantBrewing.BrewIt')}</Text>
             </TouchableOpacity>
-          )}
+          )} */}
         </LinearGradient>
       </View>
       {/* {mode === 'list' ? (

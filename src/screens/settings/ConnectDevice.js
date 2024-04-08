@@ -17,11 +17,16 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import useBle from '../../hooks/useBlePlx';
 import {getFileURL, getFirmwareData} from '../../utils/firmware';
 import {useTranslation} from 'react-i18next';
+import {useStore} from 'effector-react';
+import {$themeStore} from '../../core/store/theme';
 
 const StepItem = ({step, setStep, navigation}) => {
   const [filePath, setFilePath] = useState('');
   const [fileName, setFileName] = useState('');
   const [currentFirmware, setCurrentFirmware] = useState('');
+  const theme = useStore($themeStore);
+  const isDark = theme === 'dark';
+
   const toast = useToast();
   const {t} = useTranslation();
   const stepsContent = [
@@ -183,7 +188,7 @@ const StepItem = ({step, setStep, navigation}) => {
             {isScanning ? (
               <LottieView
                 source={require('@assets/lottie/Animation-1697316689983.lottie')}
-                height={220}
+                height={240}
                 autoPlay
                 loop
               />
@@ -324,11 +329,19 @@ const StepItem = ({step, setStep, navigation}) => {
         />
       ) : null}
       <View style={styles.stepTextContainer}>
-        <Heading size="md" mt="$9" mb="$6">
+        <Heading
+          size="md"
+          mt="$9"
+          mb="$6"
+          // eslint-disable-next-line react-native/no-inline-styles
+          style={{color: isDark ? 'white' : 'black'}}>
           {stepsContent[step].header}
         </Heading>
         {stepsContent[step].text ? (
-          <Text style={styles.textColor}>{stepsContent[step].text}</Text>
+          // eslint-disable-next-line react-native/no-inline-styles
+          <Text style={[styles.textColor, {color: isDark ? 'white' : 'black'}]}>
+            {stepsContent[step].text}
+          </Text>
         ) : null}
       </View>
       <View style={styles.buttonContainer}>
