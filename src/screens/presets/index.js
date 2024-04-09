@@ -31,8 +31,6 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
 import {useTranslation} from 'react-i18next';
 import {$langSettingsStore} from '../../core/store/lang';
-import useBle from '../../hooks/useBlePlx';
-import {getStartCommand} from '../../utils/commands';
 
 const s = StyleSheet.create({
   titleContainer: {
@@ -197,8 +195,6 @@ const PresetsScreen = props => {
     temperature,
   } = useBrewingData(selected);
 
-  const {writeValueWithResponse} = useBle();
-
   useEffect(() => {
     if (selected) {
       setNewTeaName(selected.tea_type);
@@ -341,9 +337,9 @@ const PresetsScreen = props => {
             disabled={mode === 'list'}
             type="pressets"
           />
-          {mode === 'list' && isCleaning && (
+          {/* {mode === 'list' && isCleaning && (
             <Text style={s.cleaningText}>+ Cleaning</Text>
-          )}
+          )} */}
           {/* {mode === 'list' && (
             <TouchableOpacity
               onPress={async () => {

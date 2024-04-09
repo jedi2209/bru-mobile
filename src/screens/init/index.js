@@ -1,25 +1,21 @@
 import React, {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {colors} from '../../core/const/style';
+import auth from '@react-native-firebase/auth';
 
 import {Text} from 'react-native';
 import Logo from '../../core/components/icons/Logo';
 import {anonymousSignIn} from '../../utils/auth';
 import {addInitPressets} from '../../utils/db/pressets';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const InitializeScreen = () => {
   useEffect(() => {
     async function signIn() {
-      await anonymousSignIn();
-      const isInitDone = JSON.parse(await AsyncStorage.getItem('isInitDone'));
-      if (!isInitDone) {
+      const isAuth = await auth().currentUser.getIdToken();
+      if (!isAuth) {
+        await anonymousSignIn();
         await addInitPressets();
       }
-      await AsyncStorage.setItem(
-        'isInitDone',
-        JSON.stringify({isInitDone: true}),
-      );
     }
     signIn();
   }, []);

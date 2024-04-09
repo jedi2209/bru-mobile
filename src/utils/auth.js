@@ -33,6 +33,7 @@ export const signInWithGoogle = async () => {
 
 export const anonymousSignIn = async () => {
   const user = await auth().signInAnonymously();
+
   if (user) {
     await createUser(null, user.user.uid);
     setUser(user);

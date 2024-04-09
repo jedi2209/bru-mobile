@@ -68,12 +68,12 @@ export const UpdateFirmwareScreen = props => {
         file = await getFileURL('firmware/' + availableFirmware.file);
         nameOfFile = availableFirmware.file;
       }
-      console.log('downloading file');
+
       const fileDownloaded = await downloadFile(
         filePath || file,
         fileName || nameOfFile,
       );
-      console.log('downloaded file');
+
       setDownloadedFile(fileDownloaded);
       const command = getCommand(0x27, [], 4);
       await writeValueWithResponse(command);
@@ -153,7 +153,6 @@ export const UpdateFirmwareScreen = props => {
       }
       props.navigation.navigate('Settings');
     } catch (error) {
-      console.log(error, 'DFU ERROR UPDATESCREEN');
       Alert.alert(error.message);
     }
   };

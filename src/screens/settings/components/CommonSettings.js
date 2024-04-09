@@ -122,6 +122,7 @@ const CommonSettings = () => {
   const language = useStore($langSettingsStore);
   const [currLanguage, setCurrLanguage] = useState(language);
   const theme = useStore($themeStore);
+
   // const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
   const {t} = useTranslation();

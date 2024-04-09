@@ -46,7 +46,7 @@ export const updateUser = async (uid, userData) => {
     await usersCollection.doc(uid).update(userData);
     updateProfileUser({uid, ...userData});
   } catch (error) {
-    console.log(error);
+    console.log(error, 'updateUser');
   }
 };
 

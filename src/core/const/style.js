@@ -72,7 +72,7 @@ const tabBarStyle = {
     height: 65,
     borderTopWidth: 0,
     // bottom: 0,
-    paddingHorizontal: 19,
+    paddingHorizontal: 50,
     position: 'absolute',
     shadowColor: colors.brown,
     shadowOffset: {

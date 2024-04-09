@@ -25,7 +25,10 @@
     "No": "Nein",
     "Yes": "Ja",
     "NoDeviceDesc": "Es ist kein Gerät angeschlossen, möchten Sie eine Verbindung herstellen?",
-    "NoDeviceTitle": "Kein angeschlossenes Gerät"
+    "NoDeviceTitle": "Kein angeschlossenes Gerät",
+    "Attention": "Achtung!",
+    "DoYouReallyWant": "Möchten Sie die aktuelle Voreinstellung wirklich löschen",
+    "YesDelete": "Ja, Löschen"
   },
   "TeaAlarm": {
     "Title": "Teealarm",

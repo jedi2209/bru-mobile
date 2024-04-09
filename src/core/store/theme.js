@@ -7,7 +7,11 @@ const defaultTheme = Appearance.getColorScheme();
 
 export const setThemeFx = createEffect(async theme => {
   const uid = auth().currentUser.uid;
-  await updateUser(uid, {theme});
+  try {
+    await updateUser(uid, {theme});
+  } catch (error) {
+    console.log(error);
+  }
   return theme;
 });
 export const initThemeFx = createEffect(async () => {

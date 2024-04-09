@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {createStore, createEvent, createEffect, forward} from 'effector';
+import {createStore, createEvent, createEffect} from 'effector';
 
 import i18n from '../lang/index';
 import {LANGUAGE} from '../const/index';
@@ -25,6 +25,7 @@ export const initLanguage = createEffect(async () => {
     return savedLang || deviceLanguage;
   } else {
     i18n.changeLanguage('en_US');
+    await AsyncStorage.setItem(storeName, 'en_US');
     return 'en_US';
   }
 });

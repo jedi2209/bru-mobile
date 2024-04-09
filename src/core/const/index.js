@@ -83,7 +83,7 @@ export const temperaturePickerData = units => [
   {label: units === 'metric' ? '85°C' : '185°F', value: 9},
   {label: units === 'metric' ? '90°C' : '194°F', value: 10},
   {label: units === 'metric' ? '95°C' : '203°F', value: 11},
-  {label: units === 'metric' ? '100°C' : '212°F', value: 12},
+  {label: units === 'metric' ? 'Maximum' : 'Maximum', value: 12},
 ];
 
 export const timePickerData = () => {

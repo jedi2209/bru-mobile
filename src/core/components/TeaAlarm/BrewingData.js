@@ -25,7 +25,8 @@ const s = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderRadius: 10,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
   },
   pressetInfoScreen: {
     backgroundColor: 'transparent',

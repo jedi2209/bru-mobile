@@ -16,8 +16,9 @@ const PressetList = ({
       return [
         {
           brewing_data: {
-            time: {label: '0m 10s', value: 0, seconds: 10},
-            waterAmount: 0,
+            time: {label: '3m', seconds: 180, value: 17},
+            temperature: 9,
+            waterAmount: 4,
           },
           cleaning: false,
           id: 'instant_brew',
@@ -28,8 +29,9 @@ const PressetList = ({
         ...pressets,
         {
           brewing_data: {
-            time: 0,
-            waterAmount: 0,
+            time: {label: '3m', seconds: 180, value: 17},
+            temperature: 9,
+            waterAmount: 4,
           },
           cleaning: false,
           id: 'new_presset',

@@ -9,7 +9,7 @@ import {
 export const getPressetsFx = createEffect(async () => {
   const pressets = await getUserPressets();
 
-  return pressets.sort((a, b) => a.tea_type.localeCompare(b.tea_type));
+  return pressets.sort((x, y) => y.created_at - x.created_at);
 });
 
 export const addPressetToStoreFx = createEffect(async presset => {
@@ -29,7 +29,9 @@ export const deletePressetFx = createEffect(async id => {
 
 export const $pressetsStore = createStore([])
   .on(getPressetsFx.doneData, (_, pressets) => pressets)
-  .on(addPressetToStoreFx.doneData, (store, presset) => [...store, presset])
+  .on(addPressetToStoreFx.doneData, (store, presset) =>
+    [...store, presset].sort((x, y) => y.created_at - x.created_at),
+  )
   .on(updatePressetFx.doneData, (store, newPresset) =>
     store.map(presset => {
       if (presset.id === newPresset.id) {

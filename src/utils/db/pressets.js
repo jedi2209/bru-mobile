@@ -16,6 +16,7 @@ const initPressets = [
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fgreen_tea.png?alt=media&token=a2e797e9-9e91-49bc-b309-7c257c707712',
     tea_type: 'Green Tea',
+    created_at: 0,
   },
   {
     brewing_data: {
@@ -28,6 +29,7 @@ const initPressets = [
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fblack_tea.png?alt=media&token=da8e5f16-87d1-409d-9c5a-c65171c81563',
     tea_type: 'Black Tea',
+    created_at: 0,
   },
   {
     brewing_data: {
@@ -40,6 +42,7 @@ const initPressets = [
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fpuer_tea.png?alt=media&token=aae89e00-0272-4743-848e-e9be37a3d362',
     tea_type: 'Puer Tea',
+    created_at: 0,
   },
 ];
 

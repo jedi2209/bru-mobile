@@ -25,7 +25,10 @@
     "No": "No",
     "Yes": "Yes",
     "NoDeviceDesc": "There is no connected device, do you wish to connect?",
-    "NoDeviceTitle": "No connected device"
+    "NoDeviceTitle": "No connected device",
+    "Attention": "Attention!",
+    "DoYouReallyWant": "Do you really want to delete current preset",
+    "YesDelete": "Yes, Delete"
   },
   "TeaAlarm": {
     "Title": "Tea Alarm",
