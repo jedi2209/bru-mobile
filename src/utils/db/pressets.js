@@ -46,9 +46,9 @@ const initPressets = [
   },
 ];
 
-export const addInitPressets = async () => {
+export const addInitPressets = async uid => {
   try {
-    const uid = auth().currentUser.uid;
+    // const uid = auth().currentUser.uid;
 
     initPressets.forEach(async presset => {
       const newPresset = await pressetsCollection

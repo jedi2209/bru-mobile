@@ -214,6 +214,7 @@ const StepItem = ({step, setStep, navigation}) => {
                       if (!allDevices.length) {
                         setIsScanning(false);
                         stopDeviceScan();
+                        setStep(8);
                       }
                     }, 10000);
                   }
@@ -259,6 +260,40 @@ const StepItem = ({step, setStep, navigation}) => {
             }}>
             <ButtonText>{t('Connection.connectToDevice')}</ButtonText>
           </Button>
+        );
+      case 8:
+        return (
+          <>
+            <Button
+              disabled={isScanning}
+              style={styles.buttonBottom}
+              variant={'solid'}
+              action={'primary'}
+              size={'xl'}
+              onPress={async () => {
+                setIsScanning(true);
+                scanForPeripherals();
+
+                if (allDevices.length) {
+                  setStep(6);
+                }
+                setTimeout(() => {
+                  if (!allDevices.length) {
+                    stopDeviceScan();
+                    scanForPeripherals();
+                    setTimeout(() => {
+                      if (!allDevices.length) {
+                        setIsScanning(false);
+                        stopDeviceScan();
+                        setStep(8);
+                      }
+                    }, 10000);
+                  }
+                }, 10000);
+              }}>
+              <ButtonText>{t('Connection.Scan')}</ButtonText>
+            </Button>
+          </>
         );
       case 9:
         return (

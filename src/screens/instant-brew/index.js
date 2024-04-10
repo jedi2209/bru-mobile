@@ -50,6 +50,8 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
 import {$langSettingsStore} from '../../core/store/lang';
 
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+
 const s = StyleSheet.create({
   container: {
     marginTop: 40,
@@ -183,7 +185,6 @@ const InstantBrewScreen = props => {
   const [modal, setModal] = useState(null);
   const teaAlarms = useStore($teaAlarmsStrore);
   const user = useStore($userStore);
-  console.log(user.uid);
   const currLang = useStore($langSettingsStore);
   const {t} = useTranslation();
   const [animationButton] = useState(new Animated.Value(0));
@@ -203,7 +204,9 @@ const InstantBrewScreen = props => {
     isCleaning,
     temperature,
   } = useBrewingData(selected);
-
+  const [fadeAnim] = useState(new Animated.Value(1));
+  const [moveView] = useState(new Animated.ValueXY({x: 0, y: 0}));
+  const [isAnimated, setIsAnimated] = useState(false);
   const startBrewing = async (temp = 0, time = 0, water = 0) => {
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
     writeValueWithResponse(command);
@@ -337,7 +340,44 @@ const InstantBrewScreen = props => {
       // dontShowAgainText: t('InstantBrewing.DontShowAgain'),
     });
   };
-  console.log(image);
+
+  useEffect(() => {
+    if (selected?.id === 'instant_brew') {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+        Animated.timing(moveView, {
+          toValue: {
+            x: 0,
+            y: -150,
+          },
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+      ]);
+      setIsAnimated(true);
+    } else {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+        Animated.timing(moveView, {
+          toValue: {
+            x: 0,
+            y: 0,
+          },
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+      ]);
+      setIsAnimated(false);
+    }
+  }, [fadeAnim, moveView, selected]);
   return (
     <Wrapper {...props}>
       {modal ? <ConfirmationModal {...modal} /> : null}
@@ -349,113 +389,118 @@ const InstantBrewScreen = props => {
           data={pressets}
           withInitData
         />
-        {selected?.id !== 'instant_brew' ? (
-          <LinearGradient
-            colors={
-              isDarkMode
-                ? colors.gradient.pressetInfo.dark
-                : colors.gradient.pressetInfo.light
-            }
-            locations={[0, 0.01, 1]}
-            style={s.pressetInfo}>
-            <View style={s.pressetInfoHeader}>
-              {mode === 'view' && (
-                <TouchableOpacity
-                  disabled={!selected}
-                  onPress={() =>
-                    setModal({
-                      opened: true,
-                      withCancelButton: true,
-                      cancelButtonText: t('InstantBrewing.No'),
-                      modalTitle: 'Attention!',
-                      confirmationText: (
-                        <Text>
-                          {t('InstantBrewing.DoYouReallyWant')}{' '}
-                          <Text style={s.modalPressetName}>
-                            {selected?.tea_type}
-                          </Text>
-                          ?
-                        </Text>
-                      ),
-                      confirmationButtonText: t('InstantBrewing.YesDelete'),
-                      onConfirm: async () => {
-                        deletePressetFx(selected.id);
-                        setModal(null);
-                        setSelected(null);
-                      },
-                      closeModal: () => setModal(null),
-                    })
-                  }>
-                  <TrashIconOutlined width={24} height={24} fill="#B0B0B0" />
-                </TouchableOpacity>
-              )}
-              {mode !== 'view' ? (
-                <TextInput
-                  value={newTeaName}
-                  onChangeText={text => {
-                    setNewTeaName(text);
-                  }}
-                  style={s.teaNameInput}
-                />
-              ) : (
-                <Text style={s.teaName}>{selected?.tea_type}</Text>
-              )}
-              {mode === 'view' && (
-                <TouchableOpacity
-                  disabled={!selected}
-                  onPress={() => {
-                    setMode('edit');
-                    setNewTeaName(selected.tea_type);
-                  }}>
-                  <PenIcon width={24} height={24} />
-                </TouchableOpacity>
-              )}
-            </View>
-            {mode !== 'view' ? (
+        <AnimatedLinearGradient
+          colors={
+            isDarkMode
+              ? colors.gradient.pressetInfo.dark
+              : colors.gradient.pressetInfo.light
+          }
+          locations={[0, 0.01, 1]}
+          style={[s.pressetInfo, {opacity: fadeAnim}]}>
+          <View style={s.pressetInfoHeader}>
+            {mode === 'view' && (
               <TouchableOpacity
-                onPress={() => {
-                  ImagePicker.openPicker({
-                    width: 300,
-                    height: 400,
-                    cropping: true,
+                disabled={!selected}
+                onPress={() =>
+                  setModal({
+                    opened: true,
+                    withCancelButton: true,
+                    cancelButtonText: t('InstantBrewing.No'),
+                    modalTitle: 'Attention!',
+                    confirmationText: (
+                      <Text>
+                        {t('InstantBrewing.DoYouReallyWant')}{' '}
+                        <Text style={s.modalPressetName}>
+                          {selected?.tea_type}
+                        </Text>
+                        ?
+                      </Text>
+                    ),
+                    confirmationButtonText: t('InstantBrewing.YesDelete'),
+                    onConfirm: async () => {
+                      deletePressetFx(selected.id);
+                      setModal(null);
+                      setSelected(null);
+                    },
+                    closeModal: () => setModal(null),
                   })
-                    .then(pickedImage => {
-                      console.log(pickedImage);
-                      setImage(pickedImage.sourceURL);
-                    })
-                    .catch(err => {
-                      console.log(err);
-                    });
-                }}>
-                <Image
-                  resizeMode="cover"
-                  style={s.teaImage}
-                  source={
-                    selected?.tea_img || image
-                      ? {
-                          uri: image ? image : selected.tea_img,
-                        }
-                      : require('../../../assets/teaImages/emptyPressetImage.png')
-                  }
-                />
+                }>
+                <TrashIconOutlined width={24} height={24} fill="#B0B0B0" />
               </TouchableOpacity>
+            )}
+            {mode !== 'view' ? (
+              <TextInput
+                value={newTeaName}
+                onChangeText={text => {
+                  setNewTeaName(text);
+                }}
+                style={s.teaNameInput}
+              />
             ) : (
+              <Text style={s.teaName}>{selected?.tea_type}</Text>
+            )}
+            {mode === 'view' && (
+              <TouchableOpacity
+                disabled={!selected}
+                onPress={() => {
+                  setMode('edit');
+                  setNewTeaName(selected.tea_type);
+                }}>
+                <PenIcon width={24} height={24} />
+              </TouchableOpacity>
+            )}
+          </View>
+          {mode !== 'view' ? (
+            <TouchableOpacity
+              onPress={() => {
+                ImagePicker.openPicker({
+                  width: 300,
+                  height: 400,
+                  cropping: true,
+                })
+                  .then(pickedImage => {
+                    setImage(pickedImage.sourceURL);
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
+              }}>
               <Image
                 resizeMode="cover"
                 style={s.teaImage}
                 source={
-                  selected?.tea_img
+                  selected.id === 'new_presset'
+                    ? image
+                      ? {
+                          uri: image ? image : selected.tea_img,
+                        }
+                      : require('../../../assets/teaImages/emptyPressetImage.png')
+                    : selected?.tea_img || image
                     ? {
-                        uri: selected?.tea_img,
+                        uri: image ? image : selected.tea_img,
                       }
                     : require('../../../assets/teaImages/emptyPressetImage.png')
                 }
               />
-            )}
-          </LinearGradient>
-        ) : null}
-        <View style={s.innerContainer}>
+            </TouchableOpacity>
+          ) : (
+            <Image
+              resizeMode="cover"
+              style={s.teaImage}
+              source={
+                selected?.tea_img
+                  ? {
+                      uri: selected?.tea_img,
+                    }
+                  : require('../../../assets/teaImages/emptyPressetImage.png')
+              }
+            />
+          )}
+        </AnimatedLinearGradient>
+        <Animated.View
+          style={[s.innerContainer, {transform: [{translateY: moveView.y}]}]}>
           <BrewingData
+            isAnimated={isAnimated}
             waterAmount={waterAmount}
             setWaterAmount={setWaterAmount}
             brewingTime={brewingTime}
@@ -558,12 +603,10 @@ const InstantBrewScreen = props => {
                     return;
                   }
 
-                  const isChanged = !isEqual(selected, {
-                    brewing_data: {time: brewingTime, waterAmount, temperature},
-                    cleaning: isCleaning,
-                    id: selected.id,
-                    tea_img: selected.tea_img,
-                    tea_type: selected.tea_type,
+                  const isChanged = !isEqual(selected.brewing_data, {
+                    time: brewingTime,
+                    waterAmount,
+                    temperature,
                   });
 
                   if (isChanged) {
@@ -620,7 +663,7 @@ const InstantBrewScreen = props => {
               renderItem={({item}) => <TeaAlarmInfo {...item} />}
             />
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Wrapper>
   );

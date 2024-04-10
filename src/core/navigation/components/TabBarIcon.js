@@ -20,10 +20,10 @@ const styles = StyleSheet.create({
       textAlign: 'center',
       fontFamily: fonts.defaultFamily,
     },
-    en_US: {
+    en: {
       fontSize: 8,
     },
-    de_US: {
+    de: {
       fontSize: 7,
     },
   },

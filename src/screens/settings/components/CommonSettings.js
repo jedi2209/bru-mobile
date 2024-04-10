@@ -13,6 +13,8 @@ import {$profileStore, updateProfileUser} from '../../../core/store/profile';
 import openLink from '../../../helpers/openLink';
 import {useTranslation} from 'react-i18next';
 import {$langSettingsStore, setLanguage} from '../../../core/store/lang';
+import {setUser} from '@sentry/react-native';
+import {logout} from '../../../utils/auth';
 
 const s = StyleSheet.create({
   wrapper: {marginBottom: 50},
@@ -380,39 +382,39 @@ const CommonSettings = () => {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           {t('Settings.ChangeLanguage')}
         </Text>
         <View style={s.units}>
           <TouchableOpacity
             onPress={() => {
-              setCurrLanguage('en_US');
-              setLanguage('en_US');
+              setCurrLanguage('en');
+              setLanguage('en');
             }}
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
               s.unitLeft,
-              currLanguage === 'en_US' && s.selected,
+              currLanguage === 'en' && s.selected,
             ]}>
             <Text style={s.unitText}>EN</Text>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              setCurrLanguage('de_US');
-              setLanguage('de_US');
+              setCurrLanguage('de');
+              setLanguage('de');
             }}
             style={[
               s.unit,
               isDarkMode && s.darkUnit,
               s.unitRight,
-              currLanguage === 'de_US' && s.selected,
+              currLanguage === 'de' && s.selected,
             ]}>
             <Text style={s.unitText}>DE</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
       {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <TouchableOpacity
           onPress={async () => {

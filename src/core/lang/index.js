@@ -4,8 +4,8 @@ import en from './en.json';
 import de from './de.json';
 
 export const languageResources = {
-  en_US: {translation: en},
-  de_US: {translation: de},
+  en: {translation: en},
+  de: {translation: de},
 };
 
 i18n.use(initReactI18next).init({

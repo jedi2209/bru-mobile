@@ -36,7 +36,8 @@ export const anonymousSignIn = async () => {
 
   if (user) {
     await createUser(null, user.user.uid);
-    setUser(user);
+    await setUser(user.user);
+    return user;
   }
 };
 

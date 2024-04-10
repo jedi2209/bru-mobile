@@ -11,10 +11,10 @@ import {addInitPressets} from '../../utils/db/pressets';
 const InitializeScreen = () => {
   useEffect(() => {
     async function signIn() {
-      const isAuth = await auth().currentUser.getIdToken();
+      const isAuth = auth().currentUser;
       if (!isAuth) {
-        await anonymousSignIn();
-        await addInitPressets();
+        const user = await anonymousSignIn();
+        await addInitPressets(user.user.uid);
       }
     }
     signIn();

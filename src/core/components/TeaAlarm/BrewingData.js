@@ -20,14 +20,23 @@ import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
-  pressetInfo: {
+  pressetInfo: isAnimated => ({
     backgroundColor: colors.green.mid,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
-  },
+    ...(isAnimated
+      ? {
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+        }
+      : {
+          borderTopLeftRadius: 0,
+          borderTopRightRadius: 0,
+        }),
+  }),
   pressetInfoScreen: {
     backgroundColor: 'transparent',
   },
@@ -77,6 +86,7 @@ const BrewingData = ({
   temperature = 0,
   setTemperature = () => {},
   disabled = false,
+  isAnimated = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [temperatureIsOpened, setTemperatureIsOpened] = useState(false);
@@ -85,7 +95,11 @@ const BrewingData = ({
   const {t} = useTranslation();
 
   return (
-    <View style={[s.pressetInfo, type === 'pressets' && s.pressetInfoScreen]}>
+    <View
+      style={[
+        s.pressetInfo(isAnimated),
+        type === 'pressets' && s.pressetInfoScreen,
+      ]}>
       <TouchableOpacity disabled={disabled} onPress={() => setIsOpen(!isOpen)}>
         <TeaAlarmInfoItem
           type={type}
