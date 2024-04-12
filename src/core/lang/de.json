@@ -151,5 +151,22 @@
     "cancel": "Abbrechen",
     "send": "Senden",
     "modalSuccess": "Die Anfrage wurde gesendet. Wir werden Sie so schnell wie möglich kontaktieren."
+  },
+  "UpdateFirmware": {
+    "PleaseDont": "Bitte trennen Sie Ihr BRU-Gerät nicht von der Stromversorgung, bis die Firmware aktualisiert wurde.",
+    "UpdateCompleted": "✅ Aktualisierung ist abgeschlossen!",
+    "UpdateCompletedDesc": "Die Aktualisierung ist abgeschlossen. Bitte warten Sie ein paar Sekunden, bis BRU neu gestartet ist",
+    "CantDownload": "Datei kann nicht heruntergeladen werden",
+    "Downloading": "Herunterladen der BRU-Firmware",
+    "Connecting": "Verbindung zum Gerät herstellen",
+    "Success": "Wir haben Ihre Firmware erfolgreich aktualisiert",
+    "Error": "Während der Installation der Firmware ist ein Fehler aufgetreten, bitte versuchen Sie es später noch einmal",
+    "Updating": "Aktualisierung der Firmware..."
+  },
+  "Unpair": {
+    "AreYouSure": "Sind Sie sicher?",
+    "After": "Nachdem Sie das Gerät entkoppelt haben, sollten Sie es erneut koppeln.",
+    "Cancel": "Abbrechen",
+    "Unpair": "Unpaarig"
   }
 }

@@ -151,5 +151,22 @@
     "cancel": "Cancel",
     "send": "Send",
     "modalSuccess": "The request has been sent. We will contact you as soon as possible."
+  },
+  "UpdateFirmware": {
+    "PleaseDont": "Please do not disconnect your BRU machine from power until the firmware updated.",
+    "UpdateCompleted": "✅ Update is complete!",
+    "UpdateCompletedDesc": "Update is complete. Please wait a few seconds for BRU to reboot.",
+    "CantDownload": "Can't download file",
+    "Downloading": "Downloading BRU firmware",
+    "Connecting": "Connecting to the device",
+    "Success": "We succesfully update your firmware",
+    "Error": "Some error occured during firmware instalation please try again later",
+    "Updating": "Updating firmware..."
+  },
+  "Unpair": {
+    "AreYouSure": "Are you sure?",
+    "After": "After unpair device you should pair it again.",
+    "Cancel": "Cancel",
+    "Unpair": "Unpair"
   }
 }

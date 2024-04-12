@@ -151,5 +151,22 @@
     "cancel": "Annulla",
     "send": "Invia",
     "modalSuccess": "La richiesta è stata inviata. Ti contatteremo il prima possibile."
+  },
+  "UpdateFirmware": {
+    "PleaseDont": "Non scollegare la macchina BRU dall'alimentazione fino all'aggiornamento del firmware",
+    "UpdateCompleted": "✅ L'aggiornamento è completo!",
+    "UpdateCompletedDesc": "Aggiornamento completato. Attendere qualche secondo per il riavvio di BRU",
+    "CantDownload": "Impossibile scaricare il file",
+    "Downloading": "Download del firmware BRU",
+    "Connecting": "Collegamento al dispositivo",
+    "Success": "Abbiamo aggiornato con successo il firmware",
+    "Error": "Si è verificato un errore durante l'installazione del firmware, riprovare più tardi",
+    "Updating": "Aggiornamento del firmware..."
+  },
+  "Unpair": {
+    "AreYouSure": "Sei sicuro?",
+    "After": "Dopo aver disaccoppiato il dispositivo, è necessario accoppiarlo di nuovo",
+    "Cancel": "Annulla",
+    "Unpair": "Unpair"
   }
 }

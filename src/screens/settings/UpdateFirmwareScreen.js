@@ -17,6 +17,7 @@ import {getCommand, sleep} from '../../utils/commands';
 import {languages} from '../../helpers/hasTranslation';
 import {useStore} from 'effector-react';
 import {$langSettingsStore} from '../../core/store/lang';
+import {useTranslation} from 'react-i18next';
 
 const _renderProgressBar = value => {
   return (
@@ -26,23 +27,6 @@ const _renderProgressBar = value => {
   );
 };
 
-const getStatus = status => {
-  switch (status) {
-    case 'start':
-      return 'Downloading BRU firmware';
-    case 'connecting':
-      return 'Connecting to the device';
-    case 'final':
-      return 'We succesfully update your firmware';
-    case 'error':
-      return 'Some error occured during firmware instalation please try again later';
-    case 'updating':
-      return 'Updating firmware...';
-    default:
-      break;
-  }
-};
-
 export const UpdateFirmwareScreen = props => {
   const {fileName, filePath} = props.route.params;
   const [progress, setProgress] = useState(0);
@@ -50,6 +34,25 @@ export const UpdateFirmwareScreen = props => {
   const [downloadedFile, setDownloadedFile] = useState(null);
   const lang = useStore($langSettingsStore);
   const langIndex = languages.findIndex(item => item === lang);
+  const {t} = useTranslation();
+
+  const getStatus = status => {
+    switch (status) {
+      case 'start':
+        return t('UpdateFirmware.Downloading');
+      case 'connecting':
+        return t('UpdateFirmware.Connecting');
+      case 'final':
+        return t('UpdateFirmware.Success');
+      case 'error':
+        return t('UpdateFirmware.Error');
+      case 'updating':
+        return t('UpdateFirmware.Updating');
+      default:
+        break;
+    }
+  };
+
   const toast = useToast();
   const {
     scanDFU,
@@ -104,10 +107,20 @@ export const UpdateFirmwareScreen = props => {
     try {
       await connectToDFU(deviceDFU);
 
-      await s;
-
       if (!downloadedFile) {
-        Alert.alert("Can't download file");
+        toast.show({
+          placement: 'top',
+          duration: 3000,
+          render: () => {
+            return (
+              <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+                <VStack space="lg">
+                  <ToastTitle>{t('UpdateFirmware.CantDownload')}</ToastTitle>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
         return;
       }
       DFUEmitter.addListener(
@@ -142,10 +155,9 @@ export const UpdateFirmwareScreen = props => {
             return (
               <Toast id={'dfuSuccessToast'} action="success" variant="accent">
                 <VStack space="lg">
-                  <ToastTitle>✅ Update is complete!</ToastTitle>
+                  <ToastTitle>{t('UpdateFirmware.UpdateCompleted')}</ToastTitle>
                   <ToastDescription>
-                    Update is complete. Please wait a few seconds for BRU to
-                    reboot.
+                    {t('UpdateFirmware.UpdateCompletedDesc')}
                   </ToastDescription>
                 </VStack>
               </Toast>
@@ -169,10 +181,7 @@ export const UpdateFirmwareScreen = props => {
       <View style={s.container}>
         <Text style={s.mainText}>{getStatus(updateStatus)}</Text>
         {_renderProgressBar(parseInt(progress, 10))}
-        <Text style={s.secondaryText}>
-          Please do not disconnect your BRU machine from power until the
-          firmware updated.
-        </Text>
+        <Text style={s.secondaryText}>{t('UpdateFirmware.PleaseDont')}</Text>
       </View>
     </Wrapper>
   );

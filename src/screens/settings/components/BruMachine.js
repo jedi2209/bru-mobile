@@ -15,6 +15,7 @@ import {$themeStore} from '../../../core/store/theme';
 import useBle from '../../../hooks/useBlePlx';
 import {$profileStore} from '../../../core/store/profile';
 import {updateUser} from '../../../utils/db/auth';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   container: {
@@ -65,6 +66,7 @@ const BruMachine = ({item}) => {
   const [isEdit, setIsEdit] = useState(false);
   const {disconnectFromDevice} = useBle();
   const [newDevice, setNewDevice] = useState('');
+  const {t} = useTranslation();
 
   useEffect(() => {
     setDeviceName(user.deviceName || item.name);
@@ -114,21 +116,17 @@ const BruMachine = ({item}) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                Alert.alert(
-                  'Are you sure?',
-                  'After unpair device you should pair it again.',
-                  [
-                    {
-                      text: 'Cancel',
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Unpair',
-                      style: 'destructive',
-                      onPress: disconnectFromDevice,
-                    },
-                  ],
-                );
+                Alert.alert(t('Unpair.AreYouSure'), t('Unpair.After'), [
+                  {
+                    text: t('Unpair.Cancel'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: t('Unpair.Unpair'),
+                    style: 'destructive',
+                    onPress: disconnectFromDevice,
+                  },
+                ]);
               }}>
               <TrashIconOutlined
                 fill={isDarkMode ? colors.white : colors.green.mid}

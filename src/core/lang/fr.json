@@ -151,5 +151,22 @@
     "cancel": "Annuler",
     "send": "Envoyer",
     "modalSuccess": "Votre demande a été envoyée. Nous vous contacterons dès que possible."
+  },
+  "UpdateFirmware": {
+    "PleaseDont": "Veuillez ne pas déconnecter votre machine BRU de l'alimentation électrique jusqu'à ce que le micrologiciel soit mis à jour",
+    "UpdateCompleted": "✅ La mise à jour est terminée !",
+    "UpdateCompletedDesc": "La mise à jour est terminée. Veuillez attendre quelques secondes pour que le BRU redémarre",
+    "CantDownload": "Impossible de télécharger le fichier",
+    "Downloading": "Téléchargement du micrologiciel BRU",
+    "Connecting": "Connexion à l'appareil",
+    "Success": "Nous avons réussi à mettre à jour votre firmware",
+    "Error": "Une erreur s'est produite lors de l'installation du micrologiciel, veuillez réessayer plus tard",
+    "Updating": "Mise à jour du micrologiciel..."
+  },
+  "Unpair": {
+    "AreYouSure": "Êtes-vous sûr ?",
+    "After": "Après avoir désappairé l'appareil, vous devez l'appairer à nouveau",
+    "Cancel": "Annuler",
+    "Unpair": "Unpair"
   }
 }
