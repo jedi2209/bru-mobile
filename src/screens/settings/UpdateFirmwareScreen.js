@@ -14,6 +14,9 @@ import {Alert, StyleSheet, Text, View} from 'react-native';
 import {downloadFile, getFileURL, getFirmwareData} from '../../utils/firmware';
 import {DFUEmitter} from 'react-native-nordic-dfu';
 import {getCommand, sleep} from '../../utils/commands';
+import {languages} from '../../helpers/hasTranslation';
+import {useStore} from 'effector-react';
+import {$langSettingsStore} from '../../core/store/lang';
 
 const _renderProgressBar = value => {
   return (
@@ -45,7 +48,8 @@ export const UpdateFirmwareScreen = props => {
   const [progress, setProgress] = useState(0);
   const [updateStatus, setUpdateStatus] = useState('start');
   const [downloadedFile, setDownloadedFile] = useState(null);
-
+  const lang = useStore($langSettingsStore);
+  const langIndex = languages.findIndex(item => item === lang);
   const toast = useToast();
   const {
     scanDFU,
@@ -75,7 +79,8 @@ export const UpdateFirmwareScreen = props => {
       );
 
       setDownloadedFile(fileDownloaded);
-      const command = getCommand(0x27, [], 4);
+
+      const command = getCommand(0x27, [langIndex === -1 ? 0 : langIndex], 5);
       await writeValueWithResponse(command);
       setUpdateStatus('connecting');
       scanDFU();
@@ -98,6 +103,8 @@ export const UpdateFirmwareScreen = props => {
   const updateFirmware = async () => {
     try {
       await connectToDFU(deviceDFU);
+
+      await s;
 
       if (!downloadedFile) {
         Alert.alert("Can't download file");

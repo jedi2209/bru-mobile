@@ -57,7 +57,8 @@ const SettingsScreen = props => {
         if (!availableFirmware) {
           return;
         }
-
+        console.log(currentFirmware, 'currentFirmware');
+        console.log(availableFirmware, 'availableFirmware');
         const file = await getFileURL('firmware/' + availableFirmware.file);
         setFilePath(file);
         setFileName(availableFirmware.file);

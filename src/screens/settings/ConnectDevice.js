@@ -328,7 +328,7 @@ const StepItem = ({step, setStep, navigation}) => {
                 setStep(10);
               }
             }}>
-            <ButtonText>{t('Connection.Greate')}</ButtonText>
+            <ButtonText>{t('Connection.Great')}</ButtonText>
           </Button>
         );
       case 10:
@@ -339,6 +339,7 @@ const StepItem = ({step, setStep, navigation}) => {
             action={'primary'}
             size={'xl'}
             onPress={async () => {
+              setStep(2);
               navigation.navigate('UpdateFirmwareScreen', {
                 fileName,
                 filePath,
