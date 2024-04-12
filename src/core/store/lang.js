@@ -19,15 +19,17 @@ export const setLanguage = createEffect(async lang => {
   i18n.changeLanguage(lang);
 });
 export const initLanguage = createEffect(async () => {
-  const savedLang = await AsyncStorage.getItem(storeName);
+  // await AsyncStorage.removeItem(storeName);
+  // const savedLang = await AsyncStorage.getItem(storeName);
+
   const deviceLanguageName = deviceLanguage.slice(0, 2);
   if (hasTranslation(deviceLanguageName)) {
-    i18n.changeLanguage(savedLang || deviceLanguageName);
-    return savedLang || deviceLanguageName;
+    i18n.changeLanguage(deviceLanguageName);
+    return deviceLanguageName;
   } else {
-    i18n.changeLanguage('en_US');
-    await AsyncStorage.setItem(storeName, 'en_US');
-    return 'en_US';
+    i18n.changeLanguage('en');
+
+    return 'en';
   }
 });
 const reset = createEvent();

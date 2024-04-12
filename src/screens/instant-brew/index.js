@@ -549,11 +549,11 @@ const InstantBrewScreen = props => {
                   setNewTeaName('');
                   setImage('');
                 }}
-                style={[s.saveButton, currLang === 'de_US' && s.saveButtonDe]}>
+                style={[s.saveButton, currLang === 'de' && s.saveButtonDe]}>
                 <Text
                   style={[
                     s.editButtonText,
-                    currLang === 'de_US' && s.buttonTextDe,
+                    currLang === 'de' && s.buttonTextDe,
                   ]}>
                   {t('Presets.SavePreset')}
                 </Text>

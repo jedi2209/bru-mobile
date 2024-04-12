@@ -91,11 +91,11 @@ export const timePickerData = () => {
   let counter = 0;
   for (let i = 0; i < 10; i++) {
     if (i) {
-      values.push({label: `${i}m`, value: counter++, seconds: i * 60});
+      values.push({label: `${i}:00`, value: counter++, seconds: i * 60});
     }
     for (let j = 1; j < 6; j++) {
       values.push({
-        label: `${i}m ${j * 10}s`,
+        label: `${i}:${j * 10}`,
         value: counter++,
         seconds: i * 60 + j * 10,
       });
@@ -103,7 +103,7 @@ export const timePickerData = () => {
   }
 
   for (let i = 10; i < 61; i++) {
-    values.push({label: `${i}m`, value: counter++, seconds: i * 60});
+    values.push({label: `${i}:00`, value: counter++, seconds: i * 60});
   }
 
   return values;

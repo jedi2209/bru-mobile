@@ -137,7 +137,7 @@ const StepItem = ({step, setStep, navigation}) => {
                   : Linking.sendIntent('android.settings.BLUETOOTH_SETTINGS');
               }}>
               <Icon name="gears" style={styles.buttonBottomIcon} size={24} />
-              <ButtonText fontSize={12} color="white">
+              <ButtonText fontSize={18} color="white">
                 {t('Connection.openSettings')}
               </ButtonText>
             </Button>
@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     flex: 1,
   },
-  stepTextContainer: {flex: 1, paddingHorizontal: 30, paddingBottom: 30},
+  stepTextContainer: {flex: 1, paddingHorizontal: 30},
   buttonBottom: {
     gap: 10,
   },

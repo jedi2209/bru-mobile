@@ -1,0 +1,155 @@
+{
+  "MenuBottom": {
+    "InstantBrew": "Infusione Istantanea",
+    "TeaAlarm": "Sveglia del Tè",
+    "Presets": "Preimpostazioni",
+    "Help": "Aiuto",
+    "Settings": "Impostazioni"
+  },
+  "BrewingData": {
+    "BrewingTime": "Tempo di Infusione",
+    "WaterTemperature": "Temperatura dell'Acqua",
+    "WaterAmount": "Quantità d'Acqua"
+  },
+  "InstantBrewing": {
+    "BrewIt": "Infusa!",
+    "Cancel": "Annulla",
+    "SplitCups": "Dividi le Tazze",
+    "Cleaning": "Pulizia",
+    "ColdWaterDiffusion": "Diffusione di Acqua Fredda non applicata",
+    "ConfirmationModalTitle": "Salvare questa configurazione come una nuova preimpostazione?",
+    "Later": "Dopo",
+    "YouWillBeAble": "Potrai creare nuove preimpostazioni in seguito",
+    "page": "pagina",
+    "DontShowAgain": "Non mostrare più",
+    "No": "No",
+    "Yes": "Sì",
+    "NoDeviceDesc": "Nessun dispositivo rilevato. Collegare un nuovo dispositivo?",
+    "NoDeviceTitle": "Nessun dispositivo collegato",
+    "Attention": "Attenzione!",
+    "DoYouReallyWant": "Eliminare la preimpostazione corrente?",
+    "YesDelete": "Sì, Elimina"
+  },
+  "TeaAlarm": {
+    "Title": "Sveglia del Tè",
+    "NewTeaAlarm": "Imposta nuova sveglia",
+    "PrepareTeaBy": "Inizia la preparazione del tè alle",
+    "SelectPreset": "Seleziona preimpostazione",
+    "SaveTeaAlarm": "Salva sveglia del tè",
+    "Delete": "Elimina",
+    "TeaAlarmSet": "Sveglia del tè impostata per",
+    "By": "da"
+  },
+  "Presets": {
+    "Title": "Preimpostazioni",
+    "SavePreset": "Salva Preimpostazione",
+    "Cancel": "Annulla"
+  },
+  "Settings": {
+    "Title": "Impostazioni",
+    "Units": "Unità",
+    "AppColorTheme": "Tema del Colore dell'App",
+    "About": "Informazioni",
+    "Logout": "Esci",
+    "ConnectNewMachine": "Collega Nuovo Dispositivo",
+    "UpdateFirmware": "Aggiorna Firmware Dispositivo",
+    "ConnectedMachines": "Dispositivi Collegati",
+    "Dark": "Scuro",
+    "Light": "Chiaro",
+    "BluetoothConnectionError": "Per l'aggiornamento del firmware, collegare prima il dispositivo",
+    "ChangeLanguage": "Cambia Lingua",
+    "No": "No",
+    "Confirm": "Conferma",
+    "FirmwareUpdate": "Aggiornamento Firmware",
+    "BruAppWillDownload": "Ora scaricheremo e installeremo l'ultimo firmware per il tuo BRU Maker. Assicurati di essere connesso a Internet.",
+    "Done": "Fatto"
+  },
+  "StoreModal": {
+    "Title": "Negozio BRU",
+    "TeaStore": "Negozio del Tè",
+    "PartsAndAccessories": "Parti e Accessori",
+    "Back": "Indietro"
+  },
+  "Profile": {
+    "Title": "Profilo",
+    "Name": "Nome",
+    "Email": "Email",
+    "Password": "Password",
+    "PleaseEnterName": "Inserisci il tuo nome",
+    "PleaseEnterEmail": "Inserisci la tua email",
+    "PleaseEnterPassword": "Inserisci la tua password",
+    "Save": "Salva"
+  },
+  "Toast": {
+    "success": {
+      "sendCommand": "✅ Comando Inviato",
+      "connection": "✅ Connessione Riuscita"
+    },
+    "error": {
+      "sendCommand": "❌ Si è verificato un errore durante l'invio del comando. Riprova",
+      "connection": "❌ Si è verificato un errore durante la connessione al dispositivo. Riprova",
+      "disconnect": "❌ Si è verificato un errore durante la disconnessione dal dispositivo. Riprova",
+      "read": "❌ Si è verificato un errore durante la lettura dei dati dal dispositivo. Riprova",
+      "pleaseConnect": "Si prega di collegare prima il tuo BRU Maker",
+      "noConnectedDevice": "Nessun dispositivo rilevato. Collega e riprova."
+    }
+  },
+  "Connection": {
+    "step1": {
+      "header": "Attiva il Bluetooth sul tuo telefono",
+      "text": "Questa APP ha bisogno dell'accesso al Bluetooth per poter cercare e comunicare con il BRU."
+    },
+    "step2": {
+      "header": "Oops...",
+      "text": "Abbiamo bisogno dell'accesso al Bluetooth del tuo telefono per poter cercare e comunicare con il BRU."
+    },
+    "step3": {
+      "header": "Accesso richiesto a Bluetooth e Localizzazione",
+      "text": "Le autorizzazioni Bluetooth e Localizzazione sono necessarie per trovare e controllare il tuo BRU Maker anche quando l'app non è in uso. Senza questo accesso, potrebbero verificarsi problemi."
+    },
+    "step4": {
+      "header": "Attiva il Bluetooth sul BRU",
+      "text": "Attiva il Bluetooth sul BRU. Vai su Impostazioni Macchina => 'Bluetooth' -> 'On'"
+    },
+    "step5": {
+      "header": "Cerca il BRU Machine"
+    },
+    "step6": {
+      "header": "Pronto per l'abbinamento",
+      "text": "Cool! Abbiamo trovato il tuo BRU Machine! Si prega di attivare la modalità di abbinamento sul BRU. Per fare ciò, vai su Impostazioni Macchina => 'Abbinamento Nuovo Dispositivo'. Dopo questo passaggio, dovresti vedere 'In attesa di connessione' sul display del BRU."
+    },
+    "step7": {
+      "header": "Tentativo di connessione...",
+      "text": "Stiamo cercando di connetterci al tuo BRU Machine. Per favore, attendi qualche secondo."
+    },
+    "step8": {
+      "header": "Oops...",
+      "text": "Si prega di controllare il BRU Machine. È necessario attivare la modalità di abbinamento. Per fare ciò, vai su Impostazioni Macchina => 'Abbinamento Nuovo Dispositivo'. Dopo questo passaggio, dovresti vedere 'In attesa di connessione' sul display del BRU."
+    },
+    "step9": {
+      "header": "Connessione riuscita :)",
+      "text": "Il tuo BRU Machine è stato abbinato con successo al tuo telefono. Ora puoi utilizzare tutte le funzionalità dell'app :)"
+    },
+    "step10": {
+      "header": "Dobbiamo aggiornare il firmware del tuo BRU Maker!"
+    },
+    "grantPermission": "Concedi le autorizzazioni",
+    "openSettings": "Apri Impostazioni",
+    "Done": "Fatto",
+    "Scan": "Scansione",
+    "connectToDevice": "Connetti al dispositivo",
+    "Great": "Fantastico :)",
+    "update": "Aggiorna il firmware!",
+    "goBack": "Torna alle impostazioni"
+  },
+  "Help": {
+    "title": "Aiuto",
+    "contactSupport": "Contattare il supporto",
+    "contactDesc": "Si prega di fornire i dettagli del problema al nostro team di supporto. Ti assisteremo il prima possibile.",
+    "issueDesc": "Descrizione del problema",
+    "contactPlaceholder": "Inserisci il tuo messaggio qui",
+    "cancel": "Annulla",
+    "send": "Invia",
+    "modalSuccess": "La richiesta è stata inviata. Ti contatteremo il prima possibile."
+  }
+}

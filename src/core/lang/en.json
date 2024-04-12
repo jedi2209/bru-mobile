@@ -1,40 +1,40 @@
 {
   "MenuBottom": {
-    "InstantBrew": "Instant\r\nBrew",
-    "TeaAlarm": "Tea Alarm\r\n",
-    "Presets": "Presets\r\n",
-    "Help": "Help\r\n",
-    "Settings": "Settings\r\n"
+    "InstantBrew": "Instant Brew",
+    "TeaAlarm": "Tea Alarm",
+    "Presets": "Presets",
+    "Help": "Help",
+    "Settings": "Settings"
   },
   "BrewingData": {
-    "BrewingTime": "Brewing\ntime",
-    "WaterTemperature": "Water temperature",
-    "WaterAmount": "Water amount"
+    "BrewingTime": "Brewing Time",
+    "WaterTemperature": "Water Temperature",
+    "WaterAmount": "Water Amount"
   },
   "InstantBrewing": {
-    "BrewIt": "Brew it",
+    "BrewIt": "Brew It!",
     "Cancel": "Cancel",
-    "SplitCups": "Split cups",
+    "SplitCups": "Split Cups",
     "Cleaning": "Cleaning",
-    "ColdWaterDiffusion": "Cold Water diffusion not applied",
-    "ConfirmationModalTitle": "Do you want to save this configutation as a new preset?",
+    "ColdWaterDiffusion": "Cold water diffusion not applied",
+    "ConfirmationModalTitle": "Save this configuration as a new preset?",
     "Later": "Later",
-    "YouWillBeAble": "You will be able to create new presets later in",
+    "YouWillBeAble": "You will be able to create new presets later",
     "page": "page",
-    "DontShowAgain": "Don't show me again",
+    "DontShowAgain": "Don't show again",
     "No": "No",
     "Yes": "Yes",
-    "NoDeviceDesc": "There is no connected device, do you wish to connect?",
+    "NoDeviceDesc": "No device detected. Connect new device?",
     "NoDeviceTitle": "No connected device",
     "Attention": "Attention!",
-    "DoYouReallyWant": "Do you really want to delete current preset",
+    "DoYouReallyWant": "Delete current preset?",
     "YesDelete": "Yes, Delete"
   },
   "TeaAlarm": {
     "Title": "Tea Alarm",
     "NewTeaAlarm": "Set new alarm",
     "PrepareTeaBy": "Start tea preparation at",
-    "SelectPresset": "Select preset",
+    "SelectPreset": "Select preset",
     "SaveTeaAlarm": "Save tea alarm",
     "Delete": "Delete",
     "TeaAlarmSet": "Tea alarm set for",
@@ -42,30 +42,30 @@
   },
   "Presets": {
     "Title": "Presets",
-    "SavePreset": "Save preset",
+    "SavePreset": "Save Preset",
     "Cancel": "Cancel"
   },
   "Settings": {
     "Title": "Settings",
     "Units": "Units",
-    "AppColorTheme": "App color theme",
+    "AppColorTheme": "App Color",
     "About": "About",
     "Logout": "Logout",
-    "ConnectNewMachine": "Connect New Machine",
-    "UpdateFirmware": "Update BRÜ firmware",
-    "ConnectedMachines": "Connected machines",
+    "ConnectNewMachine": "Connect New Device",
+    "UpdateFirmware": "Update Device Firmware",
+    "ConnectedMachines": "Connected Devices",
     "Dark": "Dark",
     "Light": "Light",
-    "BluetoothConnectionError": "To update the firmware, you need to connect to the device",
+    "BluetoothConnectionError": "For firmware update, connect device first",
     "ChangeLanguage": "Change Language",
     "No": "No",
     "Confirm": "Confirm",
-    "FirmwareUpdate": "Firmware update",
-    "BruAppWillDownload": "The BRU app will download and install the latest firmware to your BRU machine. Please make sure you are connected to Wi Fi to avoid additional charges.",
+    "FirmwareUpdate": "Firmware Update",
+    "BruAppWillDownload": "Now we will download and install the latest firmware to your BRU Maker. Please make sure you are connected to the internet.",
     "Done": "Done"
   },
   "StoreModal": {
-    "Title": "BRÜ Store",
+    "Title": "BRU Store",
     "TeaStore": "Tea Store",
     "PartsAndAccessories": "Parts and Accessories",
     "Back": "Back"
@@ -82,71 +82,70 @@
   },
   "Toast": {
     "success": {
-      "sendCommand": "✅ Command send!",
-      "connection": "✅ Sucessfully connected to the device"
+      "sendCommand": "✅ Command Sent",
+      "connection": "✅ Successfully Connected"
     },
     "error": {
-      "sendCommand": "❌ Something happened while sending command. Please try again later!",
-      "connection": "❌ Something happened while connecting to device. Please try again later!",
-      "disconnect": "❌ Something happened while disconnecting from device. Please try again!",
-      "read": "❌ Something happened while reading data from device. Please try again later!",
-      "pleaseConnect": "Please connect to device before sending command",
-      "noConnectedDevice": "There is no connected devices. Please connect to device and try again."
+      "sendCommand": "❌ Something happened while sending the command. Please try again",
+      "connection": "❌ Something happened while connecting to the device. Please try again",
+      "disconnect": "❌ Something happened while disconnecting from the device. Please try again",
+      "read": "❌ Something happened while reading data from the device. Please try again",
+      "pleaseConnect": "Please connect your BRU Maker first",
+      "noConnectedDevice": "No device detected. Please connect and try again."
     }
   },
   "Connection": {
     "step1": {
       "header": "Activate bluetooth on your phone",
-      "text": "This APP need access to bluetooth to be able search and communicate with BRU."
+      "text": "This APP needs access to Bluetooth to be able search and communicate with your device."
     },
     "step2": {
       "header": "Ooops...",
-      "text": "We need access to your phone's bluetooth to be able search and communicate with BRU.\r\n"
+      "text": "We need access to your phone's Bluetooth to be able search and communicate with your device."
     },
     "step3": {
       "header": "Bluetooth and Location access required",
-      "text": "Bluetooth and Location permissions are required to find and control your nearby BRU device even when the app is not in use.\r\nWithout access things may not work as expected."
+      "text": "Bluetooth and Location permissions are required to find and control your BRU Maker even when the app is not in use. Without access, things may not work as expected."
     },
     "step4": {
-      "header": "Activate bluetooth on BRU",
-      "text": "Please activate bluetooth on BRU device.\r\n\r\nTo do this go to Machine Setup => 'Bluetooth' -> 'On'"
+      "header": "Activate Bluetooth on the machine",
+      "text": "Please activate Bluetooth on your device. Got to 'MACHINE SETUP' then to 'BLUETOOTH' and turn it 'ON'"
     },
     "step5": {
-      "header": "Search for BRU Machine"
+      "header": "Search for your BRU Maker"
     },
     "step6": {
       "header": "Ready for pairing",
-      "text": "Cool! We found your BRU Machine!\r\n\r\nPlease activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => 'Pair New Device'.\r\n\r\nAfter this step you must see 'Waiting for connection' on BRU device display."
+      "text": "Cool! We found your BRU Maker! Please activate pairing mode on your BRU Maker. Got to 'MACHINE SETUP' then to 'BLUETOOTH' and turn it 'ON'"
     },
     "step7": {
       "header": "Trying to connect...",
-      "text": "Now we are trying to connect to your BRU Machine.\r\n\r\nPlease wait a few seconds."
+      "text": "Now we are trying to connect to your BRU Maker. Please wait a few seconds."
     },
     "step8": {
       "header": "Ooops...",
-      "text": "Please check your BRU Machine. You need to activate pairing mode on BRU device.\r\nTo do this go to Machine Setup => 'Pair New Device'.\r\n\r\nAfter this step you must see 'Waiting for connection' on BRU device display."
+      "text": "Please check your BRU Maker. You need to activate pairing mode. Got to 'MACHINE SETUP' then to 'BLUETOOTH' and turn it 'ON'"
     },
     "step9": {
-      "header": "Success!",
-      "text": "Your BRU Machine is successfully paired with your phone.\r\n\r\nNow you can use all features of BRU app"
+      "header": "Success :) ",
+      "text": "Your BRU Maker is successfully paired with your phone. Now you can use all features of the app :)"
     },
     "step10": {
-      "header": "We need to update your BRU firmware!",
-      "text": ""
+      "header": "We need to update your BRU Maker firmware!"
     },
     "grantPermission": "Grant permissions",
     "openSettings": "Open settings",
     "Done": "Done",
     "Scan": "Scan",
     "connectToDevice": "Connect to device",
-    "Greate": "Greate",
+    "Great": "Great :)",
     "update": "Update firmware!",
     "goBack": "Back to settings"
   },
   "Help": {
     "title": "Help",
     "contactSupport": "Contact support",
-    "contactDesc": "Please provide the issue details to the BRU Support. We will assist you as soon as possible.",
+    "contactDesc": "Please provide the issue details to our support tea. We will assist you as soon as possible.",
     "issueDesc": "Issue Description",
     "contactPlaceholder": "Enter your message here",
     "cancel": "Cancel",

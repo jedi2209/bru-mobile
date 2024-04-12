@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
       textTransform: 'uppercase',
       textAlign: 'center',
       fontFamily: fonts.defaultFamily,
+      fontSize: 8,
     },
     en: {
       fontSize: 8,

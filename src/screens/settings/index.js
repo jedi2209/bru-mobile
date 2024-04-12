@@ -17,8 +17,6 @@ import {colors, basicStyles} from '../../core/const/style';
 import BruMachine from './components/BruMachine';
 
 import ConfirmationModal from '../../core/components/ConfirmationModal';
-import NotificationModal from '../../core/components/NotificationModal';
-import {$deviceSettingsStore} from '../../core/store/device';
 import {$themeStore} from '../../core/store/theme';
 import CommonSettings from './components/CommonSettings';
 import {useTranslation} from 'react-i18next';
@@ -30,8 +28,6 @@ const SettingsScreen = props => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
-  const settingsStore = useStore($deviceSettingsStore);
-  const notificationModalOpened = settingsStore.isOpenModal;
   const {navigation} = props;
   const toast = useToast();
   const {t} = useTranslation();
@@ -48,25 +44,28 @@ const SettingsScreen = props => {
   useEffect(() => {
     requestBluetoothPermission();
     async function getFirmware() {
-      const currentFirmware = await readValue('firmwareRevision');
+      try {
+        const currentFirmware = await readValue('firmwareRevision');
+        const data = await getFirmwareData();
+        const availableFirmware = data.find(
+          firmwareData => firmwareData.testAvailable,
+        );
 
-      const data = await getFirmwareData();
-      const availableFirmware = data.find(
-        firmwareData => firmwareData.testAvailable,
-      );
+        if (!currentFirmware) {
+          return;
+        }
+        if (!availableFirmware) {
+          return;
+        }
 
-      if (!currentFirmware) {
-        return;
-      }
-      if (!availableFirmware) {
-        return;
-      }
-
-      const file = await getFileURL('firmware/' + availableFirmware.file);
-      setFilePath(file);
-      setFileName(availableFirmware.file);
-      if (availableFirmware.name !== currentFirmware) {
-        setIsConfirmModalOpen(true);
+        const file = await getFileURL('firmware/' + availableFirmware.file);
+        setFilePath(file);
+        setFileName(availableFirmware.file);
+        if (availableFirmware.name !== currentFirmware) {
+          setIsConfirmModalOpen(true);
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
     getFirmware();
@@ -108,32 +107,26 @@ const SettingsScreen = props => {
         onPress={async () => {
           const isConnected = await checkConnection();
           if (!isConnected) {
-            try {
-              await connectToDevice(currentDevice.id);
-              _onPressUpdate();
-              t;
-            } catch (error) {
-              toast.show({
-                placement: 'top',
-                duration: 5000,
-                render: () => {
-                  return (
-                    <Toast
-                      id={'noPermissionsToast'}
-                      action="error"
-                      variant="accent">
-                      <VStack space="lg">
-                        <ToastTitle fontSize={'$md'}>
-                          {t('Settings.BluetoothConnectionError')}
-                        </ToastTitle>
-                      </VStack>
-                    </Toast>
-                  );
-                },
-                onCloseComplete: () => {},
-              });
-              return;
-            }
+            toast.show({
+              placement: 'top',
+              duration: 5000,
+              render: () => {
+                return (
+                  <Toast
+                    id={'noPermissionsToast'}
+                    action="error"
+                    variant="accent">
+                    <VStack space="lg">
+                      <ToastTitle fontSize={'$md'}>
+                        {t('Settings.BluetoothConnectionError')}
+                      </ToastTitle>
+                    </VStack>
+                  </Toast>
+                );
+              },
+              onCloseComplete: () => {},
+            });
+            return;
           } else {
             _onPressUpdate();
           }
@@ -169,11 +162,6 @@ const SettingsScreen = props => {
         confirmationButtonText={t('Settings.Confirm')}
         modalTitle={t('Settings.FirmwareUpdate')}
         confirmationText={t('Settings.BruAppWillDownload')}
-      />
-      <NotificationModal
-        opened={notificationModalOpened}
-        closeModal={() => {}}
-        modalTitle="Firmware successfully updated to ver. 12.423.4"
       />
     </Wrapper>
   );
