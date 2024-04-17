@@ -19,7 +19,7 @@ const s = StyleSheet.create({
   pressetIcon: {marginBottom: 7},
   pressetTitle: {
     color: colors.white,
-    fontSize: 14,
+    fontSize: 13.5,
     fontWeight: '600',
     width: 90,
     textAlign: 'center',

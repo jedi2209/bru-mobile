@@ -184,7 +184,7 @@ const useBle = () => {
     }
   };
 
-  const writeValueWithResponse = async command => {
+  const writeValueWithResponse = async (command, showToast = true) => {
     try {
       if (!current) {
         throw new Error(t('Toast.error.pleaseConnect'));
@@ -201,19 +201,21 @@ const useBle = () => {
         writeUUID,
         encoded,
       );
-      toast.show({
-        placement: 'top',
-        duration: 3000,
-        render: () => {
-          return (
-            <Toast id={'dfuSuccessToast'} action="success" variant="accent">
-              <VStack space="lg">
-                <ToastTitle>{t('Toast.success.sendCommand')}</ToastTitle>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+      if (showToast) {
+        toast.show({
+          placement: 'top',
+          duration: 3000,
+          render: () => {
+            return (
+              <Toast id={'dfuSuccessToast'} action="success" variant="accent">
+                <VStack space="lg">
+                  <ToastTitle>{t('Toast.success.sendCommand')}</ToastTitle>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
     } catch (error) {
       toast.show({
         placement: 'top',

@@ -18,6 +18,7 @@ import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import {useTranslation} from 'react-i18next';
 import qs from 'qs';
+// import firestore from '@react-native-firebase/firestore';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -248,12 +249,21 @@ const HelpScreen = props => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
                 const query = qs.stringify({
                   subject: 'Need help',
                   body: message,
                 });
                 Linking.openURL(`mailto:bk@bru-tea.com?${query}`);
+                // await firestore()
+                //   .collection('mail')
+                //   .add({
+                //     to: 'bk@bru-tea.com',
+                //     message: {
+                //       subject: 'Need help!',
+                //       text: message,
+                //     },
+                //   });
               }}
               style={s.button}>
               <Text style={basicStyles.backgroundButtonText}>

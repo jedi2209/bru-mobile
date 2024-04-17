@@ -114,33 +114,33 @@ const s = StyleSheet.create({
 });
 
 const CommonSettings = () => {
-  const user = useStore($profileStore);
+  // const user = useStore($profileStore);
   // const [autoRinse, setAutoRinse] = useState(user.autoRinse);
   // const [coldTea, setColdTea] = useState(user.coldTea);
   // const [amount, setAmount] = useState(user.amount || 'small');
   // const [dispence, setDispence] = useState(user.dispenceTo || 'cup');
-  const [units, setUnits] = useState(user.units || 'metric');
+  // const [units, setUnits] = useState(user.units || 'metric');
   // const [notifications, setNotifications] = useState(user.notifications);
-  const language = useStore($langSettingsStore);
-  const [currLanguage, setCurrLanguage] = useState(language);
+  // const language = useStore($langSettingsStore);
+  // const [currLanguage, setCurrLanguage] = useState(language);
   const theme = useStore($themeStore);
 
   // const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
   const {t} = useTranslation();
 
-  const setSetting = async (cb, data) => {
-    cb();
-    updateProfileUser({...data});
-    await updateUser(user.uid, {...data});
-  };
+  // const setSetting = async (cb, data) => {
+  //   cb();
+  //   updateProfileUser({...data});
+  //   await updateUser(user.uid, {...data});
+  // };
 
-  useEffect(() => {
-    setSetting(() => setUnits('metric'), {
-      units: 'metric',
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   setSetting(() => setUnits('metric'), {
+  //     units: 'metric',
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <View style={s.wrapper}>
@@ -289,7 +289,7 @@ const CommonSettings = () => {
           </View>
         </Collapsible>
       </View> */}
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           {t('Settings.Units')}
         </Text>
@@ -323,7 +323,7 @@ const CommonSettings = () => {
             <Text style={s.unitText}>°F - oz</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
 
       {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
@@ -372,7 +372,7 @@ const CommonSettings = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <TouchableOpacity
           onPress={() => {
             openLink('https://bru.shop/en');
@@ -381,7 +381,7 @@ const CommonSettings = () => {
             {t('Settings.About')}
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
       {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           {t('Settings.ChangeLanguage')}

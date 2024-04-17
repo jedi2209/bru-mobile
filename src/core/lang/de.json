@@ -8,8 +8,8 @@
   },
   "BrewingData": {
     "BrewingTime": "Brühzeit",
-    "WaterTemperature": "Wassertemperatur",
-    "WaterAmount": "Wassermenge"
+    "WaterTemperature": "Wasser-\ntemperatur",
+    "WaterAmount": "Wasser-\nmenge"
   },
   "InstantBrewing": {
     "BrewIt": "Brühen!",
