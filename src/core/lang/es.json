@@ -161,7 +161,9 @@
     "Connecting": "Conectarse al dispositivo",
     "Success": "Hemos actualizado con éxito su firmware",
     "Error": "Se ha producido un error durante la instalación del firmware, inténtelo de nuevo más tarde",
-    "Updating": "Actualizando firmware..."
+    "Updating": "Actualizando firmware...",
+    "Old": "Configurando el lenguaje de máquina BRU. Por favor, espere",
+    "LanguageDone": "Idioma configurado. Por favor, espere unos segundos para que BRU se reinicie"
   },
   "Unpair": {
     "AreYouSure": "¿Está seguro?",

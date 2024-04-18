@@ -161,7 +161,9 @@
     "Connecting": "Verbindung zum Gerät herstellen",
     "Success": "Wir haben Ihre Firmware erfolgreich aktualisiert",
     "Error": "Während der Installation der Firmware ist ein Fehler aufgetreten, bitte versuchen Sie es später noch einmal",
-    "Updating": "Aktualisierung der Firmware..."
+    "Updating": "Aktualisierung der Firmware...",
+    "Old": "Einstellung der BRU-Maschinensprache. Bitte warten.",
+    "LanguageDone": "Sprache eingestellt. Bitte warten Sie ein paar Sekunden, bis BRU neu gestartet ist."
   },
   "Unpair": {
     "AreYouSure": "Sind Sie sicher?",

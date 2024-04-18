@@ -18,6 +18,13 @@ import {languages} from '../../helpers/hasTranslation';
 import {useStore} from 'effector-react';
 import {$langSettingsStore} from '../../core/store/lang';
 import {useTranslation} from 'react-i18next';
+import moment from 'moment';
+import Logo from '../../core/components/icons/Logo';
+import {$themeStore} from '../../core/store/theme';
+
+const NEWEST_FIRMWARE_WITH_CHANGE_LANG = new Date(
+  '2024-04-19T00:00:00.000Z',
+).getTime();
 
 const _renderProgressBar = value => {
   return (
@@ -32,6 +39,9 @@ export const UpdateFirmwareScreen = props => {
   const [progress, setProgress] = useState(0);
   const [updateStatus, setUpdateStatus] = useState('start');
   const [downloadedFile, setDownloadedFile] = useState(null);
+  const [oldFirmware, setOldFirmware] = useState('');
+  const theme = useStore($themeStore);
+  const isDark = theme === 'dark';
   const lang = useStore($langSettingsStore);
   const langIndex = languages.findIndex(item => item === lang);
   const {t} = useTranslation();
@@ -48,6 +58,10 @@ export const UpdateFirmwareScreen = props => {
         return t('UpdateFirmware.Error');
       case 'updating':
         return t('UpdateFirmware.Updating');
+      case 'old':
+        return t('UpdateFirmware.Old');
+      case 'languageDone':
+        return t('UpdateFirmware.LanguageDone');
       default:
         break;
     }
@@ -57,14 +71,42 @@ export const UpdateFirmwareScreen = props => {
   const {
     scanDFU,
     startDFU,
+    readValue,
     connectToDFU,
     setDeviceDFU,
     writeValueWithResponse,
     deviceDFU,
   } = useBle();
 
+  const getOldFirmwareTime = old => {
+    if (Number.isNaN(+old.split('-')[0]) || Number.isNaN(+old.split('-')[1])) {
+      return new Date('2023-01-01').getTime();
+    }
+    console.log(old);
+    const oldSplited = old.split('-')[0].split('');
+    let result = '';
+
+    for (let i = 0; i < oldSplited.length; i++) {
+      if (oldSplited[i] === oldSplited[oldSplited.length - 2]) {
+        result += 20;
+      }
+      result += oldSplited[i];
+      result += oldSplited[i + 1];
+      if (oldSplited[i] !== oldSplited[oldSplited.length - 2]) {
+        result += '-';
+      }
+      i++;
+    }
+
+    return new Date(
+      moment(result.split('-').reverse().join('-')).format('yyyy-MM-DD'),
+    ).getTime();
+  };
+
   useEffect(() => {
     async function start() {
+      const old = getOldFirmwareTime(await readValue('firmwareRevision'));
+      setOldFirmware(old);
       let file;
       let nameOfFile;
       if (!filePath || !fileName) {
@@ -83,10 +125,10 @@ export const UpdateFirmwareScreen = props => {
 
       setDownloadedFile(fileDownloaded);
 
-      const command = getCommand(0x27, [langIndex === -1 ? 0 : langIndex], 5);
-      await writeValueWithResponse(command);
-      setUpdateStatus('connecting');
-      scanDFU();
+      // const command = getCommand(0x27, [langIndex === -1 ? 0 : langIndex], 5);
+      // await writeValueWithResponse(command);
+      // setUpdateStatus('connecting');
+      // scanDFU();
     }
     start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,7 +140,7 @@ export const UpdateFirmwareScreen = props => {
     }
 
     if (deviceDFU) {
-      update();
+      // update();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceDFU]);
@@ -170,7 +212,19 @@ export const UpdateFirmwareScreen = props => {
         setUpdateStatus('error');
         setProgress(0);
       }
-      props.navigation.navigate('Settings');
+
+      if (NEWEST_FIRMWARE_WITH_CHANGE_LANG <= oldFirmware) {
+        props.navigation.navigate('Settings');
+      } else {
+        setUpdateStatus('old');
+        sleep(10000);
+        const command = getCommand(0x27, [langIndex === -1 ? 0 : langIndex], 5);
+        await writeValueWithResponse(command, false);
+        setUpdateStatus('languageDone');
+        await sleep(40000);
+        await readValue('firmwareRevision');
+        props.navigation.navigate('Settings');
+      }
     } catch (error) {
       Alert.alert(error.message);
     }
@@ -179,8 +233,15 @@ export const UpdateFirmwareScreen = props => {
   return (
     <Wrapper {...props} style={s.wrapper}>
       <View style={s.container}>
-        <Text style={s.mainText}>{getStatus(updateStatus)}</Text>
-        {_renderProgressBar(parseInt(progress, 10))}
+        <View style={s.logoContainer}>
+          <Logo width={150} height={150} />
+        </View>
+        <Text style={[s.mainText, isDark && {color: 'white'}]}>
+          {getStatus(updateStatus)}
+        </Text>
+        {updateStatus === 'updating'
+          ? _renderProgressBar(parseInt(progress, 10))
+          : null}
         <Text style={s.secondaryText}>{t('UpdateFirmware.PleaseDont')}</Text>
       </View>
     </Wrapper>
@@ -194,13 +255,14 @@ const s = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '100%',
+    marginTop: '80%',
   },
   mainText: {
-    color: 'white',
+    color: 'black',
     fontWeight: '500',
     fontSize: 18,
     marginBottom: 20,
+    textAlign: 'center',
   },
   secondaryText: {
     color: '#B0B0B0',
@@ -208,5 +270,8 @@ const s = StyleSheet.create({
     fontSize: 16,
     marginTop: 40,
     textAlign: 'center',
+  },
+  logoContainer: {
+    marginBottom: 30,
   },
 });

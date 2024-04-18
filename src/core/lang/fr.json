@@ -161,7 +161,9 @@
     "Connecting": "Connexion à l'appareil",
     "Success": "Nous avons réussi à mettre à jour votre firmware",
     "Error": "Une erreur s'est produite lors de l'installation du micrologiciel, veuillez réessayer plus tard",
-    "Updating": "Mise à jour du micrologiciel..."
+    "Updating": "Mise à jour du micrologiciel...",
+    "Old": "Réglage du langage machine BRU. Veuillez patienter.",
+    "LanguageDone": "Langue réglée.Veuillez attendre quelques secondes pour que le BRU redémarre"
   },
   "Unpair": {
     "AreYouSure": "Êtes-vous sûr ?",
