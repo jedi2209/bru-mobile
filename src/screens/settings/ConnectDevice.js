@@ -360,6 +360,7 @@ const StepItem = ({step, setStep, navigation}) => {
           source={background} // Can be a URL or a local file.
           style={{width: '100%', height: '50%'}}
           repeat
+          resizeMode={Platform.OS === 'android' ? 'stretch' : 'none'}
         />
       ) : null}
       <View style={styles.stepTextContainer}>
