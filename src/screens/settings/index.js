@@ -106,8 +106,9 @@ const SettingsScreen = props => {
       </Button>
       <Button
         onPress={async () => {
-          const isConnected = await checkConnection();
-          if (!isConnected) {
+          try {
+            await connectToDevice();
+          } catch (error) {
             toast.show({
               placement: 'top',
               duration: 5000,
@@ -127,6 +128,9 @@ const SettingsScreen = props => {
               },
               onCloseComplete: () => {},
             });
+          }
+          const isConnected = await checkConnection();
+          if (!isConnected) {
             return;
           } else {
             _onPressUpdate();

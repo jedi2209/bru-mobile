@@ -1,4 +1,6 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {
+  Alert,
   Linking,
   StyleSheet,
   Text,
@@ -8,17 +10,13 @@ import React, {
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
 import {basicStyles, colors} from '../../core/const/style';
-import Collapsible from 'react-native-collapsible';
 import {useState} from 'react';
-import DownArrowIcon from '../../core/components/icons/DownArrowIcon';
-// import PlayIcon from '../../core/components/icons/PlayIcon';
-import LinearGradient from 'react-native-linear-gradient';
 import NotificationModal from '../../core/components/NotificationModal';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import {useTranslation} from 'react-i18next';
 import qs from 'qs';
-// import firestore from '@react-native-firebase/firestore';
+import {CollapsibleButton} from './CollapsibleButton';
 
 const s = StyleSheet.create({
   wrapper: {
@@ -108,6 +106,14 @@ const s = StyleSheet.create({
     ...basicStyles.backgroundButton,
     paddingHorizontal: 38,
   },
+  defaultText: {
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.4,
+    color: colors.white,
+  },
+  linkWrapper: {flexDirection: 'row', gap: 5, alignItems: 'center'},
 });
 
 const HelpScreen = props => {
@@ -117,162 +123,168 @@ const HelpScreen = props => {
   const [modalOpened, setModalOpened] = useState(false);
   const {t} = useTranslation();
   const [message, setMessage] = useState('');
-
   return (
     <Wrapper style={s.wrapper} {...props}>
-      <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
-        {t('Help.title')}
-      </Text>
-      {/* <TouchableOpacity
-        onPress={() => setCollapsed(prev => (prev === 1 ? 0 : 1))}>
-        <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
-          <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
-            How to operate BRU machine?
-          </Text>
-          <DownArrowIcon
-            fill={isDarkMode ? colors.white : colors.green.mid}
-            style={[s.arrowIcon, collapsed === 1 && s.arrowIconActive]}
-          />
-        </View>
-      </TouchableOpacity>
-      <Collapsible collapsed={collapsed !== 1}>
-        <LinearGradient
-          style={s.collapsible}
-          colors={
-            isDarkMode
-              ? colors.gradient.helpCollapsibleDark
-              : [colors.white, colors.white]
-          }>
-          <View style={s.collapsibleItem}>
-            <PlayIcon />
-            <Text
-              style={[
-                s.collapsibleItemText,
-                isDarkMode && s.collapsibleItemTextDark,
-              ]}>
-              How to turn change tea?
-            </Text>
-          </View>
-          <View style={s.collapsibleItem}>
-            <PlayIcon />
-            <Text
-              style={[
-                s.collapsibleItemText,
-                isDarkMode && s.collapsibleItemTextDark,
-              ]}>
-              How to change filter?
-            </Text>
-          </View>
-          <View style={s.collapsibleItem}>
-            <PlayIcon />
-            <Text
-              style={[
-                s.collapsibleItemText,
-                isDarkMode && s.collapsibleItemTextDark,
-              ]}>
-              What rinsing does?
-            </Text>
-          </View>
-          <View style={s.collapsibleItem}>
-            <PlayIcon />
-            <Text
-              style={[
-                s.collapsibleItemText,
-                isDarkMode && s.collapsibleItemTextDark,
-              ]}>
-              Which tea requires Cleaning?
-            </Text>
-          </View>
-        </LinearGradient>
-      </Collapsible>
-      <TouchableOpacity
-        onPress={() => setCollapsed(prev => (prev === 2 ? 0 : 2))}>
-        <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
-          <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
-            Where to get some good tea?
-          </Text>
-          <DownArrowIcon
-            fill={isDarkMode ? colors.white : colors.green.mid}
-            style={[s.arrowIcon, collapsed === 2 && s.arrowIconActive]}
-          />
-        </View>
-      </TouchableOpacity> */}
-      <TouchableOpacity
-        onPress={() => setCollapsed(prev => (prev === 3 ? 0 : 3))}>
-        <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
-          <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
-            {t('Help.contactSupport')}
-          </Text>
-          <DownArrowIcon
-            fill={isDarkMode ? colors.white : colors.green.mid}
-            style={[s.arrowIcon, collapsed === 3 && s.arrowIconActive]}
-          />
-        </View>
-      </TouchableOpacity>
-      <Collapsible collapsed={collapsed !== 3}>
-        <LinearGradient
-          style={s.collapsible}
-          colors={
-            isDarkMode
-              ? colors.gradient.helpCollapsibleDark
-              : [colors.white, colors.white]
-          }>
-          <Text style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
-            {t('Help.contactDesc')}
-          </Text>
-          <Text style={s.textareaLabel}>{t('Help.issueDesc')}</Text>
-          <View style={s.textareaWrapper}>
-            <TextInput
-              placeholderTextColor={colors.gray.grayDarkText}
-              style={s.textarea}
-              placeholder={t('Help.contactPlaceholder')}
-              multiline={true}
-              numberOfLines={10}
-              onChangeText={text => setMessage(text)}
-            />
-            {/* <TouchableOpacity>
-              <Text style={s.attachPhoto}>Attach photo</Text>
-            </TouchableOpacity> */}
-          </View>
-          <View style={basicStyles.rowBetween}>
-            <TouchableOpacity
-              onPress={() => {
-                setCollapsed(0);
-                setMessage('');
-              }}>
-              <Text
-                style={[
-                  basicStyles.textButton,
-                  isDarkMode && basicStyles.darkText,
-                ]}>
-                {t('Help.cancel')}
-              </Text>
-            </TouchableOpacity>
+      <CollapsibleButton
+        onPress={() => setCollapsed(prev => (prev === 1 ? 0 : 1))}
+        collapsed={collapsed !== 1}
+        buttonText={t('Help.InstallFilter')}
+        collapsibleItem={
+          <View style={s.linkWrapper}>
+            <Text style={s.defaultText}>{`${t('Help.PleaseWatchThis')}`}</Text>
             <TouchableOpacity
               onPress={async () => {
-                const query = qs.stringify({
-                  subject: 'Need help',
-                  body: message,
-                });
-                Linking.openURL(`mailto:bk@bru-tea.com?${query}`);
-                // await firestore()
-                //   .collection('mail')
-                //   .add({
-                //     to: 'bk@bru-tea.com',
-                //     message: {
-                //       subject: 'Need help!',
-                //       text: message,
-                //     },
-                //   });
-              }}
-              style={s.button}>
-              <Text style={basicStyles.backgroundButtonText}>
-                {t('Help.send')}
-              </Text>
+                const canOpen = await Linking.canOpenURL(
+                  'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
+                );
+                if (canOpen) {
+                  Linking.openURL(
+                    'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
+                  );
+                } else {
+                  Alert.alert("Can't open link");
+                }
+              }}>
+              <Text style={s.defaultText}>{t('Help.Link')}</Text>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
-      </Collapsible>
+        }
+      />
+      <CollapsibleButton
+        onPress={() => setCollapsed(prev => (prev === 2 ? 0 : 2))}
+        collapsed={collapsed !== 2}
+        buttonText={t('Help.Descale')}
+        collapsibleItem={
+          <View style={s.linkWrapper}>
+            <Text style={s.defaultText}>{`${t('Help.PleaseWatchThis')}`}</Text>
+            <TouchableOpacity
+              onPress={async () => {
+                const canOpen = await Linking.canOpenURL(
+                  'https://www.youtube.com/watch?v=3fZdkroBe_4',
+                );
+                if (canOpen) {
+                  Linking.openURL(
+                    'https://www.youtube.com/watch?v=3fZdkroBe_4',
+                  );
+                } else {
+                  Alert.alert("Can't open link");
+                }
+              }}>
+              <Text style={s.defaultText}>{t('Help.Link')}</Text>
+            </TouchableOpacity>
+          </View>
+        }
+      />
+      <CollapsibleButton
+        onPress={() => setCollapsed(prev => (prev === 4 ? 0 : 4))}
+        collapsed={collapsed !== 4}
+        buttonText={t('Help.ResetPin')}
+        collapsibleItem={
+          <View>
+            <Text style={s.defaultText}>{`${t('Help.ResetPinAnswer')}`}</Text>
+          </View>
+        }
+      />
+      <CollapsibleButton
+        onPress={() => setCollapsed(prev => (prev === 5 ? 0 : 5))}
+        collapsed={collapsed !== 5}
+        buttonText={t('Help.TastesDifferent')}
+        collapsibleItem={
+          <View>
+            <Text style={s.defaultText}>{`${t(
+              'Help.PleaseChangeFilter',
+            )}`}</Text>
+          </View>
+        }
+      />
+      <CollapsibleButton
+        onPress={() => setCollapsed(prev => (prev === 6 ? 0 : 6))}
+        collapsed={collapsed !== 6}
+        buttonText={t('Help.Contact')}
+        collapsibleItem={
+          <View>
+            <Text style={s.defaultText}>{`${t('Help.ContactAnswer')}`}</Text>
+            <Text style={s.defaultText}>{'here will be qr-code'}</Text>
+            <View style={{flexDirection: 'row', gap: 3}}>
+              <Text style={s.defaultText}>{`${t('Help.Or')}`}</Text>
+              <TouchableOpacity
+                onPress={async () => {
+                  const canOpen = await Linking.canOpenURL(
+                    encodeURI('mailto:support@bru-tea.com'),
+                  );
+                  Linking.openURL(encodeURI('mailto:support@bru-tea.com'));
+                  console.log(canOpen, 'canOpen');
+                  if (canOpen) {
+                  } else {
+                    Alert.alert("Can't open link");
+                  }
+                }}>
+                <Text style={s.defaultText}>support@bru-tea.com</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
+      />
+      <CollapsibleButton
+        onPress={() => setCollapsed(prev => (prev === 3 ? 0 : 3))}
+        collapsed={collapsed !== 3}
+        buttonText={t('Help.contactSupport')}
+        collapsibleItem={
+          <View>
+            <Text style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
+              {t('Help.contactDesc')}
+            </Text>
+            <Text style={s.textareaLabel}>{t('Help.issueDesc')}</Text>
+            <View style={s.textareaWrapper}>
+              <TextInput
+                placeholderTextColor={colors.gray.grayDarkText}
+                style={s.textarea}
+                placeholder={t('Help.contactPlaceholder')}
+                multiline={true}
+                numberOfLines={10}
+                onChangeText={text => setMessage(text)}
+              />
+            </View>
+            <View style={basicStyles.rowBetween}>
+              <TouchableOpacity
+                onPress={() => {
+                  setCollapsed(0);
+                  setMessage('');
+                }}>
+                <Text
+                  style={[
+                    basicStyles.textButton,
+                    isDarkMode && basicStyles.darkText,
+                  ]}>
+                  {t('Help.cancel')}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={async () => {
+                  const query = qs.stringify({
+                    subject: 'Need help',
+                    body: message,
+                  });
+                  Linking.openURL(`mailto:bk@bru-tea.com?${query}`);
+                  // await firestore()
+                  //   .collection('mail')
+                  //   .add({
+                  //     to: 'bk@bru-tea.com',
+                  //     message: {
+                  //       subject: 'Need help!',
+                  //       text: message,
+                  //     },
+                  //   });
+                }}
+                style={s.button}>
+                <Text style={basicStyles.backgroundButtonText}>
+                  {t('Help.send')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
+      />
       <NotificationModal
         opened={modalOpened}
         closeModal={() => setModalOpened(false)}

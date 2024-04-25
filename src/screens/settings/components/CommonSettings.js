@@ -124,7 +124,7 @@ const CommonSettings = () => {
   const language = useStore($langSettingsStore);
   const [currLanguage, setCurrLanguage] = useState(language);
   const theme = useStore($themeStore);
-  const {writeValueWithResponse} = useBle();
+  const {writeValueWithResponse, checkConnection} = useBle();
 
   // const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
@@ -408,9 +408,12 @@ const CommonSettings = () => {
         <View style={s.units}>
           <TouchableOpacity
             onPress={async () => {
+              const isConnected = await checkConnection();
               setLanguage('en');
               setCurrLanguage('en');
-              await changeMachineLanguage('en');
+              if (isConnected) {
+                await changeMachineLanguage('en');
+              }
             }}
             style={[
               s.unit,
@@ -422,9 +425,12 @@ const CommonSettings = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
+              const isConnected = await checkConnection();
               setLanguage('fr');
               setCurrLanguage('fr');
-              await changeMachineLanguage('fr');
+              if (isConnected) {
+                await changeMachineLanguage('fr');
+              }
             }}
             style={[
               s.unit,
@@ -435,9 +441,12 @@ const CommonSettings = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
+              const isConnected = await checkConnection();
               setCurrLanguage('es');
               setLanguage('es');
-              await changeMachineLanguage('es');
+              if (isConnected) {
+                await changeMachineLanguage('es');
+              }
             }}
             style={[
               s.unit,
@@ -448,9 +457,12 @@ const CommonSettings = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
+              const isConnected = await checkConnection();
               setCurrLanguage('it');
               setLanguage('it');
-              await changeMachineLanguage('it');
+              if (isConnected) {
+                await changeMachineLanguage('it');
+              }
             }}
             style={[
               s.unit,
@@ -461,9 +473,12 @@ const CommonSettings = () => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={async () => {
+              const isConnected = await checkConnection();
               setCurrLanguage('de');
               setLanguage('de');
-              await changeMachineLanguage('de');
+              if (isConnected) {
+                await changeMachineLanguage('de');
+              }
             }}
             style={[
               s.unit,

@@ -116,7 +116,7 @@
     },
     "step6": {
       "header": "Ready for pairing",
-      "text": "Cool! We found your BRU Maker! Please activate pairing mode on your BRU Maker. Got to 'MACHINE SETUP' then to 'BLUETOOTH' and turn it 'ON'"
+      "text": "Cool! We found your BRU Maker! Please activate pairing mode on your BRU Maker. Got to 'MACHINE SETUP' then to 'PAIR NEW DEVICE'. After this step you must see 'Waiting for connection' on BRU device display."
     },
     "step7": {
       "header": "Trying to connect...",
@@ -150,7 +150,18 @@
     "contactPlaceholder": "Enter your message here",
     "cancel": "Cancel",
     "send": "Send",
-    "modalSuccess": "The request has been sent. We will contact you as soon as possible."
+    "modalSuccess": "The request has been sent. We will contact you as soon as possible.",
+    "InstallFilter": "How to install a water filter?",
+    "PleaseWatchThis": "Please watch this video:",
+    "Descale": "How to descale the machine?",
+    "ResetPin": "Where can I find the reset pin?",
+    "ResetPinAnswer": "The reset pin is under the drip tray.",
+    "TastesDifferent": "What can I do if my tea tastes different?",
+    "PleaseChangeFilter": "Please change the water filter.",
+    "Contact": "How can I contact customer service?",
+    "ContactAnswer": "Via WhatsApp",
+    "Or": "or",
+    "Link": "Link"
   },
   "UpdateFirmware": {
     "PleaseDont": "Please do not disconnect your BRU machine from power until the firmware updated.",

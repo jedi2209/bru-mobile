@@ -135,9 +135,11 @@ const useBle = () => {
     });
   };
 
-  const connectToDevice = async device => {
+  const connectToDevice = async (device = current) => {
     try {
-      const deviceConnection = await manager.connectToDevice(device.id);
+      const deviceConnection = await manager.connectToDevice(device.id, {
+        requestMTU: true,
+      });
       setDevice(deviceConnection);
       await deviceConnection.discoverAllServicesAndCharacteristics();
       manager.stopDeviceScan();
@@ -163,10 +165,9 @@ const useBle = () => {
       const deviceId = current.id;
       await resetDevice();
       const isConnected = await manager.isDeviceConnected(deviceId);
-      if (!isConnected) {
-        await connectToDevice(current);
+      if (isConnected) {
+        await manager.cancelDeviceConnection(deviceId);
       }
-      await manager.cancelDeviceConnection(deviceId);
     } catch (error) {
       toast.show({
         placement: 'top',
@@ -217,19 +218,21 @@ const useBle = () => {
         });
       }
     } catch (error) {
-      toast.show({
-        placement: 'top',
-        duration: 3000,
-        render: () => {
-          return (
-            <Toast id={'dfuSuccessToast'} action="error" variant="accent">
-              <VStack space="lg">
-                <ToastTitle>{t('Toast.error.sendCommand')}</ToastTitle>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+      if (showToast) {
+        toast.show({
+          placement: 'top',
+          duration: 3000,
+          render: () => {
+            return (
+              <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+                <VStack space="lg">
+                  <ToastTitle>{t('Toast.error.sendCommand')}</ToastTitle>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
     }
   };
 
@@ -350,19 +353,6 @@ const useBle = () => {
 
   const checkConnection = async () => {
     if (!current || !current?.id) {
-      toast.show({
-        placement: 'top',
-        duration: 3000,
-        render: () => {
-          return (
-            <Toast action="info" variant="accent">
-              <VStack space="lg">
-                <ToastTitle>{t('Toast.error.noConnectedDevice')}</ToastTitle>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
       return false;
     }
     const isConnected = await manager.isDeviceConnected(current.id);
@@ -371,6 +361,10 @@ const useBle = () => {
 
   const stopDeviceScan = () => {
     manager.stopDeviceScan();
+  };
+
+  const getAllDevicesLength = () => {
+    return allDevices.length;
   };
 
   return {
@@ -388,8 +382,9 @@ const useBle = () => {
     checkConnection,
     connectToDevice,
     scanForPeripherals,
-    writeValueWithResponse,
+    getAllDevicesLength,
     disconnectFromDevice,
+    writeValueWithResponse,
     requestBluetoothPermission,
   };
 };

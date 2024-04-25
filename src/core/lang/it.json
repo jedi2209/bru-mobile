@@ -116,7 +116,7 @@
     },
     "step6": {
       "header": "Pronto per l'abbinamento",
-      "text": "Cool! Abbiamo trovato il tuo BRU Machine! Si prega di attivare la modalità di abbinamento sul BRU. Per fare ciò, vai su Impostazioni Macchina => 'Abbinamento Nuovo Dispositivo'. Dopo questo passaggio, dovresti vedere 'In attesa di connessione' sul display del BRU."
+      "text": "Forte! Abbiamo trovato il vostro BRU Maker! Attivare la modalità di accoppiamento sul BRU Maker. Andare su 'MACHINE SETUP' e poi su 'PAIR NEW DEVICE'. Dopo questo passaggio, sul display del dispositivo BRU dovrebbe apparire la scritta 'In attesa di connessione'."
     },
     "step7": {
       "header": "Tentativo di connessione...",
@@ -150,7 +150,18 @@
     "contactPlaceholder": "Inserisci il tuo messaggio qui",
     "cancel": "Annulla",
     "send": "Invia",
-    "modalSuccess": "La richiesta è stata inviata. Ti contatteremo il prima possibile."
+    "modalSuccess": "La richiesta è stata inviata. Ti contatteremo il prima possibile.",
+    "InstallFilter": "Come installare un filtro per l'acqua?",
+    "PleaseWatchThis": "Per favore, guarda questo video:",
+    "Descale": "Come decalcificare la macchina?",
+    "ResetPin": "Dove posso trovare il pin di reset?",
+    "ResetPinAnswer": "Il pin di reset si trova sotto il vassoio di sgocciolamento.",
+    "TastesDifferent": "Cosa posso fare se il mio tè ha un sapore diverso?",
+    "PleaseChangeFilter": "Si prega di cambiare il filtro dell'acqua.",
+    "Contact": "Come posso contattare il servizio clienti?",
+    "ContactAnswer": "Tramite WhatsApp",
+    "Or": "o",
+    "Link": "Link"
   },
   "UpdateFirmware": {
     "PleaseDont": "Non scollegare la macchina BRU dall'alimentazione fino all'aggiornamento del firmware",

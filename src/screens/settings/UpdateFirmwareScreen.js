@@ -23,7 +23,7 @@ import Logo from '../../core/components/icons/Logo';
 import {$themeStore} from '../../core/store/theme';
 
 const NEWEST_FIRMWARE_WITH_CHANGE_LANG = new Date(
-  '2024-04-19T00:00:00.000Z',
+  '2024-04-17T00:00:00.000Z',
 ).getTime();
 
 const _renderProgressBar = value => {
@@ -125,10 +125,10 @@ export const UpdateFirmwareScreen = props => {
 
       setDownloadedFile(fileDownloaded);
 
-      // const command = getCommand(0x27, [langIndex === -1 ? 0 : langIndex], 5);
-      // await writeValueWithResponse(command);
-      // setUpdateStatus('connecting');
-      // scanDFU();
+      const command = getCommand(0x27, [langIndex === -1 ? 0 : langIndex], 5);
+      await writeValueWithResponse(command);
+      setUpdateStatus('connecting');
+      scanDFU();
     }
     start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -140,7 +140,7 @@ export const UpdateFirmwareScreen = props => {
     }
 
     if (deviceDFU) {
-      // update();
+      update();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deviceDFU]);

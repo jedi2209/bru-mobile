@@ -116,7 +116,7 @@
     },
     "step6": {
       "header": "Listo para emparejar",
-      "text": "¡Genial! Hemos encontrado su BRU Maker! Por favor, active el modo de emparejamiento en su BRU Maker. Vaya a 'CONFIGURACIÓN DEL DISPOSITIVO' luego a 'BLUETOOTH' y actívelo."
+      "text": "¡Genial! Hemos encontrado su BRU Maker. Active el modo de emparejamiento en su BRU Maker. Vaya a 'CONFIGURACIÓN DE LA MÁQUINA' y luego a 'EMPAREJAR NUEVO DISPOSITIVO'. Después de este paso, debería ver 'Esperando conexión' en la pantalla del dispositivo BRU."
     },
     "step7": {
       "header": "Intentando conectar...",
@@ -150,7 +150,18 @@
     "contactPlaceholder": "Ingrese su mensaje aquí",
     "cancel": "Cancelar",
     "send": "Enviar",
-    "modalSuccess": "La solicitud ha sido enviada. Nos pondremos en contacto con usted lo antes posible."
+    "modalSuccess": "La solicitud ha sido enviada. Nos pondremos en contacto con usted lo antes posible.",
+    "InstallFilter": "¿Cómo instalar un filtro de agua?",
+    "PleaseWatchThis": "Por favor, revisa este video:",
+    "Descale": "¿Cómo descalcificar la máquina?",
+    "ResetPin": "¿Dónde puedo encontrar el pin de reinicio?",
+    "ResetPinAnswer": "El pin de reinicio está debajo de la bandeja de goteo.",
+    "TastesDifferent": "¿Qué puedo hacer si mi té sabe diferente?",
+    "PleaseChangeFilter": "Por favor, cambie el filtro de agua.",
+    "Contact": "¿Cómo puedo contactar con el servicio al cliente?",
+    "ContactAnswer": "Por WhatsApp",
+    "Or": "o",
+    "Link": "Enlace"
   },
   "UpdateFirmware": {
     "PleaseDont": "Por favor, no desconecte su máquina BRU de la corriente hasta que se actualice el firmware",

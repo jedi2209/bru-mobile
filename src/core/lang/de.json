@@ -116,7 +116,7 @@
     },
     "step6": {
       "header": "Bereit zum Koppeln",
-      "text": "Cool! Wir haben Ihren BRU Maker gefunden! Bitte aktivieren Sie den Koppelungsmodus auf Ihrem BRU Maker. Gehen Sie zu 'GERÄTEEINSTELLUNGEN' dann zu 'BLUETOOTH' und schalten Sie es auf 'AN'"
+      "text": "Cool! Wir haben Ihren BRU Maker gefunden! Bitte aktivieren Sie den Pairing-Modus auf Ihrem BRU Maker. Gehen Sie zu 'MACHINE SETUP' und dann zu 'PAIR NEW DEVICE'. Nach diesem Schritt müssen Sie 'Waiting for connection' auf dem BRU-Gerätedisplay sehen."
     },
     "step7": {
       "header": "Versucht zu verbinden...",
@@ -150,7 +150,18 @@
     "contactPlaceholder": "Geben Sie Ihre Nachricht hier ein",
     "cancel": "Abbrechen",
     "send": "Senden",
-    "modalSuccess": "Die Anfrage wurde gesendet. Wir werden Sie so schnell wie möglich kontaktieren."
+    "modalSuccess": "Die Anfrage wurde gesendet. Wir werden Sie so schnell wie möglich kontaktieren.",
+    "InstallFilter": "Wie installiert man einen Wasserfilter?",
+    "PleaseWatchThis": "Bitte schauen Sie sich dieses Video an:",
+    "Descale": "Wie entkalkt man die Maschine?",
+    "ResetPin": "Wo finde ich den Reset-Pin?",
+    "ResetPinAnswer": "Der Reset-Pin befindet sich unter der Tropfschale.",
+    "TastesDifferent": "Was kann ich tun, wenn mein Tee anders schmeckt?",
+    "PleaseChangeFilter": "Bitte wechseln Sie den Wasserfilter.",
+    "Contact": "Wie kann ich den Kundenservice kontaktieren?",
+    "ContactAnswer": "Über WhatsApp",
+    "Or": "oder",
+    "Link": "Link"
   },
   "UpdateFirmware": {
     "PleaseDont": "Bitte trennen Sie Ihr BRU-Gerät nicht von der Stromversorgung, bis die Firmware aktualisiert wurde.",

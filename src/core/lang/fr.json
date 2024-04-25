@@ -116,7 +116,7 @@
     },
     "step6": {
       "header": "Prêt à jumeler",
-      "text": "Super ! Nous avons trouvé votre BRU Maker ! Veuillez activer le mode de jumelage sur votre BRU Maker. Allez dans 'CONFIGURATION DE L'APPAREIL' puis 'BLUETOOTH' et mettez-le sur 'ON'."
+      "text": "Super ! Nous avons trouvé votre BRU Maker ! Veuillez activer le mode d'appariement sur votre BRU Maker. Allez dans 'MACHINE SETUP' puis dans 'PAIR NEW DEVICE'. Après cette étape, vous devriez voir 'Waiting for connection' sur l'écran de l'appareil BRU."
     },
     "step7": {
       "header": "Tentative de connexion...",
@@ -150,7 +150,18 @@
     "contactPlaceholder": "Entrez votre message ici",
     "cancel": "Annuler",
     "send": "Envoyer",
-    "modalSuccess": "Votre demande a été envoyée. Nous vous contacterons dès que possible."
+    "modalSuccess": "Votre demande a été envoyée. Nous vous contacterons dès que possible.",
+    "InstallFilter": "Comment installer un filtre à eau ?",
+    "PleaseWatchThis": "Veuillez vérifier cette vidéo:",
+    "Descale": "Comment détartrer la machine ?",
+    "ResetPin": "Où puis-je trouver la broche de réinitialisation ?",
+    "ResetPinAnswer": "La broche de réinitialisation se trouve sous le bac d'égouttement.",
+    "TastesDifferent": "Que puis-je faire si mon thé a un goût différent ?",
+    "PleaseChangeFilter": "Veuillez changer le filtre à eau.",
+    "Contact": "Comment puis-je contacter le service client ?",
+    "ContactAnswer": "Via WhatsApp",
+    "Or": "ou",
+    "Link": "Lien"
   },
   "UpdateFirmware": {
     "PleaseDont": "Veuillez ne pas déconnecter votre machine BRU de l'alimentation électrique jusqu'à ce que le micrologiciel soit mis à jour",

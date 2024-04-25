@@ -19,11 +19,11 @@ import {getFileURL, getFirmwareData} from '../../utils/firmware';
 import {useTranslation} from 'react-i18next';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
+import Video from 'react-native-video';
 
 const StepItem = ({step, setStep, navigation}) => {
   const [filePath, setFilePath] = useState('');
   const [fileName, setFileName] = useState('');
-  const [currentFirmware, setCurrentFirmware] = useState('');
   const theme = useStore($themeStore);
   const isDark = theme === 'dark';
 
@@ -39,7 +39,7 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 2 checkBluetooth => false
-      img: require('@assets/deviceImages/image-2.png'),
+      video: require('@assets/videos/pair.mp4'),
       header: t('Connection.step2.header'),
       text: t('Connection.step2.text'),
     },
@@ -51,7 +51,7 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 4 checkBluetooth => true
-      img: require('@assets/deviceImages/image-1.png'),
+      video: require('@assets/videos/pair.mp4'),
       header: t('Connection.step4.header'),
       text: t('Connection.step4.text'),
     },
@@ -62,7 +62,7 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 6
-      img: require('@assets/deviceImages/image-2.png'),
+      video: require('@assets/videos/connection.mp4'),
       header: t('Connection.step6.header'),
       text: t('Connection.step6.text'),
     },
@@ -101,15 +101,35 @@ const StepItem = ({step, setStep, navigation}) => {
     allDevices,
   } = useBle();
   const [isScanning, setIsScanning] = useState(false);
+  const [secondTimeOut, setSecondTimeOut] = useState(null);
 
   useEffect(() => {
     if (step === 5 && allDevices.length) {
       setStep(6);
       setIsScanning(false);
     }
-  }, [allDevices.length, setStep, step]);
+    if (!allDevices.length && step === 5 && !secondTimeOut) {
+      setTimeout(() => {
+        console.log('firsttimeout');
+        const second = setTimeout(() => {
+          console.log('second');
+          setIsScanning(false);
+          stopDeviceScan();
+          setStep(8);
+        }, 10000);
+        setSecondTimeOut(second);
+      }, 10000);
+    }
+  }, [allDevices.length, secondTimeOut, setStep, step, stopDeviceScan]);
+
+  useEffect(() => {
+    if (step === 6) {
+      clearImmediate(secondTimeOut);
+    }
+  }, [secondTimeOut, step]);
 
   const renderButton = () => {
+    console.log(step);
     switch (step) {
       case 1:
         return (
@@ -120,7 +140,7 @@ const StepItem = ({step, setStep, navigation}) => {
                   ? require('@assets/lottie/Animation-1697319770697.lottie')
                   : require('@assets/lottie/Animation-1698061078225.lottie')
               }
-              height={200}
+              height={150}
               autoPlay
               loop
             />
@@ -202,23 +222,9 @@ const StepItem = ({step, setStep, navigation}) => {
               onPress={async () => {
                 setIsScanning(true);
                 scanForPeripherals();
-
                 if (allDevices.length) {
                   setStep(6);
                 }
-                setTimeout(() => {
-                  if (!allDevices.length) {
-                    stopDeviceScan();
-                    scanForPeripherals();
-                    setTimeout(() => {
-                      if (!allDevices.length) {
-                        setIsScanning(false);
-                        stopDeviceScan();
-                        setStep(8);
-                      }
-                    }, 10000);
-                  }
-                }, 10000);
               }}>
               <ButtonText>{t('Connection.Scan')}</ButtonText>
             </Button>
@@ -273,23 +279,6 @@ const StepItem = ({step, setStep, navigation}) => {
               onPress={async () => {
                 setIsScanning(true);
                 scanForPeripherals();
-
-                if (allDevices.length) {
-                  setStep(6);
-                }
-                setTimeout(() => {
-                  if (!allDevices.length) {
-                    stopDeviceScan();
-                    scanForPeripherals();
-                    setTimeout(() => {
-                      if (!allDevices.length) {
-                        setIsScanning(false);
-                        stopDeviceScan();
-                        setStep(8);
-                      }
-                    }, 10000);
-                  }
-                }, 10000);
               }}>
               <ButtonText>{t('Connection.Scan')}</ButtonText>
             </Button>
@@ -303,29 +292,30 @@ const StepItem = ({step, setStep, navigation}) => {
             action={'primary'}
             size={'xl'}
             onPress={async () => {
-              const current = await readValue('firmwareRevision');
-              setCurrentFirmware(current);
-              const data = await getFirmwareData();
-              const availableFirmware = data.find(
-                firmwareData => firmwareData.testAvailable,
-              );
+              try {
+                const current = await readValue('firmwareRevision');
+                const data = await getFirmwareData();
+                const availableFirmware = data.find(
+                  firmwareData => firmwareData.testAvailable,
+                );
 
-              if (!current) {
-                return;
-              }
-              if (!availableFirmware) {
-                return;
-              }
+                const file = await getFileURL(
+                  'firmware/' + availableFirmware.file,
+                );
+                setFilePath(file);
+                setFileName(availableFirmware.file);
 
-              const file = await getFileURL(
-                'firmware/' + availableFirmware.file,
-              );
-              setFilePath(file);
-              setFileName(availableFirmware.file);
-              if (availableFirmware.name === current) {
+                if (!current || !availableFirmware) {
+                  navigation.navigate('Settings');
+                }
+
+                if (availableFirmware.name === current) {
+                  navigation.navigate('Settings');
+                } else {
+                  setStep(10);
+                }
+              } catch (error) {
                 navigation.navigate('Settings');
-              } else {
-                setStep(10);
               }
             }}>
             <ButtonText>{t('Connection.Great')}</ButtonText>
@@ -353,6 +343,7 @@ const StepItem = ({step, setStep, navigation}) => {
     }
   };
 
+  const background = stepsContent[step].video;
   return (
     <>
       {stepsContent[step].img ? (
@@ -362,6 +353,13 @@ const StepItem = ({step, setStep, navigation}) => {
           alt={'ImageStep' + step.toString()}
           minHeight={'$1/2'}
           role="img"
+        />
+      ) : null}
+      {stepsContent[step].video ? (
+        <Video
+          source={background} // Can be a URL or a local file.
+          style={{width: '100%', height: '50%'}}
+          repeat
         />
       ) : null}
       <View style={styles.stepTextContainer}>
