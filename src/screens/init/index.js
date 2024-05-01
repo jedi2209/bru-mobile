@@ -7,6 +7,7 @@ import {Text} from 'react-native';
 import Logo from '../../core/components/icons/Logo';
 import {anonymousSignIn} from '../../utils/auth';
 import {addInitPressets} from '../../utils/db/pressets';
+import {getPressetsFx} from '../../core/store/pressets';
 
 const InitializeScreen = () => {
   useEffect(() => {
@@ -15,6 +16,7 @@ const InitializeScreen = () => {
       if (!isAuth) {
         const user = await anonymousSignIn();
         await addInitPressets(user.user.uid);
+        await getPressetsFx();
       }
     }
     signIn();

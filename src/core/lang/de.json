@@ -62,7 +62,10 @@
     "Confirm": "Bestätigen",
     "FirmwareUpdate": "Firmware-Update",
     "BruAppWillDownload": "Wir werden jetzt die neueste Firmware für Ihren BRU Maker herunterladen und installieren. Bitte stellen Sie sicher, dass Sie mit dem Internet verbunden sind.",
-    "Done": "Fertig"
+    "Done": "Fertig",
+    "Yes": "Ja",
+    "NewFeatures": "Neue Merkmale",
+    "DoYouWant": "Möchten Sie neue Funktionen sehen?"
   },
   "StoreModal": {
     "Title": "BRU-Store",
@@ -161,7 +164,12 @@
     "Contact": "Wie kann ich den Kundenservice kontaktieren?",
     "ContactAnswer": "Über WhatsApp",
     "Or": "oder",
-    "Link": "Link"
+    "Link": "Link",
+    "EmailPlaceholder": "Bitte geben Sie Ihre E-Mail-Adresse an, damit wir Ihnen antworten können!",
+    "FeatureTitle": "Sie haben eine Idee für einen Beitrag? Schreiben Sie sie hier!",
+    "FeatureButton": "Feature-Anfrage",
+    "FeatureDesc": "Beschreibung der Funktion",
+    "DescribeFeatureHere": "Beschreiben Sie hier Ihre Funktion"
   },
   "UpdateFirmware": {
     "PleaseDont": "Bitte trennen Sie Ihr BRU-Gerät nicht von der Stromversorgung, bis die Firmware aktualisiert wurde.",

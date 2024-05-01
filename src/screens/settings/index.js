@@ -26,9 +26,10 @@ import {$connectedDevice} from '../../core/store/connectedDevice';
 
 const SettingsScreen = props => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [newFeaturesModalOpened, setNewFeaturesModalOpened] = useState(false);
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
-  const {navigation} = props;
+  const {navigation, route} = props;
   const toast = useToast();
   const {t} = useTranslation();
   const currentDevice = useStore($connectedDevice);
@@ -41,6 +42,10 @@ const SettingsScreen = props => {
     requestBluetoothPermission,
   } = useBle();
 
+  useEffect(() => {
+    console.log(route.params);
+    setNewFeaturesModalOpened(route.params.openNewVersionInfoModal);
+  }, [route]);
   useEffect(() => {
     requestBluetoothPermission();
     async function getFirmware() {
@@ -57,8 +62,7 @@ const SettingsScreen = props => {
         if (!availableFirmware) {
           return;
         }
-        console.log(currentFirmware, 'currentFirmware');
-        console.log(availableFirmware, 'availableFirmware');
+
         const file = await getFileURL('firmware/' + availableFirmware.file);
         setFilePath(file);
         setFileName(availableFirmware.file);
@@ -167,6 +171,25 @@ const SettingsScreen = props => {
         confirmationButtonText={t('Settings.Confirm')}
         modalTitle={t('Settings.FirmwareUpdate')}
         confirmationText={t('Settings.BruAppWillDownload')}
+      />
+      <ConfirmationModal
+        onConfirm={() => {
+          route.params.openNewVersionInfoModal = false;
+          setNewFeaturesModalOpened(false);
+          navigation.navigate('Help', {
+            openCollapsed: 7,
+          });
+        }}
+        opened={newFeaturesModalOpened}
+        closeModal={() => {
+          route.params.openNewVersionInfoModal = false;
+          setNewFeaturesModalOpened(false);
+        }}
+        withCancelButton
+        cancelButtonText={t('Settings.No')}
+        confirmationButtonText={t('Settings.Yes')}
+        modalTitle={t('Settings.NewFeatures')}
+        confirmationText={t('Settings.DoYouWant')}
       />
     </Wrapper>
   );

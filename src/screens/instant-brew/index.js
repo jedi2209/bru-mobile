@@ -49,6 +49,7 @@ import PenIcon from '../../core/components/icons/PenIcon';
 import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
 import {$langSettingsStore} from '../../core/store/lang';
+import {$currentFirmwareStore} from '../../core/store/firmware';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
@@ -130,6 +131,7 @@ const s = StyleSheet.create({
     letterSpacing: 0.4,
     fontWeight: '600',
     fontSize: 18,
+    textAlign: 'center',
   },
   teaNameInput: {
     lineHeight: 24,

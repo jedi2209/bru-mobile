@@ -39,7 +39,7 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 2 checkBluetooth => false
-      video: require('@assets/videos/pair.mp4'),
+      video: require('@assets/videos/connection.mp4'),
       header: t('Connection.step2.header'),
       text: t('Connection.step2.text'),
     },
@@ -51,7 +51,7 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 4 checkBluetooth => true
-      video: require('@assets/videos/pair.mp4'),
+      video: require('@assets/videos/connection.mp4'),
       header: t('Connection.step4.header'),
       text: t('Connection.step4.text'),
     },
@@ -62,7 +62,7 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 6
-      video: require('@assets/videos/connection.mp4'),
+      video: require('@assets/videos/pair.mp4'),
       header: t('Connection.step6.header'),
       text: t('Connection.step6.text'),
     },
@@ -110,9 +110,7 @@ const StepItem = ({step, setStep, navigation}) => {
     }
     if (!allDevices.length && step === 5 && !secondTimeOut) {
       setTimeout(() => {
-        console.log('firsttimeout');
         const second = setTimeout(() => {
-          console.log('second');
           setIsScanning(false);
           stopDeviceScan();
           setStep(8);
@@ -129,7 +127,6 @@ const StepItem = ({step, setStep, navigation}) => {
   }, [secondTimeOut, step]);
 
   const renderButton = () => {
-    console.log(step);
     switch (step) {
       case 1:
         return (
@@ -357,8 +354,8 @@ const StepItem = ({step, setStep, navigation}) => {
       ) : null}
       {stepsContent[step].video ? (
         <Video
-          source={background} // Can be a URL or a local file.
-          style={{width: '100%', height: '50%'}}
+          source={background}
+          style={styles.video}
           repeat
           resizeMode={Platform.OS === 'android' ? 'stretch' : 'none'}
         />
@@ -443,6 +440,7 @@ const styles = StyleSheet.create({
   textColor: {color: 'white'},
   buttonContainer: {paddingHorizontal: 30, gap: 15},
   goBackButton: {},
+  video: {width: '100%', height: '50%'},
 });
 
 export default ConnectDeviceScreen;

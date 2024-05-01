@@ -1,20 +1,14 @@
 import {useStore} from 'effector-react';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {$themeStore, setThemeFx} from '../../../core/store/theme';
 // import Collapsible from 'react-native-collapsible';
 import {basicStyles, colors} from '../../../core/const/style';
 // import {Switch} from '@gluestack-ui/themed';
-import {updateUser} from '../../../utils/db/auth';
-import {$profileStore, updateProfileUser} from '../../../core/store/profile';
 // import {setUser} from '../../../core/store/user';
 // import {logout} from '../../../utils/auth';
 // import {useNavigation} from '@react-navigation/native';
 import {useTranslation} from 'react-i18next';
-import {$langSettingsStore, setLanguage} from '../../../core/store/lang';
-import useBle from '../../../hooks/useBlePlx';
-import {getCommand} from '../../../utils/commands';
-import {languages} from '../../../helpers/hasTranslation';
 
 const s = StyleSheet.create({
   wrapper: {marginBottom: 50},
@@ -114,50 +108,40 @@ const s = StyleSheet.create({
 });
 
 const CommonSettings = () => {
-  const user = useStore($profileStore);
-  // const [autoRinse, setAutoRinse] = useState(user.autoRinse);
-  // const [coldTea, setColdTea] = useState(user.coldTea);
-  // const [amount, setAmount] = useState(user.amount || 'small');
-  // const [dispence, setDispence] = useState(user.dispenceTo || 'cup');
-  const [units, setUnits] = useState(user.units || 'metric');
-  // const [notifications, setNotifications] = useState(user.notifications);
-  const language = useStore($langSettingsStore);
-  const [currLanguage, setCurrLanguage] = useState(language);
   const theme = useStore($themeStore);
-  const {writeValueWithResponse, checkConnection} = useBle();
 
   // const navigation = useNavigation();
   const isDarkMode = theme === 'dark';
   const {t} = useTranslation();
 
-  const setSetting = async (cb, data) => {
-    cb();
-    updateProfileUser({...data});
-    await updateUser(user.uid, {...data});
-  };
+  // const setSetting = async (cb, data) => {
+  //   cb();
+  //   updateProfileUser({...data});
+  //   await updateUser(user.uid, {...data});
+  // };
 
-  useEffect(() => {
-    setSetting(() => setUnits('metric'), {
-      units: 'metric',
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   setSetting(() => setUnits('metric'), {
+  //     units: 'metric',
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  const changeMachineLanguage = async lang => {
-    const langIndex = languages.findIndex(item => item === lang);
-    const command = getCommand(0x2c, [langIndex === -1 ? 0 : langIndex], 5);
-    await writeValueWithResponse(command, false);
-  };
+  // const changeMachineLanguage = async lang => {
+  //   const langIndex = languages.findIndex(item => item === lang);
+  //   const command = getCommand(0x2c, [langIndex === -1 ? 0 : langIndex], 5);
+  //   await writeValueWithResponse(command, false);
+  // };
 
-  const changeMachineUnits = async unit => {
-    const langIndex = languages.findIndex(item => item === language);
-    const command = getCommand(
-      0x2c,
-      [langIndex === -1 ? 0 : langIndex, unit],
-      6,
-    );
-    await writeValueWithResponse(command, false);
-  };
+  // const changeMachineUnits = async unit => {
+  //   const langIndex = languages.findIndex(item => item === language);
+  //   const command = getCommand(
+  //     0x2c,
+  //     [langIndex === -1 ? 0 : langIndex, unit],
+  //     6,
+  //   );
+  //   await writeValueWithResponse(command, false);
+  // };
 
   return (
     <View style={s.wrapper}>
@@ -306,7 +290,7 @@ const CommonSettings = () => {
           </View>
         </Collapsible>
       </View> */}
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           {t('Settings.Units')}
         </Text>
@@ -342,7 +326,7 @@ const CommonSettings = () => {
             <Text style={s.unitText}>°F - oz</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
 
       {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
@@ -401,7 +385,7 @@ const CommonSettings = () => {
           </Text>
         </TouchableOpacity>
       </View> */}
-      <View style={[s.filterStatus, s.bottomBorder]}>
+      {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <Text style={[s.title, isDarkMode && s.darkTextMain]}>
           {t('Settings.ChangeLanguage')}
         </Text>
@@ -489,13 +473,13 @@ const CommonSettings = () => {
             <Text style={s.unitText}>DE</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </View> */}
       {/* <View style={[s.filterStatus, s.bottomBorder]}>
         <TouchableOpacity
           onPress={async () => {
             setUser(null);
             await logout();
-            navigation.navigate('Authorization');
+            // navigation.navigate('Authorization');
           }}>
           <Text style={[s.title, s.logoutText]}>{t('Settings.Logout')}</Text>
         </TouchableOpacity>

@@ -52,6 +52,8 @@ const s = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     fontFamily: fonts.defaultMenuFamily,
+    textAlign: 'center',
+    width: 104,
   },
 });
 
@@ -94,7 +96,9 @@ const PressetItem = ({title, id, img, selected, type}) => {
             />
           )}
         </View>
-        <Text style={s.title}>{title}</Text>
+        <Text numberOfLines={1} style={s.title}>
+          {title}
+        </Text>
       </LinearGradient>
     </View>
   );

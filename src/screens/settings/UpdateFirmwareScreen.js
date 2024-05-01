@@ -82,7 +82,6 @@ export const UpdateFirmwareScreen = props => {
     if (Number.isNaN(+old.split('-')[0]) || Number.isNaN(+old.split('-')[1])) {
       return new Date('2023-01-01').getTime();
     }
-    console.log(old);
     const oldSplited = old.split('-')[0].split('');
     let result = '';
 
@@ -214,7 +213,7 @@ export const UpdateFirmwareScreen = props => {
       }
 
       if (NEWEST_FIRMWARE_WITH_CHANGE_LANG <= oldFirmware) {
-        props.navigation.navigate('Settings');
+        props.navigation.navigate('Settings', {openNewVersionInfoModal: true});
       } else {
         setUpdateStatus('old');
         sleep(10000);
@@ -223,7 +222,7 @@ export const UpdateFirmwareScreen = props => {
         setUpdateStatus('languageDone');
         await sleep(40000);
         await readValue('firmwareRevision');
-        props.navigation.navigate('Settings');
+        props.navigation.navigate('Settings', {openNewVersionInfoModal: true});
       }
     } catch (error) {
       Alert.alert(error.message);

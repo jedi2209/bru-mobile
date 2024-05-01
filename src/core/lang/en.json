@@ -62,7 +62,10 @@
     "Confirm": "Confirm",
     "FirmwareUpdate": "Firmware Update",
     "BruAppWillDownload": "Now we will download and install the latest firmware to your BRU Maker. Please make sure you are connected to the internet.",
-    "Done": "Done"
+    "Done": "Done",
+    "Yes": "Yes",
+    "NewFeatures": "New features",
+    "DoYouWant": "Do you want to see new features?"
   },
   "StoreModal": {
     "Title": "BRU Store",
@@ -161,7 +164,12 @@
     "Contact": "How can I contact customer service?",
     "ContactAnswer": "Via WhatsApp",
     "Or": "or",
-    "Link": "Link"
+    "Link": "Link",
+    "EmailPlaceholder": "Please enter your email, so we could answer you!",
+    "FeatureTitle": "Have feature idea? Write it here!",
+    "FeatureButton": "Feature request",
+    "FeatureDesc": "Feature description",
+    "DescribeFeatureHere": "Describe your feature here"
   },
   "UpdateFirmware": {
     "PleaseDont": "Please do not disconnect your BRU machine from power until the firmware updated.",

@@ -8,10 +8,6 @@ import Collapsible from 'react-native-collapsible';
 import LinearGradient from 'react-native-linear-gradient';
 
 const s = StyleSheet.create({
-  wrapper: {
-    marginBottom: 30,
-  },
-  screenTitle: {...basicStyles.screenTitle, marginTop: 30, marginBottom: 20},
   questionWrapper: {
     ...basicStyles.rowBetween,
     borderBottomColor: colors.gray.grayLightText,
@@ -23,7 +19,7 @@ const s = StyleSheet.create({
   },
   textStyle: {
     color: colors.gray.grayDarkText,
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '600',
     lineHeight: 24,
     letterSpacing: 0.4,
@@ -34,8 +30,9 @@ const s = StyleSheet.create({
   },
   arrowIcon: {
     marginRight: 16,
+    transform: [{rotate: '180deg'}],
   },
-  arrowIconActive: {transform: [{rotate: '180deg'}]},
+  arrowIconActive: {transform: [{rotate: '0deg'}]},
   collapsible: {
     paddingVertical: 14,
     paddingHorizontal: 16,
@@ -102,13 +99,14 @@ export const CollapsibleButton = ({
   buttonText = '',
   collapsed = true,
   collapsibleItem,
+  styles = {},
 }) => {
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
 
   return (
     <>
-      <TouchableOpacity onPress={onPress}>
+      <TouchableOpacity onPress={onPress} style={[styles]}>
         <View style={[s.questionWrapper, isDarkMode && s.darkBorder]}>
           <Text style={[s.textStyle, isDarkMode && s.textStyleDark]}>
             {buttonText}
