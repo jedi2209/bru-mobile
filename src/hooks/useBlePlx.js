@@ -240,7 +240,7 @@ const useBle = () => {
     const isConnected = await manager.isDeviceConnected(current.id);
     try {
       if (!isConnected) {
-        connectToDevice(current);
+        await connectToDevice(current);
       }
 
       const data = await manager.readCharacteristicForDevice(

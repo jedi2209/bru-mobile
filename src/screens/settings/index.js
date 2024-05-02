@@ -1,8 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, StyleSheet, Dimensions} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+} from 'react-native';
 import {
   Button,
   ButtonText,
+  LoaderIcon,
   Toast,
   ToastTitle,
   VStack,
@@ -27,6 +34,7 @@ import {$connectedDevice} from '../../core/store/connectedDevice';
 const SettingsScreen = props => {
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newFeaturesModalOpened, setNewFeaturesModalOpened] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
   const {navigation, route} = props;
@@ -49,12 +57,15 @@ const SettingsScreen = props => {
   useEffect(() => {
     requestBluetoothPermission();
     async function getFirmware() {
+      setIsLoading(true);
       try {
         const currentFirmware = await readValue('firmwareRevision');
         const data = await getFirmwareData();
         const availableFirmware = data.find(
           firmwareData => firmwareData.testAvailable,
         );
+
+        console.log(currentFirmware, !!availableFirmware);
 
         if (!currentFirmware) {
           return;
@@ -71,6 +82,8 @@ const SettingsScreen = props => {
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     }
     getFirmware();
@@ -83,6 +96,17 @@ const SettingsScreen = props => {
       filePath,
     });
   };
+
+  if (isLoading) {
+    return (
+      <Wrapper
+        additionalContentContainerStyle={s.loadingWrapper}
+        style={[s.wrapper]}
+        {...props}>
+        <ActivityIndicator size="large" color="white" />
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -275,6 +299,11 @@ const s = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 24,
     letterSpacing: 0.4,
+  },
+  loadingWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
   },
 });
 export default SettingsScreen;

@@ -7,7 +7,6 @@ import React, {
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -96,12 +95,13 @@ const s = StyleSheet.create({
     lineHeight: 24,
     letterSpacing: 0.4,
   },
-  textareaWrapper: {marginBottom: 20},
+  textareaWrapper: {marginBottom: 20, width: '100%'},
   textarea: {
     backgroundColor: '#E6E7E8',
     paddingHorizontal: 15,
     height: 150,
     paddingTop: 15,
+    width: '100%',
     color: 'black',
   },
   attachPhoto: {
@@ -357,10 +357,9 @@ const HelpScreen = props => {
                       .collection('mail')
                       .add({
                         from: data.email,
-                        to: 'aleksandrov.oleksii.wgm@gmail.com',
                         message: {
                           subject: 'Need help!',
-                          text: data.helpMessage,
+                          text: `${data.helpMessage}\n\n${data.email}`,
                         },
                       });
                   })}
@@ -378,7 +377,7 @@ const HelpScreen = props => {
           collapsed={collapsed !== 8}
           buttonText={t('Help.FeatureButton')}
           collapsibleItem={
-            <View>
+            <View style={{width: '100%'}}>
               <Text
                 style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
                 {t('Help.FeatureTitle')}
@@ -425,10 +424,9 @@ const HelpScreen = props => {
                       .collection('mail')
                       .add({
                         from: data.email,
-                        to: 'bk@bru-tea.com',
                         message: {
-                          subject: 'Feature request',
-                          text: data.featureMessage,
+                          subject: 'Need help!',
+                          text: `${data.featureMessage}\n\n${data.email}`,
                         },
                       });
                   })}
