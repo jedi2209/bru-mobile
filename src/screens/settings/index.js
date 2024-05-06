@@ -51,7 +51,6 @@ const SettingsScreen = props => {
   } = useBle();
 
   useEffect(() => {
-    console.log(route.params);
     setNewFeaturesModalOpened(route.params.openNewVersionInfoModal);
   }, [route]);
   useEffect(() => {
@@ -64,8 +63,6 @@ const SettingsScreen = props => {
         const availableFirmware = data.find(
           firmwareData => firmwareData.testAvailable,
         );
-
-        console.log(currentFirmware, !!availableFirmware);
 
         if (!currentFirmware) {
           return;

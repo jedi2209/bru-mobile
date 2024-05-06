@@ -14,8 +14,8 @@ const InitializeScreen = () => {
     async function signIn() {
       const isAuth = auth().currentUser;
       if (!isAuth) {
-        const user = await anonymousSignIn();
-        await addInitPressets(user.user.uid);
+        await anonymousSignIn();
+        // await addInitPressets(user.user.uid);
         await getPressetsFx();
       }
     }

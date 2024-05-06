@@ -40,7 +40,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {updateUser} from '../../utils/db/auth.js';
 import {$userStore} from '../../core/store/user.js';
 import {useTranslation} from 'react-i18next';
-import {getCommand, getStartCommand} from '../../utils/commands';
+import {getCommand, getStartCommand, sleep} from '../../utils/commands';
 import useBle from '../../hooks/useBlePlx';
 import {initDevice} from '../../core/store/connectedDevice';
 import LinearGradient from 'react-native-linear-gradient';
@@ -50,6 +50,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
 import {$langSettingsStore} from '../../core/store/lang';
 import {$currentFirmwareStore} from '../../core/store/firmware';
+import {defaultPresets} from '../../core/const/index';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
@@ -309,7 +310,7 @@ const InstantBrewScreen = props => {
           brewing_data: {time: time, waterAmount, temperature},
           cleaning: isCleaning,
           tea_img: selected.tea_img,
-          tea_type: selected.tea_type,
+          tea_type: `New ${selected.tea_type}`,
           created_at: date.getTime(),
         });
         setModal(null);
@@ -420,6 +421,26 @@ const InstantBrewScreen = props => {
                     ),
                     confirmationButtonText: t('InstantBrewing.YesDelete'),
                     onConfirm: async () => {
+                      if (
+                        defaultPresets.findIndex(
+                          item => item === selected.id,
+                        ) !== -1
+                      ) {
+                        const deletedDefaults = JSON.parse(
+                          await AsyncStorage.getItem('deletedDefaults'),
+                        );
+                        if (deletedDefaults) {
+                          await AsyncStorage.setItem(
+                            'deletedDefaults',
+                            JSON.stringify([...deletedDefaults, selected.id]),
+                          );
+                        } else {
+                          await AsyncStorage.setItem(
+                            'deletedDefaults',
+                            JSON.stringify([selected.id]),
+                          );
+                        }
+                      }
                       deletePressetFx(selected.id);
                       setModal(null);
                       setSelected(null);
@@ -439,14 +460,16 @@ const InstantBrewScreen = props => {
                 style={s.teaNameInput}
               />
             ) : (
-              <Text style={s.teaName}>{selected?.tea_type}</Text>
+              <Text style={s.teaName}>
+                {selected?.tea_type.replace(/\\n/g, '\n')}
+              </Text>
             )}
             {mode === 'view' && (
               <TouchableOpacity
                 disabled={!selected}
                 onPress={() => {
                   setMode('edit');
-                  setNewTeaName(selected.tea_type);
+                  setNewTeaName(selected.tea_type.replace(/\\n/g, '\n'));
                 }}>
                 <PenIcon width={24} height={24} />
               </TouchableOpacity>
@@ -535,17 +558,57 @@ const InstantBrewScreen = props => {
                       created_at: date.getTime(),
                     });
                   } else if (mode === 'edit') {
-                    updatePressetFx({
-                      id: selected.id,
-                      tea_type: newTeaName,
-                      tea_img: imgUrl ? imgUrl : selected.tea_img,
-                      brewing_data: {
-                        time: brewingTime,
-                        waterAmount,
-                        temperature,
-                      },
-                      cleaning: isCleaning,
-                    });
+                    const updatedDefaults = JSON.parse(
+                      await AsyncStorage.getItem('updatedDefaults'),
+                    );
+                    if (updatedDefaults?.includes(selected.id)) {
+                      updatePressetFx({
+                        id: selected.id,
+                        tea_type: newTeaName,
+                        tea_img: imgUrl ? imgUrl : selected.tea_img,
+                        brewing_data: {
+                          time: brewingTime,
+                          waterAmount,
+                          temperature,
+                        },
+                        cleaning: isCleaning,
+                      });
+                    } else if (defaultPresets.includes(selected.id)) {
+                      addPressetToStoreFx({
+                        tea_type: newTeaName,
+                        tea_img: imgUrl ? imgUrl : selected.tea_img,
+                        brewing_data: {
+                          time: brewingTime,
+                          waterAmount,
+                          temperature,
+                        },
+                        cleaning: isCleaning,
+                        created_at: date.getTime(),
+                        id: selected.id,
+                      });
+
+                      await AsyncStorage.setItem(
+                        'updatedDefaults',
+                        JSON.stringify(
+                          updatedDefaults
+                            ? [...updatedDefaults, selected.id]
+                            : [selected.id],
+                        ),
+                      );
+                      await getPressetsFx();
+                    } else {
+                      updatePressetFx({
+                        id: selected.id,
+                        tea_type: newTeaName,
+                        tea_img: imgUrl ? imgUrl : selected.tea_img,
+                        brewing_data: {
+                          time: brewingTime,
+                          waterAmount,
+                          temperature,
+                        },
+                        cleaning: isCleaning,
+                      });
+                    }
                   }
                   setMode('view');
                   setNewTeaName('');

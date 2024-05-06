@@ -24,6 +24,17 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {Input} from './Input';
 import firestore from '@react-native-firebase/firestore';
+import {
+  Image,
+  Button,
+  ButtonText,
+  Heading,
+  useToast,
+  Toast,
+  VStack,
+  ToastTitle,
+} from '@gluestack-ui/themed';
+import ConfirmationModal from '../../core/components/ConfirmationModal';
 
 const s = StyleSheet.create({
   wrapper: {},
@@ -158,9 +169,10 @@ const HelpScreen = props => {
   const theme = useStore($themeStore);
   const isDarkMode = theme === 'dark';
   const [collapsed, setCollapsed] = useState(0);
-  const [modalOpened, setModalOpened] = useState(false);
+  const [modal, setModal] = useState(null);
   const {t} = useTranslation();
   const language = useStore($langSettingsStore);
+  const toast = useToast();
   const currentFirmware = useStore($currentFirmwareStore).data.find(
     item => item.testAvailable,
   );
@@ -177,7 +189,6 @@ const HelpScreen = props => {
 
   useEffect(() => {
     if (props.route.params.openCollapsed) {
-      console.log(props.route.params);
       setCollapsed(props.route.params.openCollapsed);
     }
   }, [props.route.params, props.route.params.openCollapsed]);
@@ -353,15 +364,45 @@ const HelpScreen = props => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleSubmit(async data => {
-                    await firestore()
-                      .collection('mail')
-                      .add({
-                        from: data.email,
-                        message: {
-                          subject: 'Need help!',
-                          text: `${data.helpMessage}\n\n${data.email}`,
+                    try {
+                      await firestore()
+                        .collection('mail')
+                        .add({
+                          from: data.email,
+                          message: {
+                            subject: 'Need help!',
+                            text: `${data.helpMessage}\n\n${data.email}`,
+                          },
+                        });
+                      setModal({
+                        opened: true,
+                        withCancelButton: false,
+                        confirmationButtonText: t('Help.Okay'),
+                        onConfirm: async () => {
+                          setModal(null);
+                        },
+                        closeModal: () => {},
+                      });
+                    } catch (error) {
+                      toast.show({
+                        placement: 'top',
+                        duration: 3000,
+                        render: () => {
+                          return (
+                            <Toast
+                              id={'dfuSuccessToast'}
+                              action="success"
+                              variant="accent">
+                              <VStack space="lg">
+                                <ToastTitle>
+                                  {t('Toast.error.sendRequest')}
+                                </ToastTitle>
+                              </VStack>
+                            </Toast>
+                          );
                         },
                       });
+                    }
                   })}
                   style={s.button}>
                   <Text style={basicStyles.backgroundButtonText}>
@@ -420,15 +461,45 @@ const HelpScreen = props => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={handleSubmit(async data => {
-                    await firestore()
-                      .collection('mail')
-                      .add({
-                        from: data.email,
-                        message: {
-                          subject: 'Need help!',
-                          text: `${data.featureMessage}\n\n${data.email}`,
+                    try {
+                      await firestore()
+                        .collection('mail')
+                        .add({
+                          from: data.email,
+                          message: {
+                            subject: 'Need help!',
+                            text: `${data.featureMessage}\n\n${data.email}`,
+                          },
+                        });
+                      setModal({
+                        opened: true,
+                        withCancelButton: false,
+                        confirmationButtonText: t('Help.Okay'),
+                        onConfirm: async () => {
+                          setModal(null);
+                        },
+                        closeModal: () => {},
+                      });
+                    } catch (error) {
+                      toast.show({
+                        placement: 'top',
+                        duration: 3000,
+                        render: () => {
+                          return (
+                            <Toast
+                              id={'dfuSuccessToast'}
+                              action="success"
+                              variant="accent">
+                              <VStack space="lg">
+                                <ToastTitle>
+                                  {t('Toast.error.sendRequest')}
+                                </ToastTitle>
+                              </VStack>
+                            </Toast>
+                          );
                         },
                       });
+                    }
                   })}
                   style={s.button}>
                   <Text style={basicStyles.backgroundButtonText}>
@@ -452,10 +523,11 @@ const HelpScreen = props => {
           }
         />
         <View style={{marginBottom: 70}} />
-        <NotificationModal
-          opened={modalOpened}
-          closeModal={() => setModalOpened(false)}
-          modalTitle={t('Help.modalSuccess')}
+        <ConfirmationModal
+          opened={modal}
+          closeModal={() => setModal(null)}
+          confirmationText={t('Help.modalSuccess')}
+          {...modal}
         />
       </ScrollView>
     </KeyboardAvoidingView>

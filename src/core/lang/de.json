@@ -169,7 +169,8 @@
     "FeatureTitle": "Sie haben eine Idee für einen Beitrag? Schreiben Sie sie hier!",
     "FeatureButton": "Feature-Anfrage",
     "FeatureDesc": "Beschreibung der Funktion",
-    "DescribeFeatureHere": "Beschreiben Sie hier Ihre Funktion"
+    "DescribeFeatureHere": "Beschreiben Sie hier Ihre Funktion",
+    "Okay": "Okay"
   },
   "UpdateFirmware": {
     "PleaseDont": "Bitte trennen Sie Ihr BRU-Gerät nicht von der Stromversorgung, bis die Firmware aktualisiert wurde.",

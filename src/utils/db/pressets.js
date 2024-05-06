@@ -1,8 +1,11 @@
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const pressetsCollection = firestore().collection('pressets');
+export const defaultPressetsCollection =
+  firestore().collection('default_pressets');
 
 const initPressets = [
   {
@@ -38,7 +41,7 @@ const initPressets = [
       temperature: 8,
     },
     cleaning: false,
-    id: 'ginger-lemon',
+    id: 'ginger_lemon',
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fginger-lemon.png?alt=media&token=9374e4bb-319f-43b9-880c-8fe04ea8724f',
     tea_type: 'Green tea\nginger-lemon',
@@ -64,7 +67,7 @@ const initPressets = [
       temperature: 12,
     },
     cleaning: false,
-    id: 'rooibos-marzipan',
+    id: 'rooibos_marzipan',
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Frooibos-marzipan.png?alt=media&token=57c5a715-56d0-4d18-a287-dc28217479a7',
     tea_type: 'Rooibos Marzipan',
@@ -77,7 +80,7 @@ const initPressets = [
       temperature: 11,
     },
     cleaning: false,
-    id: 'sweet-orange',
+    id: 'sweet_orange',
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fsweet-orange.png?alt=media&token=d979cbfd-9ecc-4a67-b9ea-52e8d0822e0c',
     tea_type: 'Sweet Orange',
@@ -90,7 +93,7 @@ const initPressets = [
       temperature: 12,
     },
     cleaning: false,
-    id: 'wild-mango',
+    id: 'wild_mango',
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fwild-mango.png?alt=media&token=66f8d170-ec81-4310-b16d-1e4d5ac778a0',
     tea_type: 'Wild Mango',
@@ -103,7 +106,7 @@ const initPressets = [
       temperature: 7,
     },
     cleaning: false,
-    id: 'sencha-japan',
+    id: 'sencha_japan',
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fsencha-japan.png?alt=media&token=9512f075-4f67-4e5d-8b7b-612b6135420d',
     tea_type: 'Green tea Sencha\nfrom Japan',
@@ -116,7 +119,7 @@ const initPressets = [
       temperature: 10,
     },
     cleaning: false,
-    id: 'fresh-peach',
+    id: 'fresh_peach',
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Ffresh-peach.png?alt=media&token=10e5b045-0e72-49b0-b510-8ad4fb58b4b6',
     tea_type: 'Fresh Peach',
@@ -129,7 +132,7 @@ const initPressets = [
       temperature: 12,
     },
     cleaning: false,
-    id: 'assam-from-india',
+    id: 'assam_from_india',
     tea_img:
       'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Fassam-from-india.png?alt=media&token=91a5162f-c269-45ca-b188-dee04afd5b3f',
     tea_type: 'Assam from India',
@@ -152,18 +155,39 @@ export const addInitPressets = async uid => {
 export const getUserPressets = async () => {
   try {
     const uid = auth().currentUser.uid;
+    const deletedDefaults = JSON.parse(
+      await AsyncStorage.getItem('deletedDefaults'),
+    );
+    const updatedDefaults = JSON.parse(
+      await AsyncStorage.getItem('updatedDefaults'),
+    );
 
     const pressets = await pressetsCollection
       .doc(uid)
       .collection('pressets')
       .get();
 
-    return pressets.docs.map(presset => {
+    const defaultPressets = (await defaultPressetsCollection.get()).docs
+      .map(doc => doc.data())
+      .filter(presset => {
+        if (!deletedDefaults) {
+          return true;
+        }
+        if (deletedDefaults.includes(presset.id)) {
+          return false;
+        }
+        if (updatedDefaults.includes(presset.id)) {
+          return false;
+        }
+        return true;
+      });
+    const pressetsWithid = pressets.docs.map(presset => {
       return {
         id: presset.id,
         ...presset.data(),
       };
     });
+    return [...pressetsWithid, ...defaultPressets];
   } catch (error) {
     console.log(error, 'error getUserPresset');
   }

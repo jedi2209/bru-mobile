@@ -169,7 +169,8 @@
     "FeatureTitle": "Hai un'idea per una rubrica? Scrivetela qui!",
     "FeatureButton": "Richiesta di funzionalità",
     "FeatureDesc": "Descrizione della caratteristica",
-    "DescribeFeatureHere": "Descrivete qui la vostra caratteristica"
+    "DescribeFeatureHere": "Descrivete qui la vostra caratteristica",
+    "Okay": "Okay"
   },
   "UpdateFirmware": {
     "PleaseDont": "Non scollegare la macchina BRU dall'alimentazione fino all'aggiornamento del firmware",

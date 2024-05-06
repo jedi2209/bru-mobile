@@ -169,7 +169,8 @@
     "FeatureTitle": "Have feature idea? Write it here!",
     "FeatureButton": "Feature request",
     "FeatureDesc": "Feature description",
-    "DescribeFeatureHere": "Describe your feature here"
+    "DescribeFeatureHere": "Describe your feature here",
+    "Okay": "Okay"
   },
   "UpdateFirmware": {
     "PleaseDont": "Please do not disconnect your BRU machine from power until the firmware updated.",

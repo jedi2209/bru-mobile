@@ -169,7 +169,8 @@
     "FeatureTitle": "Vous avez une idée de reportage ? Écrivez-la ici !",
     "FeatureButton": "Demande de fonctionnalité",
     "FeatureDesc": "Description de la fonctionnalité",
-    "DescribeFeatureHere": "Décrivez votre fonctionnalité ici"
+    "DescribeFeatureHere": "Décrivez votre fonctionnalité ici",
+    "Okay": "Okay"
   },
   "UpdateFirmware": {
     "PleaseDont": "Veuillez ne pas déconnecter votre machine BRU de l'alimentation électrique jusqu'à ce que le micrologiciel soit mis à jour",

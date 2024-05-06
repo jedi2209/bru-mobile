@@ -97,7 +97,7 @@ const PressetItem = ({title, id, img, selected, type}) => {
           )}
         </View>
         <Text numberOfLines={1} style={s.title}>
-          {title}
+          {title.replace(/\\n/g, '\n')}
         </Text>
       </LinearGradient>
     </View>
