@@ -28,12 +28,12 @@ const colors = {
     },
     backgroundTabbar: ['#242424', '#222222'],
     pressetItem: {
-      dark: ['#404040', '#E6E7E8', '#CDCACA'],
+      dark: ['white', 'white', 'white'],
       light: ['#EBEBEB', '#E6E7E8', '#F2F2F2'],
     },
     pressetInfo: {
       light: ['#f5f5f5', '#f2f2f2', '#f9fafb'],
-      dark: ['#404040', '#E6E7E8', '#CDCACA'],
+      dark: ['white', 'white', 'white'],
     },
     helpCollapsibleDark: ['#404040', '#2b2b2b'],
     profileInfo: {

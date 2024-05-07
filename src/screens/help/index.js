@@ -183,6 +183,7 @@ const HelpScreen = props => {
     control,
     handleSubmit,
     formState: {errors},
+    reset,
   } = useForm({
     resolver: yupResolver(messageSchema),
   });
@@ -288,41 +289,48 @@ const HelpScreen = props => {
           buttonText={t('Help.Contact')}
           collapsibleItem={
             <View>
-              <Text style={[s.defaultText, isDarkMode && s.darkText]}>{`${t(
-                'Help.ContactAnswer',
-              )}`}</Text>
-              <Text style={[s.defaultText, isDarkMode && s.darkText]}>
-                {'here will be qr-code'}
-              </Text>
-              <View style={{flexDirection: 'row', gap: 3}}>
-                <Text style={[s.defaultText, isDarkMode && s.darkText]}>{`${t(
-                  'Help.Or',
-                )}`}</Text>
+              <View style={{flexDirection: 'row', gap: 10}}>
+                <Text
+                  style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
+                  {t('Help.ViaWhatsApp')}
+                </Text>
                 <TouchableOpacity
                   onPress={async () => {
                     const canOpen = await Linking.canOpenURL(
-                      encodeURI('mailto:support@bru-tea.com'),
+                      'https://wa.me/+41795157397',
                     );
-                    Linking.openURL(encodeURI('mailto:support@bru-tea.com'));
                     if (canOpen) {
+                      Linking.openURL('https://wa.me/+41795157397');
                     } else {
                       Alert.alert("Can't open link");
                     }
                   }}>
-                  <Text style={[s.defaultText, isDarkMode && s.darkText]}>
-                    support@bru-tea.com
-                  </Text>
+                  <Text style={s.linkText}>+41 79 515 73 97</Text>
                 </TouchableOpacity>
               </View>
-            </View>
-          }
-        />
-        <CollapsibleButton
-          onPress={() => setCollapsed(prev => (prev === 3 ? 0 : 3))}
-          collapsed={collapsed !== 3}
-          buttonText={t('Help.contactSupport')}
-          collapsibleItem={
-            <View>
+              <View style={{flexDirection: 'row', gap: 10}}>
+                <Text
+                  style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
+                  {t('Help.OrEmail')}
+                </Text>
+                <TouchableOpacity
+                  onPress={async () => {
+                    const canOpen = await Linking.canOpenURL(
+                      'mailto:support@bru-tea.com',
+                    );
+                    if (canOpen) {
+                      Linking.openURL('mailto:support@bru-tea.com');
+                    } else {
+                      Alert.alert("Can't open link");
+                    }
+                  }}>
+                  <Text style={s.linkText}>support@bru-tea.com</Text>
+                </TouchableOpacity>
+              </View>
+              <Text
+                style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
+                {t('Help.OrForm')}
+              </Text>
               <Text
                 style={[s.contactTitle, isDarkMode && basicStyles.darkText]}>
                 {t('Help.contactDesc')}
@@ -383,6 +391,7 @@ const HelpScreen = props => {
                         },
                         closeModal: () => {},
                       });
+                      reset();
                     } catch (error) {
                       toast.show({
                         placement: 'top',
@@ -413,6 +422,7 @@ const HelpScreen = props => {
             </View>
           }
         />
+
         <CollapsibleButton
           onPress={() => setCollapsed(prev => (prev === 8 ? 0 : 8))}
           collapsed={collapsed !== 8}
@@ -480,6 +490,7 @@ const HelpScreen = props => {
                         },
                         closeModal: () => {},
                       });
+                      reset();
                     } catch (error) {
                       toast.show({
                         placement: 'top',
