@@ -1,25 +1,25 @@
 {
   "MenuBottom": {
-    "InstantBrew": "Freestyle Brühen",
-    "TeaAlarm": "Tee-Alarm",
+    "InstantBrew": "Sofort Brühen",
+    "TeaAlarm": "Alarm",
     "Presets": "Voreinstellungen",
     "Help": "Hilfe",
     "Settings": "Einstellungen"
   },
   "BrewingData": {
     "BrewingTime": "Brühzeit",
-    "WaterTemperature": "Wasser-\ntemperatur",
-    "WaterAmount": "Wasser-\nmenge"
+    "WaterTemperature": "Wassertemperatur",
+    "WaterAmount": "Wassermenge"
   },
   "InstantBrewing": {
     "BrewIt": "Brühen!",
     "Cancel": "Abbrechen",
-    "SplitCups": "Tassen teilen",
+    "SplitCups": "Tassen aufteilen",
     "Cleaning": "Reinigung",
-    "ColdWaterDiffusion": "Kaltes Wasser wird nicht diffundiert",
-    "ConfirmationModalTitle": "Diese Konfiguration als neues Preset speichern?",
+    "ColdWaterDiffusion": "Kaltwasserdiffusion nicht angewendet",
+    "ConfirmationModalTitle": "Diese Konfiguration als neue Voreinstellung speichern?",
     "Later": "Später",
-    "YouWillBeAble": "Sie können später neue Presets erstellen",
+    "YouWillBeAble": "Du kannst später neue Voreinstellungen erstellen",
     "page": "Seite",
     "DontShowAgain": "Nicht wieder anzeigen",
     "No": "Nein",
@@ -27,22 +27,22 @@
     "NoDeviceDesc": "Kein Gerät erkannt. Neues Gerät verbinden?",
     "NoDeviceTitle": "Kein verbundenes Gerät",
     "Attention": "Achtung!",
-    "DoYouReallyWant": "Aktuelles Preset löschen?",
+    "DoYouReallyWant": "Aktuelle Voreinstellung löschen?",
     "YesDelete": "Ja, löschen"
   },
   "TeaAlarm": {
-    "Title": "Tee-Alarm",
+    "Title": "Alarm",
     "NewTeaAlarm": "Neuen Alarm setzen",
     "PrepareTeaBy": "Teezubereitung starten um",
-    "SelectPreset": "Preset auswählen",
-    "SaveTeaAlarm": "Tee-Alarm speichern",
+    "SelectPreset": "Voreinstellung auswählen",
+    "SaveTeaAlarm": "Alarm speichern",
     "Delete": "Löschen",
-    "TeaAlarmSet": "Tee-Alarm gesetzt für",
+    "TeaAlarmSet": "Alarm gesetzt für",
     "By": "von"
   },
   "Presets": {
     "Title": "Voreinstellungen",
-    "SavePreset": "Preset speichern",
+    "SavePreset": "Voreinstellungen speichern",
     "Cancel": "Abbrechen"
   },
   "Settings": {
@@ -61,15 +61,15 @@
     "No": "Nein",
     "Confirm": "Bestätigen",
     "FirmwareUpdate": "Firmware-Update",
-    "BruAppWillDownload": "Wir werden jetzt die neueste Firmware für Ihren BRU Maker herunterladen und installieren. Bitte stellen Sie sicher, dass Sie mit dem Internet verbunden sind.",
+    "BruAppWillDownload": "Wir werden jetzt die neueste Firmware für deinen BRU Maker herunterladen und installieren. Bitte stelle sicher, dass du mit dem Internet verbunden bist.",
     "Done": "Fertig",
     "Yes": "Ja",
-    "NewFeatures": "Neue Merkmale",
-    "DoYouWant": "Möchten Sie neue Funktionen sehen?"
+    "NewFeatures": "Neue Funktionen",
+    "DoYouWant": "Möchtest du die neuen Funktionen sehen?"
   },
   "StoreModal": {
-    "Title": "BRU-Store",
-    "TeaStore": "Tee-Shop",
+    "Title": "BRU Shop",
+    "TeaStore": "Unsere Tees",
     "PartsAndAccessories": "Ersatzteile und Zubehör",
     "Back": "Zurück"
   },
@@ -78,9 +78,9 @@
     "Name": "Name",
     "Email": "E-Mail",
     "Password": "Passwort",
-    "PleaseEnterName": "Bitte geben Sie Ihren Namen ein",
-    "PleaseEnterEmail": "Bitte geben Sie Ihre E-Mail-Adresse ein",
-    "PleaseEnterPassword": "Bitte geben Sie Ihr Passwort ein",
+    "PleaseEnterName": "Bitte gib deinen Namen ein",
+    "PleaseEnterEmail": "Bitte gib deine E-Mail-Adresse ein",
+    "PleaseEnterPassword": "Bitte gib dein Passwort ein",
     "Save": "Speichern"
   },
   "Toast": {
@@ -89,52 +89,52 @@
       "connection": "✅ Erfolgreich verbunden"
     },
     "error": {
-      "sendCommand": "❌ Beim Senden des Befehls ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut",
-      "connection": "❌ Beim Verbinden mit dem Gerät ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut",
-      "disconnect": "❌ Beim Trennen von dem Gerät ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut",
-      "read": "❌ Beim Lesen der Daten vom Gerät ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut",
-      "pleaseConnect": "Bitte verbinden Sie zuerst Ihren BRU Maker",
-      "noConnectedDevice": "Kein Gerät erkannt. Bitte verbinden und erneut versuchen."
+      "sendCommand": "❌ Beim Senden des Befehls ist ein Fehler aufgetreten. Bitte versuche es erneut",
+      "connection": "❌ Beim Verbinden mit dem Gerät ist ein Fehler aufgetreten. Bitte versuche es erneut",
+      "disconnect": "❌ Beim Trennen der Verbindung mit dem Gerät ist ein Fehler aufgetreten. Bitte versuche es erneut",
+      "read": "❌  Beim Lesen der Daten aus dem Gerät ist ein Fehler aufgetreten. Bitte versuche es erneut",
+      "pleaseConnect": "Bitte verbinde zuerst deinen BRU Maker",
+      "noConnectedDevice": "Kein Gerät erkannt. Bitte verbinde deinen BRU Maker und versuche es erneut."
     }
   },
   "Connection": {
     "step1": {
-      "header": "Bluetooth auf Ihrem Telefon aktivieren",
-      "text": "Diese APP benötigt Zugriff auf Bluetooth, um Ihr Gerät suchen und kommunizieren zu können."
+      "header": "Aktiviere die Verbindung auf deinem Mobiltelefon",
+      "text": "Diese APP benötigt Zugriff auf dein Mobiltelefon, um dein Gerät zu finden und mit ihm zu kommunizieren."
     },
     "step2": {
-      "header": "Ooops...",
-      "text": "Wir benötigen Zugriff auf das Bluetooth Ihres Telefons, um Ihr Gerät suchen und kommunizieren zu können."
+      "header": "Ups...",
+      "text": "Wir benötigen Zugriff auf dein Mobiltelefon, um dein Gerät zu finden und mit ihm zu kommunizieren."
     },
     "step3": {
-      "header": "Zugriff auf Bluetooth und Standort erforderlich",
-      "text": "Bluetooth- und Standortberechtigungen sind erforderlich, um Ihren BRU Maker zu finden und zu steuern, auch wenn die App nicht verwendet wird. Ohne Zugriff funktionieren möglicherweise Dinge nicht wie erwartet."
+      "header": "Verbindung und Zugang zum Standort erforderlich",
+      "text": "Verbindung- und Standortberechtigungen sind erforderlich, um deinen BRU Maker One zu finden und zu steuern, selbst wenn die App nicht verwendet wird. Ohne Zugriff funktionieren möglicherweise Dinge nicht wie erwartet."
     },
     "step4": {
-      "header": "Bluetooth auf dem Gerät aktivieren",
-      "text": "Bitte aktivieren Sie Bluetooth auf Ihrem Gerät. Gehen Sie zu 'GERÄTEEINSTELLUNGEN' dann zu 'BLUETOOTH' und schalten Sie es auf 'AN'"
+      "header": "Verbindung auf dem Gerät aktivieren",
+      "text": "Bitte aktiviere die Verbindung auf deinem Gerät. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN'"
     },
     "step5": {
-      "header": "Suche nach Ihrem BRU Maker"
+      "header": "Suche nach deinem BRU Maker"
     },
     "step6": {
       "header": "Bereit zum Koppeln",
-      "text": "Cool! Wir haben Ihren BRU Maker gefunden! Bitte aktivieren Sie den Pairing-Modus auf Ihrem BRU Maker. Gehen Sie zu 'MACHINE SETUP' und dann zu 'PAIR NEW DEVICE'. Nach diesem Schritt müssen Sie 'Waiting for connection' auf dem BRU-Gerätedisplay sehen."
+      "text": "Cool! Wir haben deinen BRU Maker gefunden! Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN'. Nach diesem Schritt musst du 'Warten auf Verbindung' auf dem BRU-Gerätedisplay sehen."
     },
     "step7": {
-      "header": "Versucht zu verbinden...",
-      "text": "Wir versuchen jetzt, mit Ihrem BRU Maker zu verbinden. Bitte warten Sie ein paar Sekunden."
+      "header": "Verbindungsversuch...",
+      "text": "Wir versuchen jetzt eine Verbindung mit deinem BRU Maker One herzustellen . Bitte warte ein paar Sekunden."
     },
     "step8": {
-      "header": "Ooops...",
-      "text": "Bitte überprüfen Sie Ihren BRU Maker. Sie müssen den Koppelungsmodus aktivieren. Gehen Sie zu 'GERÄTEEINSTELLUNGEN' dann zu 'BLUETOOTH' und schalten Sie es auf 'AN'"
+      "header": "Ups...",
+      "text": "Bitte überprüfe deinen BRU Maker. Du musst den Koppelmodus aktivieren. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN'"
     },
     "step9": {
-      "header": "Es hat geklappt",
-      "text": "Ihr BRU Maker ist erfolgreich mit Ihrem Telefon gekoppelt. Jetzt können Sie alle Funktionen der App nutzen :)"
+      "header": "Erfolg :)",
+      "text": "Dein BRU Maker One ist erfolgreich mit deinem Mobiltelefon gekoppelt. Jetzt kannst du alle Funktionen der App nutzen :)"
     },
     "step10": {
-      "header": "Wir müssen Ihre BRU Maker-Firmware aktualisieren!"
+      "header": "Wir müssen deine BRU Maker One-Firmware aktualisieren!"
     },
     "grantPermission": "Berechtigungen erteilen",
     "openSettings": "Einstellungen öffnen",
@@ -147,50 +147,51 @@
   },
   "Help": {
     "title": "Hilfe",
-    "contactSupport": "Support kontaktieren",
-    "contactDesc": "Bitte geben Sie die Details zu Ihrem Problem an unseren Support weiter. Wir werden Ihnen so schnell wie möglich helfen.",
+    "contactSupport": "Kundendienst kontaktieren",
+    "contactDesc": "Bitte teile unserem Kundendienst die Einzelheiten deines Problems mit. Wir werden dir so schnell wie möglich helfen.",
     "issueDesc": "Problembeschreibung",
-    "contactPlaceholder": "Geben Sie Ihre Nachricht hier ein",
+    "contactPlaceholder": "Gib hier deine Nachricht ein",
     "cancel": "Abbrechen",
     "send": "Senden",
-    "modalSuccess": "Die Anfrage wurde gesendet. Wir werden Sie so schnell wie möglich kontaktieren.",
-    "InstallFilter": "Wie installiert man einen Wasserfilter?",
-    "PleaseWatchThis": "Bitte schauen Sie sich dieses Video an:",
-    "Descale": "Wie entkalkt man die Maschine?",
+    "modalSuccess": "Die Anfrage wurde gesendet. Wir werden dich so schnell wie möglich kontaktieren.",
+    "InstallFilter": "Wie installiere ich den Wasserfilter?",
+    "PleaseWatchThis": "Bitte schaue dir dieses Video an:",
+    "Descale": "Wie entkalke ich die Maschine?",
     "ResetPin": "Wo finde ich den Reset-Pin?",
-    "ResetPinAnswer": "Der Reset-Pin befindet sich unter der Tropfschale.",
+    "ResetPinAnswer": "Der Reset-Pin befindet sich unter der Abropfschale.",
     "TastesDifferent": "Was kann ich tun, wenn mein Tee anders schmeckt?",
-    "PleaseChangeFilter": "Bitte wechseln Sie den Wasserfilter.",
-    "Contact": "Wie kann ich den Kundenservice kontaktieren?",
+    "PleaseChangeFilter": "Bitte wechsle den Wasserfilter.",
+    "Contact": "Wie kann ich den Kundendienst kontaktieren?",
     "ViaWhatsApp": "Über WhatsApp",
-    "OrEmail": "Oder Email",
-    "OrForm": "Oder über das untenstehende Kontakformular",
+    "OrEmail": "Oder per E-Mail",
+    "OrForm": "Oder über das untenstehende Kontaktformular",
     "Or": "oder",
     "Link": "Link",
-    "EmailPlaceholder": "Bitte geben Sie Ihre E-Mail-Adresse an, damit wir Ihnen antworten können!",
-    "FeatureTitle": "Sie haben eine Idee für einen Beitrag? Schreiben Sie sie hier!",
-    "FeatureButton": "Feature-Anfrage",
+    "EmailPlaceholder": "Bitte gib deine E-Mail-Adresse an, damit wir dir antworten können!",
+    "FeatureTitle": "Hast du eine Idee für eine neue App-Funktion? Schreib uns hier!",
+    "FeatureButton": "App-Funktions-Anfrage",
     "FeatureDesc": "Beschreibung der Funktion",
-    "DescribeFeatureHere": "Beschreiben Sie hier Ihre Funktion",
-    "Okay": "Okay"
+    "DescribeFeatureHere": "Beschreibe hier dein Funktionsvorschlag",
+    "Okay": "Ok",
+    "WhatNew": "Was gibt es Neues?"
   },
   "UpdateFirmware": {
-    "PleaseDont": "Bitte trennen Sie Ihr BRU-Gerät nicht von der Stromversorgung, bis die Firmware aktualisiert wurde.",
+    "PleaseDont": "Bitte trenne dein BRU-Gerät nicht von der Stromversorgung, bis die Firmware aktualisiert wurde.",
     "UpdateCompleted": "✅ Aktualisierung ist abgeschlossen!",
-    "UpdateCompletedDesc": "Die Aktualisierung ist abgeschlossen. Bitte warten Sie ein paar Sekunden, bis BRU neu gestartet ist",
+    "UpdateCompletedDesc": "Die Aktualisierung ist abgeschlossen. Bitte warte ein paar Sekunden, bis BRU neu startet.",
     "CantDownload": "Datei kann nicht heruntergeladen werden",
     "Downloading": "Herunterladen der BRU-Firmware",
     "Connecting": "Verbindung zum Gerät herstellen",
-    "Success": "Wir haben Ihre Firmware erfolgreich aktualisiert",
-    "Error": "Während der Installation der Firmware ist ein Fehler aufgetreten, bitte versuchen Sie es später noch einmal",
+    "Success": "Wir haben deine Firmware erfolgreich aktualisiert",
+    "Error": "Ein Fehler ist während der Installation der Firmware aufgetreten, bitte versuche es später noch einmal",
     "Updating": "Aktualisierung der Firmware...",
     "Old": "Einstellung der BRU-Maschinensprache. Bitte warten.",
-    "LanguageDone": "Sprache eingestellt. Bitte warten Sie ein paar Sekunden, bis BRU neu gestartet ist."
+    "LanguageDone": "Sprache eingestellt. Bitte warte ein paar Sekunden bis BRU neu startet."
   },
   "Unpair": {
-    "AreYouSure": "Sind Sie sicher?",
-    "After": "Nachdem Sie das Gerät entkoppelt haben, sollten Sie es erneut koppeln.",
+    "AreYouSure": "Bist du sicher?",
+    "After": "Nachdem du das Gerät entkoppelt hast, musst du es erneut koppeln.",
     "Cancel": "Abbrechen",
-    "Unpair": "Unpaarig"
+    "Unpair": "Entkoppeln"
   }
 }

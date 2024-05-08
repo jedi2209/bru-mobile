@@ -172,7 +172,8 @@
     "FeatureButton": "Solicitud de funciones",
     "FeatureDesc": "Descripción de la función",
     "DescribeFeatureHere": "Describa aquí su característica",
-    "Okay": "Okay"
+    "Okay": "Okay",
+    "WhatNew": "¿Qué hay de nuevo?"
   },
   "UpdateFirmware": {
     "PleaseDont": "Por favor, no desconecte su máquina BRU de la corriente hasta que se actualice el firmware",

@@ -1,7 +1,7 @@
 {
   "MenuBottom": {
     "InstantBrew": "Instant Brew",
-    "TeaAlarm": "Tea Alarm",
+    "TeaAlarm": "Alarm",
     "Presets": "Presets",
     "Help": "Help",
     "Settings": "Settings"
@@ -31,13 +31,13 @@
     "YesDelete": "Yes, Delete"
   },
   "TeaAlarm": {
-    "Title": "Tea Alarm",
+    "Title": "Alarm",
     "NewTeaAlarm": "Set new alarm",
     "PrepareTeaBy": "Start tea preparation at",
     "SelectPreset": "Select preset",
-    "SaveTeaAlarm": "Save tea alarm",
+    "SaveTeaAlarm": "Save alarm",
     "Delete": "Delete",
-    "TeaAlarmSet": "Tea alarm set for",
+    "TeaAlarmSet": "Alarm set for",
     "By": "by"
   },
   "Presets": {
@@ -61,15 +61,15 @@
     "No": "No",
     "Confirm": "Confirm",
     "FirmwareUpdate": "Firmware Update",
-    "BruAppWillDownload": "Now we will download and install the latest firmware to your BRU Maker. Please make sure you are connected to the internet.",
+    "BruAppWillDownload": "We will now download and install the latest firmware for your BRU Maker. Please make sure you are connected to the internet.",
     "Done": "Done",
     "Yes": "Yes",
     "NewFeatures": "New features",
-    "DoYouWant": "Do you want to see new features?"
+    "DoYouWant": "Do you want to see the new features?"
   },
   "StoreModal": {
-    "Title": "BRU Store",
-    "TeaStore": "Tea Store",
+    "Title": "BRU Shop",
+    "TeaStore": "Our teas",
     "PartsAndAccessories": "Parts and Accessories",
     "Back": "Back"
   },
@@ -99,27 +99,27 @@
   },
   "Connection": {
     "step1": {
-      "header": "Activate bluetooth on your phone",
-      "text": "This APP needs access to Bluetooth to be able search and communicate with your device."
+      "header": "Activate connection on your phone",
+      "text": "This APP needs access to your phone to be able to connect and communicate with your device."
     },
     "step2": {
       "header": "Ooops...",
-      "text": "We need access to your phone's Bluetooth to be able search and communicate with your device."
+      "text": "We need access to your phone to be able to connect and communicate with your device."
     },
     "step3": {
-      "header": "Bluetooth and Location access required",
-      "text": "Bluetooth and Location permissions are required to find and control your BRU Maker even when the app is not in use. Without access, things may not work as expected."
+      "header": "Connection and Location access required",
+      "text": "Connection and Location permissions are required to find and control your BRU Maker One even when the app is not in use. Without access, things may not work as expected."
     },
     "step4": {
-      "header": "Activate Bluetooth on the machine",
-      "text": "Please activate Bluetooth on your device. Got to 'MACHINE SETUP' then to 'BLUETOOTH' and turn it 'ON'"
+      "header": "Activate connection on your machine",
+      "text": "Please activate connection on your device. Got to 'MACHINE SETUP' then to 'CONNECTION' and turn it 'ON'"
     },
     "step5": {
       "header": "Search for your BRU Maker"
     },
     "step6": {
       "header": "Ready for pairing",
-      "text": "Cool! We found your BRU Maker! Please activate pairing mode on your BRU Maker. Got to 'MACHINE SETUP' then to 'PAIR NEW DEVICE'. After this step you must see 'Waiting for connection' on BRU device display."
+      "text": "Cool! We found your BRU Maker! Please activate pairing mode on your BRU Maker. Go to 'MACHINE SETUP' then to 'PAIR NEW DEVICE'. After this step you must see 'Waiting for connection' on BRU device display."
     },
     "step7": {
       "header": "Trying to connect...",
@@ -127,7 +127,7 @@
     },
     "step8": {
       "header": "Ooops...",
-      "text": "Please check your BRU Maker. You need to activate pairing mode. Got to 'MACHINE SETUP' then to 'BLUETOOTH' and turn it 'ON'"
+      "text": "Please check your BRU Maker. You need to activate pairing mode. Go to 'MACHINE SETUP' then to 'CONNECTION' and turn it 'ON'"
     },
     "step9": {
       "header": "Success :) ",
@@ -148,7 +148,7 @@
   "Help": {
     "title": "Help",
     "contactSupport": "Contact support",
-    "contactDesc": "Please provide the issue details to our support team. We will assist you as soon as possible.",
+    "contactDesc": "Please provide the details of your issue to our support team. We will assist you as soon as possible.",
     "issueDesc": "Issue Description",
     "contactPlaceholder": "Enter your message here",
     "cancel": "Cancel",
@@ -161,35 +161,36 @@
     "ResetPinAnswer": "The reset pin is under the drip tray.",
     "TastesDifferent": "What can I do if my tea tastes different?",
     "PleaseChangeFilter": "Please change the water filter.",
-    "Contact": "How can I contact customer service?",
+    "Contact": "How can I contact the customer service?",
     "ViaWhatsApp": "Via WhatsApp",
     "OrEmail": "Or email",
     "OrForm": "Or via the contact form below",
     "Or": "or",
     "Link": "Link",
-    "EmailPlaceholder": "Please enter your email, so we could answer you!",
-    "FeatureTitle": "Have feature idea? Write it here!",
+    "EmailPlaceholder": "Please enter your email, so we can answer you!",
+    "FeatureTitle": "Do you have an idea for a new feature? Let us know here!",
     "FeatureButton": "Feature request",
     "FeatureDesc": "Feature description",
     "DescribeFeatureHere": "Describe your feature here",
-    "Okay": "Okay"
+    "Okay": "Okay",
+    "WhatNew": "What's new?"
   },
   "UpdateFirmware": {
-    "PleaseDont": "Please do not disconnect your BRU machine from power until the firmware updated.",
+    "PleaseDont": "Please do not disconnect your BRU Maker One from a power source until the firmware is updated.",
     "UpdateCompleted": "✅ Update is complete!",
     "UpdateCompletedDesc": "Update is complete. Please wait a few seconds for BRU to reboot.",
     "CantDownload": "Can't download file",
     "Downloading": "Downloading BRU firmware",
     "Connecting": "Connecting to the device",
-    "Success": "We succesfully update your firmware",
-    "Error": "Some error occured during firmware instalation please try again later",
+    "Success": "We succesfully updated your firmware",
+    "Error": "An error occured during the firmware instalation please try again later",
     "Updating": "Updating firmware...",
-    "Old": "Setting you BRU machine language. Please wait.",
-    "LanguageDone": "Language set. Please wait a few seconds for BRU to restart"
+    "Old": "Setting up you BRU Maker One language. Please wait.",
+    "LanguageDone": "Language is set up. Please wait a few seconds for BRU to restart"
   },
   "Unpair": {
     "AreYouSure": "Are you sure?",
-    "After": "After unpair device you should pair it again.",
+    "After": "After unpairing your device you have to pair it again.",
     "Cancel": "Cancel",
     "Unpair": "Unpair"
   }

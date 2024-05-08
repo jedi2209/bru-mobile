@@ -173,7 +173,7 @@ const HelpScreen = props => {
   const {t} = useTranslation();
   const language = useStore($langSettingsStore);
   const toast = useToast();
-  const currentFirmware = useStore($currentFirmwareStore).data.find(
+  const currentFirmware = useStore($currentFirmwareStore)?.data?.find(
     item => item.testAvailable,
   );
   const versionDescription =
@@ -339,7 +339,7 @@ const HelpScreen = props => {
               <Input
                 keyboardType="email-address"
                 style={s.input}
-                placeholder="Please enter your email, so we could answer you!"
+                placeholder={t('Help.contactPlaceholder')}
                 control={control}
                 name="email"
               />
@@ -524,7 +524,7 @@ const HelpScreen = props => {
         <CollapsibleButton
           onPress={() => setCollapsed(prev => (prev === 7 ? 0 : 7))}
           collapsed={collapsed !== 7}
-          buttonText={"What's new?"}
+          buttonText={t('Help.WhatNew')}
           collapsibleItem={
             <View>
               <Text style={[s.defaultText, isDarkMode && s.darkText]}>
