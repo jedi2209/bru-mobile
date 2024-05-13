@@ -51,7 +51,7 @@ const PressetList = ({
       data={memoizedPressets}
       horizontal
       showsHorizontalScrollIndicator={false}
-      renderItem={({item}) => {
+      renderItem={({item, index}) => {
         return (
           <Pressable
             onPress={() => {
@@ -62,6 +62,7 @@ const PressetList = ({
               title={item?.tea_type}
               img={item?.tea_img}
               selected={selected?.id === item.id}
+              isLast={memoizedPressets.length - 1 === index}
             />
           </Pressable>
         );

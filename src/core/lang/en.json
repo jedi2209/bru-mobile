@@ -11,6 +11,13 @@
     "WaterTemperature": "Water Temperature",
     "WaterAmount": "Water Amount"
   },
+  "Picker": {
+    "Temperature": "Temperature",
+    "BrewingTime": "Brewing Time",
+    "WaterAmount": "Water Amount",
+    "Done": "Done",
+    "Cancel": "Cancel"
+  },
   "InstantBrewing": {
     "BrewIt": "Brew It!",
     "Cancel": "Cancel",
@@ -24,7 +31,7 @@
     "DontShowAgain": "Don't show again",
     "No": "No",
     "Yes": "Yes",
-    "NoDeviceDesc": "No device detected. Connect new device?",
+    "NoDeviceDesc": "Connect new device?",
     "NoDeviceTitle": "No connected device",
     "Attention": "Attention!",
     "DoYouReallyWant": "Delete current preset?",
@@ -112,25 +119,25 @@
     },
     "step4": {
       "header": "Activate connection on your machine",
-      "text": "Please activate connection on your device. Got to 'MACHINE SETUP' then to 'CONNECTION' and turn it 'ON'"
+      "text": "Please go to 'MACHINE SETUP' then to 'CONNECTION' and turn it 'ON'. Depending on the language setting, the menu may look different."
     },
     "step5": {
-      "header": "Search for your BRU Maker"
+      "header": "We will search now for your BRU Maker"
     },
     "step6": {
       "header": "Ready for pairing",
-      "text": "Cool! We found your BRU Maker! Please activate pairing mode on your BRU Maker. Go to 'MACHINE SETUP' then to 'PAIR NEW DEVICE'. After this step you must see 'Waiting for connection' on BRU device display."
+      "text": "Depending on the language setting, the menu may look different. Please activate pairing mode on your BRU Maker. Go to 'MACHINE SETUP' then to 'PAIR NEW DEVICE'. After this step you must see 'Waiting for connection' on the display."
     },
     "step7": {
       "header": "Trying to connect...",
       "text": "Now we are trying to connect to your BRU Maker. Please wait a few seconds."
     },
     "step8": {
-      "header": "Ooops...",
-      "text": "Please check your BRU Maker. You need to activate pairing mode. Go to 'MACHINE SETUP' then to 'CONNECTION' and turn it 'ON'"
+      "header": "Pairing not successful or needs to be confirmed.",
+      "text": "The pairing mode must be activated, and the numbers must match and be confirmed with 'YES' on the BRU Maker. Please activate the pairing mode on your BRU Maker One. Go to 'DEVICE SETTINGS' then to 'CONNECT NEW DEVICE'. After this step, you should see 'WAITING FOR CONNECTION' on the device display."
     },
     "step9": {
-      "header": "Success :) ",
+      "header": "Success",
       "text": "Your BRU Maker is successfully paired with your phone. Now you can use all features of the app :)"
     },
     "step10": {
@@ -139,11 +146,12 @@
     "grantPermission": "Grant permissions",
     "openSettings": "Open settings",
     "Done": "Done",
-    "Scan": "Scan",
+    "Scan": "Search",
     "connectToDevice": "Connect to device",
     "Great": "Great :)",
-    "update": "Update firmware!",
-    "goBack": "Back to settings"
+    "update": "Update Firmware",
+    "goBack": "Back",
+    "Retry": "Retry"
   },
   "Help": {
     "title": "Help",
@@ -185,8 +193,8 @@
     "Success": "We succesfully updated your firmware",
     "Error": "An error occured during the firmware instalation please try again later",
     "Updating": "Updating firmware...",
-    "Old": "Setting up you BRU Maker One language. Please wait.",
-    "LanguageDone": "Language is set up. Please wait a few seconds for BRU to restart"
+    "Old": "Setting up you BRU Maker One language. Please wait...",
+    "LanguageDone": "Language is set up. Please wait for BRU to restart. It takes about 30 sec."
   },
   "Unpair": {
     "AreYouSure": "Are you sure?",

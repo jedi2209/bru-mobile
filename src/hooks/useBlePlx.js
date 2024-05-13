@@ -118,6 +118,7 @@ const useBle = () => {
   };
 
   const scanForPeripherals = async () => {
+    setAllDevices([]);
     manager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log(error);
@@ -135,28 +136,30 @@ const useBle = () => {
     });
   };
 
-  const connectToDevice = async (device = current) => {
+  const connectToDevice = async (device = current, dontShowError) => {
     try {
-      const deviceConnection = await manager.connectToDevice(device.id, {
-        requestMTU: true,
-      });
-      setDevice(deviceConnection);
+      const deviceConnection = await manager.connectToDevice(device.id);
       await deviceConnection.discoverAllServicesAndCharacteristics();
+      await deviceConnection.readCharacteristicForService('180A', '2A26');
+      setDevice(deviceConnection);
       manager.stopDeviceScan();
+      return deviceConnection;
     } catch (error) {
-      toast.show({
-        placement: 'top',
-        duration: 3000,
-        render: () => {
-          return (
-            <Toast id={'dfuSuccessToast'} action="error" variant="accent">
-              <VStack space="lg">
-                <ToastTitle>{t('Toast.error.connection')}</ToastTitle>
-              </VStack>
-            </Toast>
-          );
-        },
-      });
+      if (!dontShowError) {
+        toast.show({
+          placement: 'top',
+          duration: 3000,
+          render: () => {
+            return (
+              <Toast id={'dfuSuccessToast'} action="error" variant="accent">
+                <VStack space="lg">
+                  <ToastTitle>{t('Toast.error.connection')}</ToastTitle>
+                </VStack>
+              </Toast>
+            );
+          },
+        });
+      }
     }
   };
 
@@ -236,11 +239,11 @@ const useBle = () => {
     }
   };
 
-  const readValue = async characteristic => {
+  const readValue = async (characteristic, dontShowError) => {
     const isConnected = await manager.isDeviceConnected(current.id);
     try {
       if (!isConnected) {
-        await connectToDevice(current);
+        await connectToDevice(current, dontShowError);
       }
 
       const data = await manager.readCharacteristicForDevice(

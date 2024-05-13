@@ -11,6 +11,13 @@
     "WaterTemperature": "Temperatura dell'Acqua",
     "WaterAmount": "Quantità d'Acqua"
   },
+  "Picker": {
+    "Temperature": "Temperatura",
+    "BrewingTime": "Tempo di Infusione",
+    "WaterAmount": "Quantità d'Acqua",
+    "Done": "Fatto",
+    "Cancel": "Annulla"
+  },
   "InstantBrewing": {
     "BrewIt": "Infusa!",
     "Cancel": "Annulla",
@@ -143,7 +150,8 @@
     "connectToDevice": "Connetti al dispositivo",
     "Great": "Fantastico :)",
     "update": "Aggiorna il firmware!",
-    "goBack": "Torna alle impostazioni"
+    "goBack": "Torna alle impostazioni",
+    "Retry": "Riprova"
   },
   "Help": {
     "title": "Aiuto",

@@ -69,7 +69,6 @@ const tabBarStyle = {
   default: {
     backgroundColor: colors.black,
     paddingBottom: 0,
-    height: 65,
     borderTopWidth: 0,
     position: 'absolute',
     shadowColor: colors.brown,

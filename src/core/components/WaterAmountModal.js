@@ -12,6 +12,7 @@ import Picker from './Picker/Picker';
 import {useStore} from 'effector-react';
 import {$profileStore} from '../store/profile';
 import {waterPickerData} from '../const';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   modal: {
@@ -44,7 +45,7 @@ const s = StyleSheet.create({
   buttonsContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   button: {color: colors.green.mid, fontSize: 15, fontWeight: '600'},
   closeButton: {marginRight: 40},
@@ -54,6 +55,7 @@ const WaterAmountModal = ({opened, closeModal, setWaterAmount, initIndex}) => {
   const {units} = useStore($profileStore);
   const values = useMemo(() => waterPickerData(units), [units]);
   const [selected, setSelected] = useState(values[0].value);
+  const {t} = useTranslation();
 
   useEffect(() => {
     setSelected(values[0].value);
@@ -72,18 +74,18 @@ const WaterAmountModal = ({opened, closeModal, setWaterAmount, initIndex}) => {
           <View style={s.modalOverlay} />
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
-          <Text style={s.title}>Water amount</Text>
+          <Text style={s.title}>{t('Picker.WaterAmount')}</Text>
           <Picker initIndex={initIndex} data={values} setValue={setSelected} />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>
-              <Text style={s.button}>Cancel</Text>
+              <Text style={s.button}>{t('Picker.Cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 setWaterAmount(selected);
                 closeModal();
               }}>
-              <Text style={s.button}>Done</Text>
+              <Text style={s.button}>{t('Picker.Done')}</Text>
             </TouchableOpacity>
           </View>
         </View>

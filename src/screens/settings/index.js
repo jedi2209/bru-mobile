@@ -53,12 +53,13 @@ const SettingsScreen = props => {
   useEffect(() => {
     setNewFeaturesModalOpened(route.params.openNewVersionInfoModal);
   }, [route]);
+
   useEffect(() => {
     requestBluetoothPermission();
     async function getFirmware() {
       setIsLoading(true);
       try {
-        const currentFirmware = await readValue('firmwareRevision');
+        const currentFirmware = await readValue('firmwareRevision', true);
         const data = await getFirmwareData();
         const availableFirmware = data.find(
           firmwareData => firmwareData.testAvailable,

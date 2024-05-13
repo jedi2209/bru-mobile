@@ -8,11 +8,18 @@
   },
   "BrewingData": {
     "BrewingTime": "Brühzeit",
-    "WaterTemperature": "Wassertemperatur",
-    "WaterAmount": "Wassermenge"
+    "WaterTemperature": "Wasser-\ntemperatur",
+    "WaterAmount": "Wasser-\nmenge"
+  },
+  "Picker": {
+    "Temperature": "Temperatur",
+    "BrewingTime": "Brühzeit",
+    "WaterAmount": "Wasser-menge",
+    "Done": "Erledigt",
+    "Cancel": "Abbrechen"
   },
   "InstantBrewing": {
-    "BrewIt": "Brühen!",
+    "BrewIt": "Brühen",
     "Cancel": "Abbrechen",
     "SplitCups": "Tassen aufteilen",
     "Cleaning": "Reinigung",
@@ -24,7 +31,7 @@
     "DontShowAgain": "Nicht wieder anzeigen",
     "No": "Nein",
     "Yes": "Ja",
-    "NoDeviceDesc": "Kein Gerät erkannt. Neues Gerät verbinden?",
+    "NoDeviceDesc": "Neues Gerät verbinden?",
     "NoDeviceTitle": "Kein verbundenes Gerät",
     "Attention": "Achtung!",
     "DoYouReallyWant": "Aktuelle Voreinstellung löschen?",
@@ -62,7 +69,7 @@
     "Confirm": "Bestätigen",
     "FirmwareUpdate": "Firmware-Update",
     "BruAppWillDownload": "Wir werden jetzt die neueste Firmware für deinen BRU Maker herunterladen und installieren. Bitte stelle sicher, dass du mit dem Internet verbunden bist.",
-    "Done": "Fertig",
+    "Done": "Erledigt",
     "Yes": "Ja",
     "NewFeatures": "Neue Funktionen",
     "DoYouWant": "Möchtest du die neuen Funktionen sehen?"
@@ -112,38 +119,39 @@
     },
     "step4": {
       "header": "Verbindung auf dem Gerät aktivieren",
-      "text": "Bitte aktiviere die Verbindung auf deinem Gerät. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN'"
+      "text": "Bitte gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN. Je nach eingestellter Sprache kann das Menü unterschiedlich aussehen."
     },
     "step5": {
-      "header": "Suche nach deinem BRU Maker"
+      "header": "Wir suchen jetzt deinem BRU Maker"
     },
     "step6": {
       "header": "Bereit zum Koppeln",
-      "text": "Cool! Wir haben deinen BRU Maker gefunden! Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN'. Nach diesem Schritt musst du 'Warten auf Verbindung' auf dem BRU-Gerätedisplay sehen."
+      "text": "Je nach eingestellter Sprache kann das Menü unterschiedlich aussehen. Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN'. Nach diesem Schritt musst du 'Warten auf Verbindung' auf dem Gerätedisplay sehen."
     },
     "step7": {
       "header": "Verbindungsversuch...",
-      "text": "Wir versuchen jetzt eine Verbindung mit deinem BRU Maker One herzustellen . Bitte warte ein paar Sekunden."
+      "text": "Wir versuchen jetzt eine Verbindung mit deinem BRU Maker One herzustellen. Bitte warte ein paar Sekunden."
     },
     "step8": {
-      "header": "Ups...",
-      "text": "Bitte überprüfe deinen BRU Maker. Du musst den Koppelmodus aktivieren. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN'"
+      "header": "Kopplung nicht erfolgreich bzw. muss bestätigt werden",
+      "text": "Der Koppelmodus muss aktiviert sein und die Nummern müssen übereinstimmen und mit 'JA' bzw. 'YES' auf dem BRU Maker bestätigt werden. Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN'. Nach diesem Schritt musst du 'WARTEN AUF VERBINDUNG' bzw. 'WAITING FOR CONNECTION' auf dem Gerätedisplay sehen."
     },
     "step9": {
-      "header": "Erfolg :)",
+      "header": "Geschafft!",
       "text": "Dein BRU Maker One ist erfolgreich mit deinem Mobiltelefon gekoppelt. Jetzt kannst du alle Funktionen der App nutzen :)"
     },
     "step10": {
-      "header": "Wir müssen deine BRU Maker One-Firmware aktualisieren!"
+      "header": "Wir müssen die Firmware aktualisieren!"
     },
     "grantPermission": "Berechtigungen erteilen",
     "openSettings": "Einstellungen öffnen",
-    "Done": "Fertig",
-    "Scan": "Scannen",
+    "Done": "Erledigt",
+    "Scan": "Suchen",
     "connectToDevice": "Mit dem Gerät verbinden",
     "Great": "Großartig :)",
-    "update": "Firmware aktualisieren!",
-    "goBack": "Zurück zu den Einstellungen"
+    "update": "Firmware aktualisieren",
+    "goBack": "Zurück",
+    "Retry": "Erneuter Versuch"
   },
   "Help": {
     "title": "Hilfe",
@@ -183,10 +191,10 @@
     "Downloading": "Herunterladen der BRU-Firmware",
     "Connecting": "Verbindung zum Gerät herstellen",
     "Success": "Wir haben deine Firmware erfolgreich aktualisiert",
-    "Error": "Ein Fehler ist während der Installation der Firmware aufgetreten, bitte versuche es später noch einmal",
+    "Error": "Ein Fehler ist während der Installation der Firmware aufgetreten, bitte versuche es noch einmal",
     "Updating": "Aktualisierung der Firmware...",
-    "Old": "Einstellung der BRU-Maschinensprache. Bitte warten.",
-    "LanguageDone": "Sprache eingestellt. Bitte warte ein paar Sekunden bis BRU neu startet."
+    "Old": "Einstellung der BRU-Maschinensprache. Bitte warten...",
+    "LanguageDone": "Sprache eingestellt. Bitte warte bis BRU neu startet. Es dauert ca. 30sec."
   },
   "Unpair": {
     "AreYouSure": "Bist du sicher?",

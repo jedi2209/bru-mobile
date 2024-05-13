@@ -59,7 +59,7 @@ const s = StyleSheet.create({
     marginTop: 40,
     marginBottom: 50,
   },
-  list: {paddingLeft: 10, marginBottom: 30, paddingBottom: 10},
+  list: {paddingLeft: 10, marginBottom: 30},
   innerContainer: {
     paddingHorizontal: 10,
   },

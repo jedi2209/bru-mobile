@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {Platform, LogBox} from 'react-native';
+import {Platform, LogBox, StatusBar} from 'react-native';
 
 import {NavigationContainer} from '@react-navigation/native';
 import NavMain from '@nav/Navigation';
@@ -24,6 +24,7 @@ import {useStore} from 'effector-react';
 import {isSignedIn} from '../utils/auth';
 import Toast from 'react-native-toast-message';
 import {firebase} from '@react-native-firebase/firestore';
+import {colors} from './const/style';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -139,6 +140,7 @@ const App = props => {
           }}>
           <NavMain initialRouteName={INITIAL_SCREEN} {...props} />
           <Toast />
+          <StatusBar backgroundColor={colors.green.header} />
         </NavigationContainer>
       </GluestackUIProvider>
     </GestureHandlerRootView>

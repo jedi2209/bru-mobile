@@ -12,6 +12,7 @@ import {$profileStore} from '../store/profile.js';
 import {colors} from '../const/style.js';
 import Picker from './Picker/Picker.js';
 import {timePickerData} from '../const/index.js';
+import {useTranslation} from 'react-i18next';
 
 const s = StyleSheet.create({
   modal: {
@@ -44,7 +45,7 @@ const s = StyleSheet.create({
   buttonsContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
   },
   button: {color: colors.green.mid, fontSize: 15, fontWeight: '600'},
   closeButton: {marginRight: 40},
@@ -54,6 +55,7 @@ const TimePickerModal = ({opened, closeModal, setTime, initIndex = 0}) => {
   const {units} = useStore($profileStore);
   const values = useMemo(() => timePickerData(units), [units]);
   const [selected, setSelected] = useState();
+  const {t} = useTranslation();
 
   useEffect(() => {
     setSelected(values[0]);
@@ -72,7 +74,7 @@ const TimePickerModal = ({opened, closeModal, setTime, initIndex = 0}) => {
           <View style={s.modalOverlay} />
         </TouchableWithoutFeedback>
         <View style={s.modalContainer}>
-          <Text style={s.title}>Water amount</Text>
+          <Text style={s.title}>{t('Picker.BrewingTime')}</Text>
           <Picker
             data={values}
             setValue={setSelected}
@@ -81,14 +83,14 @@ const TimePickerModal = ({opened, closeModal, setTime, initIndex = 0}) => {
           />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>
-              <Text style={s.button}>Cancel</Text>
+              <Text style={s.button}>{t('Picker.Cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 setTime(selected);
                 closeModal();
               }}>
-              <Text style={s.button}>Done</Text>
+              <Text style={s.button}>{t('Picker.Done')}</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -19,11 +19,11 @@ const s = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    marginRight: 20,
+    marginRight: 10,
     borderRadius: 10,
     paddingHorizontal: 10,
     paddingTop: 12,
-    paddingBottom: 15,
+    paddingBottom: 12,
     borderWidth: 4,
     borderColor: 'transparent',
   },
@@ -32,7 +32,7 @@ const s = StyleSheet.create({
     borderColor: colors.green.mid,
   },
   imageContainer: {
-    marginBottom: 12,
+    marginBottom: 10,
   },
   image: {
     width: 100,
@@ -57,7 +57,7 @@ const s = StyleSheet.create({
   },
 });
 
-const PressetItem = ({title, id, img, selected, type}) => {
+const PressetItem = ({title, id, img, selected, type, isLast}) => {
   const theme = useStore($themeStore);
   return (
     <View style={s.shadow}>
@@ -72,6 +72,10 @@ const PressetItem = ({title, id, img, selected, type}) => {
           s.presentItem,
           selected ? s.selectedBorder : {},
           type === 'pressets' && s.pressetScreenItem,
+          // eslint-disable-next-line react-native/no-inline-styles
+          isLast && {
+            marginRight: 20,
+          },
         ]}>
         <View
           style={[

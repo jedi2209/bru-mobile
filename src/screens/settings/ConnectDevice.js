@@ -20,6 +20,7 @@ import {useTranslation} from 'react-i18next';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import Video from 'react-native-video';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const StepItem = ({step, setStep, navigation}) => {
   const [filePath, setFilePath] = useState('');
@@ -57,7 +58,7 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 5
-      img: require('@assets/deviceImages/image-1.png'),
+      img: require('@assets/PICTURE_4.jpg'),
       header: t('Connection.step5.header'),
     },
     {
@@ -74,19 +75,19 @@ const StepItem = ({step, setStep, navigation}) => {
     },
     {
       // 8
-      img: require('@assets/deviceImages/image-1.png'),
+      img: require('@assets/PICTURE_1.jpg'),
       header: t('Connection.step8.header'),
       text: t('Connection.step8.text'),
     },
     {
       // 9
-      img: require('@assets/deviceImages/image-2.png'),
+      img: require('@assets/PICTURE_2.jpg'),
       header: t('Connection.step9.header'),
       text: t('Connection.step9.text'),
     },
     {
       // 10
-      img: require('@assets/deviceImages/image-2.png'),
+      img: require('@assets/PICTURE_3.jpg'),
       header: t('Connection.step10.header'),
       text: '',
     },
@@ -118,7 +119,14 @@ const StepItem = ({step, setStep, navigation}) => {
         setSecondTimeOut(second);
       }, 10000);
     }
-  }, [allDevices.length, secondTimeOut, setStep, step, stopDeviceScan]);
+  }, [
+    allDevices.length,
+    scanForPeripherals,
+    secondTimeOut,
+    setStep,
+    step,
+    stopDeviceScan,
+  ]);
 
   useEffect(() => {
     if (step === 6) {
@@ -131,16 +139,6 @@ const StepItem = ({step, setStep, navigation}) => {
       case 1:
         return (
           <>
-            <LottieView
-              source={
-                Platform.OS === 'android'
-                  ? require('@assets/lottie/Animation-1697319770697.lottie')
-                  : require('@assets/lottie/Animation-1698061078225.lottie')
-              }
-              height={150}
-              autoPlay
-              loop
-            />
             <Button
               style={styles.buttonBottom}
               variant={'solid'}
@@ -188,8 +186,9 @@ const StepItem = ({step, setStep, navigation}) => {
             variant={'solid'}
             action={'primary'}
             size={'xl'}
-            onPress={async () => {
+            onPress={() => {
               setStep(5);
+              scanForPeripherals();
             }}>
             <Icon
               name="check-square-o"
@@ -201,31 +200,13 @@ const StepItem = ({step, setStep, navigation}) => {
         );
       case 5:
         return (
-          <>
-            {isScanning ? (
-              <LottieView
-                source={require('@assets/lottie/Animation-1697316689983.lottie')}
-                height={240}
-                autoPlay
-                loop
-              />
-            ) : null}
-            <Button
-              disabled={isScanning}
-              style={styles.buttonBottom}
-              variant={'solid'}
-              action={'primary'}
-              size={'xl'}
-              onPress={async () => {
-                setIsScanning(true);
-                scanForPeripherals();
-                if (allDevices.length) {
-                  setStep(6);
-                }
-              }}>
-              <ButtonText>{t('Connection.Scan')}</ButtonText>
-            </Button>
-          </>
+          <LottieView
+            source={require('@assets/lottie/Animation-1697316689983.lottie')}
+            height={300}
+            width={300}
+            autoPlay
+            loop
+          />
         );
       case 6:
         return (
@@ -236,7 +217,9 @@ const StepItem = ({step, setStep, navigation}) => {
             size={'xl'}
             onPress={async () => {
               try {
-                await connectToDevice(allDevices[0]);
+                const device = await connectToDevice(allDevices[0]);
+                await device.readCharacteristicForService('180A', '2A26');
+                AsyncStorage.setItem('previos', JSON.stringify(device));
                 toast.show({
                   placement: 'top',
                   duration: 3000,
@@ -274,10 +257,11 @@ const StepItem = ({step, setStep, navigation}) => {
               action={'primary'}
               size={'xl'}
               onPress={async () => {
+                setStep(5);
                 setIsScanning(true);
                 scanForPeripherals();
               }}>
-              <ButtonText>{t('Connection.Scan')}</ButtonText>
+              <ButtonText>{t('Connection.Retry')}</ButtonText>
             </Button>
           </>
         );
@@ -435,11 +419,12 @@ const styles = StyleSheet.create({
   stepTextContainer: {flex: 1, paddingHorizontal: 30},
   buttonBottom: {
     gap: 10,
+    width: '100%',
   },
   buttonBottomIcon: {color: 'white'},
   textColor: {color: 'white'},
-  buttonContainer: {paddingHorizontal: 30, gap: 15},
-  goBackButton: {},
+  buttonContainer: {paddingHorizontal: 30, gap: 15, alignItems: 'center'},
+  goBackButton: {width: '30%'},
   video: {width: '100%', height: '50%'},
 });
 

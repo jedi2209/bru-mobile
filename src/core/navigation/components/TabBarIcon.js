@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     verticalAlign: 'top',
   },
   tabBarItemIcon: {
-    marginBottom: 6,
+    marginBottom: 3,
   },
   labelText: {
     default: {
