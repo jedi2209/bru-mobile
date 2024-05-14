@@ -339,7 +339,7 @@ const HelpScreen = props => {
               <Input
                 keyboardType="email-address"
                 style={s.input}
-                placeholder={t('Help.contactPlaceholder')}
+                placeholder={t('Help.EmailPlaceholder')}
                 control={control}
                 name="email"
               />

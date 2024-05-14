@@ -143,6 +143,10 @@
     "step10": {
       "header": "We need to update your BRU Maker firmware!"
     },
+    "step11": {
+      "header": "We can't find your BRU machine",
+      "text": "Please check whether bluetooth is enabled on your BRU machine. Go to MACHINE SETUP->CONNECTION->Turn to ON"
+    },
     "grantPermission": "Grant permissions",
     "openSettings": "Open settings",
     "Done": "Done",
@@ -175,7 +179,7 @@
     "OrForm": "Or via the contact form below",
     "Or": "or",
     "Link": "Link",
-    "EmailPlaceholder": "Please enter your email, so we can answer you!",
+    "EmailPlaceholder": "Please enter your email",
     "FeatureTitle": "Do you have an idea for a new feature? Let us know here!",
     "FeatureButton": "Feature request",
     "FeatureDesc": "Feature description",

@@ -27,7 +27,7 @@ const StepItem = ({step, setStep, navigation}) => {
   const [fileName, setFileName] = useState('');
   const theme = useStore($themeStore);
   const isDark = theme === 'dark';
-
+  console.log(step);
   const toast = useToast();
   const {t} = useTranslation();
   const stepsContent = [
@@ -91,8 +91,14 @@ const StepItem = ({step, setStep, navigation}) => {
       header: t('Connection.step10.header'),
       text: '',
     },
+    {
+      // 11 no devices found
+      video: require('@assets/videos/connection.mp4'),
+      header: t('Connection.step11.header'),
+      text: t('Connection.step11.text'),
+    },
   ];
-
+  console.log(stepsContent[step]);
   const {
     readValue,
     connectToDevice,
@@ -114,7 +120,7 @@ const StepItem = ({step, setStep, navigation}) => {
         const second = setTimeout(() => {
           setIsScanning(false);
           stopDeviceScan();
-          setStep(8);
+          setStep(11);
         }, 10000);
         setSecondTimeOut(second);
       }, 10000);
@@ -130,7 +136,8 @@ const StepItem = ({step, setStep, navigation}) => {
 
   useEffect(() => {
     if (step === 6) {
-      clearImmediate(secondTimeOut);
+      setIsScanning(false);
+      clearTimeout(secondTimeOut);
     }
   }, [secondTimeOut, step]);
 
@@ -310,7 +317,7 @@ const StepItem = ({step, setStep, navigation}) => {
             action={'primary'}
             size={'xl'}
             onPress={async () => {
-              setStep(2);
+              setStep(3);
               navigation.navigate('UpdateFirmwareScreen', {
                 fileName,
                 filePath,
@@ -318,6 +325,24 @@ const StepItem = ({step, setStep, navigation}) => {
             }}>
             <ButtonText>{t('Connection.update')}</ButtonText>
           </Button>
+        );
+      case 11:
+        return (
+          <>
+            <Button
+              disabled={isScanning}
+              style={styles.buttonBottom}
+              variant={'solid'}
+              action={'primary'}
+              size={'xl'}
+              onPress={async () => {
+                setStep(5);
+                setIsScanning(true);
+                scanForPeripherals();
+              }}>
+              <ButtonText>{t('Connection.Retry')}</ButtonText>
+            </Button>
+          </>
         );
       default:
         break;
@@ -424,7 +449,7 @@ const styles = StyleSheet.create({
   buttonBottomIcon: {color: 'white'},
   textColor: {color: 'white'},
   buttonContainer: {paddingHorizontal: 30, gap: 15, alignItems: 'center'},
-  goBackButton: {width: '30%'},
+  goBackButton: {width: '50%'},
   video: {width: '100%', height: '50%'},
 });
 

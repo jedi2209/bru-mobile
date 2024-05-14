@@ -143,6 +143,10 @@
     "step10": {
       "header": "¡Necesitamos actualizar el firmware de su BRU Maker!"
     },
+    "step11": {
+      "header": "No podemos encontrar su máquina BRU",
+      "text": "Por favor, compruebe si el bluetooth está activado en su máquina BRU. Vaya a AJUSTE DE LA MÁQUINA -> CONEXIÓN-> Activar"
+    },
     "grantPermission": "Otorgar permisos",
     "openSettings": "Abrir configuraciones",
     "Done": "Hecho",

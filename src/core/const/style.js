@@ -1,4 +1,5 @@
 import {DefaultTheme, DarkTheme} from '@react-navigation/native';
+import {Platform} from 'react-native';
 
 const colors = {
   green: {
@@ -71,6 +72,7 @@ const tabBarStyle = {
     paddingBottom: 0,
     borderTopWidth: 0,
     position: 'absolute',
+    height: Platform.OS === 'ios' ? 'auto' : 70,
     shadowColor: colors.brown,
     shadowOffset: {
       width: 5,

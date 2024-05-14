@@ -143,6 +143,10 @@
     "step10": {
       "header": "Wir müssen die Firmware aktualisieren!"
     },
+    "step11": {
+      "header": "Wir können Ihren BRU-Rechner nicht finden",
+      "text": "Bitte prüfen Sie, ob Bluetooth auf Ihrem BRU-Gerät aktiviert ist. Gehen Sie zu MASCHINENEINSTELLUNG -> VERBINDUNG-> Schalten Sie auf EIN"
+    },
     "grantPermission": "Berechtigungen erteilen",
     "openSettings": "Einstellungen öffnen",
     "Done": "Erledigt",
@@ -175,11 +179,11 @@
     "OrForm": "Oder über das untenstehende Kontaktformular",
     "Or": "oder",
     "Link": "Link",
-    "EmailPlaceholder": "Bitte gib deine E-Mail-Adresse an, damit wir dir antworten können!",
-    "FeatureTitle": "Hast du eine Idee für eine neue App-Funktion? Schreib uns hier!",
-    "FeatureButton": "App-Funktions-Anfrage",
+    "EmailPlaceholder": "Bitte gib deine E-Mail-Adresse an",
+    "FeatureTitle": "Hast du eine Idee für eine neue App-Funktion? Dann lass es uns bitte wissen!",
+    "FeatureButton": "App-Vorschlang",
     "FeatureDesc": "Beschreibung der Funktion",
-    "DescribeFeatureHere": "Beschreibe hier dein Funktionsvorschlag",
+    "DescribeFeatureHere": "Welche Funktion hättest du gerne?",
     "Okay": "Ok",
     "WhatNew": "Was gibt es Neues?"
   },
