@@ -144,8 +144,8 @@
       "header": "We need to update your BRU Maker firmware!"
     },
     "step11": {
-      "header": "We can't find your BRU machine",
-      "text": "Please check whether bluetooth is enabled on your BRU machine. Go to MACHINE SETUP->CONNECTION->Turn to ON"
+      "header": "We can't find your BRU Maker",
+      "text": "Please check whether connection is enabled on your BRU Maker. Please go to 'MACHINE SETUP' then to 'CONNECTION' and turn it 'ON'. Depending on the language setting, the menu may look different."
     },
     "grantPermission": "Grant permissions",
     "openSettings": "Open settings",

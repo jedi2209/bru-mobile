@@ -119,10 +119,10 @@
     },
     "step4": {
       "header": "Verbindung auf dem Gerät aktivieren",
-      "text": "Bitte gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN. Je nach eingestellter Sprache kann das Menü unterschiedlich aussehen."
+      "text": "Bitte gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN'. Je nach eingestellter Sprache kann das Menü unterschiedlich aussehen."
     },
     "step5": {
-      "header": "Wir suchen jetzt deinem BRU Maker"
+      "header": "Wir suchen jetzt deinen BRU Maker"
     },
     "step6": {
       "header": "Bereit zum Koppeln",
@@ -144,8 +144,8 @@
       "header": "Wir müssen die Firmware aktualisieren!"
     },
     "step11": {
-      "header": "Wir können Ihren BRU-Rechner nicht finden",
-      "text": "Bitte prüfen Sie, ob Bluetooth auf Ihrem BRU-Gerät aktiviert ist. Gehen Sie zu MASCHINENEINSTELLUNG -> VERBINDUNG-> Schalten Sie auf EIN"
+      "header": "Wir können deine BRU nicht finden",
+      "text": "Bitte prüfe, ob die Verbindung auf der BRU aktiviert ist. Bitte gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'VERBINDUNG' und schalte es auf 'AN'. Je nach eingestellter Sprache kann das Menü unterschiedlich aussehen."
     },
     "grantPermission": "Berechtigungen erteilen",
     "openSettings": "Einstellungen öffnen",
