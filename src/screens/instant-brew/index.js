@@ -152,12 +152,8 @@ const s = StyleSheet.create({
     backgroundColor: colors.green.mid,
     paddingVertical: 15,
     borderRadius: 90,
-    width: 164,
     alignSelf: 'center',
-  },
-  saveButtonDe: {
-    width: 185,
-    paddingHorizontal: 5,
+    width: '45%',
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -167,9 +163,9 @@ const s = StyleSheet.create({
   },
   cancelButton: {
     backgroundColor: colors.red,
-    paddingHorizontal: 57,
     paddingVertical: 15,
     borderRadius: 90,
+    width: '45%',
   },
   editButtonText: {
     color: colors.white,
@@ -284,7 +280,7 @@ const InstantBrewScreen = props => {
   useEffect(() => {
     if (selected?.id === 'new_presset') {
       setMode('create');
-      setNewTeaName('Tea name');
+      setNewTeaName('');
     } else {
       setMode('view');
     }
@@ -454,6 +450,8 @@ const InstantBrewScreen = props => {
             {mode !== 'view' ? (
               <TextInput
                 value={newTeaName}
+                placeholder={t('Presets.TeaName')}
+                placeholderTextColor="#C4C4C4"
                 onChangeText={text => {
                   setNewTeaName(text);
                 }}
@@ -614,7 +612,7 @@ const InstantBrewScreen = props => {
                   setNewTeaName('');
                   setImage('');
                 }}
-                style={[s.saveButton, currLang === 'de' && s.saveButtonDe]}>
+                style={[s.saveButton]}>
                 <Text
                   style={[
                     s.editButtonText,
@@ -631,7 +629,13 @@ const InstantBrewScreen = props => {
                   getPressetsFx();
                 }}
                 style={s.cancelButton}>
-                <Text style={s.buttonText}>{t('Presets.Cancel')}</Text>
+                <Text
+                  style={[
+                    s.editButtonText,
+                    currLang === 'de' && s.buttonTextDe,
+                  ]}>
+                  {t('Presets.Cancel')}
+                </Text>
               </TouchableOpacity>
             </View>
           ) : null}

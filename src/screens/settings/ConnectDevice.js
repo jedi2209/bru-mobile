@@ -1,6 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
-import {Linking, Platform, StyleSheet, Text, View} from 'react-native';
+import {
+  Linking,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   Image,
   Button,
@@ -98,7 +105,7 @@ const StepItem = ({step, setStep, navigation}) => {
       text: t('Connection.step11.text'),
     },
   ];
-  console.log(stepsContent[step]);
+
   const {
     readValue,
     connectToDevice,
@@ -115,15 +122,15 @@ const StepItem = ({step, setStep, navigation}) => {
       setStep(6);
       setIsScanning(false);
     }
+
     if (!allDevices.length && step === 5 && !secondTimeOut) {
-      setTimeout(() => {
-        const second = setTimeout(() => {
-          setIsScanning(false);
-          stopDeviceScan();
-          setStep(11);
-        }, 10000);
-        setSecondTimeOut(second);
-      }, 10000);
+      const second = setTimeout(() => {
+        setIsScanning(false);
+        stopDeviceScan();
+        setStep(11);
+        setSecondTimeOut(null);
+      }, 20000);
+      setSecondTimeOut(second);
     }
   }, [
     allDevices.length,
@@ -138,6 +145,7 @@ const StepItem = ({step, setStep, navigation}) => {
     if (step === 6) {
       setIsScanning(false);
       clearTimeout(secondTimeOut);
+      setSecondTimeOut(null);
     }
   }, [secondTimeOut, step]);
 
@@ -281,7 +289,7 @@ const StepItem = ({step, setStep, navigation}) => {
             size={'xl'}
             onPress={async () => {
               try {
-                const current = await readValue('firmwareRevision');
+                const current = await readValue('firmwareRevision', true);
                 const data = await getFirmwareData();
                 const availableFirmware = data.find(
                   firmwareData => firmwareData.testAvailable,
@@ -380,9 +388,15 @@ const StepItem = ({step, setStep, navigation}) => {
         </Heading>
         {stepsContent[step].text ? (
           // eslint-disable-next-line react-native/no-inline-styles
-          <Text style={[styles.textColor, {color: isDark ? 'white' : 'black'}]}>
-            {stepsContent[step].text}
-          </Text>
+          <ScrollView bounces={false}>
+            <Text
+              style={[
+                styles.textColor,
+                {color: isDark ? 'white' : 'black', marginBottom: 10},
+              ]}>
+              {stepsContent[step].text}
+            </Text>
+          </ScrollView>
         ) : null}
       </View>
       <View style={styles.buttonContainer}>

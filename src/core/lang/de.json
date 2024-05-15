@@ -14,9 +14,10 @@
   "Picker": {
     "Temperature": "Temperatur",
     "BrewingTime": "Brühzeit",
-    "WaterAmount": "Wasser-menge",
+    "WaterAmount": "Menge",
     "Done": "Erledigt",
-    "Cancel": "Abbrechen"
+    "Cancel": "Abbrechen",
+    "Cold": "Kalt"
   },
   "InstantBrewing": {
     "BrewIt": "Brühen",
@@ -49,8 +50,10 @@
   },
   "Presets": {
     "Title": "Voreinstellungen",
-    "SavePreset": "Voreinstellungen speichern",
-    "Cancel": "Abbrechen"
+    "SavePreset": "Speichern",
+    "Cancel": "Abbrechen",
+    "NewPreset": "Hinzufügen",
+    "TeaName": "Bezeichnung"
   },
   "Settings": {
     "Title": "Einstellungen",
@@ -180,8 +183,8 @@
     "Or": "oder",
     "Link": "Link",
     "EmailPlaceholder": "Bitte gib deine E-Mail-Adresse an",
-    "FeatureTitle": "Hast du eine Idee für eine neue App-Funktion? Dann lass es uns bitte wissen!",
-    "FeatureButton": "App-Vorschlang",
+    "FeatureTitle": "Hast du eine Idee für eine neue App-Funktion oder hast du einen Fehler entdeckt? Dann lass es uns bitte wissen!",
+    "FeatureButton": "App-Vorschlang oder Problembericht",
     "FeatureDesc": "Beschreibung der Funktion",
     "DescribeFeatureHere": "Welche Funktion hättest du gerne?",
     "Okay": "Ok",

@@ -16,7 +16,8 @@
     "BrewingTime": "Brewing Time",
     "WaterAmount": "Water Amount",
     "Done": "Done",
-    "Cancel": "Cancel"
+    "Cancel": "Cancel",
+    "Cold": "Cold"
   },
   "InstantBrewing": {
     "BrewIt": "Brew It!",
@@ -49,8 +50,10 @@
   },
   "Presets": {
     "Title": "Presets",
-    "SavePreset": "Save Preset",
-    "Cancel": "Cancel"
+    "SavePreset": "Save",
+    "Cancel": "Cancel",
+    "NewPreset": "New Preset",
+    "TeaName": "Tea name"
   },
   "Settings": {
     "Title": "Settings",
@@ -180,8 +183,8 @@
     "Or": "or",
     "Link": "Link",
     "EmailPlaceholder": "Please enter your email",
-    "FeatureTitle": "Do you have an idea for a new feature? Let us know here!",
-    "FeatureButton": "Feature request",
+    "FeatureTitle": "Do you have an idea for a new feature or found a problem with the app? Let us know here!",
+    "FeatureButton": "Feature request or problem report",
     "FeatureDesc": "Feature description",
     "DescribeFeatureHere": "Describe your feature here",
     "Okay": "Okay",
