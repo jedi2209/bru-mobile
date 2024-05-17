@@ -1,4 +1,5 @@
 import React, {useMemo, useRef} from 'react';
+import {useTranslation} from 'react-i18next';
 import {StyleSheet, View, Text, Animated} from 'react-native';
 
 const ITEM_HEIGHT = 50;
@@ -34,8 +35,15 @@ const s = StyleSheet.create({
   },
 });
 
-const Picker = ({setValue, data, isTimePicker = false, initIndex = 0}) => {
+const Picker = ({
+  setValue,
+  data,
+  isTimePicker = false,
+  initIndex = 0,
+  type,
+}) => {
   const values = useMemo(() => ['', ...data, ''], [data]);
+  const {t} = useTranslation();
 
   const momentumScrollEnd = event => {
     const y = event.nativeEvent.contentOffset.y;
@@ -64,7 +72,9 @@ const Picker = ({setValue, data, isTimePicker = false, initIndex = 0}) => {
           {height: ITEM_HEIGHT, transform: [{scale}]},
           s.animatedContainer,
         ]}>
-        <Text style={s.pickerItem}>{item.label}</Text>
+        <Text style={s.pickerItem}>
+          {type === 'time' ? item.label : t(item.label)}
+        </Text>
       </Animated.View>
     );
   };

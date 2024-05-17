@@ -405,15 +405,9 @@ const InstantBrewScreen = props => {
                     opened: true,
                     withCancelButton: true,
                     cancelButtonText: t('InstantBrewing.No'),
-                    modalTitle: 'Attention!',
+                    modalTitle: t('InstantBrewing.Attention'),
                     confirmationText: (
-                      <Text>
-                        {t('InstantBrewing.DoYouReallyWant')}{' '}
-                        <Text style={s.modalPressetName}>
-                          {selected?.tea_type}
-                        </Text>
-                        ?
-                      </Text>
+                      <Text>{t('InstantBrewing.DoYouReallyWant')}</Text>
                     ),
                     confirmationButtonText: t('InstantBrewing.YesDelete'),
                     onConfirm: async () => {

@@ -605,7 +605,7 @@ const ProfileScreen = props => {
               setModal({
                 withCancelButton: true,
                 cancelButtonText: 'No',
-                modalTitle: 'Attention!',
+                modalTitle: t('InstantBrewing.Attention'),
                 confirmationText:
                   'Reseting your tea consumption statistics cannot be undone!',
                 confirmationButtonText: 'Yes, Reset',

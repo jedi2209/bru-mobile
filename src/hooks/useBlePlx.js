@@ -370,6 +370,11 @@ const useBle = () => {
     return allDevices.length;
   };
 
+  const cancelTransaction = transactionId => {
+    console.log('cancel transaction');
+    manager.cancelTransaction(transactionId);
+  };
+
   return {
     manager,
     deviceDFU,
@@ -384,6 +389,7 @@ const useBle = () => {
     stopDeviceScan,
     checkConnection,
     connectToDevice,
+    cancelTransaction,
     scanForPeripherals,
     getAllDevicesLength,
     disconnectFromDevice,

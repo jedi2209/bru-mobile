@@ -71,7 +71,7 @@ export const waterPickerData = units => [
 ];
 
 export const temperaturePickerData = units => [
-  {label: units === 'metric' ? 'Cold' : 'Cold', value: 0},
+  {label: units === 'metric' ? 'Picker.Cold' : 'Picker.Cold', value: 0},
   {label: units === 'metric' ? '45°C' : '104°F', value: 1},
   {label: units === 'metric' ? '50°C' : '122°F', value: 2},
   {label: units === 'metric' ? '55°C' : '131°F', value: 3},

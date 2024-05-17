@@ -72,7 +72,7 @@ const tabBarStyle = {
     paddingBottom: 0,
     borderTopWidth: 0,
     position: 'absolute',
-    height: Platform.OS === 'ios' ? 'auto' : 70,
+    height: Platform.OS === 'ios' ? 80 : 70,
     shadowColor: colors.brown,
     shadowOffset: {
       width: 5,

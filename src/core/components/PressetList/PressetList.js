@@ -26,7 +26,7 @@ const PressetList = ({
           id: 'instant_brew',
           tea_img:
             'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Finstant_brew.png?alt=media&token=43651269-9801-46f7-aa29-7fcd4ee24541',
-          tea_type: t('MenuBottom.InstantBrew'),
+          tea_type: t('Presets.InstantBrew'),
         },
         ...pressets,
         {

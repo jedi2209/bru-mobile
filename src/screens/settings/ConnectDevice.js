@@ -112,6 +112,7 @@ const StepItem = ({step, setStep, navigation}) => {
     requestBluetoothPermission,
     scanForPeripherals,
     stopDeviceScan,
+    cancelTransaction,
     allDevices,
   } = useBle();
   const [isScanning, setIsScanning] = useState(false);
@@ -129,7 +130,7 @@ const StepItem = ({step, setStep, navigation}) => {
         stopDeviceScan();
         setStep(11);
         setSecondTimeOut(null);
-      }, 20000);
+      }, 10000);
       setSecondTimeOut(second);
     }
   }, [
@@ -233,7 +234,9 @@ const StepItem = ({step, setStep, navigation}) => {
             onPress={async () => {
               try {
                 const device = await connectToDevice(allDevices[0]);
+
                 await device.readCharacteristicForService('180A', '2A26');
+
                 AsyncStorage.setItem('previos', JSON.stringify(device));
                 toast.show({
                   placement: 'top',

@@ -251,7 +251,7 @@ const PresetsScreen = props => {
                     opened: true,
                     withCancelButton: true,
                     cancelButtonText: 'No',
-                    modalTitle: 'Attention!',
+                    modalTitle: t('InstantBrewing.Attention'),
                     confirmationText: (
                       <Text>
                         Do you really want to delete current preset{' '}
@@ -365,7 +365,7 @@ const PresetsScreen = props => {
                   opened: true,
                   withCancelButton: true,
                   cancelButtonText: 'No',
-                  modalTitle: 'Attention!',
+                  modalTitle: t('InstantBrewing.Attention'),
                   confirmationText:
                     'Do you really want to return standart tea presets to default values? We will keep the presets that you’ve added intact.',
                   confirmationButtonText: 'Yes, Return',

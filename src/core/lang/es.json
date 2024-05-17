@@ -16,7 +16,8 @@
     "BrewingTime": "Tiempo de Infusión",
     "WaterAmount": "Cantidad de Agua",
     "Done": "Hecho",
-    "Cancel": "Cancelar"
+    "Cancel": "Cancelar",
+    "Cold": "Frío"
   },
   "InstantBrewing": {
     "BrewIt": "¡Infundir!",
@@ -50,7 +51,10 @@
   "Presets": {
     "Title": "Preajustes",
     "SavePreset": "Guardar Preajuste",
-    "Cancel": "Cancelar"
+    "Cancel": "Cancelar",
+    "NewPreset": "Nuevo preajuste",
+    "TeaName": "Nombre del té",
+    "InstantBrew": "Freestyle"
   },
   "Settings": {
     "Title": "Configuración",

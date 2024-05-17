@@ -48,9 +48,9 @@ const s = StyleSheet.create({
   confirmationButton: {
     backgroundColor: colors.green.mid,
     paddingVertical: 16,
+    paddingHorizontal: 15,
     borderRadius: 90,
     minWidth: '50%',
-    maxWidth: '90%',
     alignSelf: 'center',
     marginBottom: 15,
   },

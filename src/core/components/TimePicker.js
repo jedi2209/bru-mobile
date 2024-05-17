@@ -80,6 +80,7 @@ const TimePickerModal = ({opened, closeModal, setTime, initIndex = 0}) => {
             setValue={setSelected}
             isTimePicker={true}
             initIndex={initIndex}
+            type="time"
           />
           <View style={s.buttonsContainer}>
             <TouchableOpacity onPress={closeModal} style={s.closeButton}>

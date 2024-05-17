@@ -35,7 +35,7 @@
     "NoDeviceDesc": "Neues Gerät verbinden?",
     "NoDeviceTitle": "Kein verbundenes Gerät",
     "Attention": "Achtung!",
-    "DoYouReallyWant": "Aktuelle Voreinstellung löschen?",
+    "DoYouReallyWant": "Voreinstellung löschen?",
     "YesDelete": "Ja, löschen"
   },
   "TeaAlarm": {
@@ -53,7 +53,8 @@
     "SavePreset": "Speichern",
     "Cancel": "Abbrechen",
     "NewPreset": "Hinzufügen",
-    "TeaName": "Bezeichnung"
+    "TeaName": "Bezeichnung",
+    "InstantBrew": "Freestyle"
   },
   "Settings": {
     "Title": "Einstellungen",
