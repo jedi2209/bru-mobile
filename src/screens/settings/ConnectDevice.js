@@ -41,7 +41,7 @@ const StepItem = ({step, setStep, navigation}) => {
     null,
     {
       // 1 checkBluetooth
-      img: require('@assets/deviceImages/image-1.png'),
+      img: require('@assets/connection.jpg'),
       header: t('Connection.step1.header'),
       text: t('Connection.step1.text'),
     },

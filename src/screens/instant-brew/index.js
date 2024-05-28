@@ -50,7 +50,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {uploadPressetImage} from '../../utils/db/pressets';
 import {$langSettingsStore} from '../../core/store/lang';
 import {$currentFirmwareStore} from '../../core/store/firmware';
-import {defaultPresets} from '../../core/const/index';
+import {$defaultPressetsStore} from '../../core/store/defaultPresets';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
@@ -185,7 +185,10 @@ const InstantBrewScreen = props => {
   const teaAlarms = useStore($teaAlarmsStrore);
   const user = useStore($userStore);
   const currLang = useStore($langSettingsStore);
+  const defaultPresets = useStore($defaultPressetsStore)?.defaultIds;
+
   const {t} = useTranslation();
+  const [isLoadingMutatePresset, setLoadingMutatePresset] = useState(false);
   const [animationButton] = useState(new Animated.Value(0));
   const [animationCancelButton] = useState(new Animated.Value(0));
   const {writeValueWithResponse} = useBle();
@@ -210,6 +213,12 @@ const InstantBrewScreen = props => {
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
     writeValueWithResponse(command);
   };
+  console.log(user, 'useruseruseruser');
+  useEffect(() => {
+    if (mode === 'view') {
+      setImage(null);
+    }
+  }, [mode]);
 
   const isDarkMode = theme === 'dark';
 
@@ -419,21 +428,20 @@ const InstantBrewScreen = props => {
                         const deletedDefaults = JSON.parse(
                           await AsyncStorage.getItem('deletedDefaults'),
                         );
-                        if (deletedDefaults) {
-                          await AsyncStorage.setItem(
-                            'deletedDefaults',
-                            JSON.stringify([...deletedDefaults, selected.id]),
-                          );
-                        } else {
-                          await AsyncStorage.setItem(
-                            'deletedDefaults',
-                            JSON.stringify([selected.id]),
-                          );
-                        }
+                        const deletedArray = [
+                          ...(deletedDefaults ?? []),
+                          selected.id,
+                        ];
+                        await AsyncStorage.setItem(
+                          'deletedDefaults',
+                          JSON.stringify(deletedArray),
+                        );
                       }
-                      deletePressetFx(selected.id);
+
+                      await deletePressetFx({id: selected.id, defaultPresets});
                       setModal(null);
                       setSelected(null);
+                      getPressetsFx();
                     },
                     closeModal: () => setModal(null),
                   })
@@ -453,7 +461,7 @@ const InstantBrewScreen = props => {
               />
             ) : (
               <Text style={s.teaName}>
-                {selected?.tea_type.replace(/\\n/g, '\n')}
+                {selected?.tea_type?.replace(/\\n/g, '\n')}
               </Text>
             )}
             {mode === 'view' && (
@@ -461,7 +469,7 @@ const InstantBrewScreen = props => {
                 disabled={!selected}
                 onPress={() => {
                   setMode('edit');
-                  setNewTeaName(selected.tea_type.replace(/\\n/g, '\n'));
+                  setNewTeaName(selected.tea_type?.replace(/\\n/g, '\n'));
                 }}>
                 <PenIcon width={24} height={24} />
               </TouchableOpacity>
@@ -531,7 +539,9 @@ const InstantBrewScreen = props => {
           {mode !== 'view' ? (
             <View style={s.buttonContainer}>
               <TouchableOpacity
+                disabled={isLoadingMutatePresset}
                 onPress={async () => {
+                  setLoadingMutatePresset(true);
                   let imgUrl;
                   if (image) {
                     imgUrl = await uploadPressetImage(image, selected.id);
@@ -554,39 +564,46 @@ const InstantBrewScreen = props => {
                       await AsyncStorage.getItem('updatedDefaults'),
                     );
                     if (updatedDefaults?.includes(selected.id)) {
-                      updatePressetFx({
-                        id: selected.id,
-                        tea_type: newTeaName,
-                        tea_img: imgUrl ? imgUrl : selected.tea_img,
-                        brewing_data: {
-                          time: brewingTime,
-                          waterAmount,
-                          temperature,
+                      updatePressetFx(
+                        {
+                          id: selected.id,
+                          tea_type: newTeaName,
+                          tea_img: imgUrl ? imgUrl : selected.tea_img,
+                          brewing_data: {
+                            time: brewingTime,
+                            waterAmount,
+                            temperature,
+                          },
+                          cleaning: isCleaning,
                         },
-                        cleaning: isCleaning,
-                      });
+                        updatedDefaults,
+                      );
                     } else if (defaultPresets.includes(selected.id)) {
-                      addPressetToStoreFx({
-                        tea_type: newTeaName,
-                        tea_img: imgUrl ? imgUrl : selected.tea_img,
-                        brewing_data: {
-                          time: brewingTime,
-                          waterAmount,
-                          temperature,
-                        },
-                        cleaning: isCleaning,
-                        created_at: date.getTime(),
-                        id: selected.id,
-                      });
-
+                      const updatedArray = [
+                        ...(updatedDefaults ?? []),
+                        selected.id,
+                      ];
                       await AsyncStorage.setItem(
                         'updatedDefaults',
-                        JSON.stringify(
-                          updatedDefaults
-                            ? [...updatedDefaults, selected.id]
-                            : [selected.id],
-                        ),
+                        JSON.stringify(updatedArray),
                       );
+
+                      addPressetToStoreFx({
+                        presset: {
+                          tea_type: newTeaName,
+                          tea_img: imgUrl ? imgUrl : selected.tea_img,
+                          brewing_data: {
+                            time: brewingTime,
+                            waterAmount,
+                            temperature,
+                          },
+                          cleaning: isCleaning,
+                          created_at: date.getTime(),
+                          id: selected.id,
+                        },
+                        updatedArray,
+                      });
+
                       await getPressetsFx();
                     } else {
                       updatePressetFx({
@@ -605,6 +622,7 @@ const InstantBrewScreen = props => {
                   setMode('view');
                   setNewTeaName('');
                   setImage('');
+                  setLoadingMutatePresset(false);
                 }}
                 style={[s.saveButton]}>
                 <Text
@@ -679,7 +697,7 @@ const InstantBrewScreen = props => {
                   }
                   Vibration.vibrate(100);
                 }}
-                delayLongPress={500}
+                delayLongPress={300}
                 style={s.brewButton}>
                 <Animated.View
                   style={[
@@ -692,7 +710,7 @@ const InstantBrewScreen = props => {
                 <Text style={s.buttonText}>{t('InstantBrewing.BrewIt')}</Text>
               </Pressable>
               <Pressable
-                delayLongPress={500}
+                delayLongPress={300}
                 onLongPress={async () => {
                   Vibration.vibrate(100);
                   const command = getCommand(0x42, [], 4, false);

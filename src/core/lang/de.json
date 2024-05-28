@@ -33,7 +33,7 @@
     "No": "Nein",
     "Yes": "Ja",
     "NoDeviceDesc": "Neues Gerät verbinden?",
-    "NoDeviceTitle": "Kein verbundenes Gerät",
+    "NoDeviceTitle": "Keine BRU verbunden",
     "Attention": "Achtung!",
     "DoYouReallyWant": "Voreinstellung löschen?",
     "YesDelete": "Ja, löschen"
@@ -130,7 +130,7 @@
     },
     "step6": {
       "header": "Bereit zum Koppeln",
-      "text": "Je nach eingestellter Sprache kann das Menü unterschiedlich aussehen. Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN'. Nach diesem Schritt musst du 'Warten auf Verbindung' auf dem Gerätedisplay sehen."
+      "text": "Je nach eingestellter Sprache kann das Menü unterschiedlich aussehen. Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN' bzw. 'PAIR NEW DEVICE'. Nach diesem Schritt musst du 'WARTEN AUF VERBINDUNG' bzw. 'WAITING FOR CONNECTION'auf dem Gerätedisplay sehen."
     },
     "step7": {
       "header": "Verbindungsversuch...",
@@ -138,7 +138,7 @@
     },
     "step8": {
       "header": "Kopplung nicht erfolgreich bzw. muss bestätigt werden",
-      "text": "Der Koppelmodus muss aktiviert sein und die Nummern müssen übereinstimmen und mit 'JA' bzw. 'YES' auf dem BRU Maker bestätigt werden. Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN'. Nach diesem Schritt musst du 'WARTEN AUF VERBINDUNG' bzw. 'WAITING FOR CONNECTION' auf dem Gerätedisplay sehen."
+      "text": "Der Koppelmodus muss aktiviert sein und die Nummern müssen übereinstimmen und mit 'JA' bzw. 'YES' auf dem BRU Maker bestätigt werden. Bitte aktiviere den Koppelmodus auf deinem BRU Maker One. Gehe zu 'GERÄTE EINSTELLUNGEN' dann zu 'NEUES GERÄT VERBINDEN' bzw. 'PAIR NEW DEVICE'. Nach diesem Schritt musst du 'WARTEN AUF VERBINDUNG' bzw. 'WAITING FOR CONNECTION' auf dem Gerätedisplay sehen."
     },
     "step9": {
       "header": "Geschafft!",
@@ -174,9 +174,9 @@
     "PleaseWatchThis": "Bitte schaue dir dieses Video an:",
     "Descale": "Wie entkalke ich die Maschine?",
     "ResetPin": "Wo finde ich den Reset-Pin?",
-    "ResetPinAnswer": "Der Reset-Pin befindet sich unter der Abropfschale.",
+    "ResetPinAnswer": "Der Reset-Pin für die Heizung befindet sich unter der Abropfschale",
     "TastesDifferent": "Was kann ich tun, wenn mein Tee anders schmeckt?",
-    "PleaseChangeFilter": "Bitte wechsle den Wasserfilter.",
+    "PleaseChangeFilter": "Bitte wechsle den Wasserfilter",
     "Contact": "Wie kann ich den Kundendienst kontaktieren?",
     "ViaWhatsApp": "Über WhatsApp",
     "OrEmail": "Oder per E-Mail",
@@ -189,7 +189,7 @@
     "FeatureDesc": "Beschreibung der Funktion",
     "DescribeFeatureHere": "Welche Funktion hättest du gerne?",
     "Okay": "Ok",
-    "WhatNew": "Was gibt es Neues?"
+    "WhatNew": "Was gibt es Neues mit der App?"
   },
   "UpdateFirmware": {
     "PleaseDont": "Bitte trenne dein BRU-Gerät nicht von der Stromversorgung, bis die Firmware aktualisiert wurde.",
@@ -202,7 +202,7 @@
     "Error": "Ein Fehler ist während der Installation der Firmware aufgetreten, bitte versuche es noch einmal",
     "Updating": "Aktualisierung der Firmware...",
     "Old": "Einstellung der BRU-Maschinensprache. Bitte warten...",
-    "LanguageDone": "Sprache eingestellt. Bitte warte bis BRU neu startet. Es dauert ca. 30sec."
+    "LanguageDone": "Sprache eingestellt. Bitte warte bis BRU neu startet. Es dauert ca. 30sec. und blink dabei rot"
   },
   "Unpair": {
     "AreYouSure": "Bist du sicher?",

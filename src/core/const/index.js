@@ -108,16 +108,3 @@ export const timePickerData = () => {
 
   return values;
 };
-
-export const defaultPresets = [
-  'assam_from_india',
-  'sencha_japan',
-  'ginger_lemon',
-  'fresh_peach',
-  'wild_mango',
-  'jasmintee',
-  'rooibos_marzipan',
-  'premium_earl_grey',
-  'evening_tea',
-  'sweet_orange',
-];

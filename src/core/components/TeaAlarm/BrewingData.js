@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useMemo, useState} from 'react';
 import dayjs from 'dayjs';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../const/style';
@@ -94,6 +94,19 @@ const BrewingData = ({
   const {units} = useStore($profileStore);
   const {t} = useTranslation();
 
+  const temperatureValue = useMemo(() => {
+    const result = temperaturePickerData(units).find(item => {
+      return item.value === temperature;
+    });
+    if (result) {
+      if (result.label === 'Picker.Cold') {
+        return t(result.label);
+      }
+      return result.label;
+    }
+    return '';
+  }, [t, temperature, units]);
+
   return (
     <View
       style={[
@@ -141,11 +154,7 @@ const BrewingData = ({
             />
           }
           title={t('BrewingData.WaterTemperature')}
-          value={
-            temperaturePickerData(units).find(
-              item => item.value === temperature,
-            )?.label || 'Cold'
-          }
+          value={temperatureValue}
         />
       </TouchableOpacity>
       <TemperaturePicker

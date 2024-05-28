@@ -205,33 +205,7 @@ const HelpScreen = props => {
         }}
         keyboardShouldPersistTaps="handled"
         automaticallyAdjustKeyboardInsets={true}>
-        <CollapsibleButton
-          onPress={() => setCollapsed(prev => (prev === 1 ? 0 : 1))}
-          collapsed={collapsed !== 1}
-          buttonText={t('Help.InstallFilter')}
-          collapsibleItem={
-            <View style={s.linkWrapper}>
-              <Text style={[s.defaultText, isDarkMode && s.darkText]}>{`${t(
-                'Help.PleaseWatchThis',
-              )}`}</Text>
-              <TouchableOpacity
-                onPress={async () => {
-                  const canOpen = await Linking.canOpenURL(
-                    'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
-                  );
-                  if (canOpen) {
-                    Linking.openURL(
-                      'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
-                    );
-                  } else {
-                    Alert.alert("Can't open link");
-                  }
-                }}>
-                <Text style={s.linkText}>{t('Help.Link')}</Text>
-              </TouchableOpacity>
-            </View>
-          }
-        />
+        {/* 1 */}
         <CollapsibleButton
           onPress={() => setCollapsed(prev => (prev === 2 ? 0 : 2))}
           collapsed={collapsed !== 2}
@@ -259,30 +233,35 @@ const HelpScreen = props => {
             </View>
           }
         />
+        {/* 2 */}
         <CollapsibleButton
-          onPress={() => setCollapsed(prev => (prev === 4 ? 0 : 4))}
-          collapsed={collapsed !== 4}
-          buttonText={t('Help.ResetPin')}
+          onPress={() => setCollapsed(prev => (prev === 1 ? 0 : 1))}
+          collapsed={collapsed !== 1}
+          buttonText={t('Help.InstallFilter')}
           collapsibleItem={
-            <View>
+            <View style={s.linkWrapper}>
               <Text style={[s.defaultText, isDarkMode && s.darkText]}>{`${t(
-                'Help.ResetPinAnswer',
+                'Help.PleaseWatchThis',
               )}`}</Text>
+              <TouchableOpacity
+                onPress={async () => {
+                  const canOpen = await Linking.canOpenURL(
+                    'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
+                  );
+                  if (canOpen) {
+                    Linking.openURL(
+                      'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
+                    );
+                  } else {
+                    Alert.alert("Can't open link");
+                  }
+                }}>
+                <Text style={s.linkText}>{t('Help.Link')}</Text>
+              </TouchableOpacity>
             </View>
           }
         />
-        <CollapsibleButton
-          onPress={() => setCollapsed(prev => (prev === 5 ? 0 : 5))}
-          collapsed={collapsed !== 5}
-          buttonText={t('Help.TastesDifferent')}
-          collapsibleItem={
-            <View>
-              <Text style={[s.defaultText, isDarkMode && s.darkText]}>{`${t(
-                'Help.PleaseChangeFilter',
-              )}`}</Text>
-            </View>
-          }
-        />
+        {/* 3 */}
         <CollapsibleButton
           onPress={() => setCollapsed(prev => (prev === 6 ? 0 : 6))}
           collapsed={collapsed !== 6}
@@ -422,7 +401,7 @@ const HelpScreen = props => {
             </View>
           }
         />
-
+        {/* 4 */}
         <CollapsibleButton
           onPress={() => setCollapsed(prev => (prev === 8 ? 0 : 8))}
           collapsed={collapsed !== 8}
@@ -521,6 +500,7 @@ const HelpScreen = props => {
             </View>
           }
         />
+        {/* 5 */}
         <CollapsibleButton
           onPress={() => setCollapsed(prev => (prev === 7 ? 0 : 7))}
           collapsed={collapsed !== 7}
@@ -533,6 +513,33 @@ const HelpScreen = props => {
             </View>
           }
         />
+        {/* 6 */}
+        <CollapsibleButton
+          onPress={() => setCollapsed(prev => (prev === 5 ? 0 : 5))}
+          collapsed={collapsed !== 5}
+          buttonText={t('Help.TastesDifferent')}
+          collapsibleItem={
+            <View>
+              <Text style={[s.defaultText, isDarkMode && s.darkText]}>{`${t(
+                'Help.PleaseChangeFilter',
+              )}`}</Text>
+            </View>
+          }
+        />
+        {/* 7 */}
+        <CollapsibleButton
+          onPress={() => setCollapsed(prev => (prev === 4 ? 0 : 4))}
+          collapsed={collapsed !== 4}
+          buttonText={t('Help.ResetPin')}
+          collapsibleItem={
+            <View>
+              <Text style={[s.defaultText, isDarkMode && s.darkText]}>{`${t(
+                'Help.ResetPinAnswer',
+              )}`}</Text>
+            </View>
+          }
+        />
+
         <View style={{marginBottom: 70}} />
         <ConfirmationModal
           opened={modal}

@@ -2,6 +2,7 @@ import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {setDefaults} from '../../core/store/defaultPresets';
 
 export const pressetsCollection = firestore().collection('pressets');
 export const defaultPressetsCollection =
@@ -167,27 +168,29 @@ export const getUserPressets = async () => {
       .collection('pressets')
       .get();
 
-    const defaultPressets = (await defaultPressetsCollection.get()).docs
-      .map(doc => doc.data())
-      .filter(presset => {
-        if (!deletedDefaults) {
-          return true;
-        }
-        if (deletedDefaults.includes(presset.id)) {
-          return false;
-        }
-        if (updatedDefaults.includes(presset.id)) {
-          return false;
-        }
+    const defaultPressets = (await defaultPressetsCollection.get()).docs.map(
+      doc => doc.data(),
+    );
+    setDefaults(defaultPressets);
+    const filteredPressets = defaultPressets.filter(presset => {
+      if (!deletedDefaults) {
         return true;
-      });
+      }
+      if (deletedDefaults.includes(presset.id)) {
+        return false;
+      }
+      if (updatedDefaults?.includes(presset.id)) {
+        return false;
+      }
+      return true;
+    });
     const pressetsWithid = pressets.docs.map(presset => {
       return {
-        id: presset.id,
         ...presset.data(),
+        id: presset.id,
       };
     });
-    return [...pressetsWithid, ...defaultPressets];
+    return [...pressetsWithid, ...filteredPressets];
   } catch (error) {
     console.log(error, 'error getUserPresset');
   }
