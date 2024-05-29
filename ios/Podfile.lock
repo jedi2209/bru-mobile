@@ -952,7 +952,7 @@ PODS:
   - AppAuth/Core (1.7.5)
   - AppAuth/ExternalUserAgent (1.7.5):
     - AppAuth/Core
-  - AppCheckCore (10.19.0):
+  - AppCheckCore (10.19.1):
     - GoogleUtilities/Environment (~> 7.13)
     - GoogleUtilities/UserDefaults (~> 7.13)
     - PromisesObjC (~> 2.3)
@@ -2041,7 +2041,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
-  AppCheckCore: 58dbd968d93b7c56650c28a1ac404d7a54307c0e
+  AppCheckCore: db04d539b37794558391bc56bc65e2440b01a195
   boost: 57d2868c099736d80fcd648bf211b4431e51a558
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
   BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
@@ -2139,7 +2139,7 @@ SPEC CHECKSUMS:
   RNGoogleSignin: 24d3b3261f78b0fae0aa013f8ab6f8d25e369b0c
   RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNLocalize: e8694475db034bf601e17bd3dfa8986565e769eb
-  RNPermissions: c4bcc8899cc03f5fab761813116d36e505259a5a
+  RNPermissions: 4e3714e18afe7141d000beae3755e5b5fb2f5e05
   RNReanimated: 9f7068e43b9358a46a688d94a5a3adb258139457
   RNScreens: 396c07678c1c35614bc5feba74a56df387bf1965
   RNSentry: f6a5aee809d646763640130714d1fdfe69aac36b
@@ -2151,6 +2151,6 @@ SPEC CHECKSUMS:
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 5382586af14bf6f0ee7e5f8d795de3721a0894ab
+PODFILE CHECKSUM: a10faa1418ee44ea20a34cfb72c4a551f110d4d9
 
 COCOAPODS: 1.13.0
