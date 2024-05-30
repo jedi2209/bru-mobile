@@ -1,30 +1,26 @@
-import React, {useEffect, useRef} from 'react';
-import {Platform, LogBox, StatusBar} from 'react-native';
-
-import {NavigationContainer} from '@react-navigation/native';
-import NavMain from '@nav/Navigation';
+import React, {useEffect} from 'react';
+import {Platform, LogBox} from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
 import * as Sentry from '@sentry/react-native';
 
-import {FIREBASE_SETTINGS, SENTRY_SETTINGS, INITIAL_SCREEN} from '@const';
+import {FIREBASE_SETTINGS, SENTRY_SETTINGS} from '@const';
 
 // import {firebase} from '@react-native-firebase/app-check';
-import {analyticsLog, logScreenView} from '@utils/analytics';
+import {analyticsLog} from '@utils/analytics';
 import {pushUserData} from '@utils/userData';
 import {fetchFirmwareMeta} from '@utils/firmware';
 import isInternet from '@utils/isInternet';
 
-import {navigationTheme} from '@styleConst';
 import {GluestackUIProvider} from '@gluestack-ui/themed';
 import {config} from '../../config/gluestack-ui.config';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {$themeStore} from './store/theme';
 import {useStore} from 'effector-react';
 import {isSignedIn} from '../utils/auth';
-import Toast from 'react-native-toast-message';
 import {firebase} from '@react-native-firebase/firestore';
-import {colors} from './const/style';
+import {AppNavigation} from './AppNavigation';
+import PresetContextProvider from './contexts/PresetContextProvider';
 
 // Construct a new instrumentation instance. This is needed to communicate between the integration and React
 const routingInstrumentation = new Sentry.ReactNavigationInstrumentation();
@@ -99,8 +95,6 @@ const _appCheckInit = async () => {
 };
 
 const App = props => {
-  const routeNameRef = useRef();
-  const navigationRef = useRef();
   const theme = useStore($themeStore);
   useEffect(() => {
     isSignedIn();
@@ -121,27 +115,9 @@ const App = props => {
     // eslint-disable-next-line react-native/no-inline-styles
     <GestureHandlerRootView style={{flex: 1}}>
       <GluestackUIProvider config={config} colorMode={theme}>
-        <NavigationContainer
-          theme={navigationTheme[theme]}
-          ref={navigationRef}
-          onReady={() => {
-            routeNameRef.current = navigationRef.current.getCurrentRoute().name;
-            routingInstrumentation.registerNavigationContainer(navigationRef);
-          }}
-          onStateChange={async () => {
-            const previousRouteName = routeNameRef.current;
-            const currentRouteName =
-              navigationRef.current.getCurrentRoute().name;
-
-            if (previousRouteName !== currentRouteName) {
-              await logScreenView(currentRouteName);
-            }
-            routeNameRef.current = currentRouteName;
-          }}>
-          <NavMain initialRouteName={INITIAL_SCREEN} {...props} />
-          <Toast />
-          <StatusBar backgroundColor={colors.green.header} />
-        </NavigationContainer>
+        <PresetContextProvider>
+          <AppNavigation {...props} />
+        </PresetContextProvider>
       </GluestackUIProvider>
     </GestureHandlerRootView>
   );

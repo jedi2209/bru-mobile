@@ -2,13 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {colors} from '../../core/const/style';
 import {TimerPickerModal} from 'react-native-timer-picker';
-import {Switch} from '@gluestack-ui/themed';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
 import Wrapper from '../../core/components/Wrapper';
 import dayjs from 'dayjs';
 import ArrowIcon from '../../core/components/icons/ArrowIcon';
-import PressetList from '../../core/components/PressetList/PressetList';
 import {addTeaAlarmFx, updateTeaAlarmFx} from '../../core/store/teaAlarms';
 import {$profileStore} from '../../core/store/profile';
 import {$teaAlarmStrore, getTeaAlarmByIdFx} from '../../core/store/teaAlarm';
@@ -254,12 +252,12 @@ const NewTeaAlarmScreen = ({route, navigation, ...props}) => {
         <Text style={[s.subTitle, s.selectPresset, isDarkMode && s.darkText]}>
           {t('TeaAlarm.SelectPresset')}
         </Text>
-        <PressetList
+        {/* <PressetList
           style={s.list}
           selected={selected}
           setSelected={setSelected}
           data={pressets}
-        />
+        /> */}
         <BrewingData
           disabled
           brewingTime={brewingTime}

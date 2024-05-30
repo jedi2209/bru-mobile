@@ -11,7 +11,7 @@ import React, {
   View,
 } from 'react-native';
 import Wrapper from '@comp/Wrapper';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
 // import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
@@ -19,12 +19,6 @@ import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useStore} from 'effector-react';
 import {$themeStore, initThemeFx} from '../../core/store/theme';
-import {
-  addPressetToStoreFx,
-  deletePressetFx,
-  getPressetsFx,
-  updatePressetFx,
-} from '../../core/store/pressets';
 import isEqual from 'lodash.isequal';
 import {
   // $profileStore,
@@ -34,23 +28,20 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
-import {usePressetList} from '../../hooks/usePressetList';
 import {$teaAlarmsStrore, getTeaAlarmsFx} from '../../core/store/teaAlarms';
 import {useFocusEffect} from '@react-navigation/native';
 import {updateUser} from '../../utils/db/auth.js';
 import {$userStore} from '../../core/store/user.js';
 import {useTranslation} from 'react-i18next';
-import {getCommand, getStartCommand, sleep} from '../../utils/commands';
+import {getCommand, getStartCommand} from '../../utils/commands';
 import useBle from '../../hooks/useBlePlx';
 import {initDevice} from '../../core/store/connectedDevice';
 import LinearGradient from 'react-native-linear-gradient';
 import TrashIconOutlined from '../../core/components/icons/TrashIconOutlined';
 import PenIcon from '../../core/components/icons/PenIcon';
 import ImagePicker from 'react-native-image-crop-picker';
-import {uploadPressetImage} from '../../utils/db/pressets';
 import {$langSettingsStore} from '../../core/store/lang';
-import {$currentFirmwareStore} from '../../core/store/firmware';
-import {$defaultPressetsStore} from '../../core/store/defaultPresets';
+import {usePresetContext} from '../../core/contexts/usePresetContext';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
@@ -185,48 +176,41 @@ const InstantBrewScreen = props => {
   const teaAlarms = useStore($teaAlarmsStrore);
   const user = useStore($userStore);
   const currLang = useStore($langSettingsStore);
-  const defaultPresets = useStore($defaultPressetsStore)?.defaultIds;
-
   const {t} = useTranslation();
-  const [isLoadingMutatePresset, setLoadingMutatePresset] = useState(false);
+
+  const INSTANT_BREW_PRESET = {
+    brewing_data: {
+      time: {label: '3m', seconds: 180, value: 17},
+      temperature: 9,
+      waterAmount: 4,
+    },
+    cleaning: false,
+    id: 'instant_brew',
+    tea_img:
+      'https://firebasestorage.googleapis.com/v0/b/brutea-app.appspot.com/o/images%2Finstant_brew.png?alt=media&token=43651269-9801-46f7-aa29-7fcd4ee24541',
+    tea_type: t('Presets.InstantBrew'),
+  };
+
   const [animationButton] = useState(new Animated.Value(0));
   const [animationCancelButton] = useState(new Animated.Value(0));
   const {writeValueWithResponse} = useBle();
-  const [mode, setMode] = useState('view');
-  const [newTeaName, setNewTeaName] = useState('');
-  const [image, setImage] = useState(null);
-  const {selected, setSelected, pressets} = usePressetList();
-  const {
-    setBrewingTime,
-    // setIsCleaning,
-    setWaterAmount,
-    setTemperature,
-    brewingTime,
-    waterAmount,
-    isCleaning,
-    temperature,
-  } = useBrewingData(selected);
+
   const [fadeAnim] = useState(new Animated.Value(1));
   const [moveView] = useState(new Animated.ValueXY({x: 0, y: 0}));
   const [isAnimated, setIsAnimated] = useState(false);
+
+  const isDarkMode = theme === 'dark';
+
   const startBrewing = async (temp = 0, time = 0, water = 0) => {
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
     writeValueWithResponse(command);
   };
-  console.log(user, 'useruseruseruser');
-  useEffect(() => {
-    if (mode === 'view') {
-      setImage(null);
-    }
-  }, [mode]);
-
-  const isDarkMode = theme === 'dark';
 
   const onPressStartButton = useCallback(() => {
     Animated.timing(animationButton, {
       toValue: 1,
       duration: 500,
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start(() => {
       animationButton.setValue(0);
     });
@@ -236,7 +220,7 @@ const InstantBrewScreen = props => {
     Animated.timing(animationCancelButton, {
       toValue: 1,
       duration: 600,
-      useNativeDriver: false,
+      useNativeDriver: true,
     }).start(() => {
       animationCancelButton.setValue(0);
     });
@@ -256,13 +240,13 @@ const InstantBrewScreen = props => {
     useCallback(() => {
       async function init() {
         await getUserFx();
-        getPressetsFx();
+        handleGetPreset();
         getTeaAlarmsFx();
         initThemeFx();
         await initDevice();
       }
       init();
-    }, []),
+    }, [handleGetPreset]),
   );
 
   useEffect(() => {
@@ -285,49 +269,6 @@ const InstantBrewScreen = props => {
       defaultUserSettings();
     }
   }, [user]);
-
-  useEffect(() => {
-    if (selected?.id === 'new_presset') {
-      setMode('create');
-      setNewTeaName('');
-    } else {
-      setMode('view');
-    }
-  }, [selected?.id]);
-
-  const openConfiramtionModal = time => {
-    setModal({
-      opened: true,
-      withCancelButton: true,
-      cancelButtonText: t('InstantBrewing.Later'),
-      modalTitle: t('InstantBrewing.ConfirmationModalTitle'),
-      confirmationText: (
-        <Text>
-          {t('InstantBrewing.YouWillBeAble')}{' '}
-          <Text style={{color: colors.green.mid}}>{t('Presets.Title')}</Text>{' '}
-          {t('InstantBrewing.page')}.
-        </Text>
-      ),
-      confirmationButtonText: t('Presets.SavePreset'),
-      // withDontShowAgain: true,
-      onConfirm: async () => {
-        addPressetToStoreFx({
-          brewing_data: {time: time, waterAmount, temperature},
-          cleaning: isCleaning,
-          tea_img: selected.tea_img,
-          tea_type: `New ${selected.tea_type}`,
-          created_at: date.getTime(),
-        });
-        setModal(null);
-      },
-      closeModal: async () => {
-        startBrewing(temperature, brewingTime.value, waterAmount);
-        setModal(null);
-      },
-      // dontShowAgainText: t('InstantBrewing.DontShowAgain'),
-    });
-  };
-  const date = new Date();
 
   const openIsConnectedModal = () => {
     setModal({
@@ -386,15 +327,236 @@ const InstantBrewScreen = props => {
       setIsAnimated(false);
     }
   }, [fadeAnim, moveView, selected]);
+
+  // =================================================================================================
+
+  const {
+    image,
+    selected,
+    presets,
+    setImage,
+    setSelected,
+    handleAddPreset,
+    handleGetPreset,
+    handleDeletePreset,
+    handleUpdatePreset,
+  } = usePresetContext();
+
+  const [isLoadingMutatePresset, setLoadingMutatePresset] = useState(false);
+
+  const [mode, setMode] = useState('view');
+  const [newTeaName, setNewTeaName] = useState('');
+
+  const {
+    setBrewingTime,
+    setWaterAmount,
+    setTemperature,
+    brewingTime,
+    waterAmount,
+    isCleaning,
+    temperature,
+  } = useBrewingData(selected);
+
+  useEffect(() => {
+    if (mode === 'view') {
+      setImage(null);
+    }
+  }, [mode, setImage]);
+
+  useEffect(() => {
+    if (selected?.id === 'new_presset') {
+      setMode('create');
+      setNewTeaName('');
+    } else {
+      setMode('view');
+    }
+  }, [selected?.id]);
+
+  const openConfiramtionModal = time => {
+    setModal({
+      opened: true,
+      withCancelButton: true,
+      cancelButtonText: t('InstantBrewing.Later'),
+      modalTitle: t('InstantBrewing.ConfirmationModalTitle'),
+      confirmationText: (
+        <Text>
+          {t('InstantBrewing.YouWillBeAble')}{' '}
+          <Text style={{color: colors.green.mid}}>{t('Presets.Title')}</Text>{' '}
+          {t('InstantBrewing.page')}.
+        </Text>
+      ),
+      confirmationButtonText: t('Presets.SavePreset'),
+      onConfirm: async () => {
+        const date = new Date();
+        await handleAddPreset({
+          brewing_data: {time: time, waterAmount, temperature},
+          cleaning: isCleaning,
+          tea_img: selected?.tea_img,
+          tea_type: `New ${selected.tea_type}`,
+          created_at: date.getTime(),
+        });
+        setSelected(INSTANT_BREW_PRESET);
+        setModal(null);
+      },
+      closeModal: async () => {
+        startBrewing(temperature, brewingTime.value, waterAmount);
+        setModal(null);
+      },
+    });
+  };
+
+  const editImagePath = useMemo(() => {
+    if (image) {
+      return {
+        uri: image,
+      };
+    }
+    if (selected && selected.tea_img && selected?.id !== 'new_presset') {
+      return {
+        uri: selected.tea_img,
+      };
+    }
+    return require('../../../assets/teaImages/emptyPressetImage.png');
+  }, [image, selected]);
+
+  const onDeletePreset = () => {
+    setModal({
+      opened: true,
+      withCancelButton: true,
+      cancelButtonText: t('InstantBrewing.No'),
+      modalTitle: t('InstantBrewing.Attention'),
+      confirmationText: <Text>{t('InstantBrewing.DoYouReallyWant')}</Text>,
+      confirmationButtonText: t('InstantBrewing.YesDelete'),
+      onConfirm: async () => {
+        if (selected && selected.id) {
+          await handleDeletePreset(selected?.id);
+          setModal(null);
+          setSelected(INSTANT_BREW_PRESET);
+        }
+      },
+      closeModal: () => setModal(null),
+    });
+  };
+
+  const onEdit = () => {
+    setMode('edit');
+    setNewTeaName(selected.tea_type?.replace(/\\n/g, '\n'));
+  };
+
+  const handlePickImage = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    })
+      .then(pickedImage => {
+        console.log(pickedImage, 'pickedImagepickedImage');
+        setImage(pickedImage.path);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  const onCreate = async () => {
+    setLoadingMutatePresset(true);
+
+    if (mode === 'create') {
+      const date = new Date();
+      await handleAddPreset({
+        tea_type: newTeaName,
+        tea_img: '',
+        brewing_data: {
+          time: brewingTime,
+          waterAmount,
+          temperature,
+        },
+        cleaning: isCleaning,
+        created_at: date.getTime(),
+      });
+    } else if (mode === 'edit') {
+      await handleUpdatePreset({
+        id: selected?.id,
+        tea_type: newTeaName,
+        tea_img: selected?.tea_img ?? '',
+        brewing_data: {
+          time: brewingTime,
+          waterAmount,
+          temperature,
+        },
+        cleaning: isCleaning,
+      });
+    }
+    setSelected(INSTANT_BREW_PRESET);
+    setMode('view');
+    setNewTeaName('');
+    setImage('');
+    setLoadingMutatePresset(false);
+  };
+
+  const onCancelPreset = () => {
+    setMode('view');
+    setNewTeaName('');
+  };
+
+  const onLongPressStartButton = async () => {
+    Vibration.vibrate(100);
+    if (selected?.id === 'new_presset') {
+      const date = new Date();
+      await handleAddPreset({
+        brewing_data: {
+          time: brewingTime,
+          waterAmount,
+          temperature,
+        },
+        cleaning: isCleaning,
+        tea_img: '',
+        tea_type: selected.tea_type,
+        created_at: date.getTime(),
+      });
+
+      startBrewing(temperature, brewingTime.value, waterAmount);
+
+      return;
+    }
+
+    if (selected?.id === 'instant_brew') {
+      const command = getCommand(0x40, [], 0x0f);
+
+      await writeValueWithResponse(command);
+      return;
+    }
+
+    const isChanged = !isEqual(selected.brewing_data, {
+      time: brewingTime,
+      waterAmount,
+      temperature,
+    });
+
+    if (isChanged) {
+      openConfiramtionModal(brewingTime);
+    } else {
+      startBrewing(temperature, brewingTime.value, waterAmount);
+    }
+    Vibration.vibrate(100);
+  };
+
+  const onLongPressCancelButton = async () => {
+    Vibration.vibrate(100);
+    const command = getCommand(0x42, [], 4, false);
+    await writeValueWithResponse(command);
+  };
+
   return (
     <Wrapper {...props}>
       {modal ? <ConfirmationModal {...modal} /> : null}
       <View style={s.container}>
         <PressetList
           style={s.list}
+          defaultBrew={INSTANT_BREW_PRESET}
           selected={selected}
           setSelected={setSelected}
-          data={pressets}
+          presets={presets}
           withInitData
         />
         <AnimatedLinearGradient
@@ -407,45 +569,7 @@ const InstantBrewScreen = props => {
           style={[s.pressetInfo, {opacity: fadeAnim}]}>
           <View style={s.pressetInfoHeader}>
             {mode === 'view' && (
-              <TouchableOpacity
-                disabled={!selected}
-                onPress={() =>
-                  setModal({
-                    opened: true,
-                    withCancelButton: true,
-                    cancelButtonText: t('InstantBrewing.No'),
-                    modalTitle: t('InstantBrewing.Attention'),
-                    confirmationText: (
-                      <Text>{t('InstantBrewing.DoYouReallyWant')}</Text>
-                    ),
-                    confirmationButtonText: t('InstantBrewing.YesDelete'),
-                    onConfirm: async () => {
-                      if (
-                        defaultPresets.findIndex(
-                          item => item === selected.id,
-                        ) !== -1
-                      ) {
-                        const deletedDefaults = JSON.parse(
-                          await AsyncStorage.getItem('deletedDefaults'),
-                        );
-                        const deletedArray = [
-                          ...(deletedDefaults ?? []),
-                          selected.id,
-                        ];
-                        await AsyncStorage.setItem(
-                          'deletedDefaults',
-                          JSON.stringify(deletedArray),
-                        );
-                      }
-
-                      await deletePressetFx({id: selected.id, defaultPresets});
-                      setModal(null);
-                      setSelected(null);
-                      getPressetsFx();
-                    },
-                    closeModal: () => setModal(null),
-                  })
-                }>
+              <TouchableOpacity disabled={!selected} onPress={onDeletePreset}>
                 <TrashIconOutlined width={24} height={24} fill="#B0B0B0" />
               </TouchableOpacity>
             )}
@@ -454,9 +578,7 @@ const InstantBrewScreen = props => {
                 value={newTeaName}
                 placeholder={t('Presets.TeaName')}
                 placeholderTextColor="#C4C4C4"
-                onChangeText={text => {
-                  setNewTeaName(text);
-                }}
+                onChangeText={setNewTeaName}
                 style={s.teaNameInput}
               />
             ) : (
@@ -465,47 +587,17 @@ const InstantBrewScreen = props => {
               </Text>
             )}
             {mode === 'view' && (
-              <TouchableOpacity
-                disabled={!selected}
-                onPress={() => {
-                  setMode('edit');
-                  setNewTeaName(selected.tea_type?.replace(/\\n/g, '\n'));
-                }}>
+              <TouchableOpacity disabled={!selected} onPress={onEdit}>
                 <PenIcon width={24} height={24} />
               </TouchableOpacity>
             )}
           </View>
           {mode !== 'view' ? (
-            <TouchableOpacity
-              onPress={() => {
-                ImagePicker.openPicker({
-                  width: 300,
-                  height: 400,
-                  cropping: true,
-                })
-                  .then(pickedImage => {
-                    setImage(pickedImage.sourceURL);
-                  })
-                  .catch(err => {
-                    console.log(err);
-                  });
-              }}>
+            <TouchableOpacity onPress={handlePickImage}>
               <Image
                 resizeMode="cover"
                 style={s.teaImage}
-                source={
-                  selected.id === 'new_presset'
-                    ? image
-                      ? {
-                          uri: image ? image : selected.tea_img,
-                        }
-                      : require('../../../assets/teaImages/emptyPressetImage.png')
-                    : selected?.tea_img || image
-                    ? {
-                        uri: image ? image : selected.tea_img,
-                      }
-                    : require('../../../assets/teaImages/emptyPressetImage.png')
-                }
+                source={editImagePath}
               />
             </TouchableOpacity>
           ) : (
@@ -534,96 +626,11 @@ const InstantBrewScreen = props => {
             setTemperature={setTemperature}
           />
 
-          {/* <SplitCups cleaning={isCleaning} setCleaning={setIsCleaning} /> */}
-
           {mode !== 'view' ? (
             <View style={s.buttonContainer}>
               <TouchableOpacity
                 disabled={isLoadingMutatePresset}
-                onPress={async () => {
-                  setLoadingMutatePresset(true);
-                  let imgUrl;
-                  if (image) {
-                    imgUrl = await uploadPressetImage(image, selected.id);
-                  }
-
-                  if (mode === 'create') {
-                    addPressetToStoreFx({
-                      tea_type: newTeaName,
-                      tea_img: imgUrl ? imgUrl : '',
-                      brewing_data: {
-                        time: brewingTime,
-                        waterAmount,
-                        temperature,
-                      },
-                      cleaning: isCleaning,
-                      created_at: date.getTime(),
-                    });
-                  } else if (mode === 'edit') {
-                    const updatedDefaults = JSON.parse(
-                      await AsyncStorage.getItem('updatedDefaults'),
-                    );
-                    if (updatedDefaults?.includes(selected.id)) {
-                      updatePressetFx(
-                        {
-                          id: selected.id,
-                          tea_type: newTeaName,
-                          tea_img: imgUrl ? imgUrl : selected.tea_img,
-                          brewing_data: {
-                            time: brewingTime,
-                            waterAmount,
-                            temperature,
-                          },
-                          cleaning: isCleaning,
-                        },
-                        updatedDefaults,
-                      );
-                    } else if (defaultPresets.includes(selected.id)) {
-                      const updatedArray = [
-                        ...(updatedDefaults ?? []),
-                        selected.id,
-                      ];
-                      await AsyncStorage.setItem(
-                        'updatedDefaults',
-                        JSON.stringify(updatedArray),
-                      );
-
-                      addPressetToStoreFx({
-                        presset: {
-                          tea_type: newTeaName,
-                          tea_img: imgUrl ? imgUrl : selected.tea_img,
-                          brewing_data: {
-                            time: brewingTime,
-                            waterAmount,
-                            temperature,
-                          },
-                          cleaning: isCleaning,
-                          created_at: date.getTime(),
-                          id: selected.id,
-                        },
-                        updatedArray,
-                      });
-
-                      await getPressetsFx();
-                    } else {
-                      updatePressetFx({
-                        id: selected.id,
-                        tea_type: newTeaName,
-                        tea_img: imgUrl ? imgUrl : selected.tea_img,
-                        brewing_data: {
-                          time: brewingTime,
-                          waterAmount,
-                          temperature,
-                        },
-                        cleaning: isCleaning,
-                      });
-                    }
-                  }
-                  setMode('view');
-                  setNewTeaName('');
-                  setImage('');
-                  setLoadingMutatePresset(false);
-                }}
+                onPress={onCreate}
                 style={[s.saveButton]}>
                 <Text
                   style={[
@@ -634,13 +641,7 @@ const InstantBrewScreen = props => {
                 </Text>
               </TouchableOpacity>
 
-              <TouchableOpacity
-                onPress={() => {
-                  setMode('view');
-                  setNewTeaName('');
-                  getPressetsFx();
-                }}
-                style={s.cancelButton}>
+              <TouchableOpacity onPress={onCancelPreset} style={s.cancelButton}>
                 <Text
                   style={[
                     s.editButtonText,
@@ -657,46 +658,7 @@ const InstantBrewScreen = props => {
               <Pressable
                 onPressIn={onPressStartButton}
                 onPressOut={() => animationButton.stopAnimation()}
-                onLongPress={async () => {
-                  Vibration.vibrate(100);
-                  if (selected.id === 'new_presset') {
-                    await addPressetToStoreFx({
-                      brewing_data: {
-                        time: brewingTime,
-                        waterAmount,
-                        temperature,
-                      },
-                      cleaning: isCleaning,
-                      tea_img: '',
-                      tea_type: selected.tea_type,
-                      created_at: date.getTime(),
-                    });
-
-                    startBrewing(temperature, brewingTime.value, waterAmount);
-
-                    return;
-                  }
-
-                  if (selected.id === 'instant_brew') {
-                    const command = getCommand(0x40, [], 0x0f);
-
-                    await writeValueWithResponse(command);
-                    return;
-                  }
-
-                  const isChanged = !isEqual(selected.brewing_data, {
-                    time: brewingTime,
-                    waterAmount,
-                    temperature,
-                  });
-
-                  if (isChanged) {
-                    openConfiramtionModal(brewingTime);
-                  } else {
-                    startBrewing(temperature, brewingTime.value, waterAmount);
-                  }
-                  Vibration.vibrate(100);
-                }}
+                onLongPress={onLongPressStartButton}
                 delayLongPress={300}
                 style={s.brewButton}>
                 <Animated.View
@@ -711,11 +673,7 @@ const InstantBrewScreen = props => {
               </Pressable>
               <Pressable
                 delayLongPress={300}
-                onLongPress={async () => {
-                  Vibration.vibrate(100);
-                  const command = getCommand(0x42, [], 4, false);
-                  await writeValueWithResponse(command);
-                }}
+                onLongPress={onLongPressCancelButton}
                 onPressOut={() => animationCancelButton.stopAnimation()}
                 onPressIn={onPressCancelButton}
                 style={s.dispenseButton}>

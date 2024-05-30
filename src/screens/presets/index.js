@@ -9,12 +9,10 @@ import React, {
 } from 'react-native';
 import PlusCircle from '../../core/components/icons/PlusCircle';
 import {basicStyles, colors} from '../../core/const/style';
-import PressetList from '../../core/components/PressetList/PressetList';
 import TrashIconOutlined from '../../core/components/icons/TrashIconOutlined';
 import PenIcon from '../../core/components/icons/PenIcon';
 import {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-// import {Switch} from '@gluestack-ui/themed';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useStore} from 'effector-react';
 import {$themeStore} from '../../core/store/theme';
@@ -226,13 +224,13 @@ const PresetsScreen = props => {
           </TouchableOpacity>
         )}
       </View>
-      <PressetList
+      {/* <PressetList
         style={s.list}
         type="pressets"
         setSelected={setSelected}
         selected={selected}
         data={pressets}
-      />
+      /> */}
       <View style={s.shadow}>
         <LinearGradient
           colors={

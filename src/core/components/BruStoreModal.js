@@ -69,14 +69,14 @@ const BruStoreModal = ({opened, closeModal}) => {
           <View style={s.buttonsContainer}>
             <TouchableOpacity
               onPress={async () => {
-                openLink('https://bru.shop/en/collections/unsere-teesoerten');
+                openLink('https://bru.shop/collections/unsere-teesoerten');
               }}
               style={s.button}>
               <Text style={s.buttonText}>{t('StoreModal.TeaStore')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                openLink('https://bru.shop/en/collections/zubehor');
+                openLink('https://bru.shop/collections/zubehor');
               }}
               style={s.button}>
               <Text style={s.buttonText}>

@@ -34,7 +34,6 @@ const StepItem = ({step, setStep, navigation}) => {
   const [fileName, setFileName] = useState('');
   const theme = useStore($themeStore);
   const isDark = theme === 'dark';
-  console.log(step);
   const toast = useToast();
   const {t} = useTranslation();
   const stepsContent = [
