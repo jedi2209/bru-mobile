@@ -209,7 +209,7 @@ const InstantBrewScreen = props => {
   const onPressStartButton = useCallback(() => {
     Animated.timing(animationButton, {
       toValue: 1,
-      duration: 500,
+      duration: 150,
       useNativeDriver: true,
     }).start(() => {
       animationButton.setValue(0);
@@ -219,7 +219,7 @@ const InstantBrewScreen = props => {
   const onPressCancelButton = useCallback(() => {
     Animated.timing(animationCancelButton, {
       toValue: 1,
-      duration: 600,
+      duration: 150,
       useNativeDriver: true,
     }).start(() => {
       animationCancelButton.setValue(0);
