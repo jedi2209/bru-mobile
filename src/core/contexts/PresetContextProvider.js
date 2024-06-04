@@ -4,6 +4,7 @@ import {PresetApi} from '../../utils/db/pressets';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PresetContextProvider = ({children}) => {
+  const [version, setVersion] = useState('');
   const [selected, setSelected] = useState(null);
   const [image, setImage] = useState(null);
   const [presets, setPresets] = useState([]);
@@ -114,6 +115,10 @@ const PresetContextProvider = ({children}) => {
     }
   }, []);
 
+  const handleSetVersion = useCallback(value => {
+    setVersion(value);
+  }, []);
+
   useEffect(() => {
     handleGetPreset();
   }, [handleGetPreset]);
@@ -121,24 +126,28 @@ const PresetContextProvider = ({children}) => {
   const contextValues = useMemo(() => {
     return {
       image,
+      version,
       presets: [...presets, ...defaultPresets],
       selected,
       setImage: handleChangeImage,
       setSelected: handleSelect,
       handleAddPreset,
       handleGetPreset,
+      handleSetVersion,
       handleUpdatePreset,
       handleDeletePreset,
     };
   }, [
     image,
+    version,
     presets,
-    selected,
     defaultPresets,
+    selected,
+    handleChangeImage,
     handleSelect,
     handleAddPreset,
     handleGetPreset,
-    handleChangeImage,
+    handleSetVersion,
     handleUpdatePreset,
     handleDeletePreset,
   ]);

@@ -30,8 +30,10 @@ import {useTranslation} from 'react-i18next';
 import useBle from '../../hooks/useBlePlx';
 import {getFileURL, getFirmwareData} from '../../utils/firmware';
 import {$connectedDevice} from '../../core/store/connectedDevice';
+import {usePresetContext} from '../../core/contexts/usePresetContext';
 
 const SettingsScreen = props => {
+  const {version, handleSetVersion} = usePresetContext();
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [newFeaturesModalOpened, setNewFeaturesModalOpened] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -88,6 +90,18 @@ const SettingsScreen = props => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const fetchVersion = async () => {
+      try {
+        const value = await readValue('firmwareRevision');
+        handleSetVersion(value);
+      } catch (e) {
+        console.log(e, 'error');
+      }
+    };
+    fetchVersion();
+  }, [handleSetVersion, readValue]);
+
   const _onPressUpdate = () => {
     navigation.navigate('UpdateFirmwareScreen', {
       fileName,
@@ -107,117 +121,144 @@ const SettingsScreen = props => {
   }
 
   return (
-    <Wrapper style={s.wrapper} {...props}>
-      <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
-        {t('Settings.Title')}
-      </Text>
-      <View>
-        {currentDevice ? (
-          <>
-            <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
-              {t('Settings.ConnectedMachines')}
-            </Text>
-            <BruMachine item={currentDevice} />
-          </>
-        ) : null}
-      </View>
-      <Button
-        size="lg"
-        variant={'primary'}
-        style={[s.buttonStyle]}
-        onPressIn={() => navigation.navigate('AddNewDeviceScreen')}>
-        <ButtonText style={s.buttonTextStyle}>
-          {t('Settings.ConnectNewMachine')}
-        </ButtonText>
-      </Button>
-      <Button
-        onPress={async () => {
-          try {
-            await connectToDevice();
-          } catch (error) {
-            toast.show({
-              placement: 'top',
-              duration: 5000,
-              render: () => {
-                return (
-                  <Toast
-                    id={'noPermissionsToast'}
-                    action="error"
-                    variant="accent">
-                    <VStack space="lg">
-                      <ToastTitle fontSize={'$md'}>
-                        {t('Settings.BluetoothConnectionError')}
-                      </ToastTitle>
-                    </VStack>
-                  </Toast>
-                );
-              },
-              onCloseComplete: () => {},
-            });
-          }
-          const isConnected = await checkConnection();
-          if (!isConnected) {
-            return;
-          } else {
-            _onPressUpdate();
-          }
-        }}
-        size="lg"
-        variant={'primary'}
-        style={[
-          s.buttonStyle,
-          s.updateButton,
-          isDarkMode && s.updateButtonDark,
-        ]}>
-        <ButtonText
+    <>
+      <Wrapper style={s.wrapper} {...props}>
+        <Text style={[s.screenTitle, isDarkMode && basicStyles.darkText]}>
+          {t('Settings.Title')}
+        </Text>
+        <View>
+          {currentDevice ? (
+            <>
+              <Text style={[s.h2, isDarkMode && basicStyles.darkText]}>
+                {t('Settings.ConnectedMachines')}
+              </Text>
+              <BruMachine item={currentDevice} />
+            </>
+          ) : null}
+        </View>
+        <Button
+          size="lg"
+          variant={'primary'}
+          style={[s.buttonStyle]}
+          onPressIn={() => navigation.navigate('AddNewDeviceScreen')}>
+          <ButtonText style={s.buttonTextStyle}>
+            {t('Settings.ConnectNewMachine')}
+          </ButtonText>
+        </Button>
+        <Button
+          onPress={async () => {
+            try {
+              await connectToDevice();
+            } catch (error) {
+              toast.show({
+                placement: 'top',
+                duration: 5000,
+                render: () => {
+                  return (
+                    <Toast
+                      id={'noPermissionsToast'}
+                      action="error"
+                      variant="accent">
+                      <VStack space="lg">
+                        <ToastTitle fontSize={'$md'}>
+                          {t('Settings.BluetoothConnectionError')}
+                        </ToastTitle>
+                      </VStack>
+                    </Toast>
+                  );
+                },
+                onCloseComplete: () => {},
+              });
+            }
+            const isConnected = await checkConnection();
+            if (!isConnected) {
+              return;
+            } else {
+              _onPressUpdate();
+            }
+          }}
+          size="lg"
+          variant={'primary'}
           style={[
-            s.buttonTextStyle,
-            s.updateButtonText,
-            isDarkMode && s.darkTextMain,
+            s.buttonStyle,
+            s.updateButton,
+            isDarkMode && s.updateButtonDark,
           ]}>
-          {t('Settings.UpdateFirmware')}
-        </ButtonText>
-      </Button>
+          <ButtonText
+            style={[
+              s.buttonTextStyle,
+              s.updateButtonText,
+              isDarkMode && s.darkTextMain,
+            ]}>
+            {t('Settings.UpdateFirmware')}
+          </ButtonText>
+        </Button>
 
-      <CommonSettings />
+        <CommonSettings />
 
-      <ConfirmationModal
-        onConfirm={() => {
-          navigation.navigate('UpdateFirmwareScreen', {file: filePath});
-          setIsConfirmModalOpen(false);
-        }}
-        opened={isConfirmModalOpen}
-        closeModal={() => setIsConfirmModalOpen(false)}
-        withCancelButton
-        cancelButtonText={t('Settings.No')}
-        confirmationButtonText={t('Settings.Confirm')}
-        modalTitle={t('Settings.FirmwareUpdate')}
-        confirmationText={t('Settings.BruAppWillDownload')}
-      />
-      <ConfirmationModal
-        onConfirm={() => {
-          route.params.openNewVersionInfoModal = false;
-          setNewFeaturesModalOpened(false);
-          navigation.navigate('Help', {
-            openCollapsed: 7,
-          });
-        }}
-        opened={newFeaturesModalOpened}
-        closeModal={() => {
-          route.params.openNewVersionInfoModal = false;
-          setNewFeaturesModalOpened(false);
-        }}
-        withCancelButton
-        cancelButtonText={t('Settings.No')}
-        confirmationButtonText={t('Settings.Yes')}
-        modalTitle={t('Settings.NewFeatures')}
-        confirmationText={t('Settings.DoYouWant')}
-      />
-    </Wrapper>
+        <ConfirmationModal
+          onConfirm={() => {
+            navigation.navigate('UpdateFirmwareScreen', {file: filePath});
+            setIsConfirmModalOpen(false);
+          }}
+          opened={isConfirmModalOpen}
+          closeModal={() => setIsConfirmModalOpen(false)}
+          withCancelButton
+          cancelButtonText={t('Settings.No')}
+          confirmationButtonText={t('Settings.Confirm')}
+          modalTitle={t('Settings.FirmwareUpdate')}
+          confirmationText={t('Settings.BruAppWillDownload')}
+        />
+        <ConfirmationModal
+          onConfirm={() => {
+            route.params.openNewVersionInfoModal = false;
+            setNewFeaturesModalOpened(false);
+            navigation.navigate('Help', {
+              openCollapsed: 7,
+            });
+          }}
+          opened={newFeaturesModalOpened}
+          closeModal={() => {
+            route.params.openNewVersionInfoModal = false;
+            setNewFeaturesModalOpened(false);
+          }}
+          withCancelButton
+          cancelButtonText={t('Settings.No')}
+          confirmationButtonText={t('Settings.Yes')}
+          modalTitle={t('Settings.NewFeatures')}
+          confirmationText={t('Settings.DoYouWant')}
+        />
+      </Wrapper>
+      {version ? (
+        <Text
+          style={[
+            s.version,
+            theme === 'dark' ? s.darkVersion : s.lightVersion,
+          ]}>
+          Firmware Version: {version}
+        </Text>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 const windowHeight = Dimensions.get('window').height;
 const s = StyleSheet.create({
+  version: {
+    fontSize: 16,
+    fontWeight: '600',
+    width: '100%',
+    position: 'absolute',
+    bottom: 100,
+    textAlign: 'center',
+  },
+  darkVersion: {
+    color: '#f1f1f1',
+  },
+  lightVersion: {
+    color: '#333',
+  },
   wrapper: {
     paddingHorizontal: 14,
   },
