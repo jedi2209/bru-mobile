@@ -9,7 +9,6 @@ import {
 import {
   Button,
   ButtonText,
-  LoaderIcon,
   Toast,
   ToastTitle,
   VStack,
@@ -100,7 +99,8 @@ const SettingsScreen = props => {
       }
     };
     fetchVersion();
-  }, [handleSetVersion, readValue]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const _onPressUpdate = () => {
     navigation.navigate('UpdateFirmwareScreen', {

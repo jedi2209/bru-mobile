@@ -199,7 +199,58 @@ const InstantBrewScreen = props => {
   const [moveView] = useState(new Animated.ValueXY({x: 0, y: 0}));
   const [isAnimated, setIsAnimated] = useState(false);
 
+  const [mode, setMode] = useState('view');
+  const [newTeaName, setNewTeaName] = useState('');
+
+  const {
+    image,
+    selected,
+    presets,
+    setImage,
+    setSelected,
+    handleAddPreset,
+    handleGetPreset,
+    handleDeletePreset,
+    handleUpdatePreset,
+  } = usePresetContext();
+
+  const [isLoadingMutatePresset, setLoadingMutatePresset] = useState(false);
+
+  const {
+    setBrewingTime,
+    setWaterAmount,
+    setTemperature,
+    brewingTime,
+    waterAmount,
+    isCleaning,
+    temperature,
+  } = useBrewingData(selected);
+
   const isDarkMode = theme === 'dark';
+
+  const backgroundColor = animationButton.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgba(42, 42, 42, 0.40)', colors.green.mid],
+  });
+
+  const cancelBackgroundColor = animationCancelButton.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['rgba(42, 42, 42, 0.40)', '#fc2323'],
+  });
+
+  const editImagePath = useMemo(() => {
+    if (image) {
+      return {
+        uri: image,
+      };
+    }
+    if (selected && selected.tea_img && selected?.id !== 'new_presset') {
+      return {
+        uri: selected.tea_img,
+      };
+    }
+    return require('../../../assets/teaImages/emptyPressetImage.png');
+  }, [image, selected]);
 
   const startBrewing = async (temp = 0, time = 0, water = 0) => {
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
@@ -226,50 +277,6 @@ const InstantBrewScreen = props => {
     });
   }, [animationCancelButton]);
 
-  const backgroundColor = animationButton.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['rgba(42, 42, 42, 0.40)', colors.green.mid],
-  });
-
-  const cancelBackgroundColor = animationCancelButton.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['rgba(42, 42, 42, 0.40)', '#fc2323'],
-  });
-
-  useFocusEffect(
-    useCallback(() => {
-      async function init() {
-        await getUserFx();
-        handleGetPreset();
-        getTeaAlarmsFx();
-        initThemeFx();
-        await initDevice();
-      }
-      init();
-    }, [handleGetPreset]),
-  );
-
-  useEffect(() => {
-    async function getDevice() {
-      const device = await AsyncStorage.getItem('previos');
-      if (!device) {
-        openIsConnectedModal();
-      }
-    }
-    getDevice();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    async function defaultUserSettings() {
-      updateProfileUser({units: 'metric'});
-      await updateUser(user.uid, {units: 'metric'});
-    }
-    if (user?.uid) {
-      defaultUserSettings();
-    }
-  }, [user]);
-
   const openIsConnectedModal = () => {
     setModal({
       opened: true,
@@ -289,88 +296,6 @@ const InstantBrewScreen = props => {
       // dontShowAgainText: t('InstantBrewing.DontShowAgain'),
     });
   };
-
-  useEffect(() => {
-    if (selected?.id === 'instant_brew') {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 0,
-          duration: 300,
-          useNativeDriver: true,
-        }).start(),
-        Animated.timing(moveView, {
-          toValue: {
-            x: 0,
-            y: -150,
-          },
-          duration: 300,
-          useNativeDriver: true,
-        }).start(),
-      ]);
-      setIsAnimated(true);
-    } else {
-      Animated.parallel([
-        Animated.timing(fadeAnim, {
-          toValue: 1,
-          duration: 300,
-          useNativeDriver: true,
-        }).start(),
-        Animated.timing(moveView, {
-          toValue: {
-            x: 0,
-            y: 0,
-          },
-          duration: 300,
-          useNativeDriver: true,
-        }).start(),
-      ]);
-      setIsAnimated(false);
-    }
-  }, [fadeAnim, moveView, selected]);
-
-  // =================================================================================================
-
-  const {
-    image,
-    selected,
-    presets,
-    setImage,
-    setSelected,
-    handleAddPreset,
-    handleGetPreset,
-    handleDeletePreset,
-    handleUpdatePreset,
-  } = usePresetContext();
-
-  const [isLoadingMutatePresset, setLoadingMutatePresset] = useState(false);
-
-  const [mode, setMode] = useState('view');
-  const [newTeaName, setNewTeaName] = useState('');
-
-  const {
-    setBrewingTime,
-    setWaterAmount,
-    setTemperature,
-    brewingTime,
-    waterAmount,
-    isCleaning,
-    temperature,
-  } = useBrewingData(selected);
-
-  useEffect(() => {
-    if (mode === 'view') {
-      setImage(null);
-    }
-  }, [mode, setImage]);
-
-  useEffect(() => {
-    if (selected?.id === 'new_presset') {
-      setMode('create');
-      setNewTeaName('');
-    } else {
-      setMode('view');
-    }
-  }, [selected?.id]);
 
   const openConfiramtionModal = time => {
     setModal({
@@ -404,20 +329,6 @@ const InstantBrewScreen = props => {
       },
     });
   };
-
-  const editImagePath = useMemo(() => {
-    if (image) {
-      return {
-        uri: image,
-      };
-    }
-    if (selected && selected.tea_img && selected?.id !== 'new_presset') {
-      return {
-        uri: selected.tea_img,
-      };
-    }
-    return require('../../../assets/teaImages/emptyPressetImage.png');
-  }, [image, selected]);
 
   const onDeletePreset = () => {
     setModal({
@@ -519,9 +430,16 @@ const InstantBrewScreen = props => {
 
       return;
     }
-
-    if (selected?.id === 'instant_brew') {
-      const command = getCommand(0x40, [], 0x0f);
+    if (selected && selected?.id === 'instant_brew') {
+      const command = getStartCommand(
+        0x40,
+        [
+          selected.brewing_data.temperature,
+          selected.brewing_data.time.value,
+          selected.brewing_data.waterAmount,
+        ],
+        0x0f,
+      );
 
       await writeValueWithResponse(command);
       return;
@@ -546,6 +464,93 @@ const InstantBrewScreen = props => {
     const command = getCommand(0x42, [], 4, false);
     await writeValueWithResponse(command);
   };
+
+  useEffect(() => {
+    if (selected?.id === 'instant_brew') {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+        Animated.timing(moveView, {
+          toValue: {
+            x: 0,
+            y: -150,
+          },
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+      ]);
+      setIsAnimated(true);
+    } else {
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+        Animated.timing(moveView, {
+          toValue: {
+            x: 0,
+            y: 0,
+          },
+          duration: 300,
+          useNativeDriver: true,
+        }).start(),
+      ]);
+      setIsAnimated(false);
+    }
+  }, [fadeAnim, moveView, selected]);
+
+  useFocusEffect(
+    useCallback(() => {
+      async function init() {
+        await getUserFx();
+        handleGetPreset();
+        getTeaAlarmsFx();
+        initThemeFx();
+        await initDevice();
+      }
+      init();
+    }, [handleGetPreset]),
+  );
+
+  useEffect(() => {
+    if (mode === 'view') {
+      setImage(null);
+    }
+  }, [mode, setImage]);
+
+  useEffect(() => {
+    if (selected?.id === 'new_presset') {
+      setMode('create');
+      setNewTeaName('');
+    } else {
+      setMode('view');
+    }
+  }, [selected?.id]);
+
+  useEffect(() => {
+    async function getDevice() {
+      const device = await AsyncStorage.getItem('previos');
+      if (!device) {
+        openIsConnectedModal();
+      }
+    }
+    getDevice();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    async function defaultUserSettings() {
+      updateProfileUser({units: 'metric'});
+      await updateUser(user.uid, {units: 'metric'});
+    }
+    if (user?.uid) {
+      defaultUserSettings();
+    }
+  }, [user]);
 
   return (
     <Wrapper {...props}>
