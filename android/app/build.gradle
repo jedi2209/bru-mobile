@@ -100,7 +100,7 @@ android {
         applicationId "shop.bru.bruapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 100100
+        versionCode project.ext.version.build
         versionName project.ext.version.name
 
         multiDexEnabled true
