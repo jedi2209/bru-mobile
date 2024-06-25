@@ -1,0 +1,229 @@
+{
+  "data": [
+    {
+      "id": "20242506",
+      "available": false,
+      "testAvailable": true,
+      "name": "060624-1",
+      "description": {
+        "en": "* Problem with changing the internal clock time.\n* Problem with the lack of a rinsing delay in the Rinse to Tray mode.",
+        "de": "* Problem mit der Änderung der internen Uhrzeit.\n* Problem mit dem fehlenden Spülverzögerungsmodus im Spülprogramm auf Tablett.",
+        "fr": "* Problème avec le changement de l'heure interne.\n* Problème avec l'absence de délai de rinçage en mode Rinçage vers bac.",
+        "it": "* Problema con il cambiamento dell'ora interna.\n* Problema con l'assenza di un ritardo di risciacquo nella modalità Risciacquo su vassoio.",
+        "es": "* Problema con el cambio de la hora interna.\n* Problema con la falta de un retardo de enjuague en el modo Enjuague a bandeja."
+      },
+      "file": "060624-1.zip"
+    },
+    {
+      "id": "20240501",
+      "available": false,
+      "testAvailable": true,
+      "name": "010524-1",
+      "description": {
+        "en": "* BRU machine - Improved water heating accuracy.\n* BRU machine - Added Lid reminder for drying of brewing chamber.\n* BRU machine - Added diagnostics for the need to do a descaling.\n* BRU machine - Added Descaling process.\n* User Interface - Improved design.\n* User Interface - Added Deutch language.\n* User Interface - Added new Bru logo to Screensaver.\n* BRU support - Expanded support toolkit.",
+        "de": "* Maschine: Verbesserte Genauigkeit bei der Wassererhitzung.\n* Maschine: Deckel-Öffnungs-Erinnerung für das Trocknen der Brühkammer hinzugefügt.\n* Maschine: Diagnose für die Notwendigkeit einer Entkalkung hinzugefügt '''WICHTIG'''.\n* Maschine: Entkalkungsprozess hinzugefügt.\n* Maschine: Benutzeroberfläche - verbessertes Design.\n* Maschine: Benutzeroberfläche - Logo als Bildschirmschoner hinzugefügt.\n* BRU-Hilfe - Erweitertes Support-Toolkit.",
+        "fr": "* Machine BRU - Amélioration de la précision du chauffage de l'eau.\nMachine BRU - Ajout d'un rappel du couvercle pour le séchage de la chambre de brassage.\nMachine BRU - Ajout de diagnostics pour la nécessité d'effectuer un détartrage.\nMachine BRU - Ajout du processus de détartrage.\nInterface utilisateur - Amélioration du design.\nInterface utilisateur - Ajout de la langue néerlandaise.\nInterface utilisateur - Ajout du nouveau logo Bru à l'économiseur d'écran.\nInterface utilisateur - Ajout du nouveau logo Bru à l'économiseur d'écran.\nMachine BRU - Extension de la boîte à outils d'assistance.",
+        "it": "* Macchina BRU - Migliorata la precisione del riscaldamento dell'acqua.\n* Macchina BRU - Aggiunto il promemoria del coperchio per l'asciugatura della camera di infusione.\n* Macchina BRU - Aggiunta la diagnostica per la necessità di eseguire una decalcificazione.\n* Macchina BRU - Aggiunto il processo di decalcificazione.\n* Interfaccia utente - Design migliorato.\n* Interfaccia utente - Aggiunta la lingua olandese.\n* Interfaccia utente - Aggiunto il nuovo logo Bru al salvaschermo.\n* Supporto BRU - Ampliato il kit di supporto.",
+        "es": "* Máquina BRU - Mejora de la precisión del calentamiento del agua.\n* Máquina BRU - Añadido recordatorio de la tapa para el secado de la cámara de infusión.\n* Máquina BRU - Añadido diagnóstico de la necesidad de hacer una descalcificación.\n* Máquina BRU - Añadido proceso de descalcificación.\n* Interfaz de usuario - Diseño mejorado.\n* Interfaz de usuario - Añadido idioma Deutch.\n* Interfaz de usuario - Añadido nuevo logo Bru al salvapantallas.\n* Soporte BRU - Ampliado el kit de herramientas de soporte."
+      },
+      "file": "010524-1.zip"
+    },
+    {
+      "id": "20240417",
+      "available": false,
+      "testAvailable": false,
+      "name": "170424-2",
+      "description": {
+        "en": "Change language on firmware update",
+        "de": "Sprache während des Firmware-Updates ändern"
+      },
+      "file": "170424-2.zip"
+    },
+    {
+      "id": "220906",
+      "available": false,
+      "testAvailable": false,
+      "name": "Current Default Firmware 22.09.06",
+      "description": {
+        "en": "Current Default Firmware 22.09.06",
+        "de": "Current Default Firmware 22.09.06"
+      },
+      "file": "060922.zip"
+    },
+    {
+      "id": "231007",
+      "available": false,
+      "testAvailable": false,
+      "name": "040324-1",
+      "description": {
+        "en": "040324",
+        "de": "040324"
+      },
+      "file": "040324-1.zip"
+    },
+    {
+      "id": "231012",
+      "available": false,
+      "testAvailable": false,
+      "name": "110424-1",
+      "description": {
+        "en": "110424-1",
+        "de": "110424-1"
+      },
+      "file": "110424-1.zip"
+    },
+    {
+      "id": "231008",
+      "available": true,
+      "testAvailable": false,
+      "name": "BRUMP_M2_271223",
+      "description": {
+        "en": "The latest version",
+        "de": "Die neueste Version"
+      },
+      "file": "BRUMP_M2_271223.zip"
+    },
+    {
+      "id": "230904",
+      "available": false,
+      "testAvailable": false,
+      "name": {
+        "en": "EN BRU Firmware 23.09.04",
+        "de": "DE BRU Firmware 23.09.04"
+      },
+      "description": {
+        "base": [
+          {
+            "en": "BRU machine - Improved function of the Valve mechanism.",
+            "de": "BRU-Maschine - Verbesserte funktioon des Ventilmechanismus."
+          },
+          {
+            "en": "BRU machine - Some performance improvements.",
+            "de": "BRU-Maschine - Einige Leistungsverbesserungen."
+          },
+          {
+            "en": "LCD - Added unicode fonts for multilanguage of user interface.",
+            "de": "LCD - Hinzufügen von Unicode-Schriftarten für mehrsprachige Benutzeroberflächen."
+          },
+          {
+            "en": "BRU machine protect - When first startup dispense a certain amount of water without heating.",
+            "de": "BRU-Maschinenschutz - Bei der ersten Inbetriebnahme wird eine bestimmte Menge Wasser ohne Erwärmung abgegeben."
+          }
+        ],
+        "bugfix": [
+          {
+            "en": "Dispenser mode - Fixed go to Steeping time screen by click of BACK button on Water temperature screen.",
+            "de": "Dosiermodus - Behebung des Problems, bei dem durch Drücken der ZURÜCK-Taste auf dem Bildschirm für die Wassertemperatur der Übergang zur Einweichzeitseite erfolgte."
+          },
+          {
+            "en": "BRU initialization - Fixed invalid parameters in flash memory.",
+            "de": "BRU-Initialisierung - Behebung ungültiger Parameter im Flash-Speicher."
+          }
+        ],
+        "features": [
+          {
+            "en": "BRU machine - Improved water heating accuracy.",
+            "de": "BRU-Maschine - Verbesserte Genauigkeit bei der Wassererwärmung."
+          },
+          {
+            "en": "BRU machine - Added Lid reminder for drying of brewing chamber.",
+            "de": "BRU-Maschine - Hinzufügen einer Erinnerung zum Schließen des Braukammertrocknens."
+          },
+          {
+            "en": "BRU machine - Added diagnostics for the need to do a descaling.",
+            "de": "BRU-Maschine - Hinzufügen von Diagnosen zur Feststellung eines erforderlichen Entkalkungsvorgangs."
+          },
+          {
+            "en": "BRU machine - Added Descaling process.",
+            "de": "BRU-Maschine - Hinzufügen des Entkalkungsvorgangs."
+          },
+          {
+            "en": "User Interface - Improved design.",
+            "de": "Benutzeroberfläche - Verbessertes Design."
+          },
+          {
+            "en": "User Interface - Added Deutch language.",
+            "de": "Benutzeroberfläche - Hinzufügen der deutschen Sprache."
+          },
+          {
+            "en": "User Interface - Added new Bru logo to Screensaver.",
+            "de": "Benutzeroberfläche - Hinzufügen des neuen BRU-Logos zum Bildschirmschoner."
+          },
+          {
+            "en": "BRU support - Expanded support toolkit.",
+            "de": "BRU-Unterstützung - Erweitertes Support-Toolkit."
+          }
+        ]
+      },
+      "file": {
+        "en": "040923.zip",
+        "de": "040923.zip"
+      }
+    },
+    {
+      "id": "3.4.3",
+      "available2": ["BRU-1234567890", "BRU-0987654321"],
+      "available": false,
+      "testAvailable": false,
+      "name": {
+        "en": "EN BRU Firmware 3.4.3",
+        "de": "DE BRU Firmware 3.4.3"
+      },
+      "description": {
+        "base": [
+          {
+            "en": "This update contains the latest firmware for BRU.",
+            "de": "Dieses Update enthält die neueste Firmware für BRU."
+          },
+          {
+            "en": "Second text about update",
+            "de": "Zweiter Text über Update"
+          }
+        ],
+        "bugfix": [
+          {
+            "en": "We fixed some bugs.",
+            "de": "Wir haben einige Fehler behoben."
+          },
+          {
+            "en": "Second text about bugfix",
+            "de": "Zweiter Text über Bugfix"
+          },
+          {
+            "en": "Third text about bugfix",
+            "de": "Dritter Text über Bugfix"
+          }
+        ],
+        "features": [
+          {
+            "en": "We added some features.",
+            "de": "Wir haben einige Funktionen hinzugefügt."
+          },
+          {
+            "en": "Second text about features",
+            "de": "Zweiter Text über Funktionen"
+          },
+          {
+            "en": "Third text about features",
+            "de": "Dritter Text über Funktionen"
+          }
+        ]
+      },
+      "file": {
+        "en": "firmware-bru-en_3.4.3.dat",
+        "de": "firmware-bru-de_3.4.3.dat"
+      }
+    },
+    {
+      "id": "230717",
+      "available": false,
+      "testAvailable": false,
+      "name": "ALL TEST BLE debug 23.07.17",
+      "description": {
+        "en": "EN DISABLED Pairing & Secure connections. This update contains the latest firmware for BRU.\n\nSecond text about update. Text can be **Bold** or heading.\n\n# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6. Or you can use *Italic* text.\n\nYou can use [links](https://www.google.com/).",
+        "de": "DE Dieses Update enthält die neueste Firmware für BRU.\n\nZweiter Text über Update. Text kann **Fett** oder Überschrift sein.\n\n# Überschrift 1\n## Überschrift 2\n### Überschrift 3\n#### Überschrift 4\n##### Überschrift 5\n###### Überschrift 6. Oder Sie können *Kursiv* Text verwenden.\n\nSie können [Links](https://www.google.com/) verwenden."
+      },
+      "file": "bru_nrf52_150723-1-test.zip"
+    }
+  ]
+}
