@@ -15,7 +15,7 @@
     "iphonePro": "yarn clean:ios; react-native run-ios --simulator=\"iPhone 14 Pro\"",
     "iphoneProMax": "yarn clean:ios; react-native run-ios --simulator=\"iPhone 14 Pro Max\"",
     "lint": "eslint .",
-    "postinstall": "npx patch-package && cd ios && pod update && cd ../ && react-native setup-ios-permissions && npx pod-install;",
+    "postinstall": "npx patch-package && cd ios && pod update && cd ../ && npx pod-install;",
     "react": "watchman watch-del $(pwd);  watchman watch-project $(pwd); yarn start;",
     "start": "react-native start --resetCache ",
     "test": "jest",
