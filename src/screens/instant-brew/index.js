@@ -253,6 +253,7 @@ const InstantBrewScreen = props => {
   }, [image, selected]);
 
   const startBrewing = async (temp = 0, time = 0, water = 0) => {
+    console.log(temp, time, water);
     const command = getStartCommand(0x40, [temp, time, water], 0x0f);
     writeValueWithResponse(command);
   };
@@ -412,6 +413,7 @@ const InstantBrewScreen = props => {
 
   const onLongPressStartButton = async () => {
     Vibration.vibrate(100);
+    console.log(brewingTime, waterAmount, temperature);
     if (selected?.id === 'new_presset') {
       const date = new Date();
       await handleAddPreset({
@@ -433,11 +435,7 @@ const InstantBrewScreen = props => {
     if (selected && selected?.id === 'instant_brew') {
       const command = getStartCommand(
         0x40,
-        [
-          selected.brewing_data.temperature,
-          selected.brewing_data.time.value,
-          selected.brewing_data.waterAmount,
-        ],
+        [temperature, brewingTime.value, waterAmount],
         0x0f,
       );
 

@@ -360,6 +360,7 @@ const HelpScreen = props => {
                             subject: 'Need help!',
                             text: `${data.helpMessage}\n\n${data.email}`,
                           },
+                          createdAt: new Date().toUTCString(),
                         });
                       setModal({
                         opened: true,
