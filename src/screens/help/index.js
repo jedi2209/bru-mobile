@@ -217,15 +217,19 @@ const HelpScreen = props => {
               )}`}</Text>
               <TouchableOpacity
                 onPress={async () => {
-                  const canOpen = await Linking.canOpenURL(
-                    'https://www.youtube.com/watch?v=3fZdkroBe_4',
-                  );
-                  if (canOpen) {
-                    Linking.openURL(
-                      'https://www.youtube.com/watch?v=3fZdkroBe_4',
+                  try {
+                    const canOpen = await Linking.canOpenURL(
+                      'https://youtu.be/vv3VDJjgh_E?list=TLGGbUCv-Mkxf4YyMTEwMjAyNA',
                     );
-                  } else {
-                    Alert.alert("Can't open link");
+                    if (canOpen || Platform.OS === 'android') {
+                      Linking.openURL(
+                        'https://youtu.be/vv3VDJjgh_E?list=TLGGbUCv-Mkxf4YyMTEwMjAyNA',
+                      );
+                    } else {
+                      Alert.alert("Can't open link");
+                    }
+                  } catch (e) {
+                    console.log(e, 'errororr');
                   }
                 }}>
                 <Text style={s.linkText}>{t('Help.Link')}</Text>
@@ -245,15 +249,19 @@ const HelpScreen = props => {
               )}`}</Text>
               <TouchableOpacity
                 onPress={async () => {
-                  const canOpen = await Linking.canOpenURL(
-                    'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
-                  );
-                  if (canOpen) {
-                    Linking.openURL(
+                  try {
+                    const canOpen = await Linking.canOpenURL(
                       'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
                     );
-                  } else {
-                    Alert.alert("Can't open link");
+                    if (canOpen || Platform.OS === 'android') {
+                      Linking.openURL(
+                        'https://www.youtube.com/watch?v=7UWqNc1WfEY&t=1s',
+                      );
+                    } else {
+                      Alert.alert("Can't open link");
+                    }
+                  } catch (e) {
+                    console.log(e, 'erereresdasd');
                   }
                 }}>
                 <Text style={s.linkText}>{t('Help.Link')}</Text>
@@ -360,6 +368,7 @@ const HelpScreen = props => {
                             subject: 'Need help!',
                             text: `${data.helpMessage}\n\n${data.email}`,
                           },
+                          createdAt: new Date().toUTCString(),
                         });
                       setModal({
                         opened: true,
@@ -459,6 +468,7 @@ const HelpScreen = props => {
                             subject: 'Need help!',
                             text: `${data.featureMessage}\n\n${data.email}`,
                           },
+                          createdAt: new Date().toUTCString(),
                         });
                       setModal({
                         opened: true,

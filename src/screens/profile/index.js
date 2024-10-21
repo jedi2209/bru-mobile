@@ -1,19 +1,10 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Wrapper from '../../core/components/Wrapper';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {basicStyles, colors} from '../../core/const/style';
 import PenIcon from '../../core/components/icons/PenIcon';
 import LinearGradient from 'react-native-linear-gradient';
 import UserIcon from '../../core/components/icons/UserIcon';
-import ArrowLeftIcon from '../../core/components/icons/ArrowLeftIcon';
-import ArrowRightIcon from '../../core/components/icons/ArrowRightIcon';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import Input from '../../core/components/Input';
 import {useStore} from 'effector-react';
@@ -25,7 +16,6 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Toast from 'react-native-toast-message';
 import {$themeStore} from '../../core/store/theme';
-import {scaleValue} from '../../helpers/scaleValue';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useTranslation} from 'react-i18next';
 
@@ -220,13 +210,6 @@ const s = StyleSheet.create({
   },
 });
 
-// const chartDaysData = [
-//   0, 1, 2, 3, 4, 5, 6, 2, 3, 5, 5, 3, 9, 3, 1, 5, 7, 4, 0, 9, 8, 3, 4, 2, 6, 0,
-// ];
-// const chartWeeksData = [14, 10, 8, 2];
-// const chartMonthsData = [14 * 3, 10 * 3, 8 * 3, 2 * 3];
-// const chartYearsData = [365, 363, 200, 100, 150];
-
 const schema = yup
   .object({
     name: yup.string(),
@@ -267,21 +250,6 @@ const ProfileScreen = props => {
       });
     }
   }, [errors]);
-
-  // const selectedFilterByDate = useMemo(() => {
-  //   switch (selectedFilter) {
-  //     case 'days':
-  //       return chartDaysData;
-  //     case 'weeks':
-  //       return chartWeeksData;
-  //     case 'months':
-  //       return chartMonthsData;
-  //     case 'years':
-  //       return chartYearsData;
-  //     default:
-  //       return [];
-  //   }
-  // }, [selectedFilter]);
 
   return (
     <Wrapper style={s.wrapper} {...props}>
@@ -393,18 +361,6 @@ const ProfileScreen = props => {
                 ]}>
                 {user.email}
               </Text>
-              {/* <TouchableOpacity
-                onPress={() =>
-                  setModal({
-                    confirmationText:
-                      'Please follow the link in the email that we have sent to john@usermail.com. Validating on email address allows you to receive special tea deals and promotions fom BRU ',
-                    confirmationButtonText: 'OK',
-                    onConfirm: () => setModal(null),
-                  })
-                }
-                style={s.userDataButton}>
-                <Text style={s.validateButton}>Validate</Text>
-              </TouchableOpacity> */}
             </View>
           ) : (
             <Input
@@ -419,27 +375,6 @@ const ProfileScreen = props => {
           {mode === 'view' ? (
             <></>
           ) : (
-            // <View style={s.userData}>
-            //   <Text
-            //     style={[
-            //       s.userDataText,
-            //       s.label,
-            //       isDarkMode && basicStyles.darkTextProfile,
-            //     ]}>
-            //     Password
-            //   </Text>
-            //   <Text
-            //     style={[
-            //       s.userDataText,
-            //       s.value,
-            //       isDarkMode && basicStyles.darkTextProfile,
-            //     ]}>
-            //     ***************
-            //   </Text>
-            //   <TouchableOpacity style={s.userDataButton}>
-            //     <EyeIcon width={24} height={24} color={colors.green.mid} />
-            //   </TouchableOpacity>
-            // </View>
             <Input
               placeholder={t('Profile.PleaseEnterPassword')}
               label={t('Profile.Password')}
@@ -485,138 +420,6 @@ const ProfileScreen = props => {
           </TouchableOpacity>
         )}
       </LinearGradient>
-      {/* {mode === 'view' && (
-        <>
-          <Text style={[s.subtitle, isDarkMode && basicStyles.darkTextProfile]}>
-            My statistics
-          </Text>
-          <View style={s.statisticWrapper}>
-            <View style={s.statisticSelectors}>
-              <TouchableOpacity
-                onPress={() => setselectedFilter('days')}
-                style={
-                  selectedFilter === 'days' && s.statisticSelectorSelected
-                }>
-                <Text style={s.statisticSelectorText}>Days</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setselectedFilter('weeks')}
-                style={
-                  selectedFilter === 'weeks' && s.statisticSelectorSelected
-                }>
-                <Text style={s.statisticSelectorText}>Weeks</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setselectedFilter('months')}
-                style={
-                  selectedFilter === 'months' && s.statisticSelectorSelected
-                }>
-                <Text style={s.statisticSelectorText}>Months</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setselectedFilter('years')}
-                style={
-                  selectedFilter === 'years' && s.statisticSelectorSelected
-                }>
-                <Text style={s.statisticSelectorText}>Years</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={s.dateFilterWrapper}>
-              <TouchableOpacity>
-                <ArrowLeftIcon />
-              </TouchableOpacity>
-              <Text style={s.dateFilterText}>
-                <Text style={s.dateFilterMonth}>Oct 28, </Text>
-                2020
-              </Text>
-              <TouchableOpacity>
-                <ArrowRightIcon />
-              </TouchableOpacity>
-            </View>
-            <ScrollView
-              bounces={false}
-              contentContainerStyle={[
-                basicStyles.row,
-                {alignItems: 'flex-end', gap: 1},
-              ]}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={s.barStatistic}>
-              {selectedFilterByDate.map(item => {
-                return (
-                  <View>
-                    <View
-                      key={item + new Date().getMilliseconds()}
-                      style={[
-                        s.chartBar,
-                        {
-                          height: scaleValue(
-                            0,
-                            Math.max(...selectedFilterByDate),
-                            item,
-                            maxBarHeight,
-                          ),
-                        },
-                      ]}
-                    />
-                  </View>
-                );
-              })}
-            </ScrollView>
-            <View style={s.popularPressets}>
-              <View style={s.popularPresset}>
-                <Text style={s.popularPressetCounter}>Most popular preset</Text>
-                <View>
-                  <Text
-                    style={[s.popularPressetCounter, s.popularPressetTitle]}>
-                    Black Tea
-                  </Text>
-                  <Text style={s.popularPressetValue}>2132 cups</Text>
-                </View>
-              </View>
-              <View style={s.popularPresset}>
-                <Text style={s.popularPressetCounter}>
-                  2nd most popular preset
-                </Text>
-                <View>
-                  <Text
-                    style={[s.popularPressetCounter, s.popularPressetTitle]}>
-                    Green Tea
-                  </Text>
-                  <Text style={s.popularPressetValue}>1432 cups</Text>
-                </View>
-              </View>
-              <View style={s.popularPresset}>
-                <Text style={s.popularPressetCounter}>
-                  3nd most popular preset
-                </Text>
-                <View>
-                  <Text
-                    style={[s.popularPressetCounter, s.popularPressetTitle]}>
-                    Pu Er
-                  </Text>
-                  <Text style={s.popularPressetValue}>132 cups</Text>
-                </View>
-              </View>
-            </View>
-          </View>
-          <TouchableOpacity
-            onPress={() =>
-              setModal({
-                withCancelButton: true,
-                cancelButtonText: 'No',
-                modalTitle: t('InstantBrewing.Attention'),
-                confirmationText:
-                  'Reseting your tea consumption statistics cannot be undone!',
-                confirmationButtonText: 'Yes, Reset',
-                onConfirm: () => setModal(null),
-              })
-            }
-            style={s.resetButton}>
-            <Text style={s.resetButtonText}>Reset My Stats</Text>
-          </TouchableOpacity>
-        </>
-      )} */}
       <ConfirmationModal
         opened={!!modal}
         closeModal={() => setModal(null)}
