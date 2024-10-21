@@ -335,81 +335,8 @@ const PresetsScreen = props => {
             disabled={mode === 'list'}
             type="pressets"
           />
-          {/* {mode === 'list' && isCleaning && (
-            <Text style={s.cleaningText}>+ Cleaning</Text>
-          )} */}
-          {/* {mode === 'list' && (
-            <TouchableOpacity
-              onPress={async () => {
-                const command = getStartCommand(
-                  0x40,
-                  [temperature, brewingTime.value, waterAmount],
-                  0x0f,
-                );
-                await writeValueWithResponse(command);
-              }}
-              style={s.brewButton}>
-              <Text style={s.buttonText}>{t('InstantBrewing.BrewIt')}</Text>
-            </TouchableOpacity>
-          )} */}
         </LinearGradient>
       </View>
-      {/* {mode === 'list' ? (
-        <>
-          {pressets.length ? (
-            <TouchableOpacity
-              onPress={() =>
-                setModal({
-                  opened: true,
-                  withCancelButton: true,
-                  cancelButtonText: 'No',
-                  modalTitle: t('InstantBrewing.Attention'),
-                  confirmationText:
-                    'Do you really want to return standart tea presets to default values? We will keep the presets that you’ve added intact.',
-                  confirmationButtonText: 'Yes, Return',
-                  onConfirm: () => setModal(null),
-                  closeModal: () => setModal(null),
-                })
-              }>
-              <Text style={s.resetButton}>Reset Default presets</Text>
-            </TouchableOpacity>
-          ) : null}
-        </>
-      ) : (
-        <View style={s.switchWrapper}>
-          <View style={s.switchContainer}>
-            <Switch
-              sx={{
-                props: {
-                  trackColor: {
-                    true: '#34C759',
-                  },
-                },
-              }}
-            />
-            <Text style={[s.switchText, isDarkMode && basicStyles.darkText]}>
-              Cold water
-            </Text>
-          </View>
-          <View style={s.switchContainer}>
-            <Switch
-              value={isCleaning}
-              onChange={() => setIsCleaning(prev => !prev)}
-              sx={{
-                props: {
-                  trackColor: {
-                    true: '#34C759',
-                  },
-                },
-              }}
-            />
-            <Text style={[s.switchText, isDarkMode && basicStyles.darkText]}>
-              Cleaning
-            </Text>
-          </View>
-        </View>
-      )} */}
-
       <View style={s.buttonContainer}>
         {mode !== 'list' && (
           <TouchableOpacity

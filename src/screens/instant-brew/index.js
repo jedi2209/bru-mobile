@@ -13,18 +13,13 @@ import React, {
 import Wrapper from '@comp/Wrapper';
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {basicStyles, colors} from '../../core/const/style';
-// import SplitCups from './components/SplitCups';
 import PressetList from '../../core/components/PressetList/PressetList';
 import TeaAlarmInfo from '../../core/components/TeaAlarmInfo';
 import ConfirmationModal from '../../core/components/ConfirmationModal';
 import {useStore} from 'effector-react';
 import {$themeStore, initThemeFx} from '../../core/store/theme';
 import isEqual from 'lodash.isequal';
-import {
-  // $profileStore,
-  getUserFx,
-  updateProfileUser,
-} from '../../core/store/profile';
+import {getUserFx, updateProfileUser} from '../../core/store/profile';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BrewingData from '../../core/components/TeaAlarm/BrewingData';
 import {useBrewingData} from '../../hooks/useBrewingData';
