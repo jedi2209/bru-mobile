@@ -33,5 +33,6 @@ module.exports = {
         relativeSourceLocation: true,
       },
     ],
+    ['@babel/plugin-transform-private-methods', { loose: true }],
   ],
 };
